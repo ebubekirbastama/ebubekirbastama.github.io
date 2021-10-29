@@ -7,3 +7,6 @@ background-image:url(ebs.jpg);
 background-repeat:no-repeat;
 background-size:cover;
 }
+.ebsred {
+  background-color: red;
+}
