@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>EBS Time</title>
+</head>
+<body style="background-color: lightcyan;">
+
+
+<input id="clickMe" type="button" value="10'li Oluştur" onclick="generateName(10);" />
+<input id="clickMe" type="button" value="20'li Oluştur" onclick="generateName(20);" />
+<input id="clickMe" type="button" value="30'li Oluştur" onclick="generateName(30);" />
+<input id="clickMe" type="button" value="40'li Oluştur" onclick="generateName(40);" />
+<input id="clickMe" type="button" value="50'li Oluştur" onclick="generateName(50);" />
+
+<h2 id="random_name"></h2>
+
+
+
+<script>
+function capFirst(string) {
+return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getRandomInt(min, max) {
+return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function generateName(count){
+var first_name = ["Jale" ,
+"Ali" ,
+"Mahmut" ,
+"Mansur Kürşad" ,
+"Gamze" ,
+"Miraç" ,
+"Yücel" ,
+"Kubilay" ,
+"Hayati" ,
+"Bedriye Müge" ,
+"Birsen" ,
+"Serdal" ,
+"Bünyamin" ,
+"Özgür" ,
+"Ferdi" ,
+"Reyhan" ,
+"ilhan" ,
+"Gülşah" ,
+"Nalan" ,
+"Semih" ,
+"Ergün" ,
+"Fatih" ,
+"Şenay" ,
+"Serkan" ,
+"Emre" ,
+"Bahattin" ,
+"Irazca" ,
+"Hatice" ,
+"Bariş" ,
+"Rezan" ,
+"Fatih" ,
+"Fuat" ,
+"Gökhan" ,
+"Orhan" ,
+"Mehmet" ,
+"Evren" ,
+"Oktay" ,
+"Harun" ,
+"Yavuz" ,
+"Pinar" ,
+"Mehmet" ,
+"Umut" ,
+"Mesude" ,
+"Hüseyin Cahit" ,
+"Haşim Onur" ,
+"Eyyup Sabri" ,
+"Mustafa" ,
+"Mustafa" ,
+"Ufuk" ,
+"Ahmet Ali" ,
+"Mediha" ,
+"Hasan" ,
+"Kamil" ,
+"Nebi" ,
+"Özcan" ,
+"Nagihan" ,
+"Ceren" ,
+"Serkan" ,
+"Hasan" ,
+];
+
+var last_name = ["Şen" ,
+"Akansel" ,
+"Ulu" ,
+"Toy" ,
+"Yilmaz" ,
+"Develi" ,
+"Demircan" ,
+"Büyükdoğan" ,
+"Güleç" ,
+"Erdem" ,
+"Emet" ,
+"ileri" ,
+"ilbay" ,
+"Işik" ,
+"Güneş" ,
+"Gündoğdu" ,
+"Gülenay Sümer" ,
+"Nadastepe" ,
+"Ülkevan" ,
+"Şimşek" ,
+"Seğmen" ,
+"Özkan" ,
+"Özdil" ,
+"Mert" ,
+"Mersin" ,
+"Kirlangiç" ,
+"Kendirli" ,
+"Karnas" ,
+"Karcioğlu" ,
+"Karaismailoğlu" ,
+"Karahan" ,
+"Karadeniz" ,
+"Kan" ,
+"ince" ,
+"Yanik" ,
+"Yağcizeybek" ,
+"Tuncer" ,
+"Toşur" ,
+"Şahin" ,
+"Sönmez" ,
+"Soyer" ,
+"Sezer" ,
+"Sandal" ,
+"Özdemir" ,
+"Ordulu Şahin" ,
+"Omay" ,
+"Kütük" ,
+"Koyuncu" ,
+"Korkmaz" ,
+"Kircali" ,
+"Karaağaç" ,
+"Kabakuş" ,
+"ilgen" ,
+"Gördük" ,
+"Göktaş" ,
+"Evren" ,
+"Ertaş" ,
+"Eldem" ,
+"Doğan" ,
+"Dirican" ,
+"Demirtürk" ,
+"Demir" ,
+"Çelen" ,
+"Çağlar" ,
+"Başar" ,
+"Ulaş" ,
+"Tunç" ,
+"Toper" ,
+"Tekin" ,
+];
+
+debugger;
+var EBSName="";
+for (let i = 0; i < count; i++) {
+
+   var name = capFirst(first_name[getRandomInt(0, 5 + 1)]) + ' ' + capFirst(last_name[getRandomInt(0, 5 + 1)])+"<br/>";
+    EBSName +=name;
+}
+
+ document.getElementById("random_name").innerHTML = EBSName;
+
+}
+</script>
+
+</body>
+</html>
+
+</body>
+</html>
