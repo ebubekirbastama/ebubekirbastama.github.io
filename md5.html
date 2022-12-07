@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title>MD5 Encode</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+        <h2>MD5 Encode Systeam</h2>
+        <br/>
+        <h2>What is MD5 encryption?</h2>
+        <p>MD5 is a cryptographic hash function that is often used to encode passwords and other sensitive data. It is called a "hash function" because it produces a fixed-length output (called a "hash" or "message digest") from any input string, regardless of its length. The output is always the same length, and it is typically represented as a sequence of hexadecimal digits.
+
+            One of the key features of a hash function is that it is a one-way operation: it is easy to compute the hash of a given input, but it is computationally infeasible to determine the original input from its hash. This makes it useful for storing passwords, because even if someone obtains the hashed password, they cannot easily determine the original password.
+
+            However, the MD5 algorithm has several weaknesses that make it less secure than other modern hash functions. It is relatively fast to compute, which makes it more vulnerable to brute-force attacks, and it is also more susceptible to collisions (when two different inputs produce the same hash) than other algorithms. For these reasons, it is generally recommended to use a stronger hash function, such as SHA-256 or SHA-3, for sensitive applications.</p>
+        <br/>
+        <label class="control-label col-sm-2" for="email">MD5 Encode:</label>
+        <div class="col-sm-10">
+            <textarea rows="5" class="form-control" id="EBSMD5encode" placeholder="Şifrelenecek Metin"></textarea>
+        </div>
+
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" onclick="EBSEncode()" class="btn btn-primary btn-block">Encode Et</button>
+        </div>
+
+    </div>
+    <script>
+        function EBSEncode() {
+            document.getElementById("EBSMD5encode").value = CryptoJS.MD5(document.getElementById("EBSMD5encode").value).toString();
+        }
+    </script>
+</body>
+</html>
