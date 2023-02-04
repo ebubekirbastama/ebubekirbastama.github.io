@@ -34,8 +34,9 @@
 </nav>
 
 <div class="container">
-  <h2 class="ebsred" >Çok yakında bütün firmalar eklenecektir.</h2>
+  <h2 class="ebsred" >EBS Yazılım</h2>
   <p class="ebsred" >Eğer Yayın eviyseniz xml listenizi bize yollayabilirsiniz...</p>
+  <p id="EBSİP"></p>
 </div>
 <div class="container">
   <h2 class="ebsred">Desteklenen Yayın Evleri</h2>
@@ -79,7 +80,13 @@
       
     </div>
   </div>
-  
+  <script>
+  fetch('https://api.ipify.org?format=json')
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById("EBSİP").innerHTML = "Your IP address is: " + data.ip;
+  });
+ </script>
   
 </body>
 </html>
