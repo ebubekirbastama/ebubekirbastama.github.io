@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Taksi Takip</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <style>
+        #map {
+            height: 800px;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+    <button onclick="toggleTracking()">Başlat/Durdur</button>
+<div id="map"></div>
+<script>
+
+var _0x6526=["\x66\x69\x74\x57\x6F\x72\x6C\x64","\x6D\x61\x70","\x61\x64\x64\x54\x6F","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x7B\x73\x7D\x2E\x74\x69\x6C\x65\x2E\x6F\x70\x65\x6E\x73\x74\x72\x65\x65\x74\x6D\x61\x70\x2E\x6F\x72\x67\x2F\x7B\x7A\x7D\x2F\x7B\x78\x7D\x2F\x7B\x79\x7D\x2E\x70\x6E\x67","\x26\x63\x6F\x70\x79\x3B\x20\x3C\x61\x20\x68\x72\x65\x66\x3D\x22\x68\x74\x74\x70\x73\x3A\x2F\x2F\x6F\x70\x65\x6E\x73\x74\x72\x65\x65\x74\x6D\x61\x70\x2E\x6F\x72\x67\x2F\x63\x6F\x70\x79\x72\x69\x67\x68\x74\x22\x3E\x4F\x70\x65\x6E\x53\x74\x72\x65\x65\x74\x4D\x61\x70\x20\x63\x6F\x6E\x74\x72\x69\x62\x75\x74\x6F\x72\x73\x3C\x2F\x61\x3E","\x74\x69\x6C\x65\x4C\x61\x79\x65\x72","\x6D\x61\x72\x6B\x65\x72","\x6C\x61\x74\x69\x74\x75\x64\x65","\x63\x6F\x6F\x72\x64\x73","\x6C\x6F\x6E\x67\x69\x74\x75\x64\x65","\x73\x65\x74\x4C\x61\x74\x4C\x6E\x67","\x73\x65\x74\x56\x69\x65\x77","\x67\x65\x74\x4C\x61\x74\x4C\x6E\x67","\x70\x75\x73\x68","\x67\x72\x65\x65\x6E","\x70\x6F\x6C\x79\x6C\x69\x6E\x65","\x67\x65\x74\x43\x75\x72\x72\x65\x6E\x74\x50\x6F\x73\x69\x74\x69\x6F\x6E","\x67\x65\x6F\x6C\x6F\x63\x61\x74\x69\x6F\x6E","\x72\x65\x64","\x77\x61\x74\x63\x68\x50\x6F\x73\x69\x74\x69\x6F\x6E"];var map=L[_0x6526[1]](_0x6526[1])[_0x6526[0]]();L[_0x6526[5]](_0x6526[3],{maxZoom:19,attribution:_0x6526[4]})[_0x6526[2]](map);var marker=L[_0x6526[6]]();var path=[];var isTracking=false;navigator[_0x6526[17]][_0x6526[16]](function(_0x79d6x5){marker[_0x6526[10]]([_0x79d6x5[_0x6526[8]][_0x6526[7]],_0x79d6x5[_0x6526[8]][_0x6526[9]]])[_0x6526[2]](map);map[_0x6526[11]]([_0x79d6x5[_0x6526[8]][_0x6526[7]],_0x79d6x5[_0x6526[8]][_0x6526[9]]],18);path[_0x6526[13]](marker[_0x6526[12]]());L[_0x6526[15]](path,{color:_0x6526[14]})[_0x6526[2]](map)});var watchID=navigator[_0x6526[17]][_0x6526[19]](function(_0x79d6x5){if(isTracking){marker[_0x6526[10]]([_0x79d6x5[_0x6526[8]][_0x6526[7]],_0x79d6x5[_0x6526[8]][_0x6526[9]]]);path[_0x6526[13]](marker[_0x6526[12]]());L[_0x6526[15]](path,{color:_0x6526[18]})[_0x6526[2]](map)}});function toggleTracking(){if(isTracking){isTracking= false}else {isTracking= true}}
+</script>
+
+</body>
+</html>
