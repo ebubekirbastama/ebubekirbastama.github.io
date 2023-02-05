@@ -1,0 +1,16 @@
+button {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#map {
+  height: 400px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  #map {
+    height: 200px;
+  }
+}
