@@ -16,10 +16,31 @@
 
 </head>
 <body>
- 
+
 <div id="map"></div>
 <script>
 
+    var watchID = navigator.geolocation.watchPosition(function (location) {
+        if (isTracking) {
+            marker.setLatLng([location.coords.latitude, location.coords.longitude]);
+
+            // Yön bilgisi ile marker'ın yönünü güncelle
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", handleOrientation, true);
+            } else {
+                console.log("Device orientation not supported.");
+            }
+
+            path.push(marker.getLatLng());
+            L.polyline(path, {color: 'red'}).addTo(map);
+        }
+    });
+
+    function handleOrientation(event) {
+        var alpha = event.alpha; // Yaw (0-360)
+
+        marker.setRotationAngle(alpha);
+    }
 
 
     var map = L.map('map').fitWorld();
