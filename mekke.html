@@ -1,81 +1,59 @@
-<!DOCTYPE html>
-<html>
-    <head>
-    <title>Harita</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <link rel="stylesheet" type="text/css" href="style.css"/>
-    <style>
-        #map {
-            height: 800px;
-            width: 100%;
-        }
-    </style>
+window.onload = function () {
+    var watchID = null;
+    var marker = L.marker();
+    var path = [];
+    var isTracking = false;
 
-</head>
-<body>
+    var map = L.map('map').fitWorld();
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    }).addTo(map);
 
-<div id="map"></div>
-<script>
-var watchID = null;
-var marker = L.marker();
-var path = [];
-var isTracking = false;
+    // Kabe'nin konumu
+    var kabe = L.marker([21.4225, 39.8262]).addTo(map);
+    kabe.bindPopup("<h1>Kabe</h1>");
 
-var map = L.map('map').fitWorld();
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-}).addTo(map);
+    // Cihazın konum takibi
+    function startTracking() {
+        isTracking = true;
 
-// Kabe'nin konumu
-var kabe = L.marker([21.4225, 39.8262]).addTo(map);
-kabe.bindPopup("<h1>Kabe</h1>");
-
-// Cihazın konum takibi
-function startTracking() {
-    isTracking = true;
-
-    navigator.geolocation.getCurrentPosition(function (location) {
-        marker.setLatLng([location.coords.latitude, location.coords.longitude]).addTo(map);
-        map.setView([location.coords.latitude, location.coords.longitude], 18);
-        path.push(marker.getLatLng());
-        path.push(kabe.getLatLng());
-        L.polyline(path, {color: 'green'}).addTo(map);
-    });
-
-    if (watchID == null) {
-        watchID = navigator.geolocation.watchPosition(function (location) {
-            if (isTracking) {
-                marker.setLatLng([location.coords.latitude, location.coords.longitude]);
-
-                // Cihazın yönü hesaplanıyor ve marker'ın yönü güncelleniyor
-                if (window.DeviceOrientationEvent) {
-                    window.addEventListener("deviceorientation", handleOrientation, true);
-                } else {
-                    console.log("Device orientation not supported.");
-                }
-
-                path.push(marker.getLatLng());
-                L.polyline(path, {color: 'red'}).addTo(map);
-            }
+        navigator.geolocation.getCurrentPosition(function (location) {
+            marker.setLatLng([location.coords.latitude, location.coords.longitude]).addTo(map);
+            map.setView([location.coords.latitude, location.coords.longitude], 18);
+            path.push(marker.getLatLng());
+            path.push(kabe.getLatLng());
+            L.polyline(path, {color: 'green'}).addTo(map);
         });
+
+        if (watchID == null) {
+            watchID = navigator.geolocation.watchPosition(function (location) {
+                if (isTracking) {
+                    marker.setLatLng([location.coords.latitude, location.coords.longitude]);
+
+                    // Cihazın yönü hesaplanıyor ve marker'ın yönü güncelleniyor
+                    if (window.DeviceOrientationEvent) {
+                        window.addEventListener("deviceorientation", handleOrientation, true);
+                    } else {
+                        console.log("Device orientation not supported.");
+                    }
+
+                    path.push(marker.getLatLng());
+                    L.polyline(path, {color: 'red'}).addTo(map);
+                }
+            });
+        }
     }
+
+    function stopTracking() {
+        isTracking = false;
+    }
+
+    function handleOrientation(event) {
+        var alpha = event.alpha; // Yaw (0-360)
+
+        marker.setRotationAngle(alpha);
+    }
+
+    startTracking();
 }
-
-function stopTracking() {
-    isTracking = false;
-}
-
-function handleOrientation(event) {
-    var alpha = event.alpha; // Yaw (0-360)
-
-    marker.setRotationAngle(alpha);
-}
-
-</script>
-
-</body>
-</html>
