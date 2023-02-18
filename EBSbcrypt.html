@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title>Bcrypt Encode</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+    </head>
+    <body>
+
+    <div class="container">
+        <h2>Bcrypt Encode Systeam</h2>
+        <br/>
+        <h2>What is Bcrypt encryption?</h2>
+        <p>Bcrypt is a password hashing function designed by Niels Provos and David Mazières, based on the Blowfish cipher, and presented at USENIX in 1999. It is designed to be computationally expensive to compute a hash, as a defense against brute-force attacks.</p>
+        <br/>
+        <div class="form-group row">
+            <label class="control-label col-sm-2" for="email">Bcrypt Encode:</label>
+            <div class="col-sm-5">
+                <textarea rows="5" class="form-control" id="EBSBcryptencode" placeholder="Şifrelenecek Metin 123 vb."></textarea>
+            </div>
+            <div class="col-sm-1">
+                <input id="Rowid" class="form-control" placeholder="Rounds" value="5">
+            </div>
+
+        </div>
+
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" onclick="EBSEncode()" class="btn btn-primary btn-block">Encode Et</button>
+        </div>
+        <br>
+        <div class="col-sm-offset-2 col-sm-10">
+            <p>Encoded Text:</p>
+            <textarea rows="5" class="form-control" id="EBSBcryptResult" placeholder="Şifreli Metin"></textarea>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+    <script>
+     function EBSEncode()
+     {
+    const _0x252f8a=_0x11ec;(function(_0x2e0e96,_0x57b474){const _0x3fff2d=_0x11ec,_0x6138f5=_0x2e0e96();while(!![]){try{const _0x40c00c=-parseInt(_0x3fff2d(0x13b))/0x1*(parseInt(_0x3fff2d(0x148))/0x2)+parseInt(_0x3fff2d(0x146))/0x3*(-parseInt(_0x3fff2d(0x13e))/0x4)+parseInt(_0x3fff2d(0x143))/0x5+-parseInt(_0x3fff2d(0x147))/0x6+-parseInt(_0x3fff2d(0x13f))/0x7*(parseInt(_0x3fff2d(0x144))/0x8)+-parseInt(_0x3fff2d(0x13a))/0x9+parseInt(_0x3fff2d(0x142))/0xa;if(_0x40c00c===_0x57b474)break;else _0x6138f5['push'](_0x6138f5['shift']());}catch(_0xf7ca3f){_0x6138f5['push'](_0x6138f5['shift']());}}}(_0x40f0,0x2afd9));let bcrypt=dcodeIO['bcrypt'];function _0x11ec(_0x30ccaf,_0x393d8d){const _0x40f0a4=_0x40f0();return _0x11ec=function(_0x11ec30,_0x2eb09a){_0x11ec30=_0x11ec30-0x139;let _0x273509=_0x40f0a4[_0x11ec30];return _0x273509;},_0x11ec(_0x30ccaf,_0x393d8d);}$('#EBSBcryptencode')['text'](_0x252f8a(0x140));function _0x40f0(){const _0x1a1ca2=['text','6539430vePmvC','1392250xGgIVH','1016DGkwEh','#EBSBcryptencode','3usklTn','61794ZcSFEd','479626gBdovi','val','467811LtQfJE','1dLrtBv','genSalt','hash','1161532sBGBpm','9030WHkUqM','Hashing...'];_0x40f0=function(){return _0x1a1ca2;};return _0x40f0();}let string=$(_0x252f8a(0x145))[_0x252f8a(0x139)](),rounds=parseInt($('#Rowid')[_0x252f8a(0x139)]());bcrypt[_0x252f8a(0x13c)](rounds,function(_0x5ec250,_0x623b3a){const _0x32c1f7=_0x252f8a;bcrypt[_0x32c1f7(0x13d)](string,_0x623b3a,function(_0x54128d,_0x407bc2){const _0x3d8e17=_0x32c1f7;$('#EBSBcryptResult')[_0x3d8e17(0x141)](_0x407bc2);});});
+     }
+
+
+    </script>
+
+</body>
+</html>
