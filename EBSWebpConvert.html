@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title>EBS Resim Sıkılaştırma ve webp Dönüştürme</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <style>
+            body {
+                background-color: #877676; /* istediğiniz rengi buraya yazın */
+                color: #ffc107;
+            }
+            .form-control {
+                background-color: #333; /* istediğiniz renk kodunu buraya yazın */
+                color: #ffc107; /* yazı rengini beyaz yapar */
+            }
+
+        </style>
+    </head>
+    <body>
+
+    <div class="container mt-3">
+        <img src="https://raw.githubusercontent.com/ebubekirbastama/ebubekirbastama/main/linkedin.png" alt="twitter" style="max-width: 100%;">
+            <h2>EBS (Sıkılaştırarak Webp Dönüştür)</h2>
+            <form>
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">Resim Seçin:</label>
+                    <input type="file" class="form-control" id="fileInput" />
+                </div>
+                <div class="mb-3">
+                    <label for="qualityInput" class="form-label">Sıkıştırma Kalitesi:</label>
+                    <input type="range" class="form-range" min="0" max="1" step="0.1" value="1" id="qualityInput">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="convertImage()">Resmi Dönüştür ve İndir</button>
+            </form>
+
+    </div>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <a id="downloadLink" download="EBSnewFile.webp" style="display:none;">İndir</a>
+    <br/>
+    <h1 align="center" dir="auto"> ✨ GitHub Sponsor Olmak İstermisiniz. ✨</h1>
+    <p align="center" dir="auto">
+        <a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com/sponsors/ebubekirbastama">
+            <img src="https://camo.githubusercontent.com/dec0683928f7db306904f8ea2e7c0d81ca83800fe09fcd5ac792c962eaee02dc/68747470733a2f2f6769746875622e6769746875626173736574732e636f6d2f696d616765732f6d6f64756c65732f736974652f73706f6e736f72732f6c6f676f2d6d6f6e612e737667" height="200" width="200" alt="Mona logo" data-canonical-src="https://github.githubassets.com/images/modules/site/sponsors/logo-mona.svg" style="max-width: 100%;"></a>
+    </p>
+    <!-- Bootstrap JavaScript dosyası ve jQuery kütüphanesi -->
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha384-5BlViBgzuzUfxdTOx3gya9n3E9gPvNepccYvYDBfJ+Qj5bLQ4MXg4+sjPL4MYYdJ" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js" integrity="sha512-K9XUZ4mRanM6U/2Pn5z5r5D5Rkz5yg5QmgOD00nX22VZTwH3NY1n3qBrgp1F7w97zL99vfh8/IaL9h9YtV2ZGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+                    function convertImage() {
+
+                       const _0x5f0d50=_0x39fb;function _0x39fb(_0x407b48,_0x38d57d){const _0x19cac0=_0x19ca();return _0x39fb=function(_0x39fbb4,_0x3a8f96){_0x39fbb4=_0x39fbb4-0x125;let _0x437d3f=_0x19cac0[_0x39fbb4];return _0x437d3f;},_0x39fb(_0x407b48,_0x38d57d);}(function(_0x2a7528,_0x4e688a){const _0x2d6ee2=_0x39fb,_0x474887=_0x2a7528();while(!![]){try{const _0x524578=-parseInt(_0x2d6ee2(0x13b))/0x1+parseInt(_0x2d6ee2(0x129))/0x2+parseInt(_0x2d6ee2(0x138))/0x3+parseInt(_0x2d6ee2(0x13c))/0x4+parseInt(_0x2d6ee2(0x127))/0x5+parseInt(_0x2d6ee2(0x12f))/0x6*(-parseInt(_0x2d6ee2(0x12b))/0x7)+-parseInt(_0x2d6ee2(0x12a))/0x8*(parseInt(_0x2d6ee2(0x126))/0x9);if(_0x524578===_0x4e688a)break;else _0x474887['push'](_0x474887['shift']());}catch(_0x1c8b92){_0x474887['push'](_0x474887['shift']());}}}(_0x19ca,0x24b73));const fileInput=document[_0x5f0d50(0x13d)](_0x5f0d50(0x130)),file=fileInput['files'][0x0],img=new Image();function _0x19ca(){const _0xc99963=['href','getContext','toBlob','379518OuzAzG','qualityInput','createObjectURL','292371YVuEvX','968148IuDgXx','getElementById','click','9nrLLne','1362335cFnhjS','revokeObjectURL','495650doHFXe','1543272UReSLC','110761HrzCVR','width','drawImage','height','96YmDNNx','fileInput','canvas','image/webp','value','downloadLink'];_0x19ca=function(){return _0xc99963;};return _0x19ca();}img['onload']=()=>{const _0x13a706=_0x5f0d50,_0x53b936=document['getElementById'](_0x13a706(0x131));_0x53b936[_0x13a706(0x12c)]=img[_0x13a706(0x12c)],_0x53b936[_0x13a706(0x12e)]=img['height'];const _0x24a5ec=_0x53b936[_0x13a706(0x136)]('2d');_0x24a5ec[_0x13a706(0x12d)](img,0x0,0x0);const _0x2a8bd4=document[_0x13a706(0x13d)](_0x13a706(0x139)),_0x5f5dd9=parseFloat(_0x2a8bd4[_0x13a706(0x133)]);_0x53b936[_0x13a706(0x137)](_0x39a4d0=>{const _0x1d0136=_0x13a706,_0x1a6489=URL[_0x1d0136(0x13a)](_0x39a4d0),_0x5ad3cf=document[_0x1d0136(0x13d)](_0x1d0136(0x134));_0x5ad3cf[_0x1d0136(0x135)]=_0x1a6489,_0x5ad3cf[_0x1d0136(0x125)](),URL[_0x1d0136(0x128)](_0x1a6489);},_0x13a706(0x132),0x1);},img['src']=URL[_0x5f0d50(0x13a)](file);
+                    }
+    </script>
+</body>
+</html>
