@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+  <meta charset="UTF-8">
   <title>EBS Time(Ebubekir Bastama)</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-Frame-Options" content="deny">
-    <script type="text/javascript">
-      var d = document.referrer;
-alert(d);
-if (document.referrer.indexOf("ebubekirbastama.com.tr") == -1) {
-    window.stop();
-}
-   if (window.location.host.indexOf("ebubekirbastama.com.tr") == -1)
-   {   
-     window.stop();
-   }
-    </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-Frame-Options" content="deny">
+  <script type="text/javascript">
+    if (document.referrer.indexOf("ebubekirbastama.com.tr") == -1) {
+      if (document.referrer!="") {
+        window.location.href = "https://www.youtube.com/@ebubekiryazilim/videos";
+      }
+    }
+    if (window.location.host.indexOf("ebubekirbastama.com.tr") == -1) {
+      window.stop();
+    }
+  </script>
+  <link href="EBS.css" type="text/css" rel="stylesheet" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <link href="EBS.css" type="text/css" rel="stylesheet" />
 </head>
+
 <body>
 
 <nav class="navbar navbar-inverse">
