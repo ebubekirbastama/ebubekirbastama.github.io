@@ -6,11 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-Frame-Options" content="deny">
   <script type="text/javascript">
-    if (document.referrer.indexOf("ebubekirbastama.com.tr") == -1) {
+   if (document.referrer.indexOf("twitter.com") == -1) {
+       if (document.referrer.indexOf("ebubekirbastama.com.tr") == -1) {
       if (document.referrer!="") {
         window.location.href = "https://www.youtube.com/@ebubekiryazilim/videos";
       }
     }
+    }
+
     if (window.location.host.indexOf("ebubekirbastama.com.tr") == -1) {
       window.stop();
     }
