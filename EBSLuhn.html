@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Luhn Algorithm Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+    <div class="container">
+        <h1>Luhn Algorithm Example</h1>
+        <p>Doğrulamak için bir kredi kartı numarası girin:</p>
+        <input type="text" id="cc-number" class="form-control" placeholder="Enter credit card number..."/>
+        <button onclick="validate()">Validate</button>
+        <p id="result"></p>
+    </div>
+    <script>
+ function _0x599d(_0x2aac55,_0xcfcc25){var _0xd8158e=_0xd815();return _0x599d=function(_0x599dd1,_0x5166c9){_0x599dd1=_0x599dd1-0x181;var _0x48b4fa=_0xd8158e[_0x599dd1];return _0x48b4fa;},_0x599d(_0x2aac55,_0xcfcc25);}function _0xd815(){var _0x58031f=['charAt','4074LBAUeW','getElementById','innerHTML','399ohXGzz','117BfWuqH','result','2323710VgITEc','Invalid\x20credit\x20card\x20number','split','Geçerli\x20kredi\x20kartı\x20numarası','126736EvNuTm','129942LTNDTR','replace','value','195KEIKmI','toString','162984JuWlYS','1419404IbaxEQ','Geçerli\x20kredi\x20kartı\x20numarası\x20Değil','1287275LVyJBB'];_0xd815=function(){return _0x58031f;};return _0xd815();}(function(_0x268868,_0x16ee5a){var _0xa884dd=_0x599d,_0x12cd50=_0x268868();while(!![]){try{var _0x123327=-parseInt(_0xa884dd(0x185))/0x1+parseInt(_0xa884dd(0x183))/0x2+parseInt(_0xa884dd(0x192))/0x3+-parseInt(_0xa884dd(0x191))/0x4*(-parseInt(_0xa884dd(0x195))/0x5)+parseInt(_0xa884dd(0x187))/0x6*(parseInt(_0xa884dd(0x18a))/0x7)+-parseInt(_0xa884dd(0x182))/0x8*(-parseInt(_0xa884dd(0x18b))/0x9)+-parseInt(_0xa884dd(0x18d))/0xa;if(_0x123327===_0x16ee5a)break;else _0x12cd50['push'](_0x12cd50['shift']());}catch(_0x3bb3ff){_0x12cd50['push'](_0x12cd50['shift']());}}}(_0xd815,0xbc9f6));function validate(){var _0x115e84=_0x599d,_0x77eb9=document[_0x115e84(0x188)]('cc-number')[_0x115e84(0x194)][_0x115e84(0x193)](/\D/g,'');if(_0x77eb9['length']!==0x10){document[_0x115e84(0x188)]('result')['innerHTML']=_0x115e84(0x18e);return;}var _0x230cce=0x0,_0x22426f,_0x402c6b,_0xceae4e;for(var _0xe83e7d=0xf;_0xe83e7d>=0x0;_0xe83e7d--){_0x22426f=parseInt(_0x77eb9[_0x115e84(0x186)](_0xe83e7d)),_0xe83e7d%0x2==0x0?(_0x402c6b=_0x22426f*0x2,_0x402c6b>=0xa&&(_0xceae4e=_0x402c6b[_0x115e84(0x181)]()[_0x115e84(0x18f)](''),_0x402c6b=parseInt(_0xceae4e[0x0])+parseInt(_0xceae4e[0x1]))):_0x402c6b=_0x22426f,_0x230cce+=_0x402c6b;}_0x230cce%0xa==0x0?document[_0x115e84(0x188)](_0x115e84(0x18c))[_0x115e84(0x189)]=_0x115e84(0x190):document[_0x115e84(0x188)]('result')['innerHTML']=_0x115e84(0x184);}
+    </script>
+</body>
+</html>
