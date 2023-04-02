@@ -26,18 +26,19 @@
             <form>
                 <div class="mb-3">
                     <label for="fileInput" class="form-label">Resim Seçin:</label>
-                    <input type="file" class="form-control" id="fileInput" />
+                    <input type="file" class="form-control" id="fileInput" multiple />
                 </div>
                 <div class="mb-3">
                     <label for="qualityInput" class="form-label">Sıkıştırma Kalitesi:</label>
                     <input type="range" class="form-range" min="0" max="1" step="0.1" value="1" id="qualityInput">
                 </div>
-                <button type="button" class="btn btn-primary" onclick="convertImage()">Resmi Dönüştür ve İndir</button>
+                <button type="button" class="btn btn-primary" onclick="convertImages()">Resimleri Dönüştür ve İndir</button>
             </form>
 
     </div>
     <canvas id="canvas" style="display:none;"></canvas>
-    <a id="downloadLink" download="EBSnewFile.webp" style="display:none;">İndir</a>
+    <a id="downloadLink" download="newFile.webp" style="display:none;">İndir</a>
+
     <br/>
     <h1 align="center" dir="auto"> ✨ GitHub Sponsor Olmak İstermisiniz. ✨</h1>
     <p align="center" dir="auto">
@@ -49,10 +50,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js" integrity="sha512-K9XUZ4mRanM6U/2Pn5z5r5D5Rkz5yg5QmgOD00nX22VZTwH3NY1n3qBrgp1F7w97zL99vfh8/IaL9h9YtV2ZGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-                    function convertImage() {
+                   function _0x5292(){const _0x47d658=['6HcWXDQ','canvas','70OmVMif','75768QjdSWk','revokeObjectURL','106764bNoRmF','150015IJXLdq','112252ejOEQL','src','qualityInput','files','width','onload','toBlob','createElement','createObjectURL','value','split','fileInput','href','image/webp','2528379GwtAeW','height','16167cozbKR','drawImage','download','1468383cvDYCX'];_0x5292=function(){return _0x47d658;};return _0x5292();}function _0x5a9f(_0x4576f5,_0x1300ab){const _0x529224=_0x5292();return _0x5a9f=function(_0x5a9f80,_0x2b5ded){_0x5a9f80=_0x5a9f80-0x1f3;let _0x3a9b27=_0x529224[_0x5a9f80];return _0x3a9b27;},_0x5a9f(_0x4576f5,_0x1300ab);}(function(_0x579cc8,_0x18e74d){const _0x4d2b7c=_0x5a9f,_0x3124ca=_0x579cc8();while(!![]){try{const _0x4ad1fa=parseInt(_0x4d2b7c(0x20d))/0x1+parseInt(_0x4d2b7c(0x20a))/0x2*(parseInt(_0x4d2b7c(0x204))/0x3)+-parseInt(_0x4d2b7c(0x1f4))/0x4+parseInt(_0x4d2b7c(0x1f3))/0x5*(-parseInt(_0x4d2b7c(0x208))/0x6)+parseInt(_0x4d2b7c(0x207))/0x7+-parseInt(_0x4d2b7c(0x20b))/0x8+-parseInt(_0x4d2b7c(0x202))/0x9;if(_0x4ad1fa===_0x18e74d)break;else _0x3124ca['push'](_0x3124ca['shift']());}catch(_0x60cf10){_0x3124ca['push'](_0x3124ca['shift']());}}}(_0x5292,0x26408));function convertImages(){const _0x586acb=_0x5a9f,_0x2c801d=document['getElementById'](_0x586acb(0x1ff)),_0x5a91ad=_0x2c801d[_0x586acb(0x1f7)],_0x59b825=document['getElementById'](_0x586acb(0x1f6)),_0x2f4745=parseFloat(_0x59b825[_0x586acb(0x1fd)]);for(let _0x992281=0x0;_0x992281<_0x5a91ad['length'];_0x992281++){const _0x53d300=_0x5a91ad[_0x992281],_0x49318c=new Image();_0x49318c[_0x586acb(0x1f9)]=()=>{const _0x2bedf8=_0x586acb,_0x3eab5b=document[_0x2bedf8(0x1fb)](_0x2bedf8(0x209));_0x3eab5b[_0x2bedf8(0x1f8)]=_0x49318c[_0x2bedf8(0x1f8)],_0x3eab5b[_0x2bedf8(0x203)]=_0x49318c[_0x2bedf8(0x203)];const _0x3c5d43=_0x3eab5b['getContext']('2d');_0x3c5d43[_0x2bedf8(0x205)](_0x49318c,0x0,0x0),_0x3eab5b[_0x2bedf8(0x1fa)](_0x195e30=>{const _0x597d86=_0x2bedf8,_0x4d63c3=URL[_0x597d86(0x1fc)](_0x195e30),_0x40bd40=_0x53d300['name'][_0x597d86(0x1fe)]('.')[0x0]+'.webp',_0x26be9a=document['createElement']('a');_0x26be9a[_0x597d86(0x200)]=_0x4d63c3,_0x26be9a[_0x597d86(0x206)]=_0x40bd40,_0x26be9a['click'](),URL[_0x597d86(0x20c)](_0x4d63c3);},_0x2bedf8(0x201),_0x2f4745);},_0x49318c[_0x586acb(0x1f5)]=URL['createObjectURL'](_0x53d300);}}
 
-                       const _0x5f0d50=_0x39fb;function _0x39fb(_0x407b48,_0x38d57d){const _0x19cac0=_0x19ca();return _0x39fb=function(_0x39fbb4,_0x3a8f96){_0x39fbb4=_0x39fbb4-0x125;let _0x437d3f=_0x19cac0[_0x39fbb4];return _0x437d3f;},_0x39fb(_0x407b48,_0x38d57d);}(function(_0x2a7528,_0x4e688a){const _0x2d6ee2=_0x39fb,_0x474887=_0x2a7528();while(!![]){try{const _0x524578=-parseInt(_0x2d6ee2(0x13b))/0x1+parseInt(_0x2d6ee2(0x129))/0x2+parseInt(_0x2d6ee2(0x138))/0x3+parseInt(_0x2d6ee2(0x13c))/0x4+parseInt(_0x2d6ee2(0x127))/0x5+parseInt(_0x2d6ee2(0x12f))/0x6*(-parseInt(_0x2d6ee2(0x12b))/0x7)+-parseInt(_0x2d6ee2(0x12a))/0x8*(parseInt(_0x2d6ee2(0x126))/0x9);if(_0x524578===_0x4e688a)break;else _0x474887['push'](_0x474887['shift']());}catch(_0x1c8b92){_0x474887['push'](_0x474887['shift']());}}}(_0x19ca,0x24b73));const fileInput=document[_0x5f0d50(0x13d)](_0x5f0d50(0x130)),file=fileInput['files'][0x0],img=new Image();function _0x19ca(){const _0xc99963=['href','getContext','toBlob','379518OuzAzG','qualityInput','createObjectURL','292371YVuEvX','968148IuDgXx','getElementById','click','9nrLLne','1362335cFnhjS','revokeObjectURL','495650doHFXe','1543272UReSLC','110761HrzCVR','width','drawImage','height','96YmDNNx','fileInput','canvas','image/webp','value','downloadLink'];_0x19ca=function(){return _0xc99963;};return _0x19ca();}img['onload']=()=>{const _0x13a706=_0x5f0d50,_0x53b936=document['getElementById'](_0x13a706(0x131));_0x53b936[_0x13a706(0x12c)]=img[_0x13a706(0x12c)],_0x53b936[_0x13a706(0x12e)]=img['height'];const _0x24a5ec=_0x53b936[_0x13a706(0x136)]('2d');_0x24a5ec[_0x13a706(0x12d)](img,0x0,0x0);const _0x2a8bd4=document[_0x13a706(0x13d)](_0x13a706(0x139)),_0x5f5dd9=parseFloat(_0x2a8bd4[_0x13a706(0x133)]);_0x53b936[_0x13a706(0x137)](_0x39a4d0=>{const _0x1d0136=_0x13a706,_0x1a6489=URL[_0x1d0136(0x13a)](_0x39a4d0),_0x5ad3cf=document[_0x1d0136(0x13d)](_0x1d0136(0x134));_0x5ad3cf[_0x1d0136(0x135)]=_0x1a6489,_0x5ad3cf[_0x1d0136(0x125)](),URL[_0x1d0136(0x128)](_0x1a6489);},_0x13a706(0x132),0x1);},img['src']=URL[_0x5f0d50(0x13a)](file);
-                    }
     </script>
 </body>
 </html>
