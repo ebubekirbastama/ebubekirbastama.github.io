@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Rehbere Ekle</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <form method="post">
+        <label for="name">İsim:</label>
+        <input type="text" id="name" name="name"><br><br>
+            <label for="phone">Telefon Numarası:</label>
+            <input type="text" id="phone" name="phone"/><br><br>
+            <button type="button" onclick="addToContacts()">Rehbere Ekle</button>
+    </form>
+
+<script>
+    function addToContacts() {
+        // Get input values
+        var name = document.getElementById('name').value;
+        var phone = document.getElementById('phone').value;
+
+        // Check if Cordova Contacts plugin is available
+        if (typeof navigator.contacts === 'undefined') {
+            alert('Telefon rehberine erişmek için Cordova Contacts eklentisi gereklidir.');
+            return;
+        }
+
+        // Create a new contact object
+        var newContact = navigator.contacts.create();
+        newContact.displayName = name;
+
+        // Add phone numbers to the contact
+        var phoneNumbers = [];
+        phoneNumbers[0] = new ContactField('mobile', phone, true);
+        newContact.phoneNumbers = phoneNumbers;
+
+        // Save the new contact to the device
+        newContact.save(function () {
+            alert('Yeni kişi rehbere eklendi: ' + name);
+        }, function (error) {
+            alert('Kişi kaydedilemedi: ' + error);
+        });
+    }
+</script>
+
+</body>
