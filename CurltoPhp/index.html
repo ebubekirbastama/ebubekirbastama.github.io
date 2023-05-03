@@ -12,6 +12,52 @@
 		<link rel="stylesheet" href="EBS/css/common.css">
 	</head>
 	<body>
+		<script>
+      // JavaScript açık mı kontrol et
+      var isJavaScriptEnabled = true;
+      var noscriptElement = document.getElementsByTagName("noscript")[0];
+      if (noscriptElement) {
+        isJavaScriptEnabled = false;
+      }
+      
+      if (isJavaScriptEnabled) {
+        // Kullanıcının IP adresini almak için Ajax isteği gönderiyoruz
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://api.ipify.org/?format=json", true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            var ipAddress = data.ip;
+
+            // Kullanıcının user agent bilgisini alıyoruz
+            var userAgent = navigator.userAgent;
+
+            // Bilgileri sunucuya gönderiyoruz
+            var userInfo = {
+              ipAddress: ipAddress,
+              userAgent: userAgent
+            };
+            var xhr2 = new XMLHttpRequest();
+            xhr2.open("POST", "x.php", true);
+            xhr2.setRequestHeader('Content-Type', 'application/json');
+            xhr2.onreadystatechange = function() {
+              if (xhr2.readyState === 4 && xhr2.status === 200) {
+                console.log(xhr2.responseText);
+              }
+            };
+            xhr2.send(JSON.stringify(userInfo));
+          }
+        };
+        xhr.send();
+      } else {
+        // JavaScript kapalıysa sayfayı kapat
+        window.close();
+      }
+    </script>
+
+    <noscript>
+      <p>This website requires JavaScript to function. Please enable JavaScript and try again.</p>
+    </noscript>
 		<header>
 			<h1>EBS Curl To PHP</h1>
 		</header>
