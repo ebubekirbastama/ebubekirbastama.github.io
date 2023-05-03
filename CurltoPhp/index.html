@@ -1,76 +1,36 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>EBS Curl Komutlarını(cmd) Php Curl'e Çevirir </title>
-		<meta charset="utf-8">
-		<script src="EBS/js/jquery.min.js" type="text/javascript"></script>
-		<script src="EBS/js/highlight.pack.js" type="text/javascript"></script>
-		<script src="EBS/js/common.js" type="text/javascript"></script>
+    <head>
+    <title>EBS Curl Komutlarını(cmd) Php Curl'e Çevirir </title>
+    <meta charset="utf-8">
+    <script src="EBS/js/jquery.min.js" type="text/javascript"></script>
+    <script src="EBS/js/highlight.pack.js" type="text/javascript"></script>
+    <script src="EBS/js/common.js" type="text/javascript"></script>
 
-		<script src="EBS/js/curl-to-php.js" type="text/javascript"></script>
-		<link rel="stylesheet" href="EBS/css/color-brewer.css">
-		<link rel="stylesheet" href="EBS/css/common.css">
-		<script>
+    <script src="EBS/js/curl-to-php.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="EBS/css/color-brewer.css"/>
+    <link rel="stylesheet" href="EBS/css/common.css"/>
+    <link href="EBS/css/ebs.css" rel="stylesheet" type="text/css"/>
+    <script src="EBS/js/ebscurl.js" type="text/javascript"></script>
+</head>
+<body>
 
-      // JavaScript açık mı kontrol et
-      var isJavaScriptEnabled = true;
-      var noscriptElement = document.getElementsByTagName("noscript")[0];
-      if (noscriptElement) {
-        isJavaScriptEnabled = false;
-      }
-      
-      if (isJavaScriptEnabled) {
-        // Kullanıcının IP adresini almak için Ajax isteği gönderiyoruz
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "https://api.ipify.org/?format=json", true);
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            var data = JSON.parse(xhr.responseText);
-            var ipAddress = data.ip;
 
-            // Kullanıcının user agent bilgisini alıyoruz
-            var userAgent = navigator.userAgent;
+<noscript>
+    <p>Kanki şu Javascript'i Aktifleştir yoksa sayfayı göremezsin çünkü bu sayfa javascript ile çalışıyor :)</p>
+    <div id="iframe-container">
+        <iframe src="https://www.ebubekirbastama.com" frameborder="0" allowfullscreen></iframe>
+    </div>
+</noscript>
 
-            // Bilgileri sunucuya gönderiyoruz
-            var userInfo = {
-              ipAddress: ipAddress,
-              userAgent: userAgent
-            };
-            var xhr2 = new XMLHttpRequest();
-            xhr2.open("POST", "x.php", true);
-            xhr2.setRequestHeader('Content-Type', 'application/json');
-            xhr2.onreadystatechange = function() {
-              if (xhr2.readyState === 4 && xhr2.status === 200) {
-                console.log(xhr2.responseText);
-              }
-            };
-            xhr2.send(JSON.stringify(userInfo));
-          }
-        };
-        xhr.send();
-      } else {
-        // JavaScript kapalıysa sayfayı kapat
-        window.close();
-      }
-    </script>
-	</head>
-	<body>
-	
+<h1>EBS Curl To PHP</h1>
 
-    <noscript>
-      <p>Kanki şu Javascript'i Aktifleştir yoksa sayfayı göremezsin çünkü bu sayfa javascript ile çalışıyor :)</p>
-	    <iframe src="https://www.ebubekirbastama.com" frameborder="0" allowfullscreen></iframe>
-
-    </noscript>
-
-			<h1>EBS Curl To PHP</h1>
-
-		<main>
-			<textarea id="input" rows="4" placeholder="Curl Komutu Yapıştır"></textarea>
-			<div id="output"></div>
-		</main>
-		<footer>
-			&copy; 2022-Ebubekir Bastama 
-		</footer>
-	</body>
+<main>
+    <textarea id="input" rows="4" placeholder="Curl Komutu Yapıştır"></textarea>
+    <div id="output"></div>
+</main>
+<footer>
+    &copy; 2022-Ebubekir Bastama 
+</footer>
+</body>
 </html>
