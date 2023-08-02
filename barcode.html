@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Barkod Okuyucu</title>
+  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.5/bundle@5.0.6/zxing.umd.min.js"></script>
+</head>
+</head>
+<body>
+    <h1>Barkod Okuyucu</h1>
+    <button id="scanButton">Kamerayı Aç ve Barkodu Oku</button>
+    <br>
+    <input type="text" id="result" placeholder="Barkod sonucu burada görünecek">
+
+    <script>
+        const scanButton = document.getElementById('scanButton');
+        const resultInput = document.getElementById('result');
+
+        // Butona tıklandığında kamerayı açar ve barkod okur
+        scanButton.addEventListener('click', () => {
+            // Kameraya erişmek için getUserMedia API'sini kullanıyoruz
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(function (stream) {
+                    // Kamera açıldı, barkod okuyucuyu başlatıyoruz
+                    const barcodeReader = new ZXing.BrowserBarcodeReader();
+                    barcodeReader.decodeFromStream(stream, result => {
+                        // Barkod okunduğunda, sonucu input kutusuna yazıyoruz
+                        resultInput.value = result.text;
+                        // Kamerayı kapatıyoruz
+                        stream.getTracks().forEach(track => track.stop());
+                    }).catch(err => {
+                        // Barkod okuma sırasında bir hata olursa, hata mesajını gösteriyoruz
+                        resultInput.value = 'Barkod okunamadı veya kamera izni yok.';
+                        // Kamerayı kapatıyoruz
+                        stream.getTracks().forEach(track => track.stop());
+                    });
+                })
+                .catch(function (err) {
+                    // Kameraya erişim izni verilmedi veya tarayıcı desteklemiyor
+                    resultInput.value = 'Kamera erişimi reddedildi veya tarayıcı desteklemiyor.';
+                });
+        });
+    </script>
+</body>
+</html>
