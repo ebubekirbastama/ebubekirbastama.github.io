@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ebubekir Bastama Drag and Drop Example</title>
+<style>
+  #sourceElement {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    color: white;
+    text-align: center;
+    line-height: 100px;
+  }
+  #targetElement {
+    width: 100px;
+    height: 100px;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    line-height: 100px;
+  }
+</style>
+</head>
+<body>
+
+<div id="sourceElement" draggable="true">Source Element</div>
+<div id="targetElement">Target Element</div>
+
+<script>
+  var sourceElement = document.getElementById("sourceElement");
+  var targetElement = document.getElementById("targetElement");
+
+  sourceElement.addEventListener("dragstart", function(event) {
+    event.dataTransfer.setData("text/plain", "Source Element");
+  });
+
+  targetElement.addEventListener("dragover", function(event) {
+    event.preventDefault();
+  });
+
+  targetElement.addEventListener("drop", function(event) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("text/plain");
+    if (data === "Source Element") {
+      targetElement.innerText = "Dropped!";
+    }
+  });
+</script>
+
+</body>
+</html>
