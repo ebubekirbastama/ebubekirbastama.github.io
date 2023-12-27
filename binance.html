@@ -64,56 +64,58 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const dataTableBody = document.querySelector('#data-table tbody');
+  const dataTableBody = document.querySelector('#data-table tbody');
 
-      // WebSocket connection
-      const wsUrl = 'wss://stream.binance.com/stream';
-      const ws = new WebSocket(wsUrl);
+  // WebSocket connection
+  const wsUrl = 'wss://stream.binance.com/stream';
+  const ws = new WebSocket(wsUrl);
 
-      ws.addEventListener('open', () => {
-        console.log('Connection successfully opened.');
+  ws.addEventListener('open', () => {
+    console.log('Connection successfully opened.');
 
-        const subscribeMessage = {
-          method: 'SUBSCRIBE',
-          params: ['btcusdt@aggTrade'],
-          id: 1,
-        };
+    // Subscribe to multiple symbols
+    const subscribeMessage = {
+      method: 'SUBSCRIBE',
+      params: ['btcusdt@aggTrade', 'trxusdt@aggTrade'],
+      id: 1,
+    };
 
-        ws.send(JSON.stringify(subscribeMessage));
-      });
+    ws.send(JSON.stringify(subscribeMessage));
+  });
 
-      ws.addEventListener('message', (event) => {
-        const parsedData = JSON.parse(event.data);
-        const tradeData = parsedData.data;
+  ws.addEventListener('message', (event) => {
+    const parsedData = JSON.parse(event.data);
+    const tradeData = parsedData.data;
 
-        // Update the table with the parsed data
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-          <td>${tradeData.e}</td>
-          <td>${new Date(tradeData.E).toLocaleTimeString()}</td>
-          <td>${tradeData.s}</td>
-          <td>${tradeData.a}</td>
-          <td>${tradeData.p}</td>
-          <td>${tradeData.q}</td>
-          <td>${tradeData.f}</td>
-          <td>${tradeData.l}</td>
-          <td>${new Date(tradeData.T).toLocaleTimeString()}</td>
-          <td>${tradeData.m}</td>
-          <td>${tradeData.M}</td>
-        `;
+    // Update the table with the parsed data
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+      <td>${tradeData.e}</td>
+      <td>${new Date(tradeData.E).toLocaleTimeString()}</td>
+      <td>${tradeData.s}</td>
+      <td>${tradeData.a}</td>
+      <td>${tradeData.p}</td>
+      <td>${tradeData.q}</td>
+      <td>${tradeData.f}</td>
+      <td>${tradeData.l}</td>
+      <td>${new Date(tradeData.T).toLocaleTimeString()}</td>
+      <td>${tradeData.m}</td>
+      <td>${tradeData.M}</td>
+    `;
 
-        // Limit the table to show the last 10 rows (for demonstration purposes)
-        if (dataTableBody.childElementCount >= 10) {
-          dataTableBody.removeChild(dataTableBody.firstChild);
-        }
+    // Limit the table to show the last 10 rows (for demonstration purposes)
+    if (dataTableBody.childElementCount >= 10) {
+      dataTableBody.removeChild(dataTableBody.firstChild);
+    }
 
-        dataTableBody.appendChild(newRow);
-      });
+    dataTableBody.appendChild(newRow);
+  });
 
-      ws.addEventListener('close', () => {
-        console.log('Connection closed.');
-      });
-    });
+  ws.addEventListener('close', () => {
+    console.log('Connection closed.');
+  });
+});
+
   </script>
 </body>
 </html>
