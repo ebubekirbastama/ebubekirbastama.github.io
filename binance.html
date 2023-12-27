@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Example</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    #data-container {
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="data-container">
+    <table id="data-table">
+      <thead>
+        <tr>
+          <th>Event Type</th>
+          <th>Event Time</th>
+          <th>Symbol</th>
+          <th>Trade ID</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>First Trade ID</th>
+          <th>Last Trade ID</th>
+          <th>Timestamp</th>
+          <th>Is the Market Maker</th>
+          <th>Is the Best Price Match</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const dataTableBody = document.querySelector('#data-table tbody');
+
+      // WebSocket connection
+      const wsUrl = 'wss://stream.binance.com/stream';
+      const ws = new WebSocket(wsUrl);
+
+      ws.addEventListener('open', () => {
+        console.log('Connection successfully opened.');
+
+        const subscribeMessage = {
+          method: 'SUBSCRIBE',
+          params: ['btcusdt@aggTrade'],
+          id: 1,
+        };
+
+        ws.send(JSON.stringify(subscribeMessage));
+      });
+
+      ws.addEventListener('message', (event) => {
+        const parsedData = JSON.parse(event.data);
+        const tradeData = parsedData.data;
+
+        // Update the table with the parsed data
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td>${tradeData.e}</td>
+          <td>${new Date(tradeData.E).toLocaleTimeString()}</td>
+          <td>${tradeData.s}</td>
+          <td>${tradeData.a}</td>
+          <td>${tradeData.p}</td>
+          <td>${tradeData.q}</td>
+          <td>${tradeData.f}</td>
+          <td>${tradeData.l}</td>
+          <td>${new Date(tradeData.T).toLocaleTimeString()}</td>
+          <td>${tradeData.m}</td>
+          <td>${tradeData.M}</td>
+        `;
+
+        // Limit the table to show the last 10 rows (for demonstration purposes)
+        if (dataTableBody.childElementCount >= 10) {
+          dataTableBody.removeChild(dataTableBody.firstChild);
+        }
+
+        dataTableBody.appendChild(newRow);
+      });
+
+      ws.addEventListener('close', () => {
+        console.log('Connection closed.');
+      });
+    });
+  </script>
+</body>
+</html>
