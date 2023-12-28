@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,27 +16,19 @@
       background-color: #f0f0f0;
     }
 
-    .table {
-      width: 100%;
-      margin-bottom: 1rem;
-      color: #212529;
+    table {
       border-collapse: collapse;
+      width: 100%;
     }
 
-    .table th,
-    .table td {
-      padding: 0.75rem;
-      vertical-align: top;
-      border-top: 1px solid #dee2e6;
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
     }
 
-    .table thead th {
-      vertical-align: bottom;
-      border-bottom: 2px solid #dee2e6;
-    }
-
-    .table tbody+tbody {
-      border-top: 2px solid #dee2e6;
+    th {
+      background-color: #f2f2f2;
     }
 
     #data-container {
@@ -49,23 +40,22 @@
     }
   </style>
 </head>
-
 <body>
   <div id="data-container">
-    <table class="table">
+    <table id="data-table">
       <thead>
         <tr>
-          <th scope="col">Event Type</th>
-          <th scope="col">Event Time</th>
-          <th scope="col">Symbol</th>
-          <th scope="col">Trade ID</th>
-          <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">First Trade ID</th>
-          <th scope="col">Last Trade ID</th>
-          <th scope="col">Timestamp</th>
-          <th scope="col">Is the Market Maker</th>
-          <th scope="col">Is the Best Price Match</th>
+          <th>Event Type</th>
+          <th>Event Time</th>
+          <th>Symbol</th>
+          <th>Trade ID</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>First Trade ID</th>
+          <th>Last Trade ID</th>
+          <th>Timestamp</th>
+          <th>Is the Market Maker</th>
+          <th>Is the Best Price Match</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -74,58 +64,59 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const dataTableBody = document.querySelector('#data-table tbody');
+  const dataTableBody = document.querySelector('#data-table tbody');
 
-      // WebSocket connection
-      const wsUrl = 'wss://stream.binance.com/stream';
-      const ws = new WebSocket(wsUrl);
+  // WebSocket connection
+  const wsUrl = 'wss://stream.binance.com/stream';
+  const ws = new WebSocket(wsUrl);
 
-      ws.addEventListener('open', () => {
-        console.log('Connection successfully opened.');
+  ws.addEventListener('open', () => {
+    console.log('Connection successfully opened.');
 
-        // Subscribe to multiple symbols
-        const subscribeMessage = {
-          method: 'SUBSCRIBE',
-          params: ['btcusdt@aggTrade', 'trxusdt@aggTrade', 'ethusdt@aggTrade', 'bnbusdt@aggTrade', 'solusdt@aggTrade', 'xrpusdt@aggTrade', 'adausdt@aggTrade', 'avaxusdt@aggTrade'],
-          id: 1,
-        };
+    // Subscribe to multiple symbols
+    const subscribeMessage = {
+      method: 'SUBSCRIBE',
+      params: ['btcusdt@aggTrade', 'trxusdt@aggTrade', 'ethusdt@aggTrade', 'bnbusdt@aggTrade', 'solusdt@aggTrade', 'xrpusdt@aggTrade', 'adausdt@aggTrade', 'avaxusdt@aggTrade'],
+      id: 1,
+    };
 
-        ws.send(JSON.stringify(subscribeMessage));
-      });
+    ws.send(JSON.stringify(subscribeMessage));
+  });
 
-      ws.addEventListener('message', (event) => {
-        const parsedData = JSON.parse(event.data);
-        const tradeData = parsedData.data;
+  ws.addEventListener('message', (event) => {
+    const parsedData = JSON.parse(event.data);
+    const tradeData = parsedData.data;
 
-        // Update the table with the parsed data
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-          <td>${tradeData.e}</td>
-          <td>${new Date(tradeData.E).toLocaleTimeString()}</td>
-          <td>${tradeData.s}</td>
-          <td>${tradeData.a}</td>
-          <td>${tradeData.p}</td>
-          <td>${tradeData.q}</td>
-          <td>${tradeData.f}</td>
-          <td>${tradeData.l}</td>
-          <td>${new Date(tradeData.T).toLocaleTimeString()}</td>
-          <td>${tradeData.m}</td>
-          <td>${tradeData.M}</td>
-        `;
+    // Update the table with the parsed data
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+      <td>${tradeData.e}</td>
+      <td>${new Date(tradeData.E).toLocaleTimeString()}</td>
+      <td>${tradeData.s}</td>
+      <td>${tradeData.a}</td>
+      <td>${tradeData.p}</td>
+      <td>${tradeData.q}</td>
+      <td>${tradeData.f}</td>
+      <td>${tradeData.l}</td>
+      <td>${new Date(tradeData.T).toLocaleTimeString()}</td>
+      <td>${tradeData.m}</td>
+      <td>${tradeData.M}</td>
+    `;
 
-        // Limit the table to show the last 10 rows (for demonstration purposes)
-        if (dataTableBody.childElementCount >= 10) {
-          dataTableBody.removeChild(dataTableBody.firstChild);
-        }
+    // Limit the table to show the last 10 rows (for demonstration purposes)
+    if (dataTableBody.childElementCount >= 10) {
+      dataTableBody.removeChild(dataTableBody.firstChild);
+    }
 
-        dataTableBody.appendChild(newRow);
-      });
+    dataTableBody.appendChild(newRow);
+  });
 
-      ws.addEventListener('close', () => {
-        console.log('Connection closed.');
-      });
-    });
+  ws.addEventListener('close', () => {
+    console.log('Connection closed.');
+  });
+});
+
   </script>
 </body>
-
 </html>
+
