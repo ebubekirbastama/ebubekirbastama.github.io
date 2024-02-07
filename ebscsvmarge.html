@@ -6,7 +6,37 @@
     <title>CSV Birleştirme ve İndirme</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <style>
-#main-container{margin-top:50px;}#drop-area{border-left-width:.125pc;}#drop-area{border-bottom-width:.125pc;}#drop-area.active{border-left-color:#007bff;}#drop-area{border-right-width:.125pc;}#drop-area{border-top-width:.125pc;}#drop-area{border-left-style:dashed;}#drop-area{border-bottom-style:dashed;}#drop-area{border-right-style:dashed;}#drop-area{border-top-style:dashed;}#drop-area{border-left-color:#ccc;}#drop-area{border-bottom-color:#ccc;}#drop-area{border-right-color:#ccc;}#drop-area{border-top-color:#ccc;}body{background:#7b3e0e url("https://2.bp.blogspot.com/-A41EaFabiAw/VBTl3dXKTzI/AAAAAAAAAe4/Ku8cZ33_z3s/s0/bg1.png") repeat scroll top left;}#drop-area{border-image:none;}body{color:#fff;}#drop-area,#article-content{padding-left:1.25pc;}#article-content,#drop-area{padding-bottom:1.25pc;}#drop-area,#article-content{padding-right:1.25pc;}#drop-area,#article-content{padding-top:1.25pc;}#drop-area.active{border-bottom-color:#007bff;}#drop-area{text-align:center;}#drop-area{cursor:pointer;}#fileInput{display:none;}#article-content{margin-top:15pt;}#drop-area.active{border-right-color:#007bff;}#article-content{background:#5904ed;}#article-content{border-radius:7.5pt;}#drop-area.active{border-top-color:#007bff;}
+            body {
+                background: #7b3e0e url(https://2.bp.blogspot.com/-A41EaFabiAw/VBTl3dXKTzI/AAAAAAAAAe4/Ku8cZ33_z3s/s0/bg1.png) repeat scroll top left;
+                color: #fff;
+            }
+
+            #main-container {
+                margin-top: 50px;
+            }
+
+            #drop-area {
+                border: 2px dashed #ccc;
+                padding: 20px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            #drop-area.active {
+                border-color: #007bff;
+            }
+
+            #fileInput {
+                display: none;
+            }
+
+            /* Örnek Makale İçeriği Stilleri */
+            #article-content {
+                margin-top: 20px;
+                padding: 20px;
+                background: #5904ed4a;
+                border-radius: 10px;
+            }
         </style>
     </head>
     <body>
