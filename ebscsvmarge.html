@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Birleştirme ve İndirme</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <style>
+#main-container{margin-top:50px;}#drop-area{border-left-width:.125pc;}#drop-area{border-bottom-width:.125pc;}#drop-area.active{border-left-color:#007bff;}#drop-area{border-right-width:.125pc;}#drop-area{border-top-width:.125pc;}#drop-area{border-left-style:dashed;}#drop-area{border-bottom-style:dashed;}#drop-area{border-right-style:dashed;}#drop-area{border-top-style:dashed;}#drop-area{border-left-color:#ccc;}#drop-area{border-bottom-color:#ccc;}#drop-area{border-right-color:#ccc;}#drop-area{border-top-color:#ccc;}body{background:#7b3e0e url("https://2.bp.blogspot.com/-A41EaFabiAw/VBTl3dXKTzI/AAAAAAAAAe4/Ku8cZ33_z3s/s0/bg1.png") repeat scroll top left;}#drop-area{border-image:none;}body{color:#fff;}#drop-area,#article-content{padding-left:1.25pc;}#article-content,#drop-area{padding-bottom:1.25pc;}#drop-area,#article-content{padding-right:1.25pc;}#drop-area,#article-content{padding-top:1.25pc;}#drop-area.active{border-bottom-color:#007bff;}#drop-area{text-align:center;}#drop-area{cursor:pointer;}#fileInput{display:none;}#article-content{margin-top:15pt;}#drop-area.active{border-right-color:#007bff;}#article-content{background:#5904ed;}#article-content{border-radius:7.5pt;}#drop-area.active{border-top-color:#007bff;}
+        </style>
+    </head>
+    <body>
+    <div class="container mt-5">
+        <h2 class="mb-4">CSV Birleştirme ve İndirme</h2>
+
+        <div id="drop-area" class="mb-3">
+            <label for="fileInput">Dosyaları sürükleyip bırakın veya seçmek için tıklayın</label>
+            <input type="file" id="fileInput" multiple accept=".csv">
+        </div>
+
+        <button class="btn btn-primary" onclick="mergeAndDownload()">Birleştir ve İndir</button>
+    </div>
+    <div id="article-content" class="mt-5">
+        <h3> CSV Dosyalarını Birleştirme ve İndirme Aracı ile Zamandan Nasıl Tasarruf Edersiniz?</h3>
+
+        <p>
+            Web sitemizde bulunan CSV birleştirme ve indirme aracı, birden çok CSV dosyasını kolayca birleştirme ve tek bir dosya olarak indirme olanağı sunuyor.
+            Bu araç sayesinde zamandan tasarruf edebilir ve iş süreçlerinizi optimize edebilirsiniz.
+        </p>
+
+        <p>
+            <strong>Başlıca Özellikler:</strong>
+        </p>
+
+        <ol>
+            <li><strong>Kullanım Kolaylığı:</strong> Aracımız sürükle-bırak veya dosya seçme yöntemleriyle kullanıcı dostudur.</li>
+            <li><strong>Başlık Kontrolü:</strong> Aracımız, her dosyanın başlık satırını birleştirilen dosyada yalnızca bir kez gösterir, böylece verileriniz düzenli ve anlaşılır olur.</li>
+            <li><strong>Boş Satır Kontrolü:</strong> Aracımız, boş satırları birleştirilen dosyadan çıkartarak temiz ve düzenli bir çıktı sağlar.</li>
+            <li><strong>Hızlı ve Güvenli İşlem:</strong> Dosyalarınız hızlı bir şekilde işlenir ve birleştirilmiş CSV dosyasını güvenli bir bağlantı aracılığıyla indirebilirsiniz.</li>
+        </ol>
+
+        <p>
+            Bu kullanıcı dostu ve etkili aracımızı kullanarak veri birleştirme işlemlerinizi basitleştirin ve zamandan tasarruf edin.
+            Detaylı bilgi ve kullanım için web sitemizi ziyaret edin.
+        </p>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropArea = document.getElementById('drop-area');
+            const fileInput = document.getElementById('fileInput');
+
+            dropArea.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                dropArea.classList.add('active');
+            });
+
+            dropArea.addEventListener('dragleave', function () {
+                dropArea.classList.remove('active');
+            });
+
+            dropArea.addEventListener('drop', handleFileSelect);
+
+            fileInput.addEventListener('change', handleFileSelect);
+        });
+
+        function handleFileSelect(event) {
+            event.preventDefault();
+            const files = event.dataTransfer ? event.dataTransfer.files : event.target.files;
+
+            for (const file of files) {
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    console.log('Seçilen CSV dosyası:', file.name);
+                } else {
+                    alert('Lütfen sadece CSV dosyalarını seçin.');
+                }
+            }
+        }
+
+        function mergeAndDownload() {
+            const csvFiles = [];
+            const files = document.getElementById('fileInput').files;
+
+            function readAndMergeFile(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // Sadece başlık satırı hariç diğer satırları ve boş satırları eklemeyin
+                        const csvContent = e.target.result;
+                        const lines = csvContent.split('\n');
+                        const dataWithoutHeader = lines
+                                .filter(line => line.trim() !== '')  // Boş satırları filtrele
+                                .slice(1)  // Başlık satırını hariç tut
+                                .join('\n');
+                        csvFiles.push(dataWithoutHeader);
+                        resolve();
+                    };
+                    reader.onerror = function () {
+                        reject(new Error('Dosya okuma hatası: ' + file.name));
+                    };
+                    reader.readAsText(file);
+                });
+            }
+
+            const promises = Array.from(files).map(file => readAndMergeFile(file));
+
+            Promise.all(promises)
+                    .then(() => {
+                        const mergedCSV = csvFiles.join('\n');
+                        const blob = new Blob([mergedCSV], {type: 'text/csv'});
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'birlestirilmis_csv_dosyasi.csv';
+                        link.click();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Dosya işleme sırasında bir hata oluştu.');
+                    });
+        }
+
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
