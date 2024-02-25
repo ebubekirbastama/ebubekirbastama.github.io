@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Hash Calculator</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+    .result-table {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="fileInput">
+          <label class="custom-file-label" for="fileInput">Dosya Seç...</label>
+        </div>
+        <div class="result-table">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Hash Algoritması</th>
+                <th scope="col">Hash Değeri</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SHA-256</td>
+                <td id="sha256Result"></td>
+              </tr>
+              <tr>
+                <td>MD5</td>
+                <td id="md5Result"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    async function calculateFileHash(file, algorithm) {
+      const buffer = await file.arrayBuffer();
+      const hashBuffer = await crypto.subtle.digest(algorithm, buffer);
+
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+      return hashHex;
+    }
+
+    document.getElementById('fileInput').addEventListener('change', async (event) => {
+      const selectedFile = event.target.files[0];
+      if (selectedFile) {
+        const sha256Hash = await calculateFileHash(selectedFile, 'SHA-256');
+
+        document.getElementById('sha256Result').innerText = sha256Hash;
+
+      }
+    });
+  </script>
+</body>
+</html>
