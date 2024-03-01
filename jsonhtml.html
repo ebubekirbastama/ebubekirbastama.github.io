@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON İşleme</title>
+</head>
+<body>
+
+<div id="result"></div>
+
+<script>
+// JavaScript dosyasına GET isteği ile JSON verisi gönderilmiş mi kontrolü
+if (window.location.search.includes("json")) {
+    // GET isteği ile gelen JSON verisini al
+    const urlParams = new URLSearchParams(window.location.search);
+    const json1 = urlParams.get('json');
+
+    const searchString = '{"id":2,';
+    const position = json1.indexOf(searchString);
+
+    if (position !== -1) {
+        const beforeSubstring = json1.substring(0, position);
+        document.getElementById('result').innerText = beforeSubstring;
+    } else {
+        document.getElementById('result').innerText = json1;
+    }
+}
+
+</script>
+
+</body>
+</html>
