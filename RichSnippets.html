@@ -18,24 +18,19 @@
       const datePublishedISO = new Date(datePublished).toISOString();
       const dateModifiedISO = new Date(dateModified).toISOString();
 
-const jsonLDScript = `
-  <script type="application/ld+json" id="json-ld-script">
-    {
-      "@context": "https://schema.org",
-      "@type": "NewsArticle",
-      "headline": "${headline}",
-      "image": ["${image}"],
-      "datePublished": "${datePublishedISO}",
-      "dateModified": "${dateModifiedISO}",
-      "author": {
-        "@type": "Person",
-        "name": "${name}",
-        "url": "${url}"
-      }
-    }
-  </script>
-`;
-
+      const jsonLD = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": headline,
+        "image": [image],
+        "datePublished": datePublishedISO,
+        "dateModified": dateModifiedISO,
+        "author": {
+          "@type": "Person",
+          "name": name,
+          "url": url
+        }
+      };
 
       document.getElementById("output").textContent = JSON.stringify(jsonLD, null, 2);
 
