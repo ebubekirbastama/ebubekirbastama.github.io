@@ -19,6 +19,7 @@
       const dateModifiedISO = new Date(dateModified).toISOString();
 
       const jsonLD = {
+        <script type="application/ld+json" id="json-ld-script">
         "@context": "https://schema.org",
         "@type": "NewsArticle",
         "headline": headline,
@@ -30,6 +31,7 @@
           "name": name,
           "url": url
         }
+      </script>
       };
 
       document.getElementById("output").textContent = JSON.stringify(jsonLD, null, 2);
