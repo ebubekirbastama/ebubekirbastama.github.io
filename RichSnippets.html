@@ -15,13 +15,16 @@
       const name = document.getElementById("name").value;
       const url = document.getElementById("url").value;
 
+      const datePublishedISO = new Date(datePublished).toISOString();
+      const dateModifiedISO = new Date(dateModified).toISOString();
+
       const jsonLD = {
         "@context": "https://schema.org",
         "@type": "NewsArticle",
         "headline": headline,
         "image": [image],
-        "datePublished": datePublished,
-        "dateModified": dateModified,
+        "datePublished": datePublishedISO,
+        "dateModified": dateModifiedISO,
         "author": {
           "@type": "Person",
           "name": name,
@@ -30,12 +33,23 @@
       };
 
       document.getElementById("output").textContent = JSON.stringify(jsonLD, null, 2);
+
+      // JSON-LD script elementini güncelle
+      const scriptElement = document.getElementById("json-ld-script");
+      scriptElement.textContent = JSON.stringify(jsonLD, null, 2);
+    }
+
+    function testRichResults() {
+      const jsonLD = document.getElementById("output").textContent;
+      const encodedJSON = encodeURIComponent(jsonLD);
+      const testURL = `https://search.google.com/test/rich-results?code=${encodedJSON}`;
+      window.open(testURL, "_blank");
     }
   </script>
 </head>
 <body>
   <div class="container">
-    <h1 class="mt-5">JSON-LD Generator(Rich Snippets)</h1>
+    <h1 class="mt-5">JSON-LD Generator (Rich Snippets)</h1>
     <p class="lead">Bu araç, belirli verileri girerek JSON-LD formatında yapılandırılmış veri oluşturmanıza yardımcı olur. JSON-LD (JavaScript Object Notation for Linked Data), web üzerindeki verileri yapılandırmak ve zengin içerikler oluşturmak için kullanılan bir veri formatıdır.</p>
 
     <h2>Kullanım:</h2>
@@ -67,11 +81,15 @@
         <input type="url" class="form-control" id="url" name="url" placeholder="Örneğin: https://www.ebubekirbastama.com/p/ebubekir-bastama-kimdir.html" required>
       </div>
       <button type="submit" class="btn btn-primary">JSON-LD Oluştur</button>
+      <button type="button" onclick="testRichResults()" class="btn btn-secondary">Test Et</button>
     </form>
 
     <h2 class="mt-5">Oluşturulan JSON-LD:</h2>
     <pre id="output" class="bg-light p-3 border"></pre>
   </div>
+
+  <!-- JSON-LD script -->
+  <script type="application/ld+json" id="json-ld-script"></script>
 
   <!-- Bootstrap JS and dependencies -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
