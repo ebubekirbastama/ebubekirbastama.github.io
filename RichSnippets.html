@@ -42,7 +42,7 @@
     function testRichResults() {
       const jsonLD = document.getElementById("output").textContent;
       const encodedJSON = encodeURIComponent(jsonLD);
-      const testURL = `https://search.google.com/test/rich-results?code=${encodedJSON}`;
+      const testURL = `https://search.google.com/test/rich-results`;
       window.open(testURL, "_blank");
     }
   </script>
