@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Coordinates</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="getCityCoordinates()">Get Coordinates</button>
+    <button onclick="downloadCSV()">Download CSV</button>
+    <table id="coordinatesTable">
+        <thead>
+            <tr>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        let coordinatesData = []; // Koordinatları saklamak için bir dizi
+
+        function getCityCoordinates() {
+            // Overpass API sorgusu
+            const overpassUrl = "https://overpass-api.de/api/interpreter";
+            const overpassQuery = `
+                [out:json];
+                area["ISO3166-1"="TR"][admin_level=2];
+				relation(area)["name"="Kadıköy"];
+                out geom;
+            `;
+
+            fetch(overpassUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `data=${encodeURIComponent(overpassQuery)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                // İstanbul sınırlarını içeren veriyi al
+                const istanbulRelation = data.elements[0];
+                
+                // İstanbul sınırlarındaki her 500 metrede bir koordinatı al
+                istanbulRelation.members.forEach(member => {
+                    if (member.type === "way") {
+                        member.geometry.forEach(point => {
+                            coordinatesData.push([point.lat, point.lon]); // Koordinatları diziye ekle
+                        });
+                    }
+                });
+
+                // Koordinatları tabloya ekle
+                const coordinatesTable = document.getElementById("coordinatesTable").getElementsByTagName("tbody")[0];
+                coordinatesTable.innerHTML = ""; // Önceki içeriği temizle
+                coordinatesData.forEach(coord => {
+                    const row = coordinatesTable.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    cell1.textContent = coord[0];
+                    cell2.textContent = coord[1];
+                });
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function downloadCSV() {
+            const csvContent = "data:text/csv;charset=utf-8," +
+                coordinatesData.map(row => row.join(",")).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "coordinates.csv");
+            document.body.appendChild(link);
+            link.click();
+        }
+    </script>
+</body>
+</html>
