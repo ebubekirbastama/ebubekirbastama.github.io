@@ -6,20 +6,11 @@ let mediaRecorder;
 let recordedChunks = [];
 
 startBtn.addEventListener('click', async () => {
-    const displayStream = await navigator.mediaDevices.getDisplayMedia({
+    const stream = await navigator.mediaDevices.getDisplayMedia({
         video: { mediaSource: 'screen' }
     });
 
-    const audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: true
-    });
-
-    const combinedStream = new MediaStream([
-        ...displayStream.getVideoTracks(),
-        ...audioStream.getAudioTracks()
-    ]);
-
-    mediaRecorder = new MediaRecorder(combinedStream);
+    mediaRecorder = new MediaRecorder(stream);
     mediaRecorder.ondataavailable = handleDataAvailable;
     mediaRecorder.start();
 
