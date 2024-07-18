@@ -9,12 +9,9 @@ let recordedChunks = [];
 const mediaConstraints = {
   video: {
     mediaSource: 'screen',
-    width: 1920, // 1080p genişlik için ayarlayın
-    height: 1080, // 1080p yükseklik için ayarlayın (tarayıcı desteğine göre ayarlayın)
-    frameRate: 30, // Akıcı kare hızı için ayarlayın (performansa göre ayarlayın)
-  },
-  audio: {
-    mandatory: true // Ses kaydını da etkinleştirin
+    width: { min: 1920, ideal: 1920 }, // 1080p genişlik için ayarlar
+    height: { min: 1080, ideal: 1080 }, // 1080p yükseklik için ayarlar
+    frameRate: { ideal: 30 }, // Akıcı kare hızı için ayarlar
   }
 };
 
