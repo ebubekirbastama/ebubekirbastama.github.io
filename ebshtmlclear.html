@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Temizleyici - Class ve ID Temizleme Aracı</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+        .footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">HTML Temizleyici</h1>
+        <p class="text-center">Bu araç, HTML kodlarınızı temizlemek ve gereksiz öznitelikleri kaldırmak için kullanabileceğiniz pratik bir çözümdür. HTML kodlarınızdaki class, id ve stil özniteliklerini temizler, böylece daha sade ve okunabilir bir kod yapısı elde edersiniz. Ayrıca, iframe öğelerine dokunmaz, bu sayede gömülü içerikleriniz güvende kalır.</p>
+
+        <h2>Nasıl Kullanılır?</h2>
+        <p>Aracı kullanmak oldukça basittir. Aşağıdaki adımları izleyerek HTML kodlarınızı temizleyebilirsiniz:</p>
+        <ol>
+            <li>HTML kodunuzu aşağıdaki ilk metin kutusuna yapıştırın.</li>
+            <li>"Temizle" düğmesine tıklayın.</li>
+            <li>Temizlenmiş HTML kodu ikinci metin kutusunda görünecektir.</li>
+        </ol>
+
+        <div class="form-group">
+            <textarea id="htmlInput" class="form-control" placeholder="Buraya HTML kodunuzu yapıştırın"></textarea>
+        </div>
+        <button onclick="cleanHTML()" class="btn btn-primary mb-3">Temizle</button>
+        <div class="form-group">
+            <textarea id="cleanedHtmlOutput" class="form-control" placeholder="Temizlenmiş HTML buraya yazılacak"></textarea>
+        </div>
+
+        <h2>Temizlenen Öğeler</h2>
+        <p>Bu araç, HTML kodlarınızdaki şu öznitelikleri temizler:</p>
+        <ul>
+            <li><strong>class</strong> - HTML öğelerinin stilini belirleyen öznitelik.</li>
+            <li><strong>id</strong> - HTML öğelerini tanımlamak için kullanılan benzersiz öznitelik.</li>
+            <li><strong>style</strong> - HTML öğelerine doğrudan stil ekleyen öznitelik.</li>
+        </ul>
+
+        <h2>Dokunulmadan Bırakılan Öğeler</h2>
+        <p>Bu araç, iframe öğelerine dokunmaz. Bu sayede, sayfanızdaki gömülü içerikler ve videolar etkilenmez.</p>
+
+        <div class="footer">
+            <p>Yazılımcısı: Ebubekir Bastama (C) 2024</p>
+            <p>Web Siteleri: <a href="https://www.ebubekirbastama.com" target="_blank">www.ebubekirbastama.com</a>, <a href="https://www.csharpegitimi.com.tr" target="_blank">www.csharpegitimi.com.tr</a></p>
+        </div>
+    </div>
+
+    <script>
+        function cleanHTML() {
+            var htmlInput = document.getElementById('htmlInput').value;
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlInput;
+
+            // Tüm öğeleri seç
+            var allElements = tempDiv.querySelectorAll('*');
+
+            allElements.forEach(function(element) {
+                // iframe dışındaki tüm öğelerin özniteliklerini kaldır
+                if (element.tagName.toLowerCase() !== 'iframe') {
+                    var attributes = element.attributes;
+                    while (attributes.length > 0) {
+                        element.removeAttribute(attributes[0].name);
+                    }
+                }
+            });
+
+            // Temizlenmiş HTML'yi alın
+            var cleanedHTML = tempDiv.innerHTML;
+            document.getElementById('cleanedHtmlOutput').value = cleanedHTML;
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
