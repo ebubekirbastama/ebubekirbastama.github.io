@@ -27,7 +27,27 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center">HTML Temizleyici</h1>
-        <p class="text-center">Bu araç, HTML kodlarınızı temizlemek ve gereksiz öznitelikleri kaldırmak için kullanabileceğiniz pratik bir çözümdür. HTML kodlarınızdaki class, id ve stil özniteliklerini temizler, böylece daha sade ve okunabilir bir kod yapısı elde edersiniz. Ayrıca, iframe, a href, img ve video öğelerine dokunmaz, bu sayede gömülü içerikleriniz güvende kalır.</p>
+        <p class="text-center">Bu araç, HTML kodlarınızı temizlemek ve gereksiz öznitelikleri kaldırmak için kullanabileceğiniz pratik bir çözümdür. HTML kodlarınızdaki class, id ve stil özniteliklerini temizler, böylece daha sade ve okunabilir bir kod yapısı elde edersiniz.</p>
+
+        <h2>Dokunulmaması Gereken Öğeler</h2>
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="ignoreIframe" checked>
+                <label class="form-check-label" for="ignoreIframe">iframe</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="ignoreAnchor" checked>
+                <label class="form-check-label" for="ignoreAnchor">a href</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="ignoreImg" checked>
+                <label class="form-check-label" for="ignoreImg">img</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="ignoreVideo" checked>
+                <label class="form-check-label" for="ignoreVideo">video</label>
+            </div>
+        </div>
 
         <h2>Nasıl Kullanılır?</h2>
         <p>Aracı kullanmak oldukça basittir. Aşağıdaki adımları izleyerek HTML kodlarınızı temizleyebilirsiniz:</p>
@@ -53,9 +73,6 @@
             <li><strong>style</strong> - HTML öğelerine doğrudan stil ekleyen öznitelik.</li>
         </ul>
 
-        <h2>Dokunulmadan Bırakılan Öğeler</h2>
-        <p>Bu araç, iframe, a href, img ve video öğelerine dokunmaz. Bu sayede, sayfanızdaki gömülü içerikler, bağlantılar, resimler ve videolar etkilenmez.</p>
-
         <div class="footer">
             <p>Yazılımcısı: Ebubekir Bastama (C) 2024</p>
             <p>Web Siteleri: <a href="https://www.ebubekirbastama.com" target="_blank">www.ebubekirbastama.com</a>, <a href="https://www.csharpegitimi.com.tr" target="_blank">www.csharpegitimi.com.tr</a></p>
@@ -72,11 +89,17 @@
             var allElements = tempDiv.querySelectorAll('*');
 
             allElements.forEach(function(element) {
-                // iframe, a href, img ve video dışındaki tüm öğelerin özniteliklerini kaldır
-                if (element.tagName.toLowerCase() !== 'iframe' &&
-                    !(element.tagName.toLowerCase() === 'a' && element.hasAttribute('href')) &&
-                    element.tagName.toLowerCase() !== 'img' &&
-                    element.tagName.toLowerCase() !== 'video') {
+                // Kullanıcının seçimine göre hangi öğelerin özniteliklerinin kaldırılacağı kontrol edilir
+                var ignoreIframe = document.getElementById('ignoreIframe').checked;
+                var ignoreAnchor = document.getElementById('ignoreAnchor').checked;
+                var ignoreImg = document.getElementById('ignoreImg').checked;
+                var ignoreVideo = document.getElementById('ignoreVideo').checked;
+
+                // Belirtilen öğeler dışındaki tüm öğelerin özniteliklerini kaldır
+                if ((element.tagName.toLowerCase() !== 'iframe' || !ignoreIframe) &&
+                    !(element.tagName.toLowerCase() === 'a' && element.hasAttribute('href') && !ignoreAnchor) &&
+                    element.tagName.toLowerCase() !== 'img' || !ignoreImg &&
+                    element.tagName.toLowerCase() !== 'video' || !ignoreVideo) {
                     var attributes = element.attributes;
                     while (attributes.length > 0) {
                         element.removeAttribute(attributes[0].name);
