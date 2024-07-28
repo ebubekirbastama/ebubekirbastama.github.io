@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EBS HTML Temizleyici - Attribute Temizleme Aracı</title>
+    <title>HTML Temizleyici - Class ve ID Temizleme Aracı</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         textarea {
@@ -26,8 +26,8 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">EBS HTML Temizleyici</h1>
-        <p class="text-center">Bu araç, HTML kodlarınızı temizlemek ve gereksiz öznitelikleri kaldırmak için kullanabileceğiniz pratik bir çözümdür. HTML kodlarınızdaki class, id ve stil özniteliklerini temizler, böylece daha sade ve okunabilir bir kod yapısı elde edersiniz. Ayrıca, iframe, a href ve img öğelerine dokunmaz, bu sayede gömülü içerikleriniz güvende kalır.</p>
+        <h1 class="text-center">HTML Temizleyici</h1>
+        <p class="text-center">Bu araç, HTML kodlarınızı temizlemek ve gereksiz öznitelikleri kaldırmak için kullanabileceğiniz pratik bir çözümdür. HTML kodlarınızdaki class, id ve stil özniteliklerini temizler, böylece daha sade ve okunabilir bir kod yapısı elde edersiniz. Ayrıca, iframe, a href, img ve video öğelerine dokunmaz, bu sayede gömülü içerikleriniz güvende kalır.</p>
 
         <h2>Nasıl Kullanılır?</h2>
         <p>Aracı kullanmak oldukça basittir. Aşağıdaki adımları izleyerek HTML kodlarınızı temizleyebilirsiniz:</p>
@@ -54,7 +54,7 @@
         </ul>
 
         <h2>Dokunulmadan Bırakılan Öğeler</h2>
-        <p>Bu araç, iframe, a href ve img öğelerine dokunmaz. Bu sayede, sayfanızdaki gömülü içerikler, bağlantılar ve resimler etkilenmez.</p>
+        <p>Bu araç, iframe, a href, img ve video öğelerine dokunmaz. Bu sayede, sayfanızdaki gömülü içerikler, bağlantılar, resimler ve videolar etkilenmez.</p>
 
         <div class="footer">
             <p>Yazılımcısı: Ebubekir Bastama (C) 2024</p>
@@ -72,10 +72,11 @@
             var allElements = tempDiv.querySelectorAll('*');
 
             allElements.forEach(function(element) {
-                // iframe, a href ve img dışındaki tüm öğelerin özniteliklerini kaldır
+                // iframe, a href, img ve video dışındaki tüm öğelerin özniteliklerini kaldır
                 if (element.tagName.toLowerCase() !== 'iframe' &&
                     !(element.tagName.toLowerCase() === 'a' && element.hasAttribute('href')) &&
-                    element.tagName.toLowerCase() !== 'img') {
+                    element.tagName.toLowerCase() !== 'img' &&
+                    element.tagName.toLowerCase() !== 'video') {
                     var attributes = element.attributes;
                     while (attributes.length > 0) {
                         element.removeAttribute(attributes[0].name);
