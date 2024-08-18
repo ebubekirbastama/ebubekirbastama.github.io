@@ -3009,12 +3009,7 @@ window.main_js = function() {
                 u == _
             }
         }()) {
-            var t = '<div style="text-align: center;padding: 20px 0;font-size: 12px!important;text-indent: 0!important;opacity: 1!important;visibility: visible!important;display: block!important;position: static!important;">Designed by <a href="https://sneeit.com" style="font-size: 12px!important;text-indent: 0!important;opacity: 1!important;visibility: visible!important;display: inline-block!important;position: static!important;">Sneeit.Com</a></div>';
-            $("body").append(t),
-            setInterval((function() {
-                $("body").find(">div").last().find(">a").length || $("body").append(t)
-            }
-            ), 200)
+
         }
     }
     ))
