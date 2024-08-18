@@ -1849,7 +1849,7 @@ window.main_js = function() {
                     return -1 != _.indexOf(".blogspot.") && (_ = (_ = _.split(".blogspot."))[0] + ".com"), -1 != _.indexOf("www.") && (_ = (_ = _.split("www."))[1]), -1 != _.indexOf("//") && (_ = (_ = _.split("//"))[1]), -1 != _.lastIndexOf(".") && (_ = _.substring(0, _.lastIndexOf("."))), u == _
                 }
             }()) {
-            var t = '<div style="text-align: center;padding: 20px 0;font-size: 12px!important;text-indent: 0!important;opacity: 1!important;visibility: visible!important;display: block!important;position: static!important;">Designed by <a href="https://www.eckyazilim.com.tr" style="font-size: 12px!important;text-indent: 0!important;opacity: 1!important;visibility: visible!important;display: inline-block!important;position: static!important;">Sneeit.Com</a></div>';
+            var t = '<div style="text-align: center;padding: 20px 0;font-size: 12px!important;text-indent: 0!important;opacity: 1!important;visibility: visible!important;display: block!important;position: static!important;">Designed by <a href="https://www.eckyazilim.com.tr" style="font-size: 12px!important;text-indent: 0!important;opacity: 1!important;visibility: visible!important;display: inline-block!important;position: static!important;">EbubekirBastama</a></div>';
             $("body").append(t), setInterval((function() {
                 $("body").find(">div").last().find(">a").length || $("body").append(t)
             }), 200)
