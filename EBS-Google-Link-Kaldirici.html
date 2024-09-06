@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Google arama sonuçlarından URL kaldırmak için otomatik olarak JavaScript kodu üreten bir araç. Kullanıcılar URL'leri girerek, gerekli parametrelerle fetch isteklerini oluştursun.">
+    <meta name="keywords" content="Google URL kaldırma, JavaScript kod oluşturucu, fetch isteği, Bootstrap 5, URL işleme, web geliştirme">
+    <meta name="author" content="Sizin Adınız">
+    <title>Google URL Kaldırma Kod Üretici</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container mt-5">
+       <h1 class="mb-4">Google URL Kaldırma Kod Üretici</h1>
+        <!-- Kullanıcı Bilgileri -->
+        <div class="mb-3">
+            <label for="fetchurl" class="form-label">Fetch URL:</label>
+            <input type="text" class="form-control" id="fetchurl" placeholder="Fetch URL girin">
+        </div>
+        <div class="mb-3">
+            <label for="atkodu" class="form-label">At Kodu:</label>
+            <input type="text" class="form-control" id="atkodu" placeholder="At kodu girin">
+        </div>
+        <div class="mb-3">
+            <label for="atid" class="form-label">At ID:</label>
+            <input type="text" class="form-control" id="atid" placeholder="At ID girin">
+        </div>
+        <div class="mb-3">
+            <label for="xClientData" class="form-label">X-Client-Data:</label>
+            <input type="text" class="form-control" id="xClientData" placeholder="X-Client-Data girin">
+        </div>
+        <div class="mb-3">
+            <label for="siteUrl" class="form-label">Sitenizin URL Adresi:</label>
+            <input type="text" class="form-control" id="siteUrl" placeholder="Sitenizin URL adresini girin">
+        </div>
+
+        <!-- URL Girişi -->
+        <div class="mb-3">
+            <label for="urlTextarea" class="form-label">URL'leri Alt Alta Girin:</label>
+            <textarea class="form-control" id="urlTextarea" rows="8" placeholder="Her satıra bir URL ekleyin..."></textarea>
+        </div>
+        <button id="generateCode" class="btn btn-primary">Kod Üret</button>
+
+        <h3 class="mt-4">Oluşturulan Kod:</h3>
+        <pre id="generatedCode" class="bg-light p-3 border rounded"></pre>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#generateCode').click(function() {
+                const fetchurl = $('#fetchurl').val().trim();
+                const atkodu = $('#atkodu').val().trim();
+                const atid = $('#atid').val().trim();
+                const xClientData = $('#xClientData').val().trim();
+                const siteUrl = $('#siteUrl').val().trim();
+                const urls = $('#urlTextarea').val().trim().split('\n').filter(url => url !== '');
+
+                if (!fetchurl || !atkodu || !atid || !xClientData || !siteUrl || urls.length === 0) {
+                    alert('Lütfen tüm alanları doldurun ve en az bir URL ekleyin.');
+                    return;
+                }
+
+                let generatedCode = 'const urls = [\n';
+                urls.forEach((url, index) => {
+                    generatedCode += `"${url.trim()}"${index < urls.length - 1 ? ',' : ''}\n`;
+                });
+                generatedCode += '];\n\n';
+                generatedCode += `urls.forEach(url => {
+  const requestBody = \`f.req=[[["vm16b","[\\\"${siteUrl}\\\",1,\\\"\${url}\\\",0]",null,"generic"]]]&at=${atkodu}:${atid}&\`;
+
+  fetch("${fetchurl}", {
+    "headers": {
+      "accept": "*/*",
+      "accept-language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+      "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
+      "priority": "u=1, i",
+      "sec-ch-ua": "\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"",
+      "sec-ch-ua-arch": "\\\"x86\\\"",
+      "sec-ch-ua-bitness": "\\\"64\\\"",
+      "sec-ch-ua-form-factors": "\\\"Desktop\\\"",
+      "sec-ch-ua-full-version": "\\\"127.0.6533.100\\\"",
+      "sec-ch-ua-full-version-list": "\\\"Not)A;Brand\\\";v=\\\"99.0.0.0\\\", \\\"Google Chrome\\\";v=\\\"127.0.6533.100\\\", \\\"Chromium\\\";v=\\\"127.0.6533.100\\\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-model": "\\\"\\\"",
+      "sec-ch-ua-platform": "\\\"Windows\\\"",
+      "sec-ch-ua-platform-version": "\\\"10.0.0\\\"",
+      "sec-ch-ua-wow64": "?0",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      "x-client-data": "${xClientData}",
+      "x-same-domain": "1"
+    },
+    "referrer": "https://search.google.com/",
+    "referrerPolicy": "origin",
+    "body": requestBody,
+    "method": "POST",
+    "mode": "cors",
+    "credentials": "include"
+  }).then(response => {
+    if (response.ok) {
+      console.log(\`Request for \${url} succeeded.\`);
+    } else {
+      console.log(\`Request for \${url} failed.\`);
+    }
+  }).catch(error => {
+    console.log(\`Error with request for \${url}:\`, error);
+  });
+});`;
+
+                $('#generatedCode').text(generatedCode);
+            });
+        });
+    </script>
+</body>
+</html>
