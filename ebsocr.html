@@ -14,7 +14,6 @@
             color: #333;
         }
 
-        /* Responsive container */
         .container {
             width: 90%;
             max-width: 600px;
@@ -31,7 +30,8 @@
         }
 
         input[type="file"],
-        input[type="text"] {
+        input[type="text"],
+        select {
             width: 100%;
             padding: 10px;
             margin-top: 20px;
@@ -53,7 +53,6 @@
             white-space: pre-wrap; /* Ensures line breaks are respected */
         }
 
-        /* Footer and responsiveness */
         footer {
             text-align: center;
             margin-top: 30px;
@@ -61,14 +60,14 @@
             color: #777;
         }
 
-        /* Responsive design */
         @media (max-width: 600px) {
             h1 {
                 font-size: 24px;
             }
 
             input[type="file"],
-            input[type="text"] {
+            input[type="text"],
+            select {
                 font-size: 16px;
             }
 
@@ -85,10 +84,34 @@
 <body>
     <div class="container">
         <h1>EBS OCR Sahte Site Tespit</h1>
+        <select id="languageSelector">
+            <option value="eng">İngilizce</option>
+            <option value="tur">Türkçe</option>
+            <option value="deu">Almanca</option>
+            <option value="fra">Fransızca</option>
+            <option value="spa">İspanyolca</option>
+            <option value="ita">İtalyanca</option>
+            <option value="rus">Rusça</option>
+            <option value="ara">Arapça</option>
+            <option value="chi_sim">Basitleştirilmiş Çince</option>
+            <option value="chi_tra">Geleneksel Çince</option>
+            <option value="jpn">Japonca</option>
+            <option value="kor">Korece</option>
+            <option value="hin">Hintçe</option>
+            <option value="ell">Yunanca</option>
+            <option value="nld">Felemenkçe</option>
+            <option value="por">Portekizce</option>
+            <option value="swe">İsveççe</option>
+            <option value="pol">Lehçe</option>
+            <option value="dan">Danca</option>
+            <option value="ces">Çekçe</option>
+            <option value="fin">Fince</option>
+            <option value="hun">Macarca</option>
+        </select>
         <input type="file" id="imageUploader" accept="image/*">
         <input type="text" id="searchText" placeholder="Tespit edilecek metni girin (örneğin: e-Devlet)">
         <p id="result">Resim yükleyin ve OCR işlemi başlatın.</p>
-        <div id="ocrText" class="ocr-text"></div> <!-- Area to display OCR text -->
+        <div id="ocrText" class="ocr-text"></div>
     </div>
 
     <footer>
@@ -99,6 +122,8 @@
     <script>
         document.getElementById("imageUploader").addEventListener("change", function (event) {
             const file = event.target.files[0];
+            const selectedLanguage = document.getElementById("languageSelector").value; // Kullanıcının seçtiği dil
+
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function () {
@@ -107,7 +132,7 @@
                     // OCR işlemi başlatılıyor
                     Tesseract.recognize(
                         imageData,      // Resim dosyası
-                        'eng',          // Dil seçimi (İngilizce)
+                        selectedLanguage, // Kullanıcının seçtiği dil
                         {
                             logger: info => console.log(info) // İşlem durumu
                         }
