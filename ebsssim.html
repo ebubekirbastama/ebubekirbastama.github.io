@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBS Resim Karşılaştırması (SSIM)</title>
+
+    <!-- Bootstrap CSS Bağlantısı -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Özel Stil -->
+        <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Arial', sans-serif;
+            }
+
+            .container {
+                margin-top: 50px;
+            }
+
+            .card {
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+                color: #007bff;
+            }
+
+            .result {
+                font-weight: bold;
+                font-size: 1.2rem;
+                color: #28a745;
+            }
+
+            canvas {
+                display: none;
+            }
+
+            footer {
+                margin-top: 50px;
+                background-color: #007bff;
+                color: white;
+                text-align: center;
+                padding: 10px 0;
+            }
+
+            footer p {
+                margin: 0;
+                font-size: 0.9rem;
+            }
+        </style>
+    </head>
+    <body>
+<marquee style="position: absolute; width: 0px;">
+<a href="https://www.ebubekirbastama.com/" title="Ebubekir Bastama">Ebubekir Bastama</a>
+</marquee>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h2>EBS Gerçek ve Sahte Resim Karşılaştırması (SSIM)</h2>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- Resim Seçim Formu -->
+                        <form>
+                            <div class="mb-3">
+                                <label for="realImage" class="form-label">Gerçek Resmi Seçin:</label>
+                                <input class="form-control" type="file" id="realImage" accept="image/*" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fakeImage" class="form-label">Sahte Resmi Seçin:</label>
+                                <input class="form-control" type="file" id="fakeImage" accept="image/*" />
+                            </div>
+
+                            <button type="button" class="btn btn-primary w-100" id="compareButton">Karşılaştır</button>
+                        </form>
+
+                        <br>
+
+                        <!-- Karşılaştırma Sonuçları -->
+                        <h3>Karşılaştırma Sonuçları:</h3>
+                        <p id="ssimResult" class="result">SSIM: Hesaplanıyor...</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gizli Canvas Öğeleri -->
+    <canvas id="realCanvas"></canvas>
+    <canvas id="fakeCanvas"></canvas>
+
+    <!-- Footer -->
+    <footer>
+        <p>Ebubekir Bastama ©</p>
+    </footer>
+
+    <!-- Bootstrap ve JS Bağlantıları -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Resmi yükleyip canvas üzerinde işlemek için yardımcı fonksiyon
+        function loadImage(file, canvas, callback) {
+            const img = new Image();
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                img.onload = function () {
+                    const context = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    context.drawImage(img, 0, 0);
+                    callback();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // SSIM (Structural Similarity Index) Hesaplama
+        // SSIM (Structural Similarity Index) Hesaplama
+        function compareImagesSSIM() {
+            const canvas1 = document.getElementById('realCanvas');
+            const canvas2 = document.getElementById('fakeCanvas');
+            const context1 = canvas1.getContext('2d');
+            const context2 = canvas2.getContext('2d');
+
+            if (canvas1.width !== canvas2.width || canvas1.height !== canvas2.height) {
+                // Resim boyutu uyumsuzluğu durumunda açıklayıcı mesaj göster
+                document.getElementById('ssimResult').innerText = "Resim boyutları uyuşmuyor. Lütfen aynı boyutta resimler yükleyin.";
+                document.getElementById('ssimResult').style.color = '#dc3545'; // Kırmızı renk
+                return null; // Hata durumunda işlem yapmadan çık
+            }
+
+            const imgData1 = context1.getImageData(0, 0, canvas1.width, canvas1.height);
+            const imgData2 = context2.getImageData(0, 0, canvas2.width, canvas2.height);
+
+            if (!imgData1 || !imgData2 || imgData1.data.length === 0 || imgData2.data.length === 0) {
+                alert("Resim yüklenemedi. Lütfen geçerli bir resim dosyası seçin.");
+                return null;
+            }
+
+            let muX = 0, muY = 0, sigmaX = 0, sigmaY = 0, sigmaXY = 0;
+            const c1 = 6.5025, c2 = 58.5225;
+
+            for (let i = 0; i < imgData1.data.length; i += 4) {
+                muX += imgData1.data[i];
+                muY += imgData2.data[i];
+
+                sigmaX += Math.pow(imgData1.data[i], 2);
+                sigmaY += Math.pow(imgData2.data[i], 2);
+                sigmaXY += imgData1.data[i] * imgData2.data[i];
+            }
+
+            const n = imgData1.data.length / 4;
+            muX /= n;
+            muY /= n;
+
+            sigmaX = Math.sqrt(sigmaX / n - Math.pow(muX, 2));
+            sigmaY = Math.sqrt(sigmaY / n - Math.pow(muY, 2));
+            sigmaXY = sigmaXY / n - muX * muY;
+
+            if (Math.pow(muX, 2) + Math.pow(muY, 2) + c1 === 0 || Math.pow(sigmaX, 2) + Math.pow(sigmaY, 2) + c2 === 0) {
+                return 0;
+            }
+
+            const ssim = ((2 * muX * muY + c1) * (2 * sigmaXY + c2)) / ((Math.pow(muX, 2) + Math.pow(muY, 2) + c1) * (Math.pow(sigmaX, 2) + Math.pow(sigmaY, 2) + c2));
+            return ssim;
+        }
+
+        // Karşılaştırma butonuna tıklanma olayı
+        document.getElementById('compareButton').addEventListener('click', function () {
+            const realCanvas = document.getElementById('realCanvas');
+            const fakeCanvas = document.getElementById('fakeCanvas');
+            const ssimResult = document.getElementById('ssimResult');
+
+            // Resimler yüklendiyse ve canvas boyutları eşitse karşılaştırma yap
+            if (realCanvas.width > 0 && fakeCanvas.width > 0) {
+                const ssim = compareImagesSSIM();
+
+                // SSIM değeri kontrolü
+                if (ssim === 1) {
+                    ssimResult.innerText = `Benzerlik var! Benzeme oranı: ${ssim.toFixed(2)}`;
+                    ssimResult.style.color = '#28a745';  // Yeşil renk
+                } else if (ssim === 0) {
+                    ssimResult.innerText = `Benzerlik yok. Benzeme değeri: ${ssim.toFixed(2)}`;
+                    ssimResult.style.color = '#dc3545';  // Kırmızı renk
+                } else {
+                    ssimResult.innerText = `Benzerlik oranı: ${ssim.toFixed(2)}`;
+                    ssimResult.style.color = '#ffc107';  // Sarı renk
+                }
+            } else {
+                ssimResult.innerText = 'Lütfen her iki resmi de yükleyin.';
+                ssimResult.style.color = '#dc3545';  // Kırmızı renk
+            }
+        });
+
+        // Resimlerin yüklenmesi ve canvas üzerine çizilmesi
+        document.getElementById('realImage').addEventListener('change', function (event) {
+            loadImage(event.target.files[0], document.getElementById('realCanvas'), function () {
+                document.getElementById("ssimResult").innerText = "SSIM: Hesaplanıyor...";
+            });
+        });
+
+        document.getElementById('fakeImage').addEventListener('change', function (event) {
+            loadImage(event.target.files[0], document.getElementById('fakeCanvas'), function () {
+                document.getElementById("ssimResult").innerText = "SSIM: Hesaplanıyor...";
+            });
+        });
+    </script>
+
+</body>
+</html>
