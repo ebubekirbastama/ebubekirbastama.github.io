@@ -90,7 +90,8 @@
 
         // Şablon Eşleştirme Fonksiyonu (OpenCV.js)
         // Şablon Eşleştirme Fonksiyonu (OpenCV.js)
-// Şablon Eşleştirme Fonksiyonu (OpenCV.js)
+        // Şablon Eşleştirme Fonksiyonu (OpenCV.js)
+        // Şablon Eşleştirme Fonksiyonu (OpenCV.js)
         function templateMatching() {
             const realCanvas = document.getElementById('realCanvas');
             const templateCanvas = document.getElementById('templateCanvas');
@@ -131,8 +132,8 @@
                     0
                     );
 
-            // Skora göre yazısal sonuç
-            if (maxScore > 0.8) {
+            // Yazısal Çıktıyı Güncelle
+            if (maxScore > 0.3) { // Daha düşük bir eşik değeri kullanıldı
                 resultDiv.innerHTML = `
             <p class="text-success">
                 <strong>Sonuç:</strong> Şablon ana resimde bulundu! <br>
@@ -141,8 +142,8 @@
             </p>`;
             } else {
                 resultDiv.innerHTML = `
-            <p class="text-danger">
-                <strong>Sonuç:</strong> Şablon ana resimde bulunamadı. <br>
+            <p class="text-warning">
+                <strong>Sonuç:</strong> Şablon ana resimde belirgin şekilde bulunamadı. <br>
                 <strong>En Yüksek Skor:</strong> ${maxScore.toFixed(2)}
             </p>`;
             }
@@ -156,6 +157,7 @@
             result.delete();
             mask.delete();
         }
+
 
 
         // Form Submit İşlemi
