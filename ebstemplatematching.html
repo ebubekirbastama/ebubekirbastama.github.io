@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şablon Eşleştirme (Template Matching)</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script async src="https://docs.opencv.org/4.x/opencv.js" type="text/javascript"></script>
+        <style>
+            body {
+                background-color: #f4f4f4;
+                padding-top: 20px;
+            }
+            .container {
+                max-width: 800px;
+            }
+            .card {
+                margin-top: 20px;
+            }
+            canvas {
+                max-width: 100%;
+                max-height: 400px;
+            }
+            #result {
+                margin-top: 20px;
+                font-size: 1.2em;
+            }
+        </style>
+    </head>
+    <body>
+
+    <div class="container">
+        <h2 class="text-center">Şablon Eşleştirme (Template Matching)</h2>
+        <p class="text-center">Bir resim içinde belirli bir şekil ya da deseni arayın.</p>
+
+        <!-- Resim Yükleme Formu -->
+        <div class="card">
+            <div class="card-body">
+                <form id="imageForm">
+                    <div class="mb-3">
+                        <label for="realImage" class="form-label">Gerçek Resmi Yükleyin:</label>
+                        <input type="file" class="form-control" id="realImage" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fakeImage" class="form-label">Şablon Resmini Yükleyin:</label>
+                        <input type="file" class="form-control" id="fakeImage" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Eşleştirmeyi Başlat</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Canvas Alanı -->
+        <div id="canvasArea" class="card">
+            <div class="card-body">
+                <h5>Yüklenen Resimler</h5>
+                <canvas id="realCanvas"></canvas>
+                <canvas id="templateCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Sonuç Alanı -->
+        <div id="result" class="text-center"></div>
+    </div>
+
+    <script>
+        // OpenCV.js başlatıldığında çağrılacak fonksiyon
+        function onOpenCvReady() {
+            console.log("OpenCV.js yüklendi ve hazır.");
+        }
+
+        // Resimleri Yükleyip Canvas'a Çizen Fonksiyon
+        function loadImageToCanvas(input, canvas) {
+            const ctx = canvas.getContext('2d');
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        // Şablon Eşleştirme Fonksiyonu (OpenCV.js)
+        // Şablon Eşleştirme Fonksiyonu (OpenCV.js)
+// Şablon Eşleştirme Fonksiyonu (OpenCV.js)
+        function templateMatching() {
+            const realCanvas = document.getElementById('realCanvas');
+            const templateCanvas = document.getElementById('templateCanvas');
+            const resultDiv = document.getElementById('result');
+
+            // OpenCV mat oluşturma
+            const src = cv.imread(realCanvas);
+            const template = cv.imread(templateCanvas);
+            const result = new cv.Mat();
+
+            // Şablon eşleştirme işlemi
+            const matchMethod = cv.TM_CCOEFF_NORMED; // Korelasyon yöntemi
+            const mask = new cv.Mat(); // Opsiyonel maske
+            cv.matchTemplate(src, template, result, matchMethod, mask);
+
+            // En yüksek eşleşmeyi bulma
+            const minMax = cv.minMaxLoc(result);
+            const maxPoint = minMax.maxLoc; // En iyi eşleşmenin koordinatı
+            const maxScore = minMax.maxVal; // En yüksek eşleşme skoru
+
+            // Şablon boyutunu al
+            const templateWidth = template.cols;
+            const templateHeight = template.rows;
+
+            // Şablonu işaretleme
+            const color = new cv.Scalar(255, 0, 0, 255); // Mavi renk
+            const topLeft = new cv.Point(maxPoint.x, maxPoint.y);
+            const bottomRight = new cv.Point(maxPoint.x + templateWidth, maxPoint.y + templateHeight);
+
+            // Kareyi çiz
+            cv.rectangle(
+                    src,
+                    topLeft,
+                    bottomRight,
+                    color,
+                    2,
+                    cv.LINE_8,
+                    0
+                    );
+
+            // Skora göre yazısal sonuç
+            if (maxScore > 0.8) {
+                resultDiv.innerHTML = `
+            <p class="text-success">
+                <strong>Sonuç:</strong> Şablon ana resimde bulundu! <br>
+                <strong>Koordinatlar:</strong> (${maxPoint.x}, ${maxPoint.y}) <br>
+                <strong>Eşleşme Skoru:</strong> ${maxScore.toFixed(2)}
+            </p>`;
+            } else {
+                resultDiv.innerHTML = `
+            <p class="text-danger">
+                <strong>Sonuç:</strong> Şablon ana resimde bulunamadı. <br>
+                <strong>En Yüksek Skor:</strong> ${maxScore.toFixed(2)}
+            </p>`;
+            }
+
+            // Sonucu gösterme
+            cv.imshow(realCanvas, src);
+
+            // Mat nesnelerini serbest bırakma
+            src.delete();
+            template.delete();
+            result.delete();
+            mask.delete();
+        }
+
+
+        // Form Submit İşlemi
+        document.getElementById('imageForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const realImageInput = document.getElementById('realImage');
+            const fakeImageInput = document.getElementById('fakeImage');
+
+            if (realImageInput.files.length && fakeImageInput.files.length) {
+                loadImageToCanvas(realImageInput, document.getElementById('realCanvas'));
+                loadImageToCanvas(fakeImageInput, document.getElementById('templateCanvas'));
+
+                // Eşleştirme işlemine başla
+                setTimeout(templateMatching, 1000);
+            } else {
+                alert("Lütfen her iki resmi de yükleyin.");
+            }
+        });
+    </script>
+
+</body>
+</html>
