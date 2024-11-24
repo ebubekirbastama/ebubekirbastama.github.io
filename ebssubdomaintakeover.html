@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBS Subdomain Takeover Kontrolü</title>
+    <style>
+        /* Genel Stil ve Arka Plan */
+        body {
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+            font-family: Arial, sans-serif;
+ 
+            margin: 0;
+            padding: 0;
+        }
+
+        /* İçerik Alanı */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Başlık */
+        .header {
+            background-color: rgba(0, 123, 255, 0.8);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Yazı Tipi ve Stiller */
+        h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        p {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        /* Form Elemanları */
+        input, button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background-color: red; /* Set button background color to red */
+            color: white; /* Set text color to white */
+        }
+
+        button:hover {
+            background-color: darkred; /* Darker red on hover */
+        }
+
+        input:focus, button:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
+        }
+
+        /* Sonuçlar Alanı */
+        #sonuclar {
+            margin-top: 20px;
+        }
+
+        .sonuc {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .alert {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+        /* Responsive Tasarım */
+        @media (min-width: 768px) {
+            .container {
+                width: 60%;
+            }
+
+            .header {
+                font-size: 1.5rem;
+            }
+
+            input, button {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                width: 50%;
+            }
+
+            .header {
+                font-size: 1.8rem;
+            }
+
+            input, button {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Subdomain Takeover Kontrolü</h1>
+    </div>
+
+    <label for="domain">Domain Adı:</label>
+    <input type="text" id="domain" placeholder="Örnek: ornekdomain.com">
+    <button onclick="kontrolEt()">Kontrol Et</button>
+
+    <div id="sonuclar"></div>
+</div>
+
+<script>
+// Bilinen takeover patterları
+const takeoverPatters = [
+    "aws", "s3.amazonaws.com", "github.io", "herokuapp.com",
+    "pages.dev", "readthedocs.io", "unbouncepages.com", 
+    "azurewebsites.net", "cloudfront.net", "shopify.com",
+    "wordpress.com", "tumblr.com", "bitbucket.io", "fastly.net",
+    "cdn.cloudflare.net", "cargocollective.com", "ghost.io",
+    "surge.sh", "pantheon.io", "smugmug.com"
+];
+
+// Subdomain kontrolü
+async function cnameKontrol(subdomain) {
+    const url = `https://dns.google/resolve?name=${subdomain}`;  // Google DNS Resolver API (CNAME için ek parametre gerekmez)
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.Answer) {
+            const target = data.Answer[0].data.toLowerCase();
+            // Bilinen takeover patterlarına göre kontrol yap
+            for (let pattern of takeoverPatters) {
+                if (target.includes(pattern)) {
+                    return `Potansiyel Takeover: ${subdomain} -> ${target}`;
+                }
+            }
+            return `Güvenli: ${subdomain} -> ${target}`;
+        } else {
+            return `Hata: ${subdomain} için DNS kaydı bulunamadı.`;
+        }
+    } catch (error) {
+        return `Hata: ${subdomain} kontrol edilirken bir sorun oluştu.`;
+    }
+}
+
+// Subdomain'leri kontrol et
+async function kontrolEt() {
+    const domain = document.getElementById('domain').value;
+    const subdomains = ["mail", "ftp", "www", "blog", "dev", "test", "staging", "admin", "api", "shop", "cdn", "images"];
+    const sonucContainer = document.getElementById('sonuclar');
+    
+    if (!domain) {
+        sonucContainer.innerHTML = `<p class="alert">Lütfen geçerli bir domain girin.</p>`;
+        return;
+    }
+
+    sonucContainer.innerHTML = 'Kontrol ediliyor...';
+
+    // Subdomain'leri kontrol et
+    let results = [];
+    for (let sub of subdomains) {
+        const subdomain = `${sub}.${domain}`;
+        const sonuc = await cnameKontrol(subdomain);
+        results.push(`<p class="sonuc">${sonuc}</p>`);
+    }
+
+    // Sonuçları görüntüle
+    sonucContainer.innerHTML = results.join('');
+}
+</script>
+
+</body>
+</html>
