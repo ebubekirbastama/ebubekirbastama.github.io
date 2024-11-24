@@ -67,7 +67,10 @@
         <p>Toplam Link Sayısı: <span id="linkCount" class="link-count">0</span></p>
     </div>
     
-    <button class="btn btn-custom w-100 mt-3" onclick="openLinks()">Linkleri Aç</button>
+    <div class="d-flex gap-2">
+        <button class="btn btn-custom flex-grow-1" onclick="openLinks()">Linkleri Aç</button>
+        <button class="btn btn-danger flex-grow-1" onclick="clearLinks()">Temizle</button>
+    </div>
 </div>
 
 <!-- Alt Bilgi -->
@@ -102,6 +105,11 @@
                 window.open(link, '_blank');
             }, index * 100); // Linkler 100ms arayla açılacak
         });
+    }
+
+    function clearLinks() {
+        document.getElementById('linksInput').value = '';
+        document.getElementById('linkCount').innerText = 0;
     }
 </script>
 
