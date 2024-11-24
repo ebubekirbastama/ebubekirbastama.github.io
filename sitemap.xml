@@ -62,18 +62,6 @@
     </url>
 
     <url>
-        <loc>https://github.com/ebubekirbastama/TexttxtDosyasi-Bolme-Programi/raw/main/EBS%20Txt%20Par%C3%A7alama.zip</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-
-    <url>
-        <loc>https://github.com/ebubekirbastama/EBSvCardReading/raw/main/bin/Debug/EBSVcard%20Olu%C5%9Fturucu.zip</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-
-    <url>
         <loc>https://www.ebubekirbastama.com.tr/RandomNameorSurnameCreate.html</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
