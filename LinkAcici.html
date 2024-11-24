@@ -21,8 +21,8 @@
 <div class="container text-center">
     <h1 class="mt-5">Hızlı Link Açıcı</h1>
     <p class="lead">
-	Bugün internet kullanıcılarının sıklıkla karşılaştığı en yaygın ihtiyaçlardan biri, birden fazla bağlantıyı aynı anda hızlı bir şekilde açabilmektir. Çeşitli sebeplerle kullanıcılar, belirli bir listede bulunan bağlantılara göz atmak isteyebilir. Ancak, her birini tek tek açmak zaman kaybına yol açabilir. İşte tam bu noktada devreye giren Hızlı Link Açıcı aracı, birden fazla bağlantıyı kolayca ve hızlı bir şekilde açmanıza olanak tanır.
-	</p>
+        Bugün internet kullanıcılarının sıklıkla karşılaştığı en yaygın ihtiyaçlardan biri, birden fazla bağlantıyı aynı anda hızlı bir şekilde açabilmektir. Çeşitli sebeplerle kullanıcılar, belirli bir listede bulunan bağlantılara göz atmak isteyebilir. Ancak, her birini tek tek açmak zaman kaybına yol açabilir. İşte tam bu noktada devreye giren Hızlı Link Açıcı aracı, birden fazla bağlantıyı kolayca ve hızlı bir şekilde açmanıza olanak tanır.
+    </p>
 </div>
 
 <!-- Linklerin girileceği alan -->
@@ -45,6 +45,15 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
 <script>
+    // Link sayısını gerçek zamanlı güncelleme
+    document.getElementById('linksInput').addEventListener('input', updateLinkCount);
+
+    function updateLinkCount() {
+        const linksInput = document.getElementById('linksInput').value.trim();
+        const links = linksInput.split('\n').filter(link => link.trim() !== '');
+        document.getElementById('linkCount').innerText = links.length;
+    }
+
     function openLinks() {
         // Kullanıcıdan alınan linkleri ayıklayın
         let linksInput = document.getElementById('linksInput').value.trim();
@@ -58,7 +67,7 @@
         links.forEach((link, index) => {
             setTimeout(() => {
                 window.open(link, '_blank');
-            }, index * 100); // Linkler 200ms arayla açılacak
+            }, index * 100); // Linkler 100ms arayla açılacak
         });
     }
 </script>
