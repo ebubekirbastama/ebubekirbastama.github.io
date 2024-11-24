@@ -1,43 +1,232 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://ebubekirbastama.com.tr/</loc>
-    <lastmod>2022-12-07</lastmod>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>https://ebubekirbastama.com.tr/RandomNameorSurnameCreate.html</loc>
-    <lastmod>2022-12-07</lastmod>
-    <changefreq>daily</changefreq>
 
-  </url>
-  <url>
-    <loc>https://ebubekirbastama.com.tr/CurltoPhp/index.html</loc>
-    <lastmod>2022-12-07</lastmod>
-    <changefreq>daily</changefreq>
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/LinkAcici.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-  </url>
-  <url>
-    <loc>https://ebubekirbastama.com.tr/base64encoder.html</loc>
-    <lastmod>2022-12-07</lastmod>
-    <changefreq>daily</changefreq>
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebs_makale_dizay.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-  </url>
-  <url>
-    <loc>https://ebubekirbastama.com.tr/base64decode.html</loc>
-    <lastmod>2022-12-07</lastmod>
-    <changefreq>daily</changefreq>
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebstemplatematching.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-  </url>
-  <url>
-    <loc>https://ebubekirbastama.com.tr/sha1encode.html</loc>
-    <lastmod>2022-12-07</lastmod>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>https://ebubekirbastama.com.tr/md5.html</loc>
-    <lastmod>2022-12-07</lastmod>
-    <changefreq>daily</changefreq>
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebsssim.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-  </url>
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebsocr.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/EBS-Google-Link-Kaldirici.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebshtmlclear.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/EBSScreenVideoSaveSound.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/EBSScreenVideoSave.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebslog.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://github.com/ebubekirbastama/TexttxtDosyasi-Bolme-Programi/raw/main/EBS%20Txt%20Par%C3%A7alama.zip</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://github.com/ebubekirbastama/EBSvCardReading/raw/main/bin/Debug/EBSVcard%20Olu%C5%9Fturucu.zip</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/RandomNameorSurnameCreate.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/EBScalculater/index.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/CurltoPhp/index.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/base64encoder.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/base64decode.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/sha1encode.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/md5.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/EBSLuhn.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/EBSWebpConvert.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/taksitakip.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/mekke.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebstakip.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebslog.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebscsvmarge.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/ebsbul.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/darg-drop.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://ebubekirbastama.com.tr/binance.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://ebubekirbastama.com.tr/barcode.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/EBSbcrypt.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://www.ebubekirbastama.com.tr/lokasyon.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://ebubekirbastama.com.tr/RichSnippets.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://ebubekirbastama.com.tr/FAQPage.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
 </urlset>
