@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EBS Subdomain Takeover Kontrolü</title>
+    <title>Subdomain Takeover Kontrolü</title>
     <style>
         /* Genel Stil ve Arka Plan */
         body {
             background: url('https://ebubekirbastama.com.tr/circles.webp');
             font-family: Arial, sans-serif;
- 
             margin: 0;
             padding: 0;
         }
@@ -86,6 +85,15 @@
             color: green;
         }
 
+        /* Açıklama Alanı */
+        .aciklama {
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
         /* Responsive Tasarım */
         @media (min-width: 768px) {
             .container {
@@ -123,11 +131,28 @@
         <h1>Subdomain Takeover Kontrolü</h1>
     </div>
 
+
     <label for="domain">Domain Adı:</label>
     <input type="text" id="domain" placeholder="Örnek: ornekdomain.com">
+    
     <button onclick="kontrolEt()">Kontrol Et</button>
+    <button onclick="yeniSorgu()">Yeni Sorgu</button>
 
     <div id="sonuclar"></div>
+        <!-- Açıklama Bölümü -->
+    <div class="aciklama">
+        <h3>Nasıl Kullanılır?</h3>
+        <p>Bu araç, belirttiğiniz bir domainin alt alan adlarını kontrol eder ve potansiyel olarak "subdomain takeover" (alt alan adı ele geçirme) riski taşıyan subdomain'leri tespit etmeye yardımcı olur.</p>
+        
+        <h3>Nasıl Çalışır?</h3>
+        <p>Araca domain adı girdikten sonra, sistem çeşitli yaygın subdomain'leri (örneğin, mail, ftp, www, api gibi) kontrol eder. Eğer subdomain'lerden biri bir üçüncü taraf servisine (örneğin AWS, Heroku veya GitHub Pages gibi) yönlendirilmişse ve bu servis devre dışıysa, potansiyel bir takeover riski bulunabilir. Bu, bir saldırganın kontrolüne geçebilecek bir domaini işaret eder.</p>
+        
+        <h3>Güvenlik Neden Önemlidir?</h3>
+        <p>Subdomain takeover, kötü niyetli kişilerin kullanılamayan ya da hatalı yapılandırılmış alt alan adlarını ele geçirip kötüye kullanmalarına olanak tanır. Bu tür bir saldırı, web sitesi sahiplerinin kullanıcı bilgilerini riske atmasına ya da kötü amaçlı yazılım dağıtmasına neden olabilir. Bu yüzden, domain sahiplerinin tüm alt alan adlarını düzenli olarak kontrol etmeleri gereklidir.</p>
+        
+        <h3>100% Güvenli Olmasa Da Neden Kullanılmalı?</h3>
+        <p>Bu araç, potansiyel takeover durumlarını tespit etmek için harici DNS kayıtlarını inceleyerek size yardımcı olur. Ancak, herhangi bir subdomain takeover kontrol aracı %100 güvenli değildir. Sadece genel bir kontrol yapmanızı sağlar. Güvenliği sağlamak için, subdomainlerinizi düzgün yapılandırmak, kullanılmayan subdomain'leri devre dışı bırakmak ve doğru güvenlik önlemleri almak gereklidir. Bu araç, sadece ilk adım olarak kullanılmalıdır.</p>
+    </div>
 </div>
 
 <script>
@@ -188,6 +213,12 @@ async function kontrolEt() {
 
     // Sonuçları görüntüle
     sonucContainer.innerHTML = results.join('');
+}
+
+// Yeni sorgu butonuna basıldığında inputu ve sonuçları temizle
+function yeniSorgu() {
+    document.getElementById('domain').value = ''; // Input alanını temizle
+    document.getElementById('sonuclar').innerHTML = ''; // Sonuçları temizle
 }
 </script>
 
