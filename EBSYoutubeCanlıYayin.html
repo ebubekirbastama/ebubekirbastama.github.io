@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -116,11 +117,17 @@
                 } else if (event.error === 'not-allowed') {
                     speechText.value += 'Erişim izni reddedildi. Lütfen tarayıcı ayarlarınızı kontrol edin.\n';
                 }
+
+                // Sadece bazı durumlarda yeniden başlat
+                if (event.error !== 'not-allowed' && event.error !== 'audio-capture') {
+                    recognition.start();
+                }
             };
 
             recognition.onend = function () {
-                speechText.value += "Dinleme sona erdi.\n"; // Dinleme sona erdiğinde bilgi ekle
-                console.log('Mikrofon dinleme sona erdi.');
+                speechText.value += "Dinleme sona erdi. Tekrar başlatılıyor...\n"; // Dinleme sona erdiğinde bilgi ekle
+                console.log('Mikrofon dinleme sona erdi. Tekrar başlatılıyor...');
+                recognition.start(); // Dinlemeyi yeniden başlat
             };
         } else {
             speechText.value = 'Tarayıcınız ses tanımayı desteklemiyor.';
