@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Videoları</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px;
+    }
+    iframe {
+      flex: 1 1 calc(33% - 20px); /* 3 sütunlu düzen */
+      min-width: 300px;
+      height: 200px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center;">YouTube Videoları</h1>
+  <div class="video-container" id="videoContainer"></div>
+
+  <script>
+    // Saklanan linkleri al
+    const links = JSON.parse(localStorage.getItem('youtubeLinks')) || [];
+
+    const videoContainer = document.getElementById('videoContainer');
+
+    // Linklerden iframe oluştur ve sayfaya ekle
+    links.forEach(link => {
+      const videoId = new URL(link).searchParams.get('v'); // YouTube video ID'sini al
+      if (videoId) {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        videoContainer.appendChild(iframe);
+      }
+    });
+  </script>
+</body>
+</html>
