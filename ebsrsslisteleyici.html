@@ -88,14 +88,13 @@
         "https://www.indir.com/haber/feed/",
         "https://www.log.com.tr/feed/",
         "https://www.megabayt.com/rss",
-        "https://shiftdelete.net/feed",
-        "https://techolay.com/rss"
+        "https://shiftdelete.net/feed"
     ],
     gündem: [
         "https://www.aa.com.tr/tr/rss/default?cat=guncel",
         "https://www.hurriyet.com.tr/rss/anasayfa",
         "https://www.cnnturk.com/feed/rss/all/news",
-        "https://www.milliyet.com.tr/rss",
+        "https://www.milliyet.com.tr/rss/rssnew/gundem.xml",
         "https://www.sabah.com.tr/rss/gundem.xml",
         "https://www.haberturk.com/rss",
         "https://www.posta.com.tr/rss",
@@ -213,13 +212,36 @@
                 })
                 .then(data => {
                     const parser = new DOMParser();
-                    var ebsdata="";
-                    if(url==="https://www.log.com.tr/feed/"){
-                        ebsdata = atob(base64String);
-                    }
-                    else{
-                        ebsdata = data.contents;
-                    }
+                    
+                   var ebsdata = "";
+                   
+                   if (data.contents.includes("data:application/rss+xml; charset=UTF-8;base64,"))
+                   {
+                       
+                       const base64Data = data.contents.slice("data:application/rss+xml; charset=UTF-8;base64,".length);
+                       try {
+                           // Base64 verisini çözme
+                           const decodedData = atob(base64Data);
+                   
+                           // Çözülmüş veriyi UTF-8 olarak doğru şekilde almak için
+                           const decoder = new TextDecoder("utf-8");
+                           ebsdata = decoder.decode(new Uint8Array([...decodedData].map(char => char.charCodeAt(0))));
+                   
+                           console.log("Base64 verisi çözüldü: ", ebsdata);
+                   
+                       } catch (e) {
+                           console.error("Base64 çözümlemesi sırasında hata oluştu: ", e);
+                           ebsdata = data.contents; // Hata durumunda orijinal veriyi kullan
+                       }
+                   } 
+                   else {
+                       ebsdata = data.contents;
+                       console.log("Doğrudan veri: ", ebsdata);
+                   }
+
+
+                    
+                    
                     const xmlDoc = parser.parseFromString(ebsdata, "application/xml");
                     const items = xmlDoc.querySelectorAll("item");
                     const feedTitle = xmlDoc.querySelector("title") ? xmlDoc.querySelector("title").textContent : "RSS İçerikleri";
