@@ -1,4 +1,4 @@
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,7 +43,6 @@
                 <input type="text" id="rss-input" class="form-control" placeholder="RSS linki ekleyin">
             </div>
             <button id="add-rss" class="btn btn-primary btn-sm w-100 mb-2">Ekle</button>
-            <button id="add-all-rss" class="btn btn-success btn-sm w-100 mb-3">Tümünü Ekle</button>
             <ul id="rss-list" class="list-group"></ul>
         </div>
 
@@ -157,6 +156,7 @@
             if (category && predefinedRssLinks[category]) {
                 const links = predefinedRssLinks[category];
                 document.getElementById("rss-list").innerHTML = "";
+                addedUrls.clear();
                 links.forEach(link => {
                     if (!addedUrls.has(link)) {
                         addRssToList(link);
@@ -184,17 +184,7 @@
             rssInput.value = "";
         });
 
-        // Tümünü Ekleme
-        document.getElementById("add-all-rss").addEventListener("click", function () {
-            const category = document.getElementById("category-select").value;
-            if (category && predefinedRssLinks[category]) {
-                predefinedRssLinks[category].forEach(link => {
-                    if (!addedUrls.has(link)) {
-                        addRssToList(link);
-                    }
-                });
-            }
-        });
+
 
         // RSS Verilerini Göster
         document.getElementById("rss-list").addEventListener("click", function (e) {
@@ -223,7 +213,14 @@
                 })
                 .then(data => {
                     const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data.contents, "application/xml");
+                    var ebsdata="";
+                    if(url==="https://www.log.com.tr/feed/"){
+                        ebsdata = atob(base64String);
+                    }
+                    else{
+                        ebsdata = data.contents;
+                    }
+                    const xmlDoc = parser.parseFromString(ebsdata, "application/xml");
                     const items = xmlDoc.querySelectorAll("item");
                     const feedTitle = xmlDoc.querySelector("title") ? xmlDoc.querySelector("title").textContent : "RSS İçerikleri";
 
