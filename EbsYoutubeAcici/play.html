@@ -6,6 +6,7 @@
   <title>YouTube Videoları</title>
   <style>
     body {
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
@@ -23,26 +24,45 @@
       height: 200px;
       border: none;
     }
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <h1 style="text-align: center;">YouTube Videoları</h1>
+  <div class="controls">
+    <button id="muteButton" class="btn btn-primary">Ses Kapalı</button>
+  </div>
   <div class="video-container" id="videoContainer"></div>
 
   <script>
-    // Saklanan linkleri al
     const links = JSON.parse(localStorage.getItem('youtubeLinks')) || [];
-
     const videoContainer = document.getElementById('videoContainer');
+    const muteButton = document.getElementById('muteButton');
+    let isMuted = false;
 
     // Linklerden iframe oluştur ve sayfaya ekle
     links.forEach(link => {
       const videoId = new URL(link).searchParams.get('v'); // YouTube video ID'sini al
       if (videoId) {
         const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}`; // Otomatik ses açma / kapama
         videoContainer.appendChild(iframe);
       }
+    });
+
+    // Ses açma / kapama butonunu ayarlama
+    muteButton.addEventListener('click', () => {
+      isMuted = !isMuted; // Ses durumunu değiştir
+      // Her iframe'in src'ini ses durumuna göre güncelle
+      const iframes = document.querySelectorAll('iframe');
+      iframes.forEach(iframe => {
+        const src = iframe.src.split('?')[0]; // Temel URL'yi al
+        iframe.src = `${src}?autoplay=1&mute=${isMuted ? 1 : 0}`; // Ses durumuna göre yeni URL
+      });
+      muteButton.textContent = isMuted ? 'Ses Açık' : 'Ses Kapalı'; // Buton metnini değiştir
     });
   </script>
 </body>
