@@ -1,4 +1,5 @@
-<html lang="en"><head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Bootstrap ve JavaScript ile modern tasarıma sahip bir RSS listeleyici uygulaması.">
@@ -21,15 +22,6 @@
             max-height: 100vh;
             overflow-y: auto;
         }
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #343a40;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
     </style>
 </head>
 <body>
@@ -41,7 +33,8 @@
             <div class="mb-3">
                 <input type="text" id="rss-input" class="form-control" placeholder="RSS linki ekleyin">
             </div>
-            <button id="add-rss" class="btn btn-primary btn-sm w-100 mb-3">Ekle</button>
+            <button id="add-rss" class="btn btn-primary btn-sm w-100 mb-2">Ekle</button>
+            <button id="add-all-rss" class="btn btn-success btn-sm w-100 mb-3">Tümünü Ekle</button>
             <ul id="rss-list" class="list-group"></ul>
         </div>
 
@@ -53,13 +46,63 @@
     </div>
 </div>
 
-<footer>
-    Bu uygulama <a href="https://ebubekirbastama.com.tr" target="_blank" style="color: #0dcaf0; text-decoration: none;">Ebubekir Bastama</a> tarafından yapılmıştır.
-</footer>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const addedUrls = new Set(); // Eklenen URL'leri takip etmek için Set
+        const addedUrls = new Set();
+        const predefinedRssLinks = [
+          "https://www.ahaber.com.tr/rss/gundem.xml",
+          "https://www.aksam.com.tr/rss/rss.asp",
+          "https://www.voaturkce.com/api/",
+          "https://www.aa.com.tr/tr/rss/default?cat=guncel",
+          "https://artigercek.com/service/rss.php",
+          "https://feeds.bbci.co.uk/turkce/rss.xml",
+          "https://bianet.org/biamag.rss",
+          "https://www.birgazete.com/feed",
+          "https://www.birgun.net/rss/home",
+          "https://www.cnnturk.com/feed/rss/all/news",
+          "https://www.cumhuriyet.com.tr/rss/son_dakika.xml",
+          "https://www.demokrathaber.org/rss",
+          "https://www.diken.com.tr/feed/",
+          "https://www.dirilispostasi.com/rss",
+          "https://www.diyanethaber.com.tr/rss",
+          "https://dogruhaber.com.tr/rss",
+          "https://www.dokuz8haber.net/rss",
+          "https://www.dunya.com/rss?dunya",
+          "https://rss.dw.com/rdf/rss-tur-all",
+          "https://www.enpolitik.com/rss.xml",
+          "https://www.ensonhaber.com/rss/ensonhaber.xml",
+          "https://www.evrensel.net/rss/haber.xml",
+          "https://www.f5haber.com/export/rss",
+          "https://www.gazeteduvar.com.tr/export/rss",
+          "https://www.gazetevatan.com/rss/anasayfa-manset.xml",
+          "https://www.gercekgundem.com/rss",
+          "https://www.haber3.com/rss",
+          "https://haberglobal.com.tr/rss",
+          "https://www.haberturk.com/rss",
+          "https://halktv.com.tr/service/rss.php",
+          "http://www.hurriyet.com.tr/rss/anasayfa",
+          "https://www.iklimhaber.org/feed/",
+          "https://www.indyturk.com/rss.xml",
+          "https://www.internethaber.com/rss",
+          "https://kisadalga.net/service/rss.php",
+          "https://www.medyagazete.com/rss/genel-0",
+          "https://www.mynet.com/haber/rss/sondakika",
+          "https://www.muhalif.com.tr/rss/genel-0",
+          "https://www.nethaber.com/rss",
+          "https://www.ntv.com.tr/gundem.rss",
+          "https://www.oncevatan.com.tr/rss.php",
+          "https://www.sabah.com.tr/rss/gundem.xml",
+          "https://www.sozcu.com.tr/feeds-rss-category-sozcu",
+          "https://haber.sol.org.tr/rss.xml",
+          "https://www.star.com.tr/rss/rss.asp",
+          "https://t24.com.tr/rss",
+          "https://www.trthaber.com/sondakika.rss",
+          "https://www.yeniakit.com.tr/rss/haber/gundem",
+          "https://www.yeniasir.com.tr/rss/anasayfa.xml",
+          "https://www.yenisafak.com/rss?xml=gundem",
+          "https://yesilgazete.org/feed/",
+          "https://www.yurtgazetesi.com.tr/service/rss.ph"
+        ];
 
         // RSS Link Ekleme
         document.getElementById("add-rss").addEventListener("click", function () {
@@ -76,15 +119,17 @@
                 return;
             }
 
-            addedUrls.add(rssLink); // URL'yi Set'e ekle
-            const listItem = document.createElement("li");
-            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-            listItem.innerHTML = `
-                <span>${rssLink}</span>
-                <button class="btn btn-sm btn-info btn-view-feed">Göster</button>
-            `;
-            document.getElementById("rss-list").appendChild(listItem);
+            addRssToList(rssLink);
             rssInput.value = "";
+        });
+
+        // Tümünü Ekleme
+        document.getElementById("add-all-rss").addEventListener("click", function () {
+            predefinedRssLinks.forEach(link => {
+                if (!addedUrls.has(link)) {
+                    addRssToList(link);
+                }
+            });
         });
 
         // RSS Verilerini Göster
@@ -94,6 +139,17 @@
                 fetchRss(rssLink);
             }
         });
+
+        function addRssToList(link) {
+            addedUrls.add(link);
+            const listItem = document.createElement("li");
+            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+            listItem.innerHTML = `
+                <span>${link}</span>
+                <button class="btn btn-sm btn-info btn-view-feed">Göster</button>
+            `;
+            document.getElementById("rss-list").appendChild(listItem);
+        }
 
         function fetchRss(url) {
             fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
@@ -113,13 +169,15 @@
                     items.forEach(item => {
                         const title = item.querySelector("title") ? item.querySelector("title").textContent : "Başlık Yok";
                         const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
-                        const description = item.querySelector("description") ? item.querySelector("description").textContent : "Açıklama Yok";
+                        let description = item.querySelector("description") ? item.querySelector("description").textContent : "Açıklama yok.";
+
+                        // Gereksiz img etiketlerini temizle
+                        description = description.replace(/<img[^>]*>/gi, "");
 
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                            <h6>${title}</h6>
-                            <a href="${link}" target="_blank">${link}</a>
+                            <a href="${link}" target="_blank"><b>${title}</b></a>
                             <p>${description}</p>
                         `;
                         document.getElementById("rss-feed").appendChild(listItem);
@@ -127,26 +185,24 @@
                 })
                 .catch(error => {
                     console.error("Hata:", error);
-                    alert("RSS verisi alınamadı.");
+                    alert("RSS verisi yüklenemedi.");
                 });
         }
 
-        // URL Geçerliliği Kontrolü
-        function isValidUrl(string) {
-            const urlPattern = new RegExp(
-                "^(https?:\\/\\/)?" + // Protokol (http veya https)
-                "((([a-z\\d]([a-z\\d-]*[a-z\\d])*))\\.)+" + // Alt alan adları
-                "[a-z]{2,}" + // Alan adı
-                "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // Port ve yol
-                "(\\?[;&a-z\\d%_.~+=-]*)?" + // Sorgu parametreleri
-                "(\\#[-a-z\\d_]*)?$", // Hash
-                "i"
+        function isValidUrl(url) {
+            const pattern = new RegExp(
+                "^(https?:\\/\\/)" +
+                "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+                "((\\d{1,3}\\.){3}\\d{1,3}))" +
+                "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+                "(\\?[;&a-z\\d%_.~+=-]*)?" +
+                "(\\#[-a-z\\d_]*)?$", "i"
             );
-            return !!urlPattern.test(string);
+            return !!pattern.test(url);
         }
     });
 </script>
+</body>
+</html>
 
-
-
-</body></html>
+  
