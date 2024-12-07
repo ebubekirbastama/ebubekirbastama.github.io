@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Bootstrap ve JavaScript ile modern tasarıma sahip bir RSS listeleyici uygulaması.">
@@ -61,20 +59,32 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const addedUrls = new Set(); // Eklenen URL'leri takip etmek için Set
+
         // RSS Link Ekleme
         document.getElementById("add-rss").addEventListener("click", function () {
             const rssInput = document.getElementById("rss-input");
             const rssLink = rssInput.value.trim();
-            if (rssLink) {
-                const listItem = document.createElement("li");
-                listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-                listItem.innerHTML = `
-                    <span>${rssLink}</span>
-                    <button class="btn btn-sm btn-info btn-view-feed">Göster</button>
-                `;
-                document.getElementById("rss-list").appendChild(listItem);
-                rssInput.value = "";
+
+            if (!isValidUrl(rssLink)) {
+                alert("Lütfen geçerli bir URL girin!");
+                return;
             }
+
+            if (addedUrls.has(rssLink)) {
+                alert("Bu URL zaten eklendi!");
+                return;
+            }
+
+            addedUrls.add(rssLink); // URL'yi Set'e ekle
+            const listItem = document.createElement("li");
+            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+            listItem.innerHTML = `
+                <span>${rssLink}</span>
+                <button class="btn btn-sm btn-info btn-view-feed">Göster</button>
+            `;
+            document.getElementById("rss-list").appendChild(listItem);
+            rssInput.value = "";
         });
 
         // RSS Verilerini Göster
@@ -96,7 +106,7 @@
                     const xmlDoc = parser.parseFromString(data.contents, "application/xml");
                     const items = xmlDoc.querySelectorAll("item");
                     const feedTitle = xmlDoc.querySelector("title") ? xmlDoc.querySelector("title").textContent : "RSS İçerikleri";
-                    
+
                     document.getElementById("rss-feed").innerHTML = "";
                     document.getElementById("feed-title").textContent = feedTitle;
 
@@ -120,7 +130,23 @@
                     alert("RSS verisi alınamadı.");
                 });
         }
+
+        // URL Geçerliliği Kontrolü
+        function isValidUrl(string) {
+            const urlPattern = new RegExp(
+                "^(https?:\\/\\/)?" + // Protokol (http veya https)
+                "((([a-z\\d]([a-z\\d-]*[a-z\\d])*))\\.)+" + // Alt alan adları
+                "[a-z]{2,}" + // Alan adı
+                "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // Port ve yol
+                "(\\?[;&a-z\\d%_.~+=-]*)?" + // Sorgu parametreleri
+                "(\\#[-a-z\\d_]*)?$", // Hash
+                "i"
+            );
+            return !!urlPattern.test(string);
+        }
     });
 </script>
-</body>
-</html>
+
+
+
+</body></html>
