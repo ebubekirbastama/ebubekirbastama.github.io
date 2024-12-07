@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bootstrap ve JavaScript ile modern tasarıma sahip bir RSS listeleyici uygulaması.">
+    <meta name="keywords" content="RSS, Bootstrap, JavaScript, Modern Tasarım, Web Uygulaması">
+    <meta name="author" content="Ebubekir Bastama">
+    <title>EBS RSS Listeleyici</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+            background-color: #f8f9fa;
+        }
+        #left-panel {
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        #right-panel {
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sol Panel -->
+        <div class="col-md-4 bg-light p-3" id="left-panel">
+            <h5>RSS Linkleri</h5>
+            <div class="mb-3">
+                <input type="text" id="rss-input" class="form-control" placeholder="RSS linki ekleyin">
+            </div>
+            <button id="add-rss" class="btn btn-primary btn-sm w-100 mb-3">Ekle</button>
+            <ul id="rss-list" class="list-group"></ul>
+        </div>
+
+        <!-- Sağ Panel -->
+        <div class="col-md-8 bg-white p-3" id="right-panel">
+            <h5 id="feed-title">RSS İçerikleri</h5>
+            <ul id="rss-feed" class="list-group"></ul>
+        </div>
+    </div>
+</div>
+
+<footer>
+    Bu uygulama <a href="https://ebubekirbastama.com.tr" target="_blank" style="color: #0dcaf0; text-decoration: none;">Ebubekir Bastama</a> tarafından yapılmıştır.
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // RSS Link Ekleme
+        document.getElementById("add-rss").addEventListener("click", function () {
+            const rssInput = document.getElementById("rss-input");
+            const rssLink = rssInput.value.trim();
+            if (rssLink) {
+                const listItem = document.createElement("li");
+                listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+                listItem.innerHTML = `
+                    <span>${rssLink}</span>
+                    <button class="btn btn-sm btn-info btn-view-feed">Göster</button>
+                `;
+                document.getElementById("rss-list").appendChild(listItem);
+                rssInput.value = "";
+            }
+        });
+
+        // RSS Verilerini Göster
+        document.getElementById("rss-list").addEventListener("click", function (e) {
+            if (e.target.classList.contains("btn-view-feed")) {
+                const rssLink = e.target.previousElementSibling.textContent;
+                fetchRss(rssLink);
+            }
+        });
+
+        function fetchRss(url) {
+            fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+                .then(response => {
+                    if (response.ok) return response.json();
+                    throw new Error("RSS verisi alınamadı.");
+                })
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(data.contents, "application/xml");
+                    const items = xmlDoc.querySelectorAll("item");
+                    const feedTitle = xmlDoc.querySelector("title") ? xmlDoc.querySelector("title").textContent : "RSS İçerikleri";
+                    
+                    document.getElementById("rss-feed").innerHTML = "";
+                    document.getElementById("feed-title").textContent = feedTitle;
+
+                    items.forEach(item => {
+                        const title = item.querySelector("title") ? item.querySelector("title").textContent : "Başlık Yok";
+                        const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
+                        const description = item.querySelector("description") ? item.querySelector("description").textContent : "Açıklama Yok";
+
+                        const listItem = document.createElement("li");
+                        listItem.className = "list-group-item";
+                        listItem.innerHTML = `
+                            <h6>${title}</h6>
+                            <a href="${link}" target="_blank">${link}</a>
+                            <p>${description}</p>
+                        `;
+                        document.getElementById("rss-feed").appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error("Hata:", error);
+                    alert("RSS verisi alınamadı.");
+                });
+        }
+    });
+</script>
+</body>
+</html>
