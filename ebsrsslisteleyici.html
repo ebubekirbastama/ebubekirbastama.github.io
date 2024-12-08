@@ -55,6 +55,7 @@
 </div>
 
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         const addedUrls = new Set();
         const predefinedRssLinks = {
@@ -214,7 +215,7 @@
                     
                    var ebsdata = "";
                    
-                   if (data.contents.includes("data:application/rss+xml; charset=UTF-8;base64,"))
+                   if (data.contents.includes("base64,"))
                    {
                        
                        const base64Data = data.contents.slice("data:application/rss+xml; charset=UTF-8;base64,".length);
