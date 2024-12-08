@@ -1,288 +1,291 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="EBS RSS Listeleyici, Bootstrap ve JavaScript kullanarak geliştirilmiş modern tasarıma sahip bir RSS okuma ve yönetme uygulamasıdır. RSS kaynaklarını kolayca ekleyebilir ve içerikleri görüntüleyebilirsiniz.">
-    <meta name="keywords" content="RSS, RSS Listeleyici, Web Uygulaması, Bootstrap, JavaScript, Modern Tasarım, RSS Kaynağı, EBS RSS">
-    <meta name="author" content="Ebubekir Bastama">
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="EBS RSS Listeleyici, Bootstrap ve JavaScript kullanarak geliştirilmiş modern tasarıma sahip bir RSS okuma ve yönetme uygulamasıdır. RSS kaynaklarını kolayca ekleyebilir ve içerikleri görüntüleyebilirsiniz.">
+        <meta name="keywords" content="RSS, RSS Listeleyici, Web Uygulaması, Bootstrap, JavaScript, Modern Tasarım, RSS Kaynağı, EBS RSS">
+        <meta name="author" content="Ebubekir Bastama">
     <title>EBS RSS Listeleyici</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: url('https://ebubekirbastama.com.tr/circles.webp');
-            background-color: #f8f9fa;
-        }
-        #left-panel {
-            background: url('https://ebubekirbastama.com.tr/circles.webp');
-            max-height: 100vh;
-            overflow-y: auto;
-        }
-        #right-panel {
-            background: url('https://ebubekirbastama.com.tr/circles.webp');
-            max-height: 100vh;
-            overflow-y: auto;
-        }
-    </style>
-</head>
-<body>
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sol Panel -->
-        <div class="col-md-4 bg-light p-3" id="left-panel">
-            <h5>RSS Linkleri</h5>
-            <div class="mb-3">
-                <label for="category-select" class="form-label">Kategori Seçin:</label>
-                <select id="category-select" class="form-select">
-                    <option value="">Kategori Seçin</option>
-                    <option value="bilim">Bilim</option>
-                    <option value="teknoloji">Teknoloji</option>
-                    <option value="gündem">Gündem</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <input type="text" id="rss-input" class="form-control" placeholder="RSS linki ekleyin">
-            </div>
-            <button id="add-rss" class="btn btn-primary btn-sm w-100 mb-2">Ekle</button>
-            <ul id="rss-list" class="list-group"></ul>
-        </div>
+        <style>
+            body {
+                background: url('https://ebubekirbastama.com.tr/circles.webp');
+                background-color: #f8f9fa;
+            }
+            #left-panel {
+                background: url('https://ebubekirbastama.com.tr/circles.webp');
+                max-height: 100vh;
+                overflow-y: auto;
+            }
+            #right-panel {
+                background: url('https://ebubekirbastama.com.tr/circles.webp');
+                max-height: 100vh;
+                overflow-y: auto;
+            }
 
-        <!-- Sağ Panel -->
-        <div class="col-md-8 bg-white p-3" id="right-panel">
-            <h5 id="feed-title">RSS İçerikleri</h5>
-            <ul id="rss-feed" class="list-group"></ul>
+        </style>
+    </head>
+    <body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sol Panel -->
+            <div class="col-md-4 bg-light p-3" id="left-panel">
+                <h5>RSS Linkleri</h5>
+                <div class="mb-3">
+                    <label for="category-select" class="form-label">Kategori Seçin:</label>
+                    <select id="category-select" class="form-select">
+                        <option value="">Kategori Seçin</option>
+                        <option value="bilim">Bilim</option>
+                        <option value="teknoloji">Teknoloji</option>
+                        <option value="gündem">Gündem</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="rss-input" class="form-control" placeholder="RSS linki ekleyin">
+                </div>
+                <button id="add-rss" class="btn btn-primary btn-sm w-100 mb-2">Ekle</button>
+                <ul id="rss-list" class="list-group"></ul>
+            </div>
+
+            <!-- Sağ Panel -->
+            <div class="col-md-8 bg-white p-3" id="right-panel">
+                <h5 id="feed-title">RSS İçerikleri</h5>
+                <ul id="rss-feed" class="list-group"></ul>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
+    <script>
+    
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const addedUrls = new Set();
-        const predefinedRssLinks = {
-    bilim: [
-        "https://arkeofili.com/feed/",
-        "https://beyinsizler.net/feed/",
-        "https://www.bilimgunlugu.com/feed/",
-        "https://bilimvegelecek.com.tr/index.php/feed/",
-        "https://www.bilimoloji.com/feed/",
-        "https://www.bilimma.com/feed/",
-        "https://www.bilimup.com/rss.xml",
-        "https://cilginfizikcilervbi.com/feed/",
-        "https://www.dijitalx.com/feed/",
-        "https://evrimagaci.org/rss.xml",
-        "https://www.fizikist.com/feed",
-        "https://www.gercekbilim.com/feed/",
-        "https://gelecekbilimde.net/feed/",
-        "https://www.herkesibilimteknoloji.com/feed",
-        "https://www.kozmikanafor.com/feed/",
-        "https://www.matematiksel.org/feed",
-        "https://moletik.com/feed/",
-        "https://www.molekulce.com/feed/",
-        "https://popsci.com.tr/feed/",
-        "https://sarkac.org/feed/",
-        "https://sinirbilim.org/feed/",
-        "https://www.sozcu.com.tr/feeds-rss-category-saglik"
-    ],
-    teknoloji: [
-        "https://www.chip.com.tr/rss",
-        "https://www.donanimhaber.com/rss/tum/",
-        "https://www.indir.com/haber/feed/",
-        "https://www.log.com.tr/feed/",
-        "https://www.megabayt.com/rss",
-        "https://shiftdelete.net/feed"
-    ],
-    gündem: [
-        "https://www.aa.com.tr/tr/rss/default?cat=guncel",
-        "https://www.hurriyet.com.tr/rss/gundem",
-        "https://www.cnnturk.com/feed/rss/all/news",
-        "https://www.milliyet.com.tr/rss/rssnew/gundem.xml",
-        "https://www.sabah.com.tr/rss/gundem.xml",
-        "https://www.haberturk.com/rss",
-        "https://www.gazetevatan.com/rss/anasayfa-manset.xml",
-        "https://www.ensonhaber.com/rss/ensonhaber.xml",
-        "https://www.voaturkce.com/api/",
-        "https://www.gazeteduvar.com.tr/export/rss",
-        "https://www.yeniakit.com.tr/rss/haber/gundem",
-        "https://www.cumhuriyet.com.tr/rss/son_dakika.xml",
-        "https://www.yenisafak.com/rss?xml=gundem",
-        "https://www.aksam.com.tr/rss/rss.asp",
-        "https://www.dirilispostasi.com/rss",
-        "https://www.star.com.tr/rss/rss.asp",
-        "https://www.mynet.com/haber/rss/sondakika",
-        "https://www.demokrathaber.org/rss",
-        "https://www.f5haber.com/export/rss",
-        "https://www.diken.com.tr/feed/",
-        "https://www.gercekgundem.com/rss",
-        "https://www.birgun.net/rss/home",
-        "https://www.indyturk.com/rss.xml",
-        "https://www.sozcu.com.tr/feeds-rss-category-sozcu",
-        "https://www.muhalif.com.tr/rss/genel-0",
-        "https://www.yurtgazetesi.com.tr/service/rss.php",
-        "https://www.t24.com.tr/rss",
-        "https://www.yeniasir.com.tr/rss/anasayfa.xml",
-        "https://www.birgazete.com/feed",
-        "https://www.dokuz8haber.net/rss",
-        "https://www.trthaber.com/sondakika.rss",
-        "https://www.nethaber.com/rss",
-        "https://www.evrensel.net/rss/haber.xml",
-        "https://www.yenisafak.com/rss?xml=gundem",
-        "https://www.kisadalga.net/service/rss.php",
-        "https://www.internethaber.com/rss",
-        "https://www.artigercek.com/service/rss.php",
-        "https://www.haber3.com/rss",
-        "https://www.turkiyegazetesi.com.tr/rss",
-        "https://www.iklimhaber.org/feed/",
-        "https://www.medyagazete.com/rss/genel-0",
-        "https://www.gercekgundem.com/rss",
-        "https://www.radikal.com.tr/feed/",
-        "https://www.dunya.com/rss?dunya",
-        "https://www.bianet.org/biamag.rss",
-        "https://www.oncevatan.com.tr/rss.php",
-        "https://www.gazetevatan.com/rss/anasayfa-manset.xml",
-        "https://www.gazetevatan.com/rss/anasayfa-manset.xml",
-        "https://www.trthaber.com/sondakika.rss",
-        "https://www.yenisafak.com/rss?xml=gundem",
-        "https://www.radikal.com.tr/feed/",
-        "https://www.milliyet.com.tr/rss"
-    ]
-};
-
-
-
-        // Kategori Seçimi ve RSS Bağlantıları Ekleme
-        document.getElementById("category-select").addEventListener("change", function () {
-            const category = this.value;
-            if (category && predefinedRssLinks[category]) {
-                const links = predefinedRssLinks[category];
-                document.getElementById("rss-list").innerHTML = "";
-                addedUrls.clear();
-                links.forEach(link => {
-                    if (!addedUrls.has(link)) {
-                        addRssToList(link);
-                    }
-                });
-            }
-        });
-
-        // RSS Link Ekleme
-        document.getElementById("add-rss").addEventListener("click", function () {
-            const rssInput = document.getElementById("rss-input");
-            const rssLink = rssInput.value.trim();
-
-            if (!isValidUrl(rssLink)) {
-                alert("Lütfen geçerli bir URL girin!");
-                return;
-            }
-
-            if (addedUrls.has(rssLink)) {
-                alert("Bu URL zaten eklendi!");
-                return;
-            }
-
-            addRssToList(rssLink);
-            rssInput.value = "";
-        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const addedUrls = new Set();
+            const predefinedRssLinks = {
+                bilim: [
+                    "https://arkeofili.com/feed/",
+                    "https://beyinsizler.net/feed/",
+                    "https://www.bilimgunlugu.com/feed/",
+                    "https://bilimvegelecek.com.tr/index.php/feed/",
+                    "https://www.bilimoloji.com/feed/",
+                    "https://www.bilimma.com/feed/",
+                    "https://www.bilimup.com/rss.xml",
+                    "https://cilginfizikcilervbi.com/feed/",
+                    "https://www.dijitalx.com/feed/",
+                    "https://evrimagaci.org/rss.xml",
+                    "https://www.fizikist.com/feed",
+                    "https://www.gercekbilim.com/feed/",
+                    "https://gelecekbilimde.net/feed/",
+                    "https://www.herkesibilimteknoloji.com/feed",
+                    "https://www.kozmikanafor.com/feed/",
+                    "https://www.matematiksel.org/feed",
+                    "https://moletik.com/feed/",
+                    "https://www.molekulce.com/feed/",
+                    "https://popsci.com.tr/feed/",
+                    "https://sarkac.org/feed/",
+                    "https://sinirbilim.org/feed/",
+                    "https://www.sozcu.com.tr/feeds-rss-category-saglik"
+                ],
+                teknoloji: [
+                    "https://www.chip.com.tr/rss",
+                    "https://www.donanimhaber.com/rss/tum/",
+                    "https://www.indir.com/haber/feed/",
+                    "https://www.log.com.tr/feed/",
+                    "https://www.megabayt.com/rss",
+                    "https://shiftdelete.net/feed"
+                ],
+                gündem: [
+                    "https://www.aa.com.tr/tr/rss/default?cat=guncel",
+                    "https://www.hurriyet.com.tr/rss/gundem",
+                    "https://www.cnnturk.com/feed/rss/all/news",
+                    "https://www.milliyet.com.tr/rss/rssnew/gundem.xml",
+                    "https://www.sabah.com.tr/rss/gundem.xml",
+                    "https://www.haberturk.com/rss",
+                    "https://www.gazetevatan.com/rss/anasayfa-manset.xml",
+                    "https://www.ensonhaber.com/rss/ensonhaber.xml",
+                    "https://www.voaturkce.com/api/",
+                    "https://www.gazeteduvar.com.tr/export/rss",
+                    "https://www.yeniakit.com.tr/rss/haber/gundem",
+                    "https://www.cumhuriyet.com.tr/rss/son_dakika.xml",
+                    "https://www.yenisafak.com/rss?xml=gundem",
+                    "https://www.aksam.com.tr/rss/rss.asp",
+                    "https://www.dirilispostasi.com/rss",
+                    "https://www.star.com.tr/rss/rss.asp",
+                    "https://www.mynet.com/haber/rss/sondakika",
+                    "https://www.demokrathaber.org/rss",
+                    "https://www.f5haber.com/export/rss",
+                    "https://www.diken.com.tr/feed/",
+                    "https://www.gercekgundem.com/rss",
+                    "https://www.birgun.net/rss/home",
+                    "https://www.indyturk.com/rss.xml",
+                    "https://www.sozcu.com.tr/feeds-rss-category-sozcu",
+                    "https://www.muhalif.com.tr/rss/genel-0",
+                    "https://www.yurtgazetesi.com.tr/service/rss.php",
+                    "https://www.t24.com.tr/rss",
+                    "https://www.yeniasir.com.tr/rss/anasayfa.xml",
+                    "https://www.birgazete.com/feed",
+                    "https://www.dokuz8haber.net/rss",
+                    "https://www.trthaber.com/sondakika.rss",
+                    "https://www.nethaber.com/rss",
+                    "https://www.evrensel.net/rss/haber.xml",
+                    "https://www.yenisafak.com/rss?xml=gundem",
+                    "https://www.kisadalga.net/service/rss.php",
+                    "https://www.internethaber.com/rss",
+                    "https://www.artigercek.com/service/rss.php",
+                    "https://www.haber3.com/rss",
+                    "https://www.turkiyegazetesi.com.tr/rss",
+                    "https://www.iklimhaber.org/feed/",
+                    "https://www.medyagazete.com/rss/genel-0",
+                    "https://www.gercekgundem.com/rss",
+                    "https://www.radikal.com.tr/feed/",
+                    "https://www.dunya.com/rss?dunya",
+                    "https://www.bianet.org/biamag.rss",
+                    "https://www.oncevatan.com.tr/rss.php",
+                    "https://www.gazetevatan.com/rss/anasayfa-manset.xml",
+                    "https://www.gazetevatan.com/rss/anasayfa-manset.xml",
+                    "https://www.trthaber.com/sondakika.rss",
+                    "https://www.yenisafak.com/rss?xml=gundem",
+                    "https://www.radikal.com.tr/feed/",
+                    "https://www.milliyet.com.tr/rss"
+                ]
+            };
 
 
 
-        // RSS Verilerini Göster
-        document.getElementById("rss-list").addEventListener("click", function (e) {
-            if (e.target.classList.contains("btn-view-feed")) {
-                const rssLink = e.target.previousElementSibling.textContent;
-                fetchRss(rssLink);
-            }
-        });
-
-        function addRssToList(link) {
-            addedUrls.add(link);
-            const listItem = document.createElement("li");
-            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-            listItem.innerHTML = `
-                <span>${link}</span>
-                <button class="btn btn-sm btn-info btn-view-feed">Göster</button>
-            `;
-            document.getElementById("rss-list").appendChild(listItem);
-        }
-
-        function fetchRss(url) {
-            fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
-                .then(response => {
-                    if (response.ok) return response.json();
-                    throw new Error("RSS verisi alınamadı.");
-                })
-                .then(data => {
-                    const parser = new DOMParser();
-                    
-                   var ebsdata = "";
-                   
-                   if (data.contents.includes("base64,"))
-                   {
-                       
-                       const base64Data = data.contents.slice("data:application/rss+xml; charset=UTF-8;base64,".length);
-                       try {
-                           // Base64 verisini çözme
-                           const decodedData = atob(base64Data);
-                   
-                           // Çözülmüş veriyi UTF-8 olarak doğru şekilde almak için
-                           const decoder = new TextDecoder("utf-8");
-                           ebsdata = decoder.decode(new Uint8Array([...decodedData].map(char => char.charCodeAt(0))));
-                   
-                           console.log("Base64 verisi çözüldü: ", ebsdata);
-                   
-                       } catch (e) {
-                           console.error("Base64 çözümlemesi sırasında hata oluştu: ", e);
-                           ebsdata = data.contents; // Hata durumunda orijinal veriyi kullan
-                       }
-                   } 
-                   else {
-                       ebsdata = data.contents;
-                       console.log("Doğrudan veri: ", ebsdata);
-                   }
-
-
-                    
-                    
-                    const xmlDoc = parser.parseFromString(ebsdata, "application/xml");
-                    const items = xmlDoc.querySelectorAll("item");
-                    const feedTitle = xmlDoc.querySelector("title") ? xmlDoc.querySelector("title").textContent : "RSS İçerikleri";
-
-                    document.getElementById("rss-feed").innerHTML = "";
-                    document.getElementById("feed-title").textContent = feedTitle;
-
-                    items.forEach(item => {
-                        const title = item.querySelector("title") ? item.querySelector("title").textContent : "Başlık Yok";
-                        const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
-                        let description = item.querySelector("description") ? item.querySelector("description").textContent : "Açıklama yok.";
-
-                        description = description.replace(/<img[^>]*>/gi, "");
-
-                        const listItem = document.createElement("li");
-                        listItem.className = "list-group-item";
-                        listItem.innerHTML = `
-                            <a href="${link}" target="_blank"><b>${title}</b></a>
-                            <p>${description}</p>
-                        `;
-                        document.getElementById("rss-feed").appendChild(listItem);
+            // Kategori Seçimi ve RSS Bağlantıları Ekleme
+            document.getElementById("category-select").addEventListener("change", function () {
+                const category = this.value;
+                if (category && predefinedRssLinks[category]) {
+                    const links = predefinedRssLinks[category];
+                    document.getElementById("rss-list").innerHTML = "";
+                    addedUrls.clear();
+                    links.forEach(link => {
+                        if (!addedUrls.has(link)) {
+                            addRssToList(link);
+                        }
                     });
-                })
-                .catch(error => {
-                    console.error("Hata:", error);
-                    alert("RSS verisi yüklenemedi.");
-                });
-        }
+                }
+            });
 
-        function isValidUrl(url) {
-            const pattern = new RegExp(
-                "^(https?:\\/\\/)" +
-                "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z\\d]{2,}|" +
-                "((\\d{1,3}\\.){3}\\d{1,3}))" +
-                "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
-                "(\\?[;&a-z\\d%_.~+=-]*)?" +
-                "(\\#[-a-z\\d_]*)?$", "i"
-            );
-            return pattern.test(url);
-        }
-    });
-</script>
+            // RSS Link Ekleme
+            document.getElementById("add-rss").addEventListener("click", function () {
+                const rssInput = document.getElementById("rss-input");
+                const rssLink = rssInput.value.trim();
+
+                if (!isValidUrl(rssLink)) {
+                    alert("Lütfen geçerli bir URL girin!");
+                    return;
+                }
+
+                if (addedUrls.has(rssLink)) {
+                    alert("Bu URL zaten eklendi!");
+                    return;
+                }
+
+                addRssToList(rssLink);
+                rssInput.value = "";
+            });
+
+
+
+            // RSS Verilerini Göster
+            document.getElementById("rss-list").addEventListener("click", function (e) {
+                if (e.target.classList.contains("btn-view-feed")) {
+                    const rssLink = e.target.previousElementSibling.textContent;
+                    fetchRss(rssLink);
+                }
+            });
+
+            function addRssToList(link) {
+                addedUrls.add(link);
+                const listItem = document.createElement("li");
+                listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+                listItem.innerHTML = `
+                    <span>${link}</span>
+                    <button class="btn btn-sm btn-info btn-view-feed">Göster</button>
+                `;
+                document.getElementById("rss-list").appendChild(listItem);
+            }
+
+            function fetchRss(url) {
+                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+                        .then(response => {
+                            if (response.ok)
+                                return response.json();
+                            throw new Error("RSS verisi alınamadı.");
+                        })
+                        .then(data => {
+                            const parser = new DOMParser();
+
+                            var ebsdata = "";
+
+                            if (data.contents.includes("base64,"))
+                            {
+
+                                const base64Data = data.contents.slice("data:application/rss+xml; charset=UTF-8;base64,".length);
+                                try {
+                                    // Base64 verisini çözme
+                                    const decodedData = atob(base64Data);
+
+                                    // Çözülmüş veriyi UTF-8 olarak doğru şekilde almak için
+                                    const decoder = new TextDecoder("utf-8");
+                                    ebsdata = decoder.decode(new Uint8Array([...decodedData].map(char => char.charCodeAt(0))));
+
+                                    console.log("Base64 verisi çözüldü: ", ebsdata);
+
+                                } catch (e) {
+                                    console.error("Base64 çözümlemesi sırasında hata oluştu: ", e);
+                                    ebsdata = data.contents; // Hata durumunda orijinal veriyi kullan
+                                }
+                            } else {
+                                ebsdata = data.contents;
+                                console.log("Doğrudan veri: ", ebsdata);
+                            }
+
+
+
+
+                            const xmlDoc = parser.parseFromString(ebsdata, "application/xml");
+                            const items = xmlDoc.querySelectorAll("item");
+                            const feedTitle = xmlDoc.querySelector("title") ? xmlDoc.querySelector("title").textContent : "RSS İçerikleri";
+
+                            document.getElementById("rss-feed").innerHTML = "";
+                            document.getElementById("feed-title").textContent = feedTitle;
+
+                            items.forEach(item => {
+                                const title = item.querySelector("title") ? item.querySelector("title").textContent : "Başlık Yok";
+                                const link = item.querySelector("link") ? item.querySelector("link").textContent : "#";
+                                let description = item.querySelector("description") ? item.querySelector("description").textContent : "Açıklama yok.";
+
+                                description = description.replace(/<img[^>]*>/gi, "");
+
+                                const listItem = document.createElement("li");
+                                listItem.className = "list-group-item";
+                                listItem.innerHTML = `
+                                <b>Başlık:</b><p>${title}</p>
+                                <a href=${link} id="ebslink">${link}</a><br>
+                                <p><b>Açıklama:</b> ${description}</p>
+                            `;
+                                document.getElementById("rss-feed").appendChild(listItem);
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Hata:", error);
+                            alert("RSS verisi yüklenemedi.");
+                        });
+            }
+
+            function isValidUrl(url) {
+                const pattern = new RegExp(
+                        "^(https?:\\/\\/)" +
+                        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z\\d]{2,}|" +
+                        "((\\d{1,3}\\.){3}\\d{1,3}))" +
+                        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+                        "(\\?[;&a-z\\d%_.~+=-]*)?" +
+                        "(\\#[-a-z\\d_]*)?$", "i"
+                        );
+                return pattern.test(url);
+            }
+        });
+    </script>
 </body>
 </html>
