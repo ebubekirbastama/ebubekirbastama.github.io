@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Modern bir tasarımla hazırlanmış, zip dosyalarının içeriğini görüntüleyen bir araç. Bootstrap 5 ve JSZip kullanılarak tasarlanmıştır.">
+  <meta name="author" content="Adınız">
+  <meta name="keywords" content="zip dosyası görüntüleme, JSZip, Bootstrap 5, modern tasarım, zip içerik okuma">
+  <meta name="robots" content="index, follow">
+  
+  <title>EBSZip Dosyası Görüntüleyici</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    body {
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
+      background-position: center;
+      color: white;
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.6); /* Yarı şeffaf arka plan */
+      border-radius: 10px;
+      padding: 30px;
+      margin-top: 50px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .file-list {
+      max-height: 400px;
+      overflow-y: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .file-item {
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .file-item:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    .info-section {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 50px;
+    }
+    .info-section h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .info-section ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .info-section ul li {
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .info-section ul li::before {
+      content: "✔ ";
+      color: #0d6efd;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Zip Dosyası Görüntüleyici</h1>
+    <div class="mb-3">
+      <label for="fileInput" class="form-label">Zip Dosyanızı Seçin</label>
+      <input type="file" id="fileInput" class="form-control" accept=".zip">
+    </div>
+    <div id="outputArea" class="d-none">
+      <h5>Dosya İçeriği:</h5>
+      <div class="file-list border rounded p-3 bg-light text-dark"></div>
+      <textarea id="fileContent" class="form-control" rows="8" placeholder="Seçilen dosyanın içeriği burada görünecek..." readonly></textarea>
+    </div>
+  </div>
+
+  <div class="container info-section">
+    <h3>Nasıl Kullanılır?</h3>
+    <ul>
+      <li>Zip dosyanızı üstteki alandan seçin.</li>
+      <li>Dosya içeriği listelenir; istediğiniz dosyaya tıklayarak içeriğini görüntüleyebilirsiniz.</li>
+      <li>İçeriği incelemek için metin kutusunu kullanabilirsiniz.</li>
+    </ul>
+
+    <h3>Neden Kullanmalıyız?</h3>
+    <ul>
+      <li>Hızlı ve kolay bir şekilde zip dosyalarınızın içeriğini görüntüleyebilirsiniz.</li>
+      <li>Kurulum veya ek yazılım gerektirmez, tamamen tarayıcı üzerinden çalışır.</li>
+      <li>Modern ve kullanıcı dostu bir arayüz sunar.</li>
+    </ul>
+
+    <h3>Avantajları</h3>
+    <ul>
+      <li>Herhangi bir cihazda (mobil, tablet veya masaüstü) kullanılabilir.</li>
+      <li>Güvenlidir; dosyalarınız tarayıcıda yerel olarak işlenir, internet üzerinden aktarılmaz.</li>
+      <li>Gelişmiş tasarımı sayesinde dosya tiplerine göre farklı ikonlarla listeleme yapar.</li>
+    </ul>
+  </div>
+
+<script>
+document.getElementById('fileInput').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const zip = new JSZip();
+      zip.loadAsync(e.target.result).then(function(contents) {
+        const outputArea = document.getElementById('outputArea');
+        const fileList = outputArea.querySelector('.file-list');
+        const fileContent = document.getElementById('fileContent');
+        fileList.innerHTML = '';
+
+        Object.keys(contents.files).forEach(function(filename) {
+          const fileItem = document.createElement('div');
+          fileItem.className = 'file-item';
+
+          // Dosya türünü kontrol et
+          const fileType = filename.split('.').pop();
+          let icon;
+          let fileNameDisplay = filename;
+
+          if (contents.files[filename].dir) {
+            // Klasör için simge
+            icon = 'bi-folder';
+            fileNameDisplay = `${filename}/`;
+          } else {
+            // Dosya türüne göre simge
+            switch (fileType) {
+              case 'txt':
+                icon = 'bi-file-earmark-text';
+                break;
+              case 'jpg':
+              case 'jpeg':
+              case 'png':
+              case 'svg':
+                icon = 'bi-file-earmark-image';  // SVG dosyaları için resim simgesi
+                break;
+              case 'pdf':
+                icon = 'bi-file-earmark-pdf';
+                break;
+              case 'zip':
+                icon = 'bi-file-zip';
+                break;
+              case 'gz':
+                icon = 'bi-file-earmark-zip';
+                break;
+              case 'rar':
+                icon = 'bi-file-earmark-zip';
+                break;
+              case 'xml':
+                icon = 'bi-file-earmark-xml';
+                break;
+              case 'ttf':
+              case 'tff':
+                icon = 'bi-file-earmark-font';
+                break;
+              case 'json':
+                icon = 'bi-file-earmark-json';
+                break;
+              default:
+                icon = 'bi-file-earmark';
+            }
+          }
+
+          fileItem.innerHTML = `
+            <span><i class="bi ${icon}"></i> ${fileNameDisplay}</span>
+            <div>
+              <button class="btn btn-sm btn-primary show-content-btn">İçeriği Göster</button>
+              <button class="btn btn-sm btn-success download-btn">İndir</button>
+            </div>
+          `;
+
+          // İçeriği gösterme butonunun işlevi
+          fileItem.querySelector('.show-content-btn').addEventListener('click', function() {
+            if (contents.files[filename].dir) {
+              fileContent.value = 'Bu bir klasördür, içeriği görüntülenemez.';
+            } else {
+              zip.file(filename).async('string').then(function(content) {
+                fileContent.value = content;
+              }).catch(function() {
+                fileContent.value = 'Bu dosya içeriği görüntülenemiyor.';
+              });
+            }
+          });
+
+          // İndirme butonunun işlevi
+          fileItem.querySelector('.download-btn').addEventListener('click', function() {
+            zip.file(filename).async('blob').then(function(blob) {
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = filename;
+              link.click();
+              URL.revokeObjectURL(link.href);
+            }).catch(function() {
+              alert('Bu dosya indirilemez.');
+            });
+          });
+
+          fileList.appendChild(fileItem);
+        });
+
+        outputArea.classList.remove('d-none');
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+});
+
+</script>
+
+</body>
+</html>
