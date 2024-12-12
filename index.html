@@ -1,123 +1,456 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>EBS Time(Ebubekir Bastama)</title>
-  <noscript>
-      <meta http-equiv="refresh" content="0; URL=nojs.html">
-    </noscript>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-Frame-Options" content="deny">
-  <script type="text/javascript">
-   if (document.referrer.indexOf("t.co") == -1) {
-       if (document.referrer.indexOf("ebubekirbastama.com.tr") == -1) {
-      if (document.referrer!="") {
-        window.location.href = "https://www.youtube.com/@ebubekiryazilim/videos";
-      }
-    }
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EBS Excel/CSV Yükleme ve Düzenleme Aracı. Excel veya CSV dosyalarınızı kolayca yükleyin, düzenleyin ve güncellenmiş dosyanızı indirin.">
+    <meta name="keywords" content="Excel, CSV, yükleme, düzenleme, veri, tablo, araç, dosya">
+    <meta name="author" content="EBS">
+    <meta property="og:title" content="EBS Excel/CSV Yükle ve Düzenle">
+    <meta property="og:description" content="Excel veya CSV dosyalarınızı hızlıca yükleyin, düzenleyin ve indirin. Kullanıcı dostu arayüz ile verilerinizi kolayca yönetin.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/ebubekirbastama/ebubekirbastama.github.io/refs/heads/main/escsv.webp">
+    <meta property="og:url" content="https://ebubekirbastama.com.tr/">
+    <meta name="twitter:title" content="EBS Excel/CSV Yükle ve Düzenle">
+    <meta name="twitter:description" content="Excel ve CSV dosyalarınızı yükleyin, düzenleyin ve kolayca indirin.">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/ebubekirbastama/ebubekirbastama.github.io/refs/heads/main/escsv.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>EBS Excel/CSV Yükle ve Düzenle</title>
+    <style>
+          #usage-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    if (window.location.host.indexOf("ebubekirbastama.com.tr") == -1) {
-      window.stop();
+        #usage-section h2 {
+            color: #007bff;
+            font-size: 1.5em;
+        }
+
+        #usage-section h3 {
+            color: #007bff;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        #usage-section p, #usage-section ul {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        #usage-section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        #usage-section ul li {
+            margin-bottom: 8px;
+        }
+
+        #usage-section ul li strong {
+            color: #007bff;
+        }
+
+        #usage-section .emoji {
+            font-size: 2em;
+        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: url('https://ebubekirbastama.com.tr/circles.webp');
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+section {
+    flex: 1 1 calc(50% - 20px);
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+#fileInput {
+    display: block;
+    margin-bottom: 20px;
+}
+
+#delimiterInput {
+    margin-bottom: 20px;
+    padding: 5px;
+    width: 100%;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#searchInput {
+    margin-bottom: 20px;
+    padding: 5px;
+    width: 100%;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+table {
+    width: auto;
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed;
+}
+
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+table td {
+    background-color: #e9f7fd;
+}
+
+table tr:nth-child(even) td {
+    background-color: #f1f8ff;
+}
+
+table tr:nth-child(odd) td {
+    background-color: #ffffff;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.custom-checkbox .checkbox-icon {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + label .checkbox-icon {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + label .checkbox-icon::after {
+    content: '✔';
+    font-size: 0.9rem;
+    color: white;
+    font-weight: bold;
+}
+
+.custom-checkbox label:hover .checkbox-icon {
+    border-color: #0056b3;
+}
+
+.custom-checkbox input[type="checkbox"]:focus + label .checkbox-icon {
+    outline: 2px solid #80bdff;
+    outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+    section {
+        flex: 1 1 100%;
     }
-  </script>
-  <link href="EBS.css" type="text/css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+}
+
+    </style>
 </head>
-
 <body>
+    <main>
+        <section class="container">
+           <section class="section">
+                <h2>Excel/CSV Dosyası Yükle</h2>
+                <input type="file" id="fileInput" accept=".csv, .txt">
+                <input type="text" id="delimiterInput" placeholder="Ayraç girin (örneğin ',' veya ';')" value=",">
+                
+              <div id="headerCheckbox" class="custom-checkbox">
+                  <input type="checkbox" id="hasHeader">
+                  <label for="hasHeader">
+                      <span class="checkbox-icon"></span>
+                      Dosyada başlık var mı?
+                  </label>
+              </div>
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="https://www.ebubekirbastama.com">EBS Time Web Site</a>
-    </div>
-    <ul class="nav navbar-nav">
-     <li class="active"><a href="#">Neden Bu site var ?</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/RandomNameorSurnameCreate.html" target="_blank">Random Ad-Soyad Oluşturucu</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/CurltoPhp/index.html" target="_blank">Curl-To-Php</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/base64encoder.html" target="_blank" >Base64 Encode</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/base64decode.html" target="_blank" >Base64 Decode</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/sha1encode.html" target="_blank" >Sha1 Encoder</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/md5.html" target="_blank" >Md5 Encoder</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/EBSbcrypt.html" target="_blank" >Bcrypt</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/lokasyon.html" target="_blank" >Lokasyon Bulma</a></li> 
-     <li><a href="https://ebubekirbastama.com.tr/RichSnippets.html" target="_blank" >Rich Snippets(Generator)</a></li>
-     <li><a href="https://ebubekirbastama.com.tr/FAQPage.html" target="_blank" >FAQ Snippets(Generator)</a></li>
-      
-    </ul>
-    
-   
+            </section>
 
-  </div>
-</nav>
+            <section class="section">
+                <h2>Düzenlenebilir Tablo</h2>
+                <input type="text" id="searchInput" placeholder="Tabloyu ara..." />
+                <div id="tableContainer">Veri yok</div>
+                <button id="downloadBtn" disabled>Güncellenmiş Dosyayı İndir</button>
+                <nav class="pagination" id="paginationContainer"></nav>
+            </section>
+        </section>
+            <section class="section" id="usage-section">
+        <h2>Bu Araç Ne İşe Yarar? 🛠️</h2>
+        <p>
+            Bu araç, <strong>Excel/CSV</strong> dosyalarınızı kolayca yüklemenizi ve düzenlemenizi sağlar. Yüklediğiniz veriler üzerinde hızlıca arama yapabilir, verileri düzenleyebilir ve güncellenmiş dosyanızı indirebilirsiniz.
+        </p>
 
-<div class="container">
-  <h2 class="ebsred" >EBS Yazılım</h2>
-  <div id="EBSİP"  class="ebsred"></div>
-</div>
-<div class="container">
-  <h2 class="ebsred">Public Yazdığımız Programlar</h2>
-  <div class="list-group">
-    
-    <a href="ebscsvparser.html" target="_blank" class="list-group-item">EBS Csv Görüntüleyici</a>
-    <a href="ebszipgoruntuleyici.html" target="_blank" class="list-group-item">EBS Zip Görüntüleyicisi</a>
-    <a href="ebsgeciskelimeler.html" target="_blank" class="list-group-item">EBS Makale Geçiş Kelime Ekleyici</a>
-    <a href="ebsrsslisteleyici.html" target="_blank" class="list-group-item">EBS Rss Listeleyici</a>
-    <a href="EbsYoutubeAcici/EbsYoutubeAcici.html" target="_blank" class="list-group-item">Youtube Link Açıcı</a>
-    <a href="EBSPDFOkuyucu.html" target="_blank" class="list-group-item">PDF Okuyucu</a>
-    <a href="EBSYoutubeCanlıYayin.html" target="_blank" class="list-group-item">Yotube Videodan Ses Çıkarma</a>
-    <a href="ebssubdomaintakeover.html" target="_blank" class="list-group-item">Subdomain Takeover Kontrolü</a>
-    <a href="ebskelimehesaplayici.html" target="_blank" class="list-group-item">Charcounter(Kelime Sayıcı)</a>
-    <a href="LinkAcici.html" target="_blank" class="list-group-item">EBS Link Açıcı</a>
-    <a href="ebs_makale_dizay.html" target="_blank" class="list-group-item">EBS Makale Dizayn Tool</a>
-    <a href="ebstemplatematching.html" target="_blank" class="list-group-item">EBS Resim Eşleştirme { Şablon Eşleştirme } (Template Matching)</a>
-    <a href="ebsssim.html" target="_blank" class="list-group-item">EBS Resim Karşılaştırma</a>
-    <a href="ebsocr.html" target="_blank" class="list-group-item">EBS İmage OCR</a>
-    <a href="EBS-Google-Link-Kaldirici.html" target="_blank" class="list-group-item">Google URL Kaldırma Kod Üretici</a>
-    <a href="ebshtmlclear.html" target="_blank" class="list-group-item">Html attribute temizleyici</a>
-    <a href="EBSScreenVideoSaveSound.html" target="_blank" class="list-group-item">Ekran Videosu Çek(Sesli)</a>
-    <a href="EBSScreenVideoSave.html" target="_blank" class="list-group-item">Ekran Videosu Çek</a>
-    <a href="ebslog.html" target="_blank" class="list-group-item">EBS FTPLog Analiz Sistemi</a>
-    <a href="https://github.com/ebubekirbastama/TexttxtDosyasi-Bolme-Programi/raw/main/EBS%20Txt%20Par%C3%A7alama.zip" class="list-group-item">txt Dosyaları Parçalama Programı</a>
-    <a href="https://github.com/ebubekirbastama/EBSvCardReading/raw/main/bin/Debug/EBSVcard%20Olu%C5%9Fturucu.zip" class="list-group-item">Vcard Oluşturucu</a>
-    <a href="RandomNameorSurnameCreate.html" target="_blank" class="list-group-item">Random AD-Soyad Oluşturucu</a>
-    <a href="EBScalculater/index.html" target="_blank" class="list-group-item">Hesap Makinası</a>
-    <a href="https://www.ebubekirbastama.com.tr/CurltoPhp/index.html" target="_blank" class="list-group-item">Curl-To-Php</a>
-    <a href="https://www.ebubekirbastama.com.tr/base64encoder.html" target="_blank" class="list-group-item">Base64 Encode</a>
-    <a href="https://www.ebubekirbastama.com.tr/base64decode.html" target="_blank" class="list-group-item">Base64 Decode</a>
-    <a href="https://www.ebubekirbastama.com.tr/sha1encode.html" target="_blank" class="list-group-item">Sha1 Encoder</a>
-    <a href="https://www.ebubekirbastama.com.tr/md5.html" target="_blank" class="list-group-item" >Md5 Encoder</a>
-    <a href="https://www.ebubekirbastama.com.tr/EBSLuhn.html" target="_blank" class="list-group-item" >Luhn Algoritması</a>
-    <a href="https://www.ebubekirbastama.com.tr/EBSWebpConvert.html" target="_blank" class="list-group-item">İmage (.Webp) Dönüştürücü</a>
-    <a href="https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html" target="_blank" class="list-group-item" >Url Decode Parçalama</a>
-    <a href="https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html" target="_blank" class="list-group-item" >Url Encode & Decode</a>
-    <a href="https://www.ebubekirbastama.com.tr/taksitakip.html" target="_blank" class="list-group-item">Taksi Takip Sistemi</a>
-    <a href="https://www.ebubekirbastama.com.tr/mekke.html" target="_blank" class="list-group-item">Kabe Harita</a>
-    <a href="https://www.ebubekirbastama.com.tr/ebstakip.html" target="_blank" class="list-group-item">Pursaklar Mekanlar</a>
-    <a href="https://ebubekirbastama.com.tr/ebslog.html" target="_blank" class="list-group-item">Log Analiz Sistemi</a>
-    <a href="https://www.ebubekirbastama.com.tr/ebscsvmarge.html" target="_blank" class="list-group-item">Csv Birleştirme ve İndirme Sistemi</a>
-    <a href="https://www.ebubekirbastama.com.tr/ebsbul.html" target="_blank" class="list-group-item">Bluetooth Device Scanner</a>
-    <a href="https://ebubekirbastama.com.tr/darg-drop.html" target="_blank" class="list-group-item">Drag Trop Örneği </a>
-    <a href="https://ebubekirbastama.com.tr/binance.html" target="_blank" class="list-group-item">Binanca Canlı Veri Listeleme</a>
-    <a href="https://ebubekirbastama.com.tr/barcode.html" target="_blank" class="list-group-item">Barcode Okuyucu</a>
-    <a href="https://ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html" target="_blank" class="list-group-item">Pursaklar Toplanma Merkezleri</a>
-    <a href="https://ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html" target="_blank" class="list-group-item">Exe Hash(SHA-256) </a>
-    
-  </div>
-</div>
-      
-    </div>
-  </div>
-  <script>
-  fetch('https://api.ipify.org?format=json')
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById("EBSİP").innerHTML = "Your IP address is: " + data.ip;
-  });
- </script>
-  
+        <h3>🏆 Neden Kullanılmalı?</h3>
+        <ul>
+            <li><strong>Hızlı ve Kolay:</strong> Verilerinizi yükleyip düzenlemek sadece birkaç adımda tamamlanır.</li>
+            <li><strong>Esneklik:</strong> Dosyanın içeriğine göre ayar yapabilir ve aradığınızı hızlıca bulabilirsiniz.</li>
+            <li><strong>Kullanıcı Dostu:</strong> Basit ve anlaşılır arayüz, her seviyedeki kullanıcıya hitap eder.</li>
+        </ul>
+
+        <h3>✨ Avantajları</h3>
+        <ul>
+            <li><strong>Veri Düzenleme:</strong> Verilerinizi doğrudan düzenleyebilirsiniz.</li>
+            <li><strong>Özelleştirilebilir Arama:</strong> Tabloda arama yaparak istediğiniz veriye hızlıca ulaşabilirsiniz.</li>
+            <li><strong>Paginasyon:</strong> Büyük verilerle çalışırken sayfalama özelliği sayesinde verileriniz daha kolay yönetilebilir.</li>
+            <li><strong>Başlık Seçeneği:</strong> Dosyanızda başlık olup olmadığını belirtme şansı verir.</li>
+            <li><strong>CSV İndirilebilir:</strong> Düzenlenmiş verilerinizi tekrar CSV formatında indirebilirsiniz.</li>
+        </ul>
+
+        <h3>🎯 Kullanım Örnekleri</h3>
+        <p>
+            - Veritabanı exportları ile çalışırken veri düzenlemesi yapmak.<br>
+            - Excel dosyalarınızı CSV formatına dönüştürmek ve üzerinde değişiklikler yapmak.<br>
+            - Veri analizleri için belirli kriterlere göre verileri filtrelemek ve düzenlemek.
+        </p>
+    </section>
+    </main>
+
+    <script>
+	debugger;
+        let data = [];
+        let currentPage = 1;
+        const rowsPerPage = 100;
+        let filteredData = [];
+
+        document.getElementById('fileInput').addEventListener('change', handleFile);
+        document.getElementById('downloadBtn').addEventListener('click', downloadFile);
+        document.getElementById('searchInput').addEventListener('input', filterTable);
+
+function handleFile(event) {
+    const file = event.target.files[0];
+    const delimiter = document.getElementById('delimiterInput').value.trim();
+    const hasHeader = document.getElementById('hasHeader').checked; // Checkbox durumu kontrol ediliyor
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const content = e.target.result;
+        const rows = content.split(/\r?\n/).filter(row => row.trim() !== '');
+        data = rows.map(row => row.split(delimiter));
+
+        if (!hasHeader) {
+            // Eğer kullanıcı başlık olmadığını belirtmişse, bir otomatik başlık ekliyoruz.
+            const header = Array.from({ length: data[0]?.length || 0 }, (_, i) => `Kolon ${i + 1}`);
+            data.unshift(header);
+        }
+
+        filteredData = [...data];
+        generateTable();
+        generatePagination();
+    };
+
+    if (file.name.endsWith('.csv') || file.name.endsWith('.txt')) {
+        reader.readAsText(file);
+    } else {
+        alert('Lütfen bir CSV dosyası yükleyin.');
+    }
+}
+
+
+        function generateTable() {
+            const tableContainer = document.getElementById('tableContainer');
+            tableContainer.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const dataToDisplay = filteredData.slice(startIndex, endIndex);
+
+            const table = document.createElement('table');
+            const headerRow = document.createElement('tr');
+
+            dataToDisplay[0]?.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+
+            table.appendChild(headerRow);
+
+            for (let i = 1; i < dataToDisplay.length; i++) {
+                const row = document.createElement('tr');
+
+                dataToDisplay[i].forEach(cell => {
+                    const td = document.createElement('td');
+                    td.contentEditable = true;
+                    td.textContent = cell;
+                    row.appendChild(td);
+                });
+
+                table.appendChild(row);
+            }
+
+            tableContainer.appendChild(table);
+            document.getElementById('downloadBtn').disabled = false;
+        }
+
+        function generatePagination() {
+            const paginationContainer = document.getElementById('paginationContainer');
+            paginationContainer.innerHTML = '';
+
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            const previousButton = document.createElement('button');
+            previousButton.textContent = 'Önceki';
+            previousButton.disabled = currentPage === 1;
+            previousButton.addEventListener('click', () => {
+                currentPage--;
+                generateTable();
+                generatePagination();
+            });
+
+            paginationContainer.appendChild(previousButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.disabled = i === currentPage;
+                pageButton.addEventListener('click', () => {
+                    currentPage = i;
+                    generateTable();
+                    generatePagination();
+                });
+
+                paginationContainer.appendChild(pageButton);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Sonraki';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => {
+                currentPage++;
+                generateTable();
+                generatePagination();
+            });
+
+            paginationContainer.appendChild(nextButton);
+        }
+
+        function filterTable() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            filteredData = data.filter(row => row.some(cell => cell.toLowerCase().includes(searchQuery)));
+            currentPage = 1;  // Filtreleme sonrası ilk sayfaya dön
+            generateTable();
+            generatePagination();
+        }
+
+        function downloadFile() {
+            const table = document.querySelector('#tableContainer table');
+            if (!table) return;
+
+            const rows = Array.from(table.rows);
+            const delimiter = document.getElementById('delimiterInput').value.trim();
+            const csvContent = rows.map(row => {
+                const cells = Array.from(row.cells);
+                return cells.map(cell => cell.textContent).join(delimiter);
+            }).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'guncellenmis_dosya.csv';
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+    </script>
 </body>
 </html>
