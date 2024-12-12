@@ -250,7 +250,7 @@ button:hover {
         <section class="container">
            <section class="section">
                 <h2>Excel/CSV Dosyası Yükle</h2>
-                <input type="file" id="fileInput" accept=".csv, .xlsx">
+                <input type="file" id="fileInput" accept=".csv, .txt">
                 <input type="text" id="delimiterInput" placeholder="Ayraç girin (örneğin ',' veya ';')" value=",">
                 
               <div id="headerCheckbox" class="custom-checkbox">
@@ -303,6 +303,7 @@ button:hover {
     </main>
 
     <script>
+	debugger;
         let data = [];
         let currentPage = 1;
         const rowsPerPage = 100;
@@ -336,7 +337,7 @@ function handleFile(event) {
         generatePagination();
     };
 
-    if (file.name.endsWith('.csv')) {
+    if (file.name.endsWith('.csv') || file.name.endsWith('.txt')) {
         reader.readAsText(file);
     } else {
         alert('Lütfen bir CSV dosyası yükleyin.');
