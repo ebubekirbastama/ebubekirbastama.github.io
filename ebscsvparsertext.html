@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern CSV Okuyucu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+        }
+        #csv-input {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSV Okuyucu ve İndirme Aracı</h1>
+    <textarea id="csv-input" placeholder="CSV verisini buraya yapıştırın..."></textarea>
+
+    <div id="csv-table-container">
+        <!-- Burada tablo görünecek -->
+    </div>
+
+    <button id="download-btn" style="display: none;">CSV İndir</button>
+
+    <script>
+        document.getElementById('csv-input').addEventListener('input', function() {
+            var inputText = document.getElementById('csv-input').value;
+            var tableContainer = document.getElementById('csv-table-container');
+            var downloadBtn = document.getElementById('download-btn');
+
+            // CSV verisini satırlara ayır
+            var rows = inputText.trim().split('\n');
+            
+            if (rows.length > 0) {
+                // Tabloyu başlat
+                var tableHTML = '<table>';
+
+                // Başlık satırını işleme (ilk satır başlık olarak kabul edilebilir)
+                var headers = rows[0].split(',');
+                tableHTML += '<thead><tr>';
+                headers.forEach(function(header) {
+                    tableHTML += `<th>${header.trim()}</th>`;
+                });
+                tableHTML += '</tr></thead>';
+
+                // Diğer satırları işleme
+                tableHTML += '<tbody>';
+                for (var i = 1; i < rows.length; i++) {
+                    var columns = rows[i].split(',');
+                    tableHTML += '<tr>';
+                    columns.forEach(function(column) {
+                        tableHTML += `<td>${column.trim()}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                }
+                tableHTML += '</tbody></table>';
+
+                // Tabloyu HTML olarak ekle
+                tableContainer.innerHTML = tableHTML;
+
+                // CSV'yi indirilebilir hale getir
+                var blob = new Blob([inputText], { type: 'text/csv' });
+                var url = URL.createObjectURL(blob);
+                downloadBtn.style.display = 'inline-block';
+                downloadBtn.onclick = function() {
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'veri.csv';
+                    a.click();
+                };
+            }
+        });
+    </script>
+</body>
+</html>
