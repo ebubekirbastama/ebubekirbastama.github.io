@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBSResim Yükleme ve Düzenleme</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+        }
+        #container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #imageCanvas {
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+        .image-container {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+        .canvas-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .canvas-wrapper canvas {
+            display: block;
+            border: 8px solid #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        #blurredCanvas {
+            filter: blur(8px);
+        }
+        #clearImageCanvas {
+            position: absolute;
+            z-index: 2; /* Net resim ön planda olacak */
+        }
+
+        #saveBtn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #saveBtn:hover {
+            background-color: #45a049;
+        }
+        #borderSlider {
+            margin-top: 20px;
+            width: 80%;
+        }
+        #borderValue {
+            display: block;
+            margin-top: 10px;
+        }
+        .dimension-slider {
+            margin-top: 20px;
+            width: 80%;
+        }
+        .dimension-value {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <h1 class="text-center mb-4">EBSResim Yükleyin ve Düzenleyin</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <!-- Resim yükleme inputu -->
+            <input type="file" id="imageInput" class="form-control mb-4" accept="image/*">
+        </div>
+    </div>
+
+    <!-- Canvaslar -->
+    <div id="canvas-wrapper" class="canvas-wrapper">
+        <canvas id="blurredCanvas" class="hidden"></canvas>
+        <canvas id="clearImageCanvas" class="hidden"></canvas>
+    </div>
+
+    <!-- Kontroller -->
+     <div class="row justify-content-center">
+               <div class="col-md-6">
+               <div class="mb-3">
+               <label for="blurredWidthSlider" class="form-label">Bulanık Resim Genişliğini Ayarla:</label>
+               <input type="range" id="blurredWidthSlider" class="form-range" min="100" max="1500" value="1200">
+               <span id="blurredWidthValue" class="form-text">Genişlik: 1200px</span>
+           </div>
+            <div class="mb-3">
+                <label for="blurredHeightSlider" class="form-label">Bulanık Resim Yüksekliğini Ayarla:</label>
+                <input type="range" id="blurredHeightSlider" class="form-range" min="100" max="1500" value="800">
+                <span id="blurredHeightValue" class="form-text">Yükseklik: 800px</span>
+            </div>
+            <div class="mb-3">
+                <label for="borderSlider" class="form-label">Çerçeve Kalınlığını Ayarla:</label>
+                <input type="range" id="borderSlider" class="form-range" min="0" max="20" value="8">
+                <span id="borderValue" class="form-text">Çerçeve Kalınlığı: 8px</span>
+            </div>
+            <div class="mb-3">
+                <label for="widthSlider" class="form-label">Resim Genişliğini Ayarla:</label>
+                <input type="range" id="widthSlider" class="form-range" min="100" max="500" value="300">
+                <span id="widthValue" class="form-text">Genişlik: 300px</span>
+            </div>
+            <div class="mb-3">
+                <label for="heightSlider" class="form-label">Resim Yüksekliğini Ayarla:</label>
+                <input type="range" id="heightSlider" class="form-range" min="100" max="500" value="300">
+                <span id="heightValue" class="form-text">Yükseklik: 300px</span>
+            </div>
+            <div class="mb-3">
+                <label for="borderColorPicker" class="form-label">Çerçeve Rengini Seç:</label>
+                <input type="color" id="borderColorPicker" class="form-control form-control-color" value="#ffffff">
+                <span id="borderColorValue" class="form-text">Çerçeve Rengi: #ffffff</span>
+            </div>
+        </div>
+    </div>
+    <!-- Kontroller -->
+    
+    <!-- Kaydet Butonu -->
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <button id="saveBtn" class="btn btn-success btn-lg hidden">Resmi Kaydet</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Canvas EBS -->
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+<script>
+debugger;
+ document.getElementById('imageInput').addEventListener('change', handleImageUpload);
+ document.getElementById('saveBtn').addEventListener('click', saveImage);
+ document.getElementById('borderSlider').addEventListener('input', updateBorder);
+ document.getElementById('widthSlider').addEventListener('input', updateDimensions);
+ document.getElementById('heightSlider').addEventListener('input', updateDimensions);
+ document.getElementById('borderColorPicker').addEventListener('input', updateBorderColor);
+ document.getElementById('blurredWidthSlider').addEventListener('input', updateBlurredCanvasDimensions);
+ document.getElementById('blurredHeightSlider').addEventListener('input', updateBlurredCanvasDimensions);
+
+ let currentBorderWidth = 8; // Başlangıçta 8px
+ let currentWidth = 300; // Başlangıçta 300px
+ let currentHeight = 300; // Başlangıçta 300px
+ let uploadedImage = null;
+
+
+ function updateBlurredCanvasDimensions() {
+     const blurredCanvas = document.getElementById('blurredCanvas');
+     const blurredWidth = document.getElementById('blurredWidthSlider').value;
+     const blurredHeight = document.getElementById('blurredHeightSlider').value;
+
+     document.getElementById('blurredWidthValue').textContent = `Genişlik: ${blurredWidth}px`;
+     document.getElementById('blurredHeightValue').textContent = `Yükseklik: ${blurredHeight}px`;
+
+     blurredCanvas.width = blurredWidth;
+     blurredCanvas.height = blurredHeight;
+
+     const blurredCtx = blurredCanvas.getContext('2d');
+     blurredCtx.clearRect(0, 0, blurredWidth, blurredHeight);
+     if (uploadedImage) {
+         blurredCtx.drawImage(uploadedImage, 0, 0, blurredWidth, blurredHeight);
+     }
+ }
+
+ function updateBorderColor() {
+     const borderColor = document.getElementById('borderColorPicker').value;
+     const borderColorValue = document.getElementById('borderColorValue');
+     borderColorValue.textContent = `Çerçeve Rengi: ${borderColor}`;
+     currentBorderColor = borderColor;
+
+     const canvasElements = document.querySelectorAll('.canvas-wrapper canvas');
+     canvasElements.forEach(canvas => {
+         canvas.style.borderColor = currentBorderColor;
+     });
+ }
+
+ function handleImageUpload(event) {
+     const file = event.target.files[0];
+     if (file) {
+         const reader = new FileReader();
+         reader.onload = function(e) {
+             const img = new Image();
+             img.src = e.target.result;
+             img.onload = function() {
+                 uploadedImage = img; // Resmi sakla
+
+                 const width = 1200;
+                 const height = 800;
+
+                 // Bulanık resim için canvas
+                 const blurredCanvas = document.getElementById('blurredCanvas');
+                 const blurredCtx = blurredCanvas.getContext('2d');
+                 blurredCanvas.width = width;
+                 blurredCanvas.height = height;
+
+                 // Net resim için canvas
+                 const clearImageCanvas = document.getElementById('clearImageCanvas');
+                 const clearImageCtx = clearImageCanvas.getContext('2d');
+                 clearImageCanvas.width = currentWidth;
+                 clearImageCanvas.height = currentHeight;
+
+                 // Arka plan olarak bulanıklaştırılmış resmi çiz
+                 blurredCtx.drawImage(img, 0, 0, width, height);
+
+                 // Ön plan olarak net resmi çiz
+                 clearImageCtx.drawImage(img, 0, 0, currentWidth, currentHeight);
+
+                 // Canvas'ları görünür hale getir
+                 blurredCanvas.classList.remove('hidden');
+                 clearImageCanvas.classList.remove('hidden');
+
+                 // Kaydetme butonunu göster
+                 document.getElementById('saveBtn').classList.remove('hidden');
+             };
+         };
+         reader.readAsDataURL(file);
+     }
+ }
+
+function saveImage() {
+    const contentToCapture = document.getElementById('canvas-wrapper'); // Ekran görüntüsünü almak istediğiniz div
+
+    html2canvas(contentToCapture, {
+        allowTaint: true, // CORS engelini kaldırmak için kullanılır
+        useCORS: true, // Görüntülerdeki CORS hatalarını engellemek için kullanılır
+    })
+    .then(function(canvas) {
+        // Canvas'tan image verisi oluşturuyoruz
+        let image = canvas.toDataURL("image/png", 0.5); // 0.5 ile kaliteyi düşürerek PNG olarak kaydediyoruz
+
+        // İndirme işlemi
+        const link = document.createElement('a');
+        link.href = image; // Canvas'tan alınan veriyi link olarak kullanıyoruz
+        link.download = 'ekran_goruntusu.png'; // İndirilecek dosyanın adı
+        link.click(); // Kullanıcıya dosyayı indirmesi için tıklıyoruz
+    })
+    .catch((e) => {
+        // Hata olursa, hatayı konsola yazdırıyoruz
+        console.log('Ekran görüntüsü alınırken hata:', e);
+    });
+}
+
+
+
+ function updateBorder() {
+     const borderWidth = document.getElementById('borderSlider').value;
+     const borderValue = document.getElementById('borderValue');
+     borderValue.textContent = `Çerçeve Kalınlığı: ${borderWidth}px`;
+     currentBorderWidth = borderWidth;
+
+     const canvasElements = document.querySelectorAll('.canvas-wrapper canvas');
+     canvasElements.forEach(canvas => {
+         canvas.style.borderWidth = `${currentBorderWidth}px`;
+     });
+ }
+
+ function updateDimensions() {
+     const width = document.getElementById('widthSlider').value;
+     const height = document.getElementById('heightSlider').value;
+
+     document.getElementById('widthValue').textContent = `Genişlik: ${width}px`;
+     document.getElementById('heightValue').textContent = `Yükseklik: ${height}px`;
+
+     currentWidth = width;
+     currentHeight = height;
+
+     // Canvas üzerinde resmin boyutunu değiştir
+     const clearImageCanvas = document.getElementById('clearImageCanvas');
+     clearImageCanvas.width = currentWidth;
+     clearImageCanvas.height = currentHeight;
+
+     // Resmi tekrar canvas'a çizin
+     const clearImageCtx = clearImageCanvas.getContext('2d');
+     clearImageCtx.clearRect(0, 0, currentWidth, currentHeight);
+     clearImageCtx.drawImage(uploadedImage, 0, 0, currentWidth, currentHeight);
+ }
+</script>
+
+</body>
+</html>
