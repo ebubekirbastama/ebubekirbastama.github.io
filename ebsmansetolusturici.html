@@ -191,86 +191,123 @@ debugger;
      });
  }
 
- function handleImageUpload(event) {
-     const file = event.target.files[0];
-     if (file) {
-         const reader = new FileReader();
-         reader.onload = function(e) {
-             const img = new Image();
-             img.src = e.target.result;
-             img.onload = function() {
-                 uploadedImage = img; // Resmi sakla
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = function() {
+                uploadedImage = img; // Resmi sakla
 
-                 const width = 600;  // Yeni genişlik
-                 const height = 446; // Yeni yükseklik
+                // Resmin yönünü tespit et
+                let orientation = 'Dikey';
+                if (img.width > img.height) {
+                    orientation = 'Yatay';
+                    // Resim yatay ise, clearImageCanvas genişliğini 684 olarak ayarla
+                    currentWidth = 684;
+                } else {
+                    // Resim dikeyse, genişliği varsayılan değerde tut
+                    currentWidth = 300;
+                    currentHeight = 525;
+                }
 
-                 // Bulanık resim için canvas
-                 const blurredCanvas = document.getElementById('blurredCanvas');
-                 const blurredCtx = blurredCanvas.getContext('2d');
-                 blurredCanvas.width = width;
-                 blurredCanvas.height = height;
+                // Alert ile resmin yönünü bildir
+                console.log(`Resim Yönü: ${orientation}`);
 
-                 // Net resim için canvas
-                 const clearImageCanvas = document.getElementById('clearImageCanvas');
-                 const clearImageCtx = clearImageCanvas.getContext('2d');
-                 clearImageCanvas.width = currentWidth;
-                 clearImageCanvas.height = currentHeight;
+                const width = 684;  // Yeni genişlik (Bulanık resim için)
+                const height = 525; // Yeni yükseklik (Bulanık resim için)
 
-                 // Arka plan olarak bulanıklaştırılmış resmi çiz
-                 blurredCtx.drawImage(img, 0, 0, width, height);
+                // Bulanık resim için canvas
+                const blurredCanvas = document.getElementById('blurredCanvas');
+                const blurredCtx = blurredCanvas.getContext('2d');
+                blurredCanvas.width = width;
+                blurredCanvas.height = height;
 
-                 // Ön plan olarak net resmi çiz
-                 clearImageCtx.drawImage(img, 0, 0, currentWidth, currentHeight);
+                // Net resim için canvas
+                const clearImageCanvas = document.getElementById('clearImageCanvas');
+                const clearImageCtx = clearImageCanvas.getContext('2d');
+                clearImageCanvas.width = currentWidth;  // Güncellenmiş genişlik
+                clearImageCanvas.height = currentHeight;
 
-                 // Canvas'ları görünür hale getir
-                 blurredCanvas.classList.remove('hidden');
-                 clearImageCanvas.classList.remove('hidden');
+                // Arka plan olarak bulanıklaştırılmış resmi çiz
+                blurredCtx.drawImage(img, 0, 0, width, height);
 
-                 // Kaydetme butonunu göster
-                 document.getElementById('saveBtn').classList.remove('hidden');
-             };
-         };
-         reader.readAsDataURL(file);
-     }
- }
+                // Ön plan olarak net resmi çiz
+                clearImageCtx.drawImage(img, 0, 0, currentWidth, currentHeight);
 
- function saveImage() {
-     const canvas = document.getElementById('clearImageCanvas');
-     const imageData = canvas.toDataURL('image/png');
+                // Canvas'ları görünür hale getir
+                blurredCanvas.classList.remove('hidden');
+                clearImageCanvas.classList.remove('hidden');
 
-     const a = document.createElement('a');
-     a.href = imageData;
-     a.download = 'custom-image.png';
-     a.click();
- }
+                // Kaydetme butonunu göster
+                document.getElementById('saveBtn').classList.remove('hidden');
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
- function updateDimensions() {
-     currentWidth = document.getElementById('widthSlider').value;
-     currentHeight = document.getElementById('heightSlider').value;
 
-     document.getElementById('widthValue').textContent = `Genişlik: ${currentWidth}px`;
-     document.getElementById('heightValue').textContent = `Yükseklik: ${currentHeight}px`;
+function saveImage() {
+    const contentToCapture = document.getElementById('canvas-wrapper'); // Ekran görüntüsünü almak istediğiniz div
 
-     const clearImageCanvas = document.getElementById('clearImageCanvas');
-     clearImageCanvas.width = currentWidth;
-     clearImageCanvas.height = currentHeight;
+    html2canvas(contentToCapture, {
+        allowTaint: true, // CORS engelini kaldırmak için kullanılır
+        useCORS: true, // Görüntülerdeki CORS hatalarını engellemek için kullanılır
+    })
+    .then(function(canvas) {
+        // Canvas'tan image verisi oluşturuyoruz
+        let image = canvas.toDataURL("image/png", 0.5); // 0.5 ile kaliteyi düşürerek PNG olarak kaydediyoruz
 
-     const clearImageCtx = clearImageCanvas.getContext('2d');
-     clearImageCtx.clearRect(0, 0, currentWidth, currentHeight);
-     if (uploadedImage) {
-         clearImageCtx.drawImage(uploadedImage, 0, 0, currentWidth, currentHeight);
-     }
- }
+        // İndirme işlemi
+        const link = document.createElement('a');
+        link.href = image; // Canvas'tan alınan veriyi link olarak kullanıyoruz
+        link.download = 'ekran_goruntusu.png'; // İndirilecek dosyanın adı
+        link.click(); // Kullanıcıya dosyayı indirmesi için tıklıyoruz
+    })
+    .catch((e) => {
+        // Hata olursa, hatayı konsola yazdırıyoruz
+        console.log('Ekran görüntüsü alınırken hata:', e);
+    });
+}
+
+
 
  function updateBorder() {
-     currentBorderWidth = document.getElementById('borderSlider').value;
-     document.getElementById('borderValue').textContent = `Çerçeve Kalınlığı: ${currentBorderWidth}px`;
+     const borderWidth = document.getElementById('borderSlider').value;
+     const borderValue = document.getElementById('borderValue');
+     borderValue.textContent = `Çerçeve Kalınlığı: ${borderWidth}px`;
+     currentBorderWidth = borderWidth;
 
      const canvasElements = document.querySelectorAll('.canvas-wrapper canvas');
      canvasElements.forEach(canvas => {
          canvas.style.borderWidth = `${currentBorderWidth}px`;
      });
  }
+
+ function updateDimensions() {
+     const width = document.getElementById('widthSlider').value;
+     const height = document.getElementById('heightSlider').value;
+
+     document.getElementById('widthValue').textContent = `Genişlik: ${width}px`;
+     document.getElementById('heightValue').textContent = `Yükseklik: ${height}px`;
+
+     currentWidth = width;
+     currentHeight = height;
+
+     // Canvas üzerinde resmin boyutunu değiştir
+     const clearImageCanvas = document.getElementById('clearImageCanvas');
+     clearImageCanvas.width = currentWidth;
+     clearImageCanvas.height = currentHeight;
+
+     // Resmi tekrar canvas'a çizin
+     const clearImageCtx = clearImageCanvas.getContext('2d');
+     clearImageCtx.clearRect(0, 0, currentWidth, currentHeight);
+     clearImageCtx.drawImage(uploadedImage, 0, 0, currentWidth, currentHeight);
+ }
 </script>
+
 </body>
 </html>
