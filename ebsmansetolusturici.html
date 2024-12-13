@@ -201,8 +201,8 @@ debugger;
              img.onload = function() {
                  uploadedImage = img; // Resmi sakla
 
-                 const width = 1200;
-                 const height = 800;
+                 const width = 600;  // Yeni genişlik
+                 const height = 446; // Yeni yükseklik
 
                  // Bulanık resim için canvas
                  const blurredCanvas = document.getElementById('blurredCanvas');
@@ -234,64 +234,43 @@ debugger;
      }
  }
 
-function saveImage() {
-    const contentToCapture = document.getElementById('canvas-wrapper'); // Ekran görüntüsünü almak istediğiniz div
+ function saveImage() {
+     const canvas = document.getElementById('clearImageCanvas');
+     const imageData = canvas.toDataURL('image/png');
 
-    html2canvas(contentToCapture, {
-        allowTaint: true, // CORS engelini kaldırmak için kullanılır
-        useCORS: true, // Görüntülerdeki CORS hatalarını engellemek için kullanılır
-    })
-    .then(function(canvas) {
-        // Canvas'tan image verisi oluşturuyoruz
-        let image = canvas.toDataURL("image/png", 0.5); // 0.5 ile kaliteyi düşürerek PNG olarak kaydediyoruz
+     const a = document.createElement('a');
+     a.href = imageData;
+     a.download = 'custom-image.png';
+     a.click();
+ }
 
-        // İndirme işlemi
-        const link = document.createElement('a');
-        link.href = image; // Canvas'tan alınan veriyi link olarak kullanıyoruz
-        link.download = 'ekran_goruntusu.png'; // İndirilecek dosyanın adı
-        link.click(); // Kullanıcıya dosyayı indirmesi için tıklıyoruz
-    })
-    .catch((e) => {
-        // Hata olursa, hatayı konsola yazdırıyoruz
-        console.log('Ekran görüntüsü alınırken hata:', e);
-    });
-}
+ function updateDimensions() {
+     currentWidth = document.getElementById('widthSlider').value;
+     currentHeight = document.getElementById('heightSlider').value;
 
+     document.getElementById('widthValue').textContent = `Genişlik: ${currentWidth}px`;
+     document.getElementById('heightValue').textContent = `Yükseklik: ${currentHeight}px`;
 
+     const clearImageCanvas = document.getElementById('clearImageCanvas');
+     clearImageCanvas.width = currentWidth;
+     clearImageCanvas.height = currentHeight;
+
+     const clearImageCtx = clearImageCanvas.getContext('2d');
+     clearImageCtx.clearRect(0, 0, currentWidth, currentHeight);
+     if (uploadedImage) {
+         clearImageCtx.drawImage(uploadedImage, 0, 0, currentWidth, currentHeight);
+     }
+ }
 
  function updateBorder() {
-     const borderWidth = document.getElementById('borderSlider').value;
-     const borderValue = document.getElementById('borderValue');
-     borderValue.textContent = `Çerçeve Kalınlığı: ${borderWidth}px`;
-     currentBorderWidth = borderWidth;
+     currentBorderWidth = document.getElementById('borderSlider').value;
+     document.getElementById('borderValue').textContent = `Çerçeve Kalınlığı: ${currentBorderWidth}px`;
 
      const canvasElements = document.querySelectorAll('.canvas-wrapper canvas');
      canvasElements.forEach(canvas => {
          canvas.style.borderWidth = `${currentBorderWidth}px`;
      });
  }
-
- function updateDimensions() {
-     const width = document.getElementById('widthSlider').value;
-     const height = document.getElementById('heightSlider').value;
-
-     document.getElementById('widthValue').textContent = `Genişlik: ${width}px`;
-     document.getElementById('heightValue').textContent = `Yükseklik: ${height}px`;
-
-     currentWidth = width;
-     currentHeight = height;
-
-     // Canvas üzerinde resmin boyutunu değiştir
-     const clearImageCanvas = document.getElementById('clearImageCanvas');
-     clearImageCanvas.width = currentWidth;
-     clearImageCanvas.height = currentHeight;
-
-     // Resmi tekrar canvas'a çizin
-     const clearImageCtx = clearImageCanvas.getContext('2d');
-     clearImageCtx.clearRect(0, 0, currentWidth, currentHeight);
-     clearImageCtx.drawImage(uploadedImage, 0, 0, currentWidth, currentHeight);
- }
 </script>
-
 </body>
 </html>
