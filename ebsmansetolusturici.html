@@ -205,37 +205,48 @@ function handleImageUpload(event) {
                 let orientation = 'Dikey';
                 if (img.width > img.height) {
                     orientation = 'Yatay';
-                    // Resim yatay ise, clearImageCanvas genişliğini 684 olarak ayarla
+                    // Resim yatay ise, clearImageCanvas genişliğini 1280 olarak ayarla
                     currentWidth = 1280;
                 } else {
                     // Resim dikeyse, genişliği varsayılan değerde tut
-                    currentWidth = 300;
-                    currentHeight = 720;
+                    currentWidth = 720;
+                    currentHeight = 1280;
                 }
 
                 // Alert ile resmin yönünü bildir
                 console.log(`Resim Yönü: ${orientation}`);
 
-                const width = 1280;  // Yeni genişlik (Bulanık resim için)
-                const height = 720; // Yeni yükseklik (Bulanık resim için)
+                // 1280x720 boyutunda canvas oluştur
+                const canvasWidth = 1280;
+                const canvasHeight = 720;
 
                 // Bulanık resim için canvas
                 const blurredCanvas = document.getElementById('blurredCanvas');
                 const blurredCtx = blurredCanvas.getContext('2d');
-                blurredCanvas.width = width;
-                blurredCanvas.height = height;
+                blurredCanvas.width = canvasWidth;
+                blurredCanvas.height = canvasHeight;
 
                 // Net resim için canvas
                 const clearImageCanvas = document.getElementById('clearImageCanvas');
                 const clearImageCtx = clearImageCanvas.getContext('2d');
-                clearImageCanvas.width = currentWidth;  // Güncellenmiş genişlik
-                clearImageCanvas.height = currentHeight;
+                clearImageCanvas.width = canvasWidth;  // Güncellenmiş genişlik
+                clearImageCanvas.height = canvasHeight; // Güncellenmiş yükseklik
 
-                // Arka plan olarak bulanıklaştırılmış resmi çiz
-                blurredCtx.drawImage(img, 0, 0, width, height);
+                // Görseli doğru orantılı şekilde büyüt
+                let scale = Math.min(canvasWidth / img.width, canvasHeight / img.height);
+                let newWidth = img.width * scale;
+                let newHeight = img.height * scale;
 
-                // Ön plan olarak net resmi çiz
-                clearImageCtx.drawImage(img, 0, 0, currentWidth, currentHeight);
+                // Yatay ve dikey ortalama
+                let xOffset = (canvasWidth - newWidth) / 2;
+                let yOffset = (canvasHeight - newHeight) / 2;
+
+                // Bulanıklaştırılmış resmi çiz
+                blurredCtx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+
+                // Net resmi çiz
+                clearImageCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+                clearImageCtx.drawImage(img, xOffset, yOffset, newWidth, newHeight);
 
                 // Canvas'ları görünür hale getir
                 blurredCanvas.classList.remove('hidden');
@@ -248,6 +259,7 @@ function handleImageUpload(event) {
         reader.readAsDataURL(file);
     }
 }
+
 
 
 function saveImage() {
