@@ -271,7 +271,7 @@ function saveImage() {
     })
     .then(function(canvas) {
         // Canvas'tan image verisi oluşturuyoruz
-        let image = canvas.toDataURL("image/png", 0.5); // 0.5 ile kaliteyi düşürerek PNG olarak kaydediyoruz
+        let image = canvas.toDataURL("image/png"); 
 
         // İndirme işlemi
         const link = document.createElement('a');
