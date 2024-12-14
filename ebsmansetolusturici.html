@@ -206,18 +206,18 @@ function handleImageUpload(event) {
                 if (img.width > img.height) {
                     orientation = 'Yatay';
                     // Resim yatay ise, clearImageCanvas genişliğini 684 olarak ayarla
-                    currentWidth = 684;
+                    currentWidth = 1280;
                 } else {
                     // Resim dikeyse, genişliği varsayılan değerde tut
                     currentWidth = 300;
-                    currentHeight = 525;
+                    currentHeight = 720;
                 }
 
                 // Alert ile resmin yönünü bildir
                 console.log(`Resim Yönü: ${orientation}`);
 
-                const width = 684;  // Yeni genişlik (Bulanık resim için)
-                const height = 525; // Yeni yükseklik (Bulanık resim için)
+                const width = 1280;  // Yeni genişlik (Bulanık resim için)
+                const height = 720; // Yeni yükseklik (Bulanık resim için)
 
                 // Bulanık resim için canvas
                 const blurredCanvas = document.getElementById('blurredCanvas');
