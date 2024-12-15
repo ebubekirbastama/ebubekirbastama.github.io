@@ -194,64 +194,43 @@ function handleImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const img = new Image();
             img.src = e.target.result;
-            img.onload = function() {
-                uploadedImage = img; // Resmi sakla
+            img.onload = function () {
+                uploadedImage = img;
 
-                // Resmin yönünü tespit et
-                let orientation = 'Dikey';
-                if (img.width > img.height) {
-                    orientation = 'Yatay';
-                    // Resim yatay ise, clearImageCanvas genişliğini 1280 olarak ayarla
-                    currentWidth = 1280;
-                } else {
-                    // Resim dikeyse, genişliği varsayılan değerde tut
-                    currentWidth = 720;
-                    currentHeight = 1280;
-                }
-
-                // Alert ile resmin yönünü bildir
-                console.log(`Resim Yönü: ${orientation}`);
-
-                // 1280x720 boyutunda canvas oluştur
-                const canvasWidth = 1280;
-                const canvasHeight = 720;
-
-                // Bulanık resim için canvas
+                // Blur için canvas
                 const blurredCanvas = document.getElementById('blurredCanvas');
                 const blurredCtx = blurredCanvas.getContext('2d');
-                blurredCanvas.width = canvasWidth;
-                blurredCanvas.height = canvasHeight;
+                blurredCanvas.width = 1280; // Boyutlar
+                blurredCanvas.height = 720;
 
                 // Net resim için canvas
                 const clearImageCanvas = document.getElementById('clearImageCanvas');
                 const clearImageCtx = clearImageCanvas.getContext('2d');
-                clearImageCanvas.width = canvasWidth;  // Güncellenmiş genişlik
-                clearImageCanvas.height = canvasHeight; // Güncellenmiş yükseklik
+                clearImageCanvas.width = 1280;
+                clearImageCanvas.height = 720;
 
-                // Görseli doğru orantılı şekilde büyüt
-                let scale = Math.min(canvasWidth / img.width, canvasHeight / img.height);
-                let newWidth = img.width * scale;
-                let newHeight = img.height * scale;
-
-                // Yatay ve dikey ortalama
-                let xOffset = (canvasWidth - newWidth) / 2;
-                let yOffset = (canvasHeight - newHeight) / 2;
-
-                // Bulanıklaştırılmış resmi çiz
-                blurredCtx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+                // Bulanıklaştırma: Gaussian blur
+                blurredCtx.filter = 'blur(25px)';
+                blurredCtx.drawImage(img, 0, 0, 1280, 720);
 
                 // Net resmi çiz
-                clearImageCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+                const scale = Math.min(1280 / img.width, 720 / img.height);
+                const newWidth = img.width * scale;
+                const newHeight = img.height * scale;
+                const xOffset = (1280 - newWidth) / 2;
+                const yOffset = (720 - newHeight) / 2;
+
+                clearImageCtx.clearRect(0, 0, 1280, 720);
                 clearImageCtx.drawImage(img, xOffset, yOffset, newWidth, newHeight);
 
-                // Canvas'ları görünür hale getir
+                // Canvas'ları görünür yap
                 blurredCanvas.classList.remove('hidden');
                 clearImageCanvas.classList.remove('hidden');
 
-                // Kaydetme butonunu göster
+                // Kaydetme butonunu görünür yap
                 document.getElementById('saveBtn').classList.remove('hidden');
             };
         };
@@ -260,28 +239,33 @@ function handleImageUpload(event) {
 }
 
 
-
 function saveImage() {
-    const contentToCapture = document.getElementById('canvas-wrapper'); // Ekran görüntüsünü almak istediğiniz div
+    const blurredCanvas = document.getElementById('blurredCanvas');
+    const clearImageCanvas = document.getElementById('clearImageCanvas');
 
-    html2canvas(contentToCapture, {
-        allowTaint: true, // CORS engelini kaldırmak için kullanılır
-        useCORS: true, // Görüntülerdeki CORS hatalarını engellemek için kullanılır
-    })
-    .then(function(canvas) {
-        // Canvas'tan image verisi oluşturuyoruz
-        let image = canvas.toDataURL("image/png"); 
+    // Yeni bir canvas oluştur
+    const finalCanvas = document.createElement('canvas');
+    const finalCtx = finalCanvas.getContext('2d');
 
-        // İndirme işlemi
-        const link = document.createElement('a');
-        link.href = image; // Canvas'tan alınan veriyi link olarak kullanıyoruz
-        link.download = 'ekran_goruntusu.png'; // İndirilecek dosyanın adı
-        link.click(); // Kullanıcıya dosyayı indirmesi için tıklıyoruz
-    })
-    .catch((e) => {
-        // Hata olursa, hatayı konsola yazdırıyoruz
-        console.log('Ekran görüntüsü alınırken hata:', e);
-    });
+    // Final canvas boyutunu, bulanık canvas boyutuna göre ayarla
+    finalCanvas.width = blurredCanvas.width;
+    finalCanvas.height = blurredCanvas.height;
+
+    // Bulanık resmi çiz (arka plan)
+    finalCtx.drawImage(blurredCanvas, 0, 0, blurredCanvas.width, blurredCanvas.height);
+
+    // Net resmi ortalı bir şekilde çiz
+    const xOffset = (blurredCanvas.width - clearImageCanvas.width) / 2;
+    const yOffset = (blurredCanvas.height - clearImageCanvas.height) / 2;
+    finalCtx.drawImage(clearImageCanvas, xOffset, yOffset, clearImageCanvas.width, clearImageCanvas.height);
+
+
+    // Final canvas'ı PNG olarak kaydet
+    const image = finalCanvas.toDataURL("image/png");
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = 'image_' + Math.random().toString(36).substring(7) + '.webp'; // Rastgele dosya adı
+    link.click();
 }
 
 
