@@ -238,6 +238,25 @@ function handleImageUpload(event) {
     }
 }
 
+function addInvisibleWatermark(canvas, context) {
+    const text = "www.ebubekirbastama.com.tr";
+    const fontSize = 20; // Yazı boyutu
+    const padding = 10;  // Sağ ve alt kenar boşluğu
+
+    context.save();
+    context.globalAlpha = 0.02; // Şeffaflık seviyesi (neredeyse görünmez)
+    context.font = `${fontSize}px Arial`;
+    context.fillStyle = "#000000"; // Siyah renk
+    const textWidth = context.measureText(text).width;
+
+    // Sağ alt köşeye yazıyı ekle
+    context.fillText(
+        text,
+        canvas.width - textWidth - padding,
+        canvas.height - padding
+    );
+    context.restore();
+}
 
 function saveImage() {
     const blurredCanvas = document.getElementById('blurredCanvas');
@@ -259,6 +278,8 @@ function saveImage() {
     const yOffset = (blurredCanvas.height - clearImageCanvas.height) / 2;
     finalCtx.drawImage(clearImageCanvas, xOffset, yOffset, clearImageCanvas.width, clearImageCanvas.height);
 
+    // Görünmez watermark ekle
+    addInvisibleWatermark(finalCanvas, finalCtx);
 
     // Final canvas'ı PNG olarak kaydet
     const image = finalCanvas.toDataURL("image/png");
