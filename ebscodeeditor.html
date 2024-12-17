@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Html code için kolayca kod yazabilir ve anında önizleme alabilirsiniz. HTML, CSS ve JavaScript dillerinde interaktif bir editör deneyimi.">
+    <meta name="keywords" content="EBS, code editor, HTML editor, CSS editor, JavaScript editor, online editor, interactive editor">
+    <meta property="og:title" content="EBS - Code Editor">
+    <meta property="og:description" content="için kolayca kod yazabilir ve anında önizleme alabilirsiniz. HTML, CSS ve JavaScript dillerinde interaktif bir editör deneyimi.">
+
+    <title>EBS - Code Editor</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CodeMirror CSS (Temalar dahil) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        header {
+            padding: 10px;
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+        }
+        .controls > div {
+            display: flex;
+            align-items: center;
+        }
+        .controls select {
+            margin-right: 10px;
+        }
+        .controls button {
+            padding: 5px 10px;
+            background-color: #ff4b5c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .controls button:hover {
+            background-color: #ff1f3f;
+        }
+        .split {
+            display: flex;
+            height: 85vh;
+        }
+        #code-editor, #output {
+            overflow: auto;
+        }
+        .CodeMirror {
+            height: 100%;
+            font-size: 14px;
+            
+        }
+       .split {
+            display: flex;
+            height: 85vh;
+            background: url('https://ebubekirbastama.com.tr/circles.webp') no-repeat center center; /* Arka plan resmi */
+            background-size: cover; /* Resmin boyutunun tüm alanı kaplamasını sağlar */
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h2>EBS - Code Editor</h2>
+    </header>
+
+    <!-- Tema ve Dil Seçim Alanı -->
+    <div class="controls">
+        <div>
+            <label for="theme">Tema Seç:</label>
+            <select id="theme">
+                <option value="default">Varsayılan</option>
+                <option value="dracula">Dracula</option>
+                <option value="eclipse">Eclipse</option>
+            </select>
+             <button id="clear-theme">Temizle</button>
+        </div>
+        <div>
+            <label for="language">Dil Seç:</label>
+            <select id="language">
+                <option value="htmlmixed">HTML</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Split Container -->
+    <div class="split">
+        <div id="code-editor"></div>
+        <div id="output"></div>
+    </div>
+
+    <!-- Split.js Kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.5/split.min.js"></script>
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+
+    <script>
+        // Split.js ile iki alanı sürüklenebilir hale getir
+        Split(['#code-editor', '#output'], {
+            sizes: [50, 50],
+            minSize: 200
+        });
+
+        // CodeMirror Editörü
+        const editor = CodeMirror(document.getElementById("code-editor"), {
+            mode: "htmlmixed", // Varsayılan dil HTML
+            theme: "default",  // Varsayılan tema
+            lineNumbers: true,
+            tabSize: 2
+        });
+
+        // iFrame için çıktı alanı
+        const outputFrame = document.createElement("iframe");
+        document.getElementById("output").appendChild(outputFrame);
+
+        editor.on("change", () => {
+            const code = editor.getValue();
+            const iframeDoc = outputFrame.contentDocument || outputFrame.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(code);
+            iframeDoc.close();
+        });
+
+        // Tema Seçimi
+        document.getElementById("theme").addEventListener("change", (e) => {
+            const theme = e.target.value;
+            editor.setOption("theme", theme);
+        });
+
+        // Dil Seçimi (Gelecekte farklı diller için hazır)
+        document.getElementById("language").addEventListener("change", (e) => {
+            const mode = e.target.value;
+            editor.setOption("mode", mode);
+        });
+                // Temizleme Butonu İşlevi
+        document.getElementById("clear-theme").addEventListener("click", () => {
+            document.getElementById("theme").value = "default";  // Varsayılan tema seçimi
+            editor.setValue("");
+        });
+
+        // Varsayılan başlangıç kodu
+        editor.setValue(`<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Paneli</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9); /* Beyaz, hafif saydam */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-container h2 {
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .login-container .form-control {
+            border-radius: 25px;
+            padding: 15px;
+            font-size: 1rem;
+        }
+
+        .login-container button {
+            border-radius: 25px;
+            padding: 10px;
+            font-size: 1.1rem;
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            width: 100%;
+        }
+
+        .login-container button:hover {
+            background-color: #6a11cb;
+            cursor: pointer;
+        }
+
+        .login-container .alert {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Giriş Yap</h2>
+
+        <!-- Hata Mesajı -->
+        <div class="alert alert-danger" id="errorMessage">
+            Lütfen kullanıcı adı ve şifrenizi doğru girin.
+        </div>
+
+        <!-- Login Formu -->
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Kullanıcı Adı</label>
+                <input type="text" class="form-control" id="username" placeholder="Kullanıcı adınızı girin">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Şifre</label>
+                <input type="password" class="form-control" id="password" placeholder="Şifrenizi girin">
+            </div>
+            <button type="submit" class="btn">Giriş Yap</button>
+        </form>
+    </div>
+
+
+</body>
+</html>
+`);
+    </script>
+</body>
+</html>
