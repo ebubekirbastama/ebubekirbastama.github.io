@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EBS Tam sayfa kod görüntüleyici. HTML, JavaScript, Python, C# ve CSS gibi dillerin kodlarını düzenli ve okunabilir şekilde görüntüleyin.">
+    <meta name="keywords" content="kod görüntüleyici, syntax highlight, HTML, JavaScript, Python, C#, CSS, tam sayfa kod editörü">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="EBS Full Sayfa Kod Görüntüleyici">
+    <meta property="og:description" content="Kodlarınızı düzenli ve okunabilir şekilde görüntüleyin. HTML, JavaScript, CSS ve daha fazlası.">
+    <meta property="og:type" content="website">
+    <title>EBS Full Sayfa Kod Görüntüleyici</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/theme/material-darker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/theme/monokai.min.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #212529;
+            color: #f8f9fa;
+        }
+        #controls {
+            padding: 10px;
+            background-color: #343a40;
+        }
+        #codeDisplay {
+            height: 85vh;
+        }
+        .CodeMirror {
+            font-size: 16px;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">EBS Full Sayfa Kod Görüntüleyici</a>
+        </div>
+    </nav>
+
+    <!-- Kontrol Alanı -->
+    <div id="controls" class="d-flex justify-content-between">
+        <div>
+            <label for="modeSelect">Dil Seç:</label>
+            <select id="modeSelect" class="form-select d-inline-block w-auto">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="htmlmixed">HTML</option>
+                <option value="clike">C / C++ / C#</option>
+                <option value="css">CSS</option>
+                <option value="sql">SQL</option>
+                <option value="markdown">Markdown</option>
+                <option value="xml">XML</option>
+                <option value="yaml">YAML</option>
+                <option value="ruby">Ruby</option>
+                <option value="go">Go</option>
+                <option value="php">PHP</option>
+                <option value="java">Java</option>
+                <option value="csharp">C#</option>
+                <option value="r">R</option>
+                <option value="swift">Swift</option>
+                <option value="scala">Scala</option>
+                <option value="haskell">Haskell</option>
+                <option value="typescript">TypeScript</option>
+                <option value="perl">Perl</option>
+                <option value="lua">Lua</option>
+                <option value="json">JSON</option>
+                <option value="objectivec">Objective-C</option>
+                <option value="clojure">Clojure</option>
+                <option value="matlab">MATLAB</option>
+                <option value="elixir">Elixir</option>
+                <option value="dart">Dart</option>
+                <option value="go">Go</option>
+                <option value="vhdl">VHDL</option>
+                <option value="xml">XML</option>
+                <option value="graphql">GraphQL</option>
+                <option value="fsharp">F#</option>
+                <option value="twig">Twig</option>
+                <option value="dockerfile">Dockerfile</option>
+                <option value="powershell">PowerShell</option>
+                <option value="asciidoc">AsciiDoc</option>
+                <option value="antlr4">ANTLR4</option>
+                <option value="prolog">Prolog</option>
+                <option value="abap">ABAP</option>
+                <option value="fortran">Fortran</option>
+                <option value="nim">Nim</option>
+                <option value="solidity">Solidity</option>
+                <option value="latex">LaTeX</option>
+                <option value="coffee">CoffeeScript</option>
+                <option value="haxe">Haxe</option>
+                <option value="vhdl">VHDL</option>
+                <option value="assembly">Assembly</option>
+                <option value="verilog">Verilog</option>
+                <option value="csound">Csound</option>
+                <option value="markdown">Markdown</option>
+            </select>
+        </div>
+        <div>
+            <label for="themeSelect">Tema Seç:</label>
+            <select id="themeSelect" class="form-select d-inline-block w-auto">
+                <option value="material-darker">Material Darker</option>
+                <option value="dracula">Dracula</option>
+                <option value="monokai">Monokai</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Kod Görüntüleme Alanı -->
+    <div id="codeDisplay"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/yaml/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/ruby/ruby.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/go/go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/php/php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/java/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/csharp/csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/r/r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/swift/swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/scala/scala.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/haskell/haskell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/typescript/typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/perl/perl.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/lua/lua.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/json/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/objectivec/objectivec.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/clojure/clojure.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/matlab/matlab.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/elixir/elixir.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/dart/dart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/vhdl/vhdl.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/graphQL/graphQL.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/fsharp/fsharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/twig/twig.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/dockerfile/dockerfile.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.10/mode/powershell/powershell.min.js"></script>
+
+    <script>
+        // CodeMirror Başlangıç Ayarları
+        const code = `/* Örnek AES-256 Brute Force Python */
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+import itertools
+
+def brute_force_aes256(encrypted_text, iv):
+    keys = [''.join(k) for k in itertools.product('abc123', repeat=32)]
+    for key in keys:
+        try:
+            cipher = AES.new(key.encode('utf-8'), AES.MODE_CBC, iv)
+            decrypted_text = unpad(cipher.decrypt(encrypted_text), AES.block_size)
+            print("Anahtar bulundu:", key)
+            break
+        except:
+            pass
+
+# Kullanım Örneği
+encrypted_text = b'...şifrelenmiş veri...'
+iv = b'...IV değeri...'
+brute_force_aes256(encrypted_text, iv)`;
+
+        const editor = CodeMirror(document.getElementById("codeDisplay"), {
+            value: code,
+            lineNumbers: true,
+            mode: "javascript",
+            theme: "material-darker",
+         
+        });
+
+        // Dil Seçimini Yönet
+        document.getElementById("modeSelect").addEventListener("change", function () {
+            const mode = this.value;
+            editor.setOption("mode", mode);
+        });
+
+        // Tema Seçimini Yönet
+        document.getElementById("themeSelect").addEventListener("change", function () {
+            const theme = this.value;
+            editor.setOption("theme", theme);
+        });
+    </script>
+</body>
+</html>
