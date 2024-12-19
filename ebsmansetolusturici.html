@@ -232,11 +232,15 @@ function handleImageUpload(event) {
 
                 // Kaydetme butonunu görünür yap
                 document.getElementById('saveBtn').classList.remove('hidden');
+
+                // Resmi otomatik indir
+                saveImage();
             };
         };
         reader.readAsDataURL(file);
     }
 }
+
 
 function addInvisibleWatermark(canvas, context) {
     const text = "www.ebubekirbastama.com.tr";
@@ -257,6 +261,7 @@ function addInvisibleWatermark(canvas, context) {
     );
     context.restore();
 }
+
 
 function saveImage() {
     const blurredCanvas = document.getElementById('blurredCanvas');
