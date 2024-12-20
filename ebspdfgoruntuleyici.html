@@ -3,166 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bu sayfa, PDF dosyalarını görüntülemek için bir araçtır.">
-    <meta name="keywords" content="PDF, PDF görüntüleyici, dosya yükleme, sayfa gezinme">
-
+    <meta name="description" content="PDF dosyalarını görüntüleme ve birden fazla sayfayı indirme aracı.">
+    <meta name="keywords" content="PDF, PDF görüntüleyici, sayfa indirme, sayfa aralığı, sayfaya git">
     <title>EBS PDF Görüntüleyici</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <style>
         body {
-            transition: background-color 0.3s ease;
             background: url('https://ebubekirbastama.com.tr/circles.webp');
         }
-
         #pdfContainer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
             margin-top: 20px;
         }
-
-        .single-page {
-            display: block;
-        }
-
-        .double-page {
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .page {
-            margin: 0 10px;
-        }
-
         #pdfCanvas {
             border: 1px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-
         .controls {
             text-align: center;
             margin-top: 20px;
-        }
-
-        #pageInfo {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 1.2em;
-        }
-
-        #prev, #next {
-            margin: 0 10px;
-        }
-
-        #loading {
-            display: none;
-            text-align: center;
-            font-size: 1.2em;
-            color: #007bff;
-        }
-
-        .control-buttons button {
-            margin: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">PDF Görüntüleyici</h1>
-        
-        <!-- PDF Dosyası Yükleme -->
-        <div class="mb-4 text-center">
-            <input type="file" id="pdfFile" class="form-control" accept="application/pdf">
-        </div>
-
-        <!-- Yükleme Göstergesi -->
-        <div id="loading">Yükleniyor...</div>
-        
-        <!-- PDF Görüntüleyici Konteyneri -->
-        <div id="pdfContainer" class="single-page">
+        <h1 class="text-center">PDF Görüntüleyici ve Sayfa Aralığı İndirici</h1>
+        <input type="file" id="pdfFile" class="form-control mt-3" accept="application/pdf">
+        <div id="pdfContainer" class="mt-4">
             <canvas id="pdfCanvas"></canvas>
         </div>
-
-        <!-- Kontroller -->
-        <div class="controls">
-            <div class="control-buttons">
-                <button id="prev" class="btn btn-primary">Önceki</button>
-                <button id="next" class="btn btn-primary">Sonraki</button>
-                <button id="zoomIn" class="btn btn-secondary">Yakınlaştır</button>
-                <button id="zoomOut" class="btn btn-secondary">Uzaklaştır</button>
-            </div>
-            <div class="mb-3">
-                <input type="number" id="pageInput" class="form-control" placeholder="Sayfa numarasını girin" min="1">
-                <button id="goToPage" class="btn btn-info mt-2">Sayfaya Git</button>
-            </div>
+        <div class="controls mt-3">
+            <button id="prev" class="btn btn-primary">Önceki</button>
+            <button id="next" class="btn btn-primary">Sonraki</button>
+            <button id="zoomIn" class="btn btn-secondary">Yakınlaştır</button>
+            <button id="zoomOut" class="btn btn-secondary">Uzaklaştır</button>
         </div>
-
-        <!-- Sayfa Bilgisi -->
-        <div id="pageInfo" class="mb-4"></div>
-        
-        <!-- Sayfa Seçme -->
-        <div>
-            <select id="pageSelect" class="form-control">
-                <!-- Seçenekler dinamik olarak eklenecek -->
-            </select>
+        <div class="mt-3 text-center">
+            <input type="number" id="pageInput" class="form-control d-inline-block w-25" placeholder="Sayfa numarasını girin" min="1">
+            <button id="goToPage" class="btn btn-info">Sayfaya Git</button>
+        </div>
+        <div id="pageInfo" class="mt-3"></div>
+        <div class="mt-4 text-center">
+            <input type="text" id="rangeInput" class="form-control d-inline-block w-50" placeholder="Sayfa aralığını girin (örn: 1/5)">
+            <button id="downloadRange" class="btn btn-success mt-2">Sayfa Aralığını İndir</button>
         </div>
     </div>
 
     <script>
-        let currentPage = 1;
         let pdfDoc = null;
+        let currentPage = 1;
         let scale = 1.5;
 
-        // PDF dosyasını kullanıcıdan al
+        // PDF yükleme
         document.getElementById('pdfFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                const fileReader = new FileReader();
-                fileReader.onload = function() {
-                    const typedarray = new Uint8Array(this.result);
-                    pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const typedArray = new Uint8Array(this.result);
+                    pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
                         pdfDoc = pdf;
-                        currentPage = 1; // Yeni dosya yüklediğinde currentPage sıfırlanır
+                        currentPage = 1;
                         renderPage(currentPage);
-                        populatePageSelector();
                     }).catch(function(error) {
                         alert('PDF yüklenirken hata oluştu: ' + error.message);
                     });
                 };
-                fileReader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(file);
             }
         });
 
-        // Sayfayı render et
+        // PDF sayfasını render et
         function renderPage(pageNum) {
-            document.getElementById('loading').style.display = 'block';
             pdfDoc.getPage(pageNum).then(function(page) {
                 const canvas = document.getElementById('pdfCanvas');
                 const context = canvas.getContext('2d');
                 const viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
                 canvas.width = viewport.width;
-                page.render({ canvasContext: context, viewport: viewport });
+                canvas.height = viewport.height;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
 
                 // Sayfa bilgilerini güncelle
                 document.getElementById('pageInfo').textContent = `Sayfa ${pageNum} / ${pdfDoc.numPages}`;
-                document.getElementById('loading').style.display = 'none';
             });
-        }
-
-        // Sayfa seçici doldurma
-        function populatePageSelector() {
-            const select = document.getElementById('pageSelect');
-            select.innerHTML = '';
-            for (let i = 1; i <= pdfDoc.numPages; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `Sayfa ${i}`;
-                select.appendChild(option);
-            }
         }
 
         // Önceki sayfaya gitme
@@ -204,15 +134,55 @@
             }
         });
 
-        // Sayfa seç
-        document.getElementById('pageSelect').addEventListener('change', function() {
-            currentPage = parseInt(this.value);
-            renderPage(currentPage);
+        // Sayfa aralığını indir
+        document.getElementById('downloadRange').addEventListener('click', async function() {
+            const rangeInput = document.getElementById('rangeInput').value.trim();
+            if (!rangeInput.match(/^\d+\/\d+$/)) {
+                alert('Lütfen geçerli bir aralık girin (örn: 1/5).');
+                return;
+            }
+
+            const [start, end] = rangeInput.split('/').map(num => parseInt(num));
+            if (start < 1 || end > pdfDoc.numPages || start > end) {
+                alert('Geçersiz sayfa aralığı.');
+                return;
+            }
+
+            const pdfDocNew = await PDFLib.PDFDocument.create();
+
+            for (let pageNum = start; pageNum <= end; pageNum++) {
+                const page = await pdfDoc.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 3 }); // Yüksek DPI için ölçek
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const embeddedImage = await pdfDocNew.embedJpg(imgData);
+
+                const pdfPage = pdfDocNew.addPage([viewport.width, viewport.height]);
+                pdfPage.drawImage(embeddedImage, {
+                    x: 0,
+                    y: 0,
+                    width: viewport.width,
+                    height: viewport.height
+                });
+            }
+
+            const pdfBytes = await pdfDocNew.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Sayfalar_${start}-${end}.pdf`;
+            link.click();
+
+            URL.revokeObjectURL(url);
         });
     </script>
-
-    <!-- Bootstrap JS & Dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
