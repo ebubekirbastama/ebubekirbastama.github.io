@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metin Karıştırıcı</title>
+<style>
+    /* Genel stil ayarları */
+    body {
+        background: url('https://ebubekirbastama.com.tr/circles.webp');
+        color: #f0f0f0;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    /* Konteyner düzeni */
+    .container {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #ffcc00;
+        font-size: 24px;
+        margin: 0;
+    }
+
+    /* Rich Text Box tasarımı */
+    #richTextbox {
+        width: 100%;
+        min-height: 150px;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 10px;
+        background: #222;
+        color: #fff;
+        overflow-y: auto;
+        font-size: 16px;
+    }
+
+    #richTextbox:empty::before {
+        content: attr(placeholder);
+        color: #aaa;
+        font-style: italic;
+    }
+
+    /* Çıktı kutusu tasarımı */
+    #outputBox {
+        width: 100%;
+        min-height: 150px;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 10px;
+        background: #1a1a1a;
+        color: #05ff62;
+        overflow-y: auto;
+        font-size: 16px;
+    }
+
+    /* Buton stili */
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: transform 0.3s ease, background 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Hover efekti */
+    button:hover {
+        background: linear-gradient(45deg, #0056b3, #003d7a);
+        transform: translateY(-2px);
+    }
+
+    button:active {
+        transform: translateY(0);
+        background: #002a57;
+    }
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Metin Karıştırıcı</h1>
+        <!-- Kullanıcıdan metin alınacak alan -->
+        <div id="richTextbox" contenteditable="true" placeholder="Buraya satır satır metin girin"></div>
+        <!-- Karıştırma işlemini başlatan buton -->
+        <button onclick="processText()">Karıştır ve Diz</button>
+        <!-- Karıştırılmış metnin gösterileceği alan -->
+        <div id="outputBox"></div>
+    </div>
+
+    <script>
+        // Metni işle ve çıktı kutusuna yerleştir
+        function processText() {
+            const richTextbox = document.getElementById('richTextbox'); // Giriş kutusunu al
+            const outputBox = document.getElementById('outputBox');     // Çıktı kutusunu al
+
+            // Girişten gelen metni satır satır ayır
+            const lines = richTextbox.innerText.split('\n').filter(line => line.trim() !== '');
+
+            // Satırları rastgele karıştır
+            const shuffledLines = lines.sort(() => Math.random() - 0.5);
+
+            // Karıştırılmış metni çıktı kutusuna yaz
+            outputBox.innerText = shuffledLines.join('\n');
+        }
+    </script>
+</body>
+</html>
