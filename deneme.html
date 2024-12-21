@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSS Feed - XML Format</title>
+</head>
+<body>
+
+  <pre id="xmlOutput"></pre>
+
+  <script>
+    const proxyUrl = "https://api.allorigins.win/get?url=";
+    const targetUrl = "https://www.icisleri.gov.tr/bakandan-haberler"; // Gerçek hedef URL
+
+    fetch(proxyUrl + encodeURIComponent(targetUrl))
+      .then(response => response.json())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data.contents, "text/html");
+
+        // XPath ile verileri seç
+        const images = doc.evaluate("//*[@class='card-img-top lazy']", doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        const titles = doc.evaluate("//*[@class='card-title']", doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        const summaries = doc.evaluate("//*[@class='card-text']", doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        const links = doc.evaluate("//*[@class='card news-card-horizontal']", doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+        // XML formatında bir yapı oluştur
+        let xmlContent = '<?xml version="1.0" encoding="UTF-8"?>\n<rssFeed>';
+
+        for (let i = 0; i < titles.snapshotLength; i++) {
+          const img = images.snapshotItem(i)?.getAttribute("data-src") || "";
+          const title = titles.snapshotItem(i)?.textContent || "Başlık bulunamadı";
+          const summary = summaries.snapshotItem(i)?.textContent || "Özet bulunamadı";
+          const link = links.snapshotItem(i)?.getAttribute("href") || "#";
+
+          // XML formatında öğeleri ekle
+          xmlContent += `
+  <item>
+    <title>${title}</title>
+    <summary>${summary}</summary>
+    <link>${link}</link>
+    <image>https://www.icisleri.gov.tr${img}</image>
+  </item>`;
+        }
+
+        // XML'i ekrana yazdır
+        document.getElementById("xmlOutput").textContent = xmlContent;
+      })
+      .catch(error => console.error("Hata:", error));
+  </script>
+</body>
+</html>
