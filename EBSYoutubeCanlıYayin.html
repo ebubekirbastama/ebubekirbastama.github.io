@@ -43,17 +43,29 @@
             text-align: left;
             overflow-y: auto;
         }
-        .btn-start {
+        .btn {
             margin-top: 20px;
-            background-color: #007bff;
-            color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            color: white;
         }
-        .btn-start:hover {
-            background-color: #0056b3;
+        .btn-start {
+            background-color: #007bff;
+        }
+        .btn-download {
+            background-color: #28a745;
+        }
+        .btn-copy {
+            background-color: #ffc107;
+            color: black;
+        }
+        .btn-cut {
+            background-color: #dc3545;
+        }
+        .btn:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -69,26 +81,30 @@
         <!-- Kesin Metin -->
         <textarea id="speechText1" class="form-control speech-text" rows="10"></textarea>
 
-        <!-- Başlatma Butonu -->
-        <button id="startListening" class="btn-start">Mikrofonu Dinlemeyi Başlat</button>
+        <!-- Butonlar -->
+        <button id="startListening" class="btn btn-start">Mikrofonu Dinlemeyi Başlat</button>
+        <button id="downloadText" class="btn btn-download">Veriyi İndir</button>
+        <button id="copyText" class="btn btn-copy">Metni Kopyala</button>
+        <button id="cutText" class="btn btn-cut">Metni Kes</button>
     </div>
 
     <script>
         const speechText = document.getElementById('speechText');
         const speechText1 = document.getElementById('speechText1');
         const startListeningButton = document.getElementById('startListening');
-        
+        const downloadTextButton = document.getElementById('downloadText');
+        const copyTextButton = document.getElementById('copyText');
+        const cutTextButton = document.getElementById('cutText');
+
         let recognition;
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
-            recognition.continuous = true; // Sürekli dinleme
-            recognition.lang = 'tr-TR'; // Türkçe dil seçimi
-            recognition.interimResults = true; // Ara sonuçlar
-            
-            console.log("Ses tanıma başladı...");
+            recognition.continuous = true;
+            recognition.lang = 'tr-TR';
+            recognition.interimResults = true;
 
             recognition.onstart = function () {
-                speechText.value += "Dinleme başladı...\n"; // Dinleme başladığında bilgi ekle
+                speechText.value += "Dinleme başladı...\n";
             };
 
             recognition.onresult = function (event) {
@@ -103,42 +119,48 @@
                     }
                 }
 
-                // Kesin ve geçici sonuçları ilgili alanlara yaz
-                speechText1.value += finalTranscript; // Kesin sonuç
-                speechText.value = interimTranscript; // Geçici sonuç
+                speechText1.value += finalTranscript;
+                speechText.value = interimTranscript;
             };
 
             recognition.onerror = function (event) {
                 console.error('Hata:', event.error);
-                if (event.error === 'no-speech') {
-                    speechText.value += 'Ses algılanamadı. Lütfen tekrar deneyin.\n';
-                } else if (event.error === 'audio-capture') {
-                    speechText.value += 'Mikrofon bulunamadı. Lütfen mikrofonunuzu kontrol edin.\n';
-                } else if (event.error === 'not-allowed') {
-                    speechText.value += 'Erişim izni reddedildi. Lütfen tarayıcı ayarlarınızı kontrol edin.\n';
-                }
-
-                // Sadece bazı durumlarda yeniden başlat
-                if (event.error !== 'not-allowed' && event.error !== 'audio-capture') {
-                    recognition.start();
-                }
+                speechText.value += `Hata: ${event.error}\n`;
             };
 
             recognition.onend = function () {
-                speechText.value += "Dinleme sona erdi. Tekrar başlatılıyor...\n"; // Dinleme sona erdiğinde bilgi ekle
-                console.log('Mikrofon dinleme sona erdi. Tekrar başlatılıyor...');
-                recognition.start(); // Dinlemeyi yeniden başlat
+                speechText.value += "Dinleme sona erdi. Tekrar başlatılıyor...\n";
+                recognition.start();
             };
         } else {
             speechText.value = 'Tarayıcınız ses tanımayı desteklemiyor.';
         }
 
-        // Mikrofon dinlemeyi başlatma
         startListeningButton.addEventListener('click', () => {
             if (recognition) {
                 recognition.start();
-                console.log('Mikrofon dinleme başlatıldı.');
             }
+        });
+
+        downloadTextButton.addEventListener('click', () => {
+            const text = speechText1.value;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'speechText.txt';
+            link.click();
+        });
+
+        copyTextButton.addEventListener('click', () => {
+            speechText1.select();
+            document.execCommand('copy');
+            alert('Metin kopyalandı!');
+        });
+
+        cutTextButton.addEventListener('click', () => {
+            speechText1.select();
+            document.execCommand('cut');
+            alert('Metin kesildi!');
         });
     </script>
 </body>
