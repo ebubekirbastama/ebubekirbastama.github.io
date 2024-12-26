@@ -115,34 +115,37 @@
             progressBar.style.width = "0%";
             progressBar.textContent = "0%";
 
-            video.addEventListener('seeked', function captureFrame() {
-                if (video.currentTime > endTime) {
-                    video.removeEventListener('seeked', captureFrame);
-                    saveZip(zip); // ZIP dosyasını kaydet
-                    progressBar.style.width = "100%";
-                    progressBar.textContent = "Tamamlandı!";
-                    return;
-                }
+video.addEventListener('seeked', function captureFrame() {
+    if (video.currentTime > endTime) {
+        video.removeEventListener('seeked', captureFrame);
+        saveZip(zip); // ZIP dosyasını kaydet
+        progressBar.style.width = "100%";
+        progressBar.textContent = "Tamamlandı!";
+        return;
+    }
 
-                // Kareyi yakala ve yüksek çözünürlükte resim oluştur
-                canvas.width = video.videoWidth * 84 // Full HD için *2, 4K için *4 gibi
-                canvas.height = video.videoHeight * 4;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Kareyi yakala ve yüksek çözünürlükte resim oluştur
+    canvas.width = video.videoWidth * 4; // Full HD için *2, 4K için *4
+    canvas.height = video.videoHeight * 4;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                const imgDataUrl = canvas.toDataURL('image/png');
-                const imgData = imgDataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
-                framesFolder.file(`frame_${frames.length + 1}.png`, imgData, { base64: true });
+    const imgDataUrl = canvas.toDataURL('image/png');
+    const base64Data = imgDataUrl.replace(/^data:image\/(png|jpg);base64,/, ""); // Remove prefix
 
-                frames.push(imgDataUrl);
-                processedFrames++;
+    // Add the image data (base64) to the zip
+    framesFolder.file(`frame_${frames.length + 1}.png`, base64Data, { base64: true });
 
-                // İlerleme çubuğunu güncelle
-                const progress = Math.min((processedFrames / totalFrames) * 100, 100);
-                progressBar.style.width = `${progress}%`;
-                progressBar.textContent = `${Math.floor(progress)}%`;
+    frames.push(imgDataUrl);
+    processedFrames++;
 
-                video.currentTime += frameInterval;
-            });
+    // İlerleme çubuğunu güncelle
+    const progress = Math.min((processedFrames / totalFrames) * 100, 100);
+    progressBar.style.width = `${progress}%`;
+    progressBar.textContent = `${Math.floor(progress)}%`;
+
+    video.currentTime += frameInterval;
+});
+
 
             video.currentTime = startTime;
         });
