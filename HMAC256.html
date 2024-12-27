@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HMAC-SHA256 örneği ile mesaj doğrulama işlemi. Gizli anahtar kullanarak mesajı hash'leyin ve güvenli veri doğrulaması yapın.">
+    <meta name="keywords" content="EBS HMAC, SHA256, hash, güvenlik, veri doğrulama, mesaj doğrulama, gizli anahtar, javascript, Web Crypto API">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HMAC-SHA256 Örneği</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+            color: white;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.6); /* Yarı şeffaf arka plan */
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        .code-box {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #0d6efd;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            max-height: 400px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        #hash-info {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #ff4747;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">EBS HMAC-SHA256 Örneği</h1>
+        <div class="form-group">
+            <label for="message">Mesaj:</label>
+            <input type="text" class="form-control" id="message" placeholder="Mesaj girin">
+        </div>
+        <div class="form-group">
+            <label for="key">Gizli Anahtar:</label>
+            <input type="text" class="form-control" id="key" placeholder="Gizli anahtar girin">
+        </div>
+        <button class="btn btn-primary mt-3" onclick="generateHMAC()">HMAC Oluştur</button>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Oluşturulan HMAC</h5>
+                <pre id="result" class="code-box"></pre>
+            </div>
+        </div>
+
+        <div id="hash-info">
+            <strong>Not:</strong> HMAC, bir "hash" fonksiyonudur ve geri çözülemeyen (invert edilemeyen) bir işlemdir. Yani, hash'lenmiş veriyi tekrar orijinal haliyle elde etmek mümkün değildir.
+        </div>
+    </div>
+
+    <script>
+        async function generateHMAC() {
+            const message = document.getElementById('message').value;
+            const key = document.getElementById('key').value;
+
+            if (!message || !key) {
+                alert('Lütfen hem mesajı hem de anahtarı girin!');
+                return;
+            }
+
+            try {
+                // Anahtarı ArrayBuffer'a dönüştür
+                const encoder = new TextEncoder();
+                const keyData = encoder.encode(key);
+
+                // Anahtarı HMAC için içe aktar
+                const cryptoKey = await crypto.subtle.importKey(
+                    "raw",
+                    keyData,
+                    { name: "HMAC", hash: { name: "SHA-256" } },
+                    false,
+                    ["sign"]
+                );
+
+                // Mesajı ArrayBuffer'a dönüştür
+                const messageData = encoder.encode(message);
+
+                // HMAC'ı oluştur
+                const signature = await crypto.subtle.sign("HMAC", cryptoKey, messageData);
+
+                // İmzayı hexadecimal (onaltılı) formata dönüştür
+                const signatureArray = new Uint8Array(signature);
+                const hexSignature = Array.from(signatureArray)
+                    .map(byte => byte.toString(16).padStart(2, '0'))
+                    .join('');
+
+                // Sonucu ekrana yazdır
+                document.getElementById('result').textContent = hexSignature;
+            } catch (error) {
+                console.error('HMAC oluşturulurken hata oluştu:', error);
+                alert('HMAC oluşturulurken bir hata oluştu');
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
