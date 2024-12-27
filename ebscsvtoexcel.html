@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+ <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CSV dosyasını Excel formatına dönüştürmek için kullanabileceğiniz bir araç. Basit ve hızlı şekilde verilerinizi Excel'e aktarın.">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="keywords" content="CSV, Excel, dönüştürme, dosya, veritabanı, CSV'den Excel'e, online araç">
+    <title>EBS CSV'den Excel'e Dönüştürücü</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- xlsx library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+        }
+
+        .drop-area {
+            border: 3px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: border 0.3s ease;
+        }
+
+        .drop-area.highlight {
+            border-color: #28a745;
+        }
+
+        .uploaded-images img {
+            max-width: 150px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .uploaded-images img:hover {
+            transform: scale(1.2); /* Hover ile %20 büyüt */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center my-4">EBS CSV'den Excel'e Dönüştürücü</h1>
+    <div class="drop-area" id="drop-area">
+        <p>CSV dosyasını buraya sürükleyip bırakın</p>
+        <p>veya</p>
+        <button class="btn btn-primary" id="file-input-btn">CSV dosyasını seçin</button>
+        <input type="file" id="csv-file" accept=".csv" style="display: none;">
+    </div>
+    <div id="preview"></div>
+    <button id="convert-btn" class="btn btn-success mt-4" style="display:none;">Excel'e Dönüştür</button>
+    <a id="download-link" class="btn btn-info mt-4" style="display:none;" download>Excel dosyasını indir</a>
+</div>
+
+<!-- Bootstrap JS ve bağımlılıkları -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('csv-file');
+    const previewDiv = document.getElementById('preview');
+    const convertBtn = document.getElementById('convert-btn');
+    const downloadLink = document.getElementById('download-link');
+
+    // Dosya üzerine sürüklenince drop alanının görünümünü değiştirme
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('highlight');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('highlight');
+    });
+
+    // Dosya bırakıldığında veriyi işleme
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('highlight');
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+    });
+
+    // Dosya seçme butonuna tıklayınca dosya seçme işlemi
+    document.getElementById('file-input-btn').addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        handleFile(file);
+    });
+
+    // CSV dosyasını işleme ve içeriklerini ekrana yazdırma
+    function handleFile(file) {
+        if (file && file.name.endsWith('.csv')) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const csvData = event.target.result;
+                displayCsvData(csvData);
+            };
+            reader.readAsText(file);
+        } else {
+            alert('Lütfen geçerli bir CSV dosyası yükleyin');
+        }
+    }
+
+    // CSV verilerini ekrana tablo şeklinde yazdırma
+    function displayCsvData(csvData) {
+        const rows = csvData.split('\n');
+        let tableHTML = '<table class="table table-bordered"><thead><tr>';
+        
+        // Başlıkları al
+        const headers = rows[0].split(',');
+        headers.forEach(header => {
+            tableHTML += `<th>${header.trim()}</th>`;
+        });
+        tableHTML += '</tr></thead><tbody>';
+
+        // İlk 100 satırı göster
+        const rowsToShow = rows.slice(1, 101); // İlk 100 satırı göster
+        rowsToShow.forEach(row => {
+            const columns = row.split(',');
+            tableHTML += '<tr>';
+            columns.forEach(col => {
+                tableHTML += `<td>${col.trim()}</td>`;
+            });
+            tableHTML += '</tr>';
+        });
+        tableHTML += '</tbody></table>';
+        previewDiv.innerHTML = tableHTML;
+        convertBtn.style.display = 'inline-block';
+        convertBtn.addEventListener('click', () => convertToExcel(rows));
+    }
+
+    // CSV verisini Excel dosyasına dönüştürme
+    function convertToExcel(rows) {
+        const sheetData = rows.map(row => row.split(',').map(cell => cell.trim())); // Satırları ve kolonları ayır
+        const ws = XLSX.utils.aoa_to_sheet(sheetData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        
+        // Excel dosyasını oluşturma ve indirme işlemi
+        const excelFile = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+        const blob = new Blob([excelFile], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+
+        // İndirilecek dosya adını ve uzantısını ayarlama
+        downloadLink.href = url;
+        downloadLink.style.display = 'inline-block';
+        downloadLink.textContent = 'Excel Dosyasını İndir';
+        downloadLink.download = 'converted_file.xlsx'; // Dosya ismi ve uzantısı
+    }
+</script>
+
+</body>
+</html>
