@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EBS JSON Formatter, JSON verilerinizi düzenlemenize yardımcı olur. Kolayca formatlanmış JSON çıktısı alın.">
+  <meta name="keywords" content="JSON, JSON formatter, JSON düzenleyici, EBS, web uygulaması, veri işleme">
+  <meta name="author" content="Ebu Bekir Bastama">
+  <meta property="og:title" content="EBS JSON Formatter">
+  <meta property="og:description" content="EBS JSON Formatter, JSON verilerinizi düzenlemenize yardımcı olur. Kolayca formatlanmış JSON çıktısı alın.">
+  <meta property="og:image" content="https://ebubekirbastama.com.tr/circles.webp">
+  <meta property="og:url" content="https://ebubekirbastama.com.tr/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="EBS JSON Formatter">
+  <meta name="twitter:description" content="EBS JSON Formatter, JSON verilerinizi düzenlemenize yardımcı olur. Kolayca formatlanmış JSON çıktısı alın.">
+  <meta name="twitter:image" content="https://ebubekirbastama.com.tr/circles.webp">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>EBS JSON Formatter</title>
+  <style>
+    body {
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.7); /* Yarı şeffaf arka plan */
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      width: 100px; /* Logo genişliği */
+      height: auto; /* Orantılı yükseklik */
+    }
+
+    .form-label {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      color: white;
+      font-family: monospace;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 200px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+
+    .code-box {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #0d6efd;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      textarea {
+        min-height: 150px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- PNG logo eklendi -->
+    <img src="ebsjsonformarter.png" alt="Logo" class="logo">
+    
+    <h2>EBS JSON Formatter</h2>
+    <label for="jsonInput" class="form-label">JSON Input</label>
+    <textarea id="jsonInput" placeholder="Paste your JSON here"></textarea>
+    <button onclick="formatJSON()">Format JSON</button>
+    <h3>Formatted JSON:</h3>
+    <div class="code-box" id="formattedJson"></div>
+  </div>
+
+  <script>
+    function formatJSON() {
+      const jsonInput = document.getElementById('jsonInput').value;
+      try {
+        const parsedJSON = JSON.parse(jsonInput);
+        const formattedJSON = JSON.stringify(parsedJSON, null, 2); // Format with 2 spaces
+        document.getElementById('formattedJson').textContent = formattedJSON;
+      } catch (e) {
+        document.getElementById('formattedJson').textContent = 'Invalid JSON format';
+      }
+    }
+  </script>
+
+</body>
+</html>
