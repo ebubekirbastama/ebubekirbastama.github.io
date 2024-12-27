@@ -2,131 +2,186 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>EBS Time(Ebubekir Bastama)</title>
-  <noscript>
-      <meta http-equiv="refresh" content="0; URL=nojs.html">
-    </noscript>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-Frame-Options" content="deny">
-  <script type="text/javascript">
-   if (document.referrer.indexOf("t.co") == -1) {
-       if (document.referrer.indexOf("ebubekirbastama.com.tr") == -1) {
-      if (document.referrer!="") {
-        window.location.href = "https://www.youtube.com/@ebubekiryazilim/videos";
-      }
-    }
+  <title>EBS Time (Ebubekir Bastama)</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+    background: url(https://ebubekirbastama.com.tr/circles.webp);
     }
 
-    if (window.location.host.indexOf("ebubekirbastama.com.tr") == -1) {
-      window.stop();
+    .ebsred {
+      color: red;
     }
-  </script>
-  <link href="EBS.css" type="text/css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    .emoji-button {
+      font-size: 1.5rem;
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .emoji-button:hover {
+      background-color: #007bff;
+      color: white;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .navbar-brand, .nav-link {
+      font-weight: bold;
+    }
+    .section-header {
+      text-align: center;
+      margin: 20px 0;
+    }
+  </style>
 </head>
-
 <body>
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="https://www.ebubekirbastama.com">EBS Time Web Site</a>
-    </div>
-    <ul class="nav navbar-nav">
-     <li class="active"><a href="#">Neden Bu site var ?</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/RandomNameorSurnameCreate.html" target="_blank">Random Ad-Soyad Oluşturucu</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/CurltoPhp/index.html" target="_blank">Curl-To-Php</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/base64encoder.html" target="_blank" >Base64 Encode</a></li>
-     <li><a href="https://www.ebubekirbastama.com.tr/base64decode.html" target="_blank" >Base64 Decode</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/sha1encode.html" target="_blank" >Sha1 Encoder</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/md5.html" target="_blank" >Md5 Encoder</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/EBSbcrypt.html" target="_blank" >Bcrypt</a></li> 
-     <li><a href="https://www.ebubekirbastama.com.tr/lokasyon.html" target="_blank" >Lokasyon Bulma</a></li> 
-     <li><a href="https://ebubekirbastama.com.tr/RichSnippets.html" target="_blank" >Rich Snippets(Generator)</a></li>
-     <li><a href="https://ebubekirbastama.com.tr/FAQPage.html" target="_blank" >FAQ Snippets(Generator)</a></li>
-      
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="https://www.ebubekirbastama.com">EBS Time Web Site</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="menuTools" role="button" data-toggle="dropdown">Şifreleme Araçları</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/base64encoder.html" target="_blank">Base64 Encode</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/base64decode.html" target="_blank">Base64 Decode</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/sha1encode.html" target="_blank">Sha1 Encoder</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/md5.html" target="_blank">Md5 Encoder</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBSbcrypt.html" target="_blank">Bcrypt</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="menuDeveloper" role="button" data-toggle="dropdown">Yazılımcı Araçları</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/CurltoPhp/index.html" target="_blank">Curl-To-Php</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsregex.html" target="_blank">Regex Tester</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsformatjson.html" target="_blank">JSON Formatter</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscodeeditor.html" target="_blank">Code Editör (HTML, JS, CSS)</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="menuMultimedia" role="button" data-toggle="dropdown">Multimedya Araçları</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/videodanresimcikarma.html" target="_blank">Videodan Resim Çıkartıcı</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsrspnimg.html" target="_blank">Responsive Img</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebspdfgoruntuleyici.html" target="_blank">PDF Görüntüleyici</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebstemplatematching.html" target="_blank">Şablon Eşleştirme</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsssim.html" target="_blank">Resim Karşılaştırma</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsocr.html" target="_blank">İmage OCR</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="menuPdfTools" role="button" data-toggle="dropdown">PDF Araçları</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBSPDFOkuyucu.html" target="_blank">PDF Okuyucu</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebszipgoruntuleyici.html" target="_blank">Zip Görüntüleyicisi</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="menuDataTools" role="button" data-toggle="dropdown">Veri Araçları</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscsvparsertext.html" target="_blank">Csv Görüntüleyici</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscsvparser.html" target="_blank">Csv Görüntüleyici (Zengin)</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscsvmarge.html" target="_blank">Csv Birleştirme</a>
+          <a class="dropdown-item" href="https://ebubekirbastama.com.tr/EBSLuhn.html" target="_blank">Luhn Algoritması</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebslog.html" target="_blank">FTPLog Analiz Sistemi</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="menuOtherTools" role="button" data-toggle="dropdown">Diğer Araçlar</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebszipgoruntuleyici.html" target="_blank">Zip Görüntüleyici</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/LinkAcici.html" target="_blank">Link Açıcı</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBS-Google-Link-Kaldirici.html" target="_blank">Google URL Kaldırma</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebshtmlclear.html" target="_blank">HTML Temizleyici</a>
+          <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBSWebpConvert.html" target="_blank">İmage Webp Dönüştürücü</a>
+        </div>
+      </li>
     </ul>
-    
-   
-
   </div>
 </nav>
 
+
 <div class="container">
-  <h2 class="ebsred" >EBS Yazılım</h2>
-  <div id="EBSİP"  class="ebsred"></div>
-</div>
-<div class="container">
-  <h2 class="ebsred">Public Yazdığımız Programlar</h2>
-  <div class="list-group">
-    
-    <a href="videodanresimcikarma.html" target="_blank" class="list-group-item">EBS Videodan Resim Çıkartıcı</a>
-    <a href="ebsrspnimg.html" target="_blank" class="list-group-item">EBS Responsive img Oluşturucu</a>
-    <a href="ebspdfgoruntuleyici.html" target="_blank" class="list-group-item">EBS Pdf Görüntüleyici</a>
-    <a href="image-goruntuleyici.html" target="_blank" class="list-group-item">EBS Resim Görüntüleyici</a>
-    <a href="ebscodeeditor.html" target="_blank" class="list-group-item">EBS Code Editör(html,javascript,css)</a>
-    <a href="ebs-code-viewer.html" target="_blank" class="list-group-item">EBS Tam Sayfa Kod Görüntüleyici</a>
-    <a href="ebsmansetolusturici.html" target="_blank" class="list-group-item">EBS Manset Oluşturucu(İmage)</a>
-    <a href="ebscsvparsertext.html" target="_blank" class="list-group-item">EBS Csv Görüntüleyici</a>
-    <a href="ebscsvparser.html" target="_blank" class="list-group-item">EBS Csv Görüntüleyici(Zengin Versiyon)</a>
-    <a href="ebszipgoruntuleyici.html" target="_blank" class="list-group-item">EBS Zip Görüntüleyicisi</a>
-    <a href="ebsgeciskelimeler.html" target="_blank" class="list-group-item">EBS Makale Geçiş Kelime Ekleyici</a>
-    <a href="ebsrsslisteleyici.html" target="_blank" class="list-group-item">EBS Rss Listeleyici</a>
-    <a href="EbsYoutubeAcici/EbsYoutubeAcici.html" target="_blank" class="list-group-item">Youtube Link Açıcı</a>
-    <a href="EBSPDFOkuyucu.html" target="_blank" class="list-group-item">PDF Okuyucu</a>
-    <a href="EBSYoutubeCanlıYayin.html" target="_blank" class="list-group-item">Youtube Videodan Ses Çıkarma</a>
-    <a href="ebssubdomaintakeover.html" target="_blank" class="list-group-item">Subdomain Takeover Kontrolü</a>
-    <a href="ebskelimehesaplayici.html" target="_blank" class="list-group-item">Charcounter(Kelime Sayıcı)</a>
-    <a href="LinkAcici.html" target="_blank" class="list-group-item">EBS Link Açıcı</a>
-    <a href="ebs_makale_dizay.html" target="_blank" class="list-group-item">EBS Makale Dizayn Tool</a>
-    <a href="ebstemplatematching.html" target="_blank" class="list-group-item">EBS Resim Eşleştirme { Şablon Eşleştirme } (Template Matching)</a>
-    <a href="ebsssim.html" target="_blank" class="list-group-item">EBS Resim Karşılaştırma</a>
-    <a href="ebsocr.html" target="_blank" class="list-group-item">EBS İmage OCR</a>
-    <a href="EBS-Google-Link-Kaldirici.html" target="_blank" class="list-group-item">Google URL Kaldırma Kod Üretici</a>
-    <a href="ebshtmlclear.html" target="_blank" class="list-group-item">Html attribute temizleyici</a>
-    <a href="EBSScreenVideoSaveSound.html" target="_blank" class="list-group-item">Ekran Videosu Çek(Sesli)</a>
-    <a href="EBSScreenVideoSave.html" target="_blank" class="list-group-item">Ekran Videosu Çek</a>
-    <a href="ebslog.html" target="_blank" class="list-group-item">EBS FTPLog Analiz Sistemi</a>
-    <a href="https://github.com/ebubekirbastama/TexttxtDosyasi-Bolme-Programi/raw/main/EBS%20Txt%20Par%C3%A7alama.zip" class="list-group-item">txt Dosyaları Parçalama Programı</a>
-    <a href="https://github.com/ebubekirbastama/EBSvCardReading/raw/main/bin/Debug/EBSVcard%20Olu%C5%9Fturucu.zip" class="list-group-item">Vcard Oluşturucu</a>
-    <a href="RandomNameorSurnameCreate.html" target="_blank" class="list-group-item">Random AD-Soyad Oluşturucu</a>
-    <a href="EBScalculater/index.html" target="_blank" class="list-group-item">Hesap Makinası</a>
-    <a href="https://www.ebubekirbastama.com.tr/CurltoPhp/index.html" target="_blank" class="list-group-item">Curl-To-Php</a>
-    <a href="https://www.ebubekirbastama.com.tr/base64encoder.html" target="_blank" class="list-group-item">Base64 Encode</a>
-    <a href="https://www.ebubekirbastama.com.tr/base64decode.html" target="_blank" class="list-group-item">Base64 Decode</a>
-    <a href="https://www.ebubekirbastama.com.tr/sha1encode.html" target="_blank" class="list-group-item">Sha1 Encoder</a>
-    <a href="https://www.ebubekirbastama.com.tr/md5.html" target="_blank" class="list-group-item" >Md5 Encoder</a>
-    <a href="https://www.ebubekirbastama.com.tr/EBSLuhn.html" target="_blank" class="list-group-item" >Luhn Algoritması</a>
-    <a href="https://www.ebubekirbastama.com.tr/EBSWebpConvert.html" target="_blank" class="list-group-item">İmage (.Webp) Dönüştürücü</a>
-    <a href="https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html" target="_blank" class="list-group-item" >Url Decode Parçalama</a>
-    <a href="https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html" target="_blank" class="list-group-item" >Url Encode & Decode</a>
-    <a href="https://www.ebubekirbastama.com.tr/taksitakip.html" target="_blank" class="list-group-item">Taksi Takip Sistemi</a>
-    <a href="https://www.ebubekirbastama.com.tr/mekke.html" target="_blank" class="list-group-item">Kabe Harita</a>
-    <a href="https://www.ebubekirbastama.com.tr/ebstakip.html" target="_blank" class="list-group-item">Pursaklar Mekanlar</a>
-    <a href="https://ebubekirbastama.com.tr/ebslog.html" target="_blank" class="list-group-item">Log Analiz Sistemi</a>
-    <a href="https://www.ebubekirbastama.com.tr/ebscsvmarge.html" target="_blank" class="list-group-item">Csv Birleştirme ve İndirme Sistemi</a>
-    <a href="https://www.ebubekirbastama.com.tr/ebsbul.html" target="_blank" class="list-group-item">Bluetooth Device Scanner</a>
-    <a href="https://ebubekirbastama.com.tr/darg-drop.html" target="_blank" class="list-group-item">Drag Trop Örneği </a>
-    <a href="https://ebubekirbastama.com.tr/binance.html" target="_blank" class="list-group-item">Binanca Canlı Veri Listeleme</a>
-    <a href="https://ebubekirbastama.com.tr/barcode.html" target="_blank" class="list-group-item">Barcode Okuyucu</a>
-    <a href="https://ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html" target="_blank" class="list-group-item">Pursaklar Toplanma Merkezleri</a>
-    <a href="https://ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html" target="_blank" class="list-group-item">Exe Hash(SHA-256) </a>
-    <a href="ebskaristirici.html" target="_blank" class="list-group-item">EBS Karıştırıcı</a>  
-    
-  </div>
-</div>
-      
-    </div>
-  </div>
-  <script>
+  <h2 class="section-header">EBS Yazılım</h2>
+  <div id="EBSİP" class="text-center text-danger mb-4"></div>
+<button class="emoji-button" onclick="window.open('videodanresimcikarma.html', '_blank')">🎥 EBS Videodan Resim Çıkartıcı</button>
+<button class="emoji-button" onclick="window.open('ebsrspnimg.html', '_blank')">📸 EBS Responsive img Oluşturucu</button>
+<button class="emoji-button" onclick="window.open('ebspdfgoruntuleyici.html', '_blank')">📄 EBS Pdf Görüntüleyici</button>
+<button class="emoji-button" onclick="window.open('image-goruntuleyici.html', '_blank')">🖼️ EBS Resim Görüntüleyici</button>
+<button class="emoji-button" onclick="window.open('ebscodeeditor.html', '_blank')">🖥️ EBS Code Editör (html, javascript, css)</button>
+<button class="emoji-button" onclick="window.open('ebs-code-viewer.html', '_blank')">🔍 EBS Tam Sayfa Kod Görüntüleyici</button>
+<button class="emoji-button" onclick="window.open('ebsmansetolusturici.html', '_blank')">🖼️ EBS Manset Oluşturucu (İmage)</button>
+<button class="emoji-button" onclick="window.open('ebscsvparsertext.html', '_blank')">📊 EBS Csv Görüntüleyici</button>
+<button class="emoji-button" onclick="window.open('ebscsvparser.html', '_blank')">📈 EBS Csv Görüntüleyici (Zengin Versiyon)</button>
+<button class="emoji-button" onclick="window.open('ebszipgoruntuleyici.html', '_blank')">📁 EBS Zip Görüntüleyicisi</button>
+<button class="emoji-button" onclick="window.open('ebsgeciskelimeler.html', '_blank')">🔤 EBS Makale Geçiş Kelime Ekleyici</button>
+<button class="emoji-button" onclick="window.open('ebsrsslisteleyici.html', '_blank')">📡 EBS Rss Listeleyici</button>
+<button class="emoji-button" onclick="window.open('EbsYoutubeAcici/EbsYoutubeAcici.html', '_blank')">📺 Youtube Link Açıcı</button>
+<button class="emoji-button" onclick="window.open('EBSPDFOkuyucu.html', '_blank')">📑 PDF Okuyucu</button>
+<button class="emoji-button" onclick="window.open('EBSYoutubeCanlıYayin.html', '_blank')">🎤 Youtube Videodan Ses Çıkarma</button>
+<button class="emoji-button" onclick="window.open('ebssubdomaintakeover.html', '_blank')">🌐 Subdomain Takeover Kontrolü</button>
+<button class="emoji-button" onclick="window.open('ebskelimehesaplayici.html', '_blank')">📝 Charcounter (Kelime Sayıcı)</button>
+<button class="emoji-button" onclick="window.open('LinkAcici.html', '_blank')">🔗🌐 EBS Link Açıcı</button>
+<button class="emoji-button" onclick="window.open('ebs_makale_dizay.html', '_blank')">📰 EBS Makale Dizayn Tool</button>
+<button class="emoji-button" onclick="window.open('ebstemplatematching.html', '_blank')">🖼️ EBS Resim Eşleştirme {Şablon Eşleştirme}</button>
+<button class="emoji-button" onclick="window.open('ebsssim.html', '_blank')">📸 EBS Resim Karşılaştırma</button>
+<button class="emoji-button" onclick="window.open('ebsocr.html', '_blank')">🖼️ EBS İmage OCR</button>
+<button class="emoji-button" onclick="window.open('EBS-Google-Link-Kaldirici.html', '_blank')">🚫 Google URL Kaldırma Kod Üretici</button>
+<button class="emoji-button" onclick="window.open('ebshtmlclear.html', '_blank')">🧹 Html Attribute Temizleyici</button>
+<button class="emoji-button" onclick="window.open('EBSScreenVideoSaveSound.html', '_blank')">🎥 Ekran Videosu Çek (Sesli)</button>
+<button class="emoji-button" onclick="window.open('EBSScreenVideoSave.html', '_blank')">🎬 Ekran Videosu Çek</button>
+<button class="emoji-button" onclick="window.open('ebslog.html', '_blank')">📊 EBS FTPLog Analiz Sistemi</button>
+<button class="emoji-button" onclick="window.open('https://github.com/ebubekirbastama/TexttxtDosyasi-Bolme-Programi/raw/main/EBS%20Txt%20Par%C3%A7alama.zip', '_blank')">📂 Txt Dosyaları Parçalama Programı</button>
+<button class="emoji-button" onclick="window.open('https://github.com/ebubekirbastama/EBSvCardReading/raw/main/bin/Debug/EBSVcard%20Olu%C5%9Fturucu.zip', '_blank')">📇 Vcard Oluşturucu</button>
+<button class="emoji-button" onclick="window.open('RandomNameorSurnameCreate.html', '_blank')">👤 Random AD-Soyad Oluşturucu</button>
+<button class="emoji-button" onclick="window.open('EBScalculater/index.html', '_blank')">🧮 Hesap Makinası</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/CurltoPhp/index.html', '_blank')">🌐🔗🐘 Curl-To-Php</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/base64encoder.html', '_blank')">🔐 Base64 Encode</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/base64decode.html', '_blank')">🔓 Base64 Decode</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/sha1encode.html', '_blank')">🔒 Sha1 Encoder</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/md5.html', '_blank')">🔑 Md5 Encoder</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/EBSLuhn.html', '_blank')">🔢 Luhn Algoritması</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/EBSWebpConvert.html', '_blank')">🖼️ İmage (.Webp) Dönüştürücü</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html', '_blank')">🔗 Url Decode Parçalama</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html', '_blank')">🔗 Url Encode & Decode</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/taksitakip.html', '_blank')">🚖 Taksi Takip Sistemi</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/mekke.html', '_blank')">🕌 Kabe Harita</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebstakip.html', '_blank')">📍 Pursaklar Mekanlar</button>
+<button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebslog.html', '_blank')">📊 Log Analiz Sistemi</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebscsvmarge.html', '_blank')">📅 Csv Birleştirme ve İndirme Sistemi</button>
+<button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebsbul.html', '_blank')">📡 Bluetooth Device Scanner</button>
+<button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/darg-drop.html', '_blank')">🖱️ Drag Drop Örneği</button>
+<button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/binance.html', '_blank')">📈 Binance Canlı Veri Listeleme</button>
+<button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/barcode.html', '_blank')">📊 Barcode Okuyucu</button>
+<button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html', '_blank')">📍 Pursaklar Toplanma Merkezleri</button>
+<button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html', '_blank')">🔐 Exe Hash(SHA-256)</button>
+<button class="emoji-button" onclick="window.open('ebskaristirici.html', '_blank')">🔀 EBS Karıştırıcı</button>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
   fetch('https://api.ipify.org?format=json')
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById("EBSİP").innerHTML = "Your IP address is: " + data.ip;
-  });
- </script>
-  
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("EBSİP").innerHTML = "Your IP address is: " + data.ip;
+    });
+</script>
+
 </body>
 </html>
