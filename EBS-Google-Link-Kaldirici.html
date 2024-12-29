@@ -8,36 +8,40 @@
     <meta name="author" content="Ebubekir Bastama">
     <title>Google URL Kaldırma Kod Üretici</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-    body {
-      background: url('https://ebubekirbastama.com.tr/circles.webp');
-      color: white;
-    }
-    .container {
-      background-color: rgba(0, 0, 0, 0.6); /* Yarı şeffaf arka plan */
-      border-radius: 10px;
-      padding: 20px;
-      margin-top: 50px;
-    }
-    .code-box {
-      background-color: rgba(0, 0, 0, 0.8);
-      color: #0d6efd;
-      padding: 15px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 14px;
-      white-space: pre-wrap;
-      overflow-x: auto;
-    }
-  </style>
-    <!-- Admatic BACKFILL ads START -->
-<script type="text/javascript" async src="https://static.cdn.admatic.com.tr/dist/gpt.min.js?id=NID-370152773"></script>
-<!-- Admatic BACKFILL ads END -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <style>
+        body {
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+            color: white;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        .code-box {
+            background-color: #1e1e1e;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            position: relative;
+            cursor: pointer;
+        }
+        .code-box:hover {
+            background-color: #292929;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 </head>
 <body>
 
     <div class="container mt-5">
-       <h1 class="mb-4">Google URL Kaldırma Kod Üretici</h1>
+        <h1 class="mb-4">Google URL Kaldırma Kod Üretici</h1>
         <!-- Kullanıcı Bilgileri -->
         <div class="mb-3">
             <label for="fetchurl" class="form-label">Fetch URL:</label>
@@ -68,13 +72,14 @@
         <button id="generateCode" class="btn btn-primary">Kod Üret</button>
 
         <h3 class="mt-4">Oluşturulan Kod:</h3>
-        <pre id="generatedCode" class="bg-light p-3 border rounded"></pre>
+        <pre id="generatedCode" class="code-box"><code class="language-javascript"></code></pre>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#generateCode').click(function() {
+        $(document).ready(function () {
+            // Kod oluşturma
+            $('#generateCode').click(function () {
                 const fetchurl = $('#fetchurl').val().trim();
                 const atkodu = $('#atkodu').val().trim();
                 const atid = $('#atid').val().trim();
@@ -100,30 +105,11 @@
       "accept": "*/*",
       "accept-language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
       "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
-      "priority": "u=1, i",
-      "sec-ch-ua": "\\\"Not)A;Brand\\\";v=\\\"99\\\", \\\"Google Chrome\\\";v=\\\"127\\\", \\\"Chromium\\\";v=\\\"127\\\"",
-      "sec-ch-ua-arch": "\\\"x86\\\"",
-      "sec-ch-ua-bitness": "\\\"64\\\"",
-      "sec-ch-ua-form-factors": "\\\"Desktop\\\"",
-      "sec-ch-ua-full-version": "\\\"127.0.6533.100\\\"",
-      "sec-ch-ua-full-version-list": "\\\"Not)A;Brand\\\";v=\\\"99.0.0.0\\\", \\\"Google Chrome\\\";v=\\\"127.0.6533.100\\\", \\\"Chromium\\\";v=\\\"127.0.6533.100\\\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-model": "\\\"\\\"",
-      "sec-ch-ua-platform": "\\\"Windows\\\"",
-      "sec-ch-ua-platform-version": "\\\"10.0.0\\\"",
-      "sec-ch-ua-wow64": "?0",
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      "x-client-data": "${xClientData}",
-      "x-same-domain": "1"
+      "x-client-data": "${xClientData}"
     },
-    "referrer": "https://search.google.com/",
-    "referrerPolicy": "origin",
-    "body": requestBody,
     "method": "POST",
-    "mode": "cors",
-    "credentials": "include"
+    "body": requestBody,
+    "mode": "cors"
   }).then(response => {
     if (response.ok) {
       console.log(\`Request for \${url} succeeded.\`);
@@ -135,7 +121,16 @@
   });
 });`;
 
-                $('#generatedCode').text(generatedCode);
+                $('#generatedCode code').text(generatedCode);
+                hljs.highlightElement(document.querySelector('#generatedCode code'));
+            });
+
+            // Kod kopyalama
+            $('#generatedCode').click(function () {
+                const code = $(this).text();
+                navigator.clipboard.writeText(code).then(() => {
+                    alert('Kod kopyalandı!');
+                });
             });
         });
     </script>
