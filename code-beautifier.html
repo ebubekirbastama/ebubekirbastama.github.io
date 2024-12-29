@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBS Kod Temizleyici</title>
+  <meta name="description" content="EBS Kod Temizleyici, HTML, CSS ve JavaScript kodlarını otomatik olarak güzelleştirir ve temizler.">
+ <meta name="keywords" content="kod temizleyici, html güzelleştirici, css güzelleştirici, javascript güzelleştirici, code beautifier, kod düzenleme">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- CodeMirror CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/lib/codemirror.css">
+  <!-- Temalar için CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/theme/dracula.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/theme/monokai.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/theme/solarized.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/theme/ayu-dark.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/theme/material.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/theme/eclipse.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
+    }
+
+    .copy-btn {
+      margin-bottom: 10px;
+    }
+
+    /* CodeMirror özel stil */
+    .CodeMirror {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: Consolas, monospace;
+      height: 400px;
+      /* Yükseklik belirleyebilirsiniz */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container my-4">
+    <h1 class="text-center">EBS Kod Temizleyici</h1>
+    <div class="mb-3">
+      <label for="codeInput" class="form-label">Kodunuzu Yapıştırın:</label>
+      <textarea id="codeInput" class="form-control" rows="10" placeholder="HTML, CSS veya JavaScript kodunuzu buraya yapıştırın..."></textarea>
+    </div>
+    <div>
+      <h5>Sonuç:</h5>
+      <button id="copyBtn" class="btn btn-secondary copy-btn" style="display: none;">Kopyala</button>
+      <!-- CodeMirror alanını yerleştireceğimiz div -->
+      <div id="output"></div>
+    </div>
+    <div class="mb-3">
+      <label for="themeSelect" class="form-label">Tema Seçin:</label>
+      <select id="themeSelect" class="form-control">
+        <option value="default">Varsayılan</option>
+        <option value="dracula">Dracula</option>
+        <option value="monokai">Monokai</option>
+        <option value="solarized">Solarized</option>
+        <option value="ayu-dark">Ayu Dark</option>
+        <option value="material">Material</option>
+        <option value="eclipse">Eclipse</option>
+      </select>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.7/js/lib/beautify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.7/js/lib/beautify-html.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.7/js/lib/beautify-css.min.js"></script>
+  <!-- CodeMirror JS -->
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/lib/codemirror.js"></script>
+  <script>
+    const codeInput = document.getElementById('codeInput');
+    const output = document.getElementById('output');
+    const copyBtn = document.getElementById('copyBtn');
+    const themeSelect = document.getElementById('themeSelect');
+
+    // CodeMirror editorini başlatıyoruz
+    let codeMirrorEditor = CodeMirror(output, {
+      value: "", // Başlangıçta boş
+      mode: "htmlmixed", // HTML/CSS/JS karışık
+      lineNumbers: true, // Satır numaraları
+      theme: "htmlmixed" // Başlangıçta varsayılan tema
+    });
+
+    // Kod girişine otomatik olarak güzelleştirme işlemi
+    codeInput.addEventListener('input', () => {
+      const input = codeInput.value;
+
+      // Eğer giriş boş değilse, otomatik beautify işlemi yap
+      if (input.trim()) {
+        const beautifiedCode = html_beautify(input, {
+          indent_size: 2
+        });
+
+        // CodeMirror'a temizlenmiş kodu yerleştir
+        codeMirrorEditor.setValue(beautifiedCode);
+
+        copyBtn.style.display = 'inline-block'; // Kopyala butonunu göster
+      } else {
+        codeMirrorEditor.setValue(''); // Giriş alanı boşsa sonucu temizle
+        copyBtn.style.display = 'none'; // Kopyala butonunu gizle
+      }
+    });
+
+    // Tema seçimi işlemi
+    themeSelect.addEventListener('change', (event) => {
+      const selectedTheme = event.target.value;
+      codeMirrorEditor.setOption("theme", selectedTheme); // Seçilen temayı uygula
+    });
+
+    // Kopyala butonunun işlevi
+    copyBtn.addEventListener('click', () => {
+      // CodeMirror'dan çıktıyı kopyalama işlemi
+      const codeToCopy = codeMirrorEditor.getValue();
+      navigator.clipboard.writeText(codeToCopy)
+        .then(() => {
+          alert('Kod başarıyla kopyalandı!');
+        })
+        .catch(err => {
+          alert('Kopyalama başarısız oldu!');
+        });
+    });
+  </script>
+</body>
+
+</html>
