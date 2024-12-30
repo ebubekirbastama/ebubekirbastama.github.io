@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resim Düzenleme Aracı</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      padding-top: 50px;
+    }
+
+    .canvas-container {
+      position: relative;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    canvas {
+      border: 1px solid #000;
+    }
+
+    #uploadArea {
+      width: 100%;
+      height: 200px;
+      border: 2px dashed #007bff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      color: #007bff;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    #saveButton, #deleteButton {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #saveButton:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="text-center">Resim Yükle ve Düzenle</h1>
+
+    <!-- Arka plan resmi yükleme -->
+    <div class="form-group">
+      <label for="backgroundImage">Arka Plan Resmi Yükle</label>
+      <input type="file" id="backgroundImage" accept="image/*" class="form-control">
+    </div>
+
+    <!-- Ek Resim Yükleme -->
+    <div class="form-group">
+      <label for="overlayImage">Ek Resim Yükle</label>
+      <input type="file" id="overlayImage" accept="image/*" class="form-control" multiple>
+    </div>
+
+    <!-- Canvas boyutları -->
+    <div class="form-group">
+      <label for="canvasWidth">Canvas Genişliği</label>
+      <input type="number" id="canvasWidth" value="800" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="canvasHeight">Canvas Yüksekliği</label>
+      <input type="number" id="canvasHeight" value="600" class="form-control">
+    </div>
+
+    <!-- Canvas alanı -->
+    <div class="canvas-container" id="canvasContainer">
+      <canvas id="imageCanvas"></canvas>
+    </div>
+
+
+    <!-- Kaydet butonu -->
+    <button id="saveButton">Resmi Kaydet</button>
+    <button id="deleteButton">Seçili Resmi Sil</button>
+    <!-- Eklenen resimler için opaklık ayarı -->
+    <div id="opacityControls"></div>
+
+  </div>
+<script>
+    const canvas = document.getElementById('imageCanvas');
+    const ctx = canvas.getContext('2d');
+    const backgroundImageInput = document.getElementById('backgroundImage');
+    const overlayImageInput = document.getElementById('overlayImage');
+    const saveButton = document.getElementById('saveButton');
+    const canvasWidthInput = document.getElementById('canvasWidth');
+    const canvasHeightInput = document.getElementById('canvasHeight');
+    // Silme butonu referansı
+    const deleteButton = document.getElementById('deleteButton');
+    let backgroundImage = new Image();
+    let overlayImages = []; // Eklenen resimler
+
+    let selectedImage = null; // Şu an seçili olan resim
+    let offsetX = 0,
+        offsetY = 0; // Sürükleme için ofset
+    let resizeEdge = null; // Boyutlandırma kenarı
+    let dragging = false; // Sürükleme durumu
+    let resizing = false; // Boyutlandırma durumu
+
+
+    
+    // Canvas boyutlarını ayarlama
+    function updateCanvasSize() {
+        const width = parseInt(canvasWidthInput.value, 10);
+        const height = parseInt(canvasHeightInput.value, 10);
+        canvas.width = width;
+        canvas.height = height;
+        redrawCanvas();
+    }
+
+    // Arka plan resmini yükleme
+    function loadBackgroundImage(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            backgroundImage.onload = function() {
+                updateCanvasSize();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            };
+            backgroundImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Ek resimleri yükleme
+    function loadOverlayImage(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = function() {
+                overlayImages.push({
+                    img: img,
+                    x: 100,
+                    y: 100,
+                    width: 100,
+                    height: 100
+                });
+                redrawCanvas();
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Canvas'ı yeniden çizme
+    function redrawCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Arka planı çiz
+        if (backgroundImage.src) {
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        }
+        // Eklenen resimleri çiz
+        overlayImages.forEach(imgObj => {
+            ctx.drawImage(imgObj.img, imgObj.x, imgObj.y, imgObj.width, imgObj.height);
+            // Boyutlandırma alanlarını çiz
+            drawResizeHandles(imgObj);
+        });
+    }
+
+    function drawResizeHandles(imgObj) {
+        ctx.fillStyle = 'red';
+        // Sol üst
+        ctx.fillRect(imgObj.x - 5, imgObj.y - 5, 10, 10);
+        // Sağ üst
+        ctx.fillRect(imgObj.x + imgObj.width - 5, imgObj.y - 5, 10, 10);
+        // Sol alt
+        ctx.fillRect(imgObj.x - 5, imgObj.y + imgObj.height - 5, 10, 10);
+        // Sağ alt
+        ctx.fillRect(imgObj.x + imgObj.width - 5, imgObj.y + imgObj.height - 5, 10, 10);
+    }
+
+    function startResizing(e, image, edge) {
+        resizing = true;
+        resizeEdge = { image, edge, startX: e.offsetX, startY: e.offsetY };
+    }
+
+    function resizeImageFromEdge(e) {
+        if (resizing && resizeEdge) {
+            const deltaX = e.offsetX - resizeEdge.startX;
+            const deltaY = e.offsetY - resizeEdge.startY;
+
+            switch (resizeEdge.edge) {
+                case 'top-left':
+                    resizeEdge.image.x += deltaX;
+                    resizeEdge.image.y += deltaY;
+                    resizeEdge.image.width -= deltaX;
+                    resizeEdge.image.height -= deltaY;
+                    break;
+                case 'top-right':
+                    resizeEdge.image.y += deltaY;
+                    resizeEdge.image.width += deltaX;
+                    resizeEdge.image.height -= deltaY;
+                    break;
+                case 'bottom-left':
+                    resizeEdge.image.x += deltaX;
+                    resizeEdge.image.width -= deltaX;
+                    resizeEdge.image.height += deltaY;
+                    break;
+                case 'bottom-right':
+                    resizeEdge.image.width += deltaX;
+                    resizeEdge.image.height += deltaY;
+                    break;
+            }
+
+            resizeEdge.startX = e.offsetX;
+            resizeEdge.startY = e.offsetY;
+
+            redrawCanvas();
+        }
+    }
+
+    function stopResizing() {
+        resizing = false;
+        resizeEdge = null;
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+        let clickedOnHandle = false;
+
+        overlayImages.forEach((imageObj) => {
+            if (e.offsetX >= imageObj.x - 5 && e.offsetX <= imageObj.x + 5 &&
+                e.offsetY >= imageObj.y - 5 && e.offsetY <= imageObj.y + 5) {
+                startResizing(e, imageObj, 'top-left'); // Sol üst köşe
+                clickedOnHandle = true;
+            } else if (e.offsetX >= imageObj.x + imageObj.width - 5 && e.offsetX <= imageObj.x + imageObj.width + 5 &&
+                e.offsetY >= imageObj.y - 5 && e.offsetY <= imageObj.y + 5) {
+                startResizing(e, imageObj, 'top-right'); // Sağ üst köşe
+                clickedOnHandle = true;
+            } else if (e.offsetX >= imageObj.x - 5 && e.offsetX <= imageObj.x + 5 &&
+                e.offsetY >= imageObj.y + imageObj.height - 5 && e.offsetY <= imageObj.y + imageObj.height + 5) {
+                startResizing(e, imageObj, 'bottom-left'); // Sol alt köşe
+                clickedOnHandle = true;
+            } else if (e.offsetX >= imageObj.x + imageObj.width - 5 && e.offsetX <= imageObj.x + imageObj.width + 5 &&
+                e.offsetY >= imageObj.y + imageObj.height - 5 && e.offsetY <= imageObj.y + imageObj.height + 5) {
+                startResizing(e, imageObj, 'bottom-right'); // Sağ alt köşe
+                clickedOnHandle = true;
+            }
+        });
+
+        if (!clickedOnHandle) {
+            overlayImages.forEach((imageObj) => {
+                if (e.offsetX >= imageObj.x && e.offsetX <= imageObj.x + imageObj.width &&
+                    e.offsetY >= imageObj.y && e.offsetY <= imageObj.y + imageObj.height) {
+                    selectedImage = imageObj;
+                    offsetX = e.offsetX - imageObj.x;
+                    offsetY = e.offsetY - imageObj.y;
+                    dragging = true;
+                }
+            });
+        }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (dragging && selectedImage && !resizing) {
+            selectedImage.x = e.offsetX - offsetX;
+            selectedImage.y = e.offsetY - offsetY;
+            redrawCanvas();
+        } else if (resizing) {
+            resizeImageFromEdge(e);
+        }
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        dragging = false;
+        stopResizing();
+    });
+
+    // Arka plan resmini yükle
+    backgroundImageInput.addEventListener('change', () => {
+        const file = backgroundImageInput.files[0];
+        if (file && file.type.startsWith('image')) {
+            loadBackgroundImage(file);
+        } else {
+            alert('Lütfen bir resim dosyası yükleyin.');
+        }
+    });
+
+    // Ek resimleri yükle
+    overlayImageInput.addEventListener('change', () => {
+        const files = overlayImageInput.files;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file && file.type.startsWith('image')) {
+                loadOverlayImage(file);
+            } else {
+                alert('Lütfen bir resim dosyası yükleyin.');
+            }
+        }
+    });
+
+    // Resmi kaydet
+    saveButton.addEventListener('click', () => {
+        // Kırmızı noktaları geçici olarak kaldır
+        redrawCanvasWithoutHandles();
+    
+        // Resmi kaydet
+        const dataUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = 'edited-image.png';
+        a.click();
+    
+        // Kırmızı noktaları geri çiz
+        redrawCanvas();
+    });
+        // Resmi silme
+    deleteButton.addEventListener('click', () => {
+        if (selectedImage) {
+            // Seçili resmi overlayImages listesinden kaldır
+            overlayImages = overlayImages.filter(img => img !== selectedImage);
+            selectedImage = null;
+            redrawCanvas(); // Canvas'ı yeniden çiz
+        } else {
+            alert("Silmek için bir resim seçin.");
+        }
+    });
+    
+        // Handle'sız canvas'ı yeniden çiz
+     function redrawCanvasWithoutHandles() {
+         ctx.clearRect(0, 0, canvas.width, canvas.height);
+         // Arka planı çiz
+         if (backgroundImage.src) {
+             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+         }
+         // Eklenen resimleri çiz (handle olmadan)
+         overlayImages.forEach(imgObj => {
+             ctx.drawImage(imgObj.img, imgObj.x, imgObj.y, imgObj.width, imgObj.height);
+         });
+     }
+
+
+    // Canvas boyutlarını güncelle
+    canvasWidthInput.addEventListener('input', updateCanvasSize);
+    canvasHeightInput.addEventListener('input', updateCanvasSize);
+</script>
+
+
+</body>
+
+</html>
