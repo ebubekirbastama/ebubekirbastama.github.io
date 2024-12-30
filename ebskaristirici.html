@@ -3,98 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Metin karıştırıcı aracı. Satır satır metin girin ve karıştırın. Karıştırılmış metni kopyalayın veya indirin.">
+    <meta name="keywords" content="metin karıştırıcı, text mixer, metin düzenleyici, karıştır ve diz, metin kopyala, metin indir, text generator">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="robots" content="index, follow">
     <title>Metin Karıştırıcı</title>
-<style>
-    /* Genel stil ayarları */
-    body {
-        background: url('https://ebubekirbastama.com.tr/circles.webp');
-        color: #f0f0f0;
-        margin: 0;
-        font-family: 'Arial', sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+    <style>
+        /* Genel stil ayarları */
+        body {
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+            color: #f0f0f0;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    /* Konteyner düzeni */
-    .container {
-        background: rgba(0, 0, 0, 0.8);
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-        width: 90%;
-        max-width: 600px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
+        /* Konteyner düzeni */
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-    h1 {
-        text-align: center;
-        color: #ffcc00;
-        font-size: 24px;
-        margin: 0;
-    }
+        h1 {
+            text-align: center;
+            color: #ffcc00;
+            font-size: 24px;
+            margin: 0;
+        }
 
-    /* Rich Text Box tasarımı */
-    #richTextbox {
-        width: 100%;
-        min-height: 150px;
-        border: 1px solid #444;
-        border-radius: 4px;
-        padding: 10px;
-        background: #222;
-        color: #fff;
-        overflow-y: auto;
-        font-size: 16px;
-    }
+        /* Rich Text Box tasarımı */
+        #richTextbox {
+            width: 100%;
+            min-height: 150px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 10px;
+            background: #222;
+            color: #fff;
+            overflow-y: auto;
+            font-size: 16px;
+        }
 
-    #richTextbox:empty::before {
-        content: attr(placeholder);
-        color: #aaa;
-        font-style: italic;
-    }
+        #richTextbox:empty::before {
+            content: attr(placeholder);
+            color: #aaa;
+            font-style: italic;
+        }
 
-    /* Çıktı kutusu tasarımı */
-    #outputBox {
-        width: 100%;
-        min-height: 150px;
-        border: 1px solid #444;
-        border-radius: 4px;
-        padding: 10px;
-        background: #1a1a1a;
-        color: #05ff62;
-        overflow-y: auto;
-        font-size: 16px;
-    }
+        /* Çıktı kutusu tasarımı */
+        #outputBox {
+            width: 100%;
+            min-height: 150px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 10px;
+            background: #1a1a1a;
+            color: #05ff62;
+            overflow-y: auto;
+            font-size: 16px;
+        }
 
-    /* Buton stili */
-    button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        background: linear-gradient(45deg, #007bff, #0056b3);
-        color: white;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        transition: transform 0.3s ease, background 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    }
+        /* Buton stili */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s ease, background 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
 
-    /* Hover efekti */
-    button:hover {
-        background: linear-gradient(45deg, #0056b3, #003d7a);
-        transform: translateY(-2px);
-    }
+        /* Hover efekti */
+        button:hover {
+            background: linear-gradient(45deg, #0056b3, #003d7a);
+            transform: translateY(-2px);
+        }
 
-    button:active {
-        transform: translateY(0);
-        background: #002a57;
-    }
-</style>
+        button:active {
+            transform: translateY(0);
+            background: #002a57;
+        }
 
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -103,6 +111,11 @@
         <div id="richTextbox" contenteditable="true" placeholder="Buraya satır satır metin girin"></div>
         <!-- Karıştırma işlemini başlatan buton -->
         <button onclick="processText()">Karıştır ve Diz</button>
+        <!-- Butonlar (kopyalama ve indirme) -->
+        <div class="button-container">
+            <button onclick="copyText()">Kopyala</button>
+            <button onclick="downloadText()">İndir</button>
+        </div>
         <!-- Karıştırılmış metnin gösterileceği alan -->
         <div id="outputBox"></div>
     </div>
@@ -121,6 +134,38 @@
 
             // Karıştırılmış metni çıktı kutusuna yaz
             outputBox.innerText = shuffledLines.join('\n');
+        }
+
+        // Karıştırılmış metni kopyalama
+        function copyText() {
+            const outputBox = document.getElementById('outputBox');
+            const textToCopy = outputBox.innerText;
+
+            if (textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    alert('Metin kopyalandı!');
+                }).catch(err => {
+                    console.error('Metin kopyalanamadı: ', err);
+                });
+            } else {
+                alert('Önce metni karıştırın.');
+            }
+        }
+
+        // Karıştırılmış metni indir (txt formatında)
+        function downloadText() {
+            const outputBox = document.getElementById('outputBox');
+            const textToDownload = outputBox.innerText;
+
+            if (textToDownload) {
+                const blob = new Blob([textToDownload], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'karistirilmis_metin.txt';
+                link.click();
+            } else {
+                alert('Önce metni karıştırın.');
+            }
         }
     </script>
 </body>
