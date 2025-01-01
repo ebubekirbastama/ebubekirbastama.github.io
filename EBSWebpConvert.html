@@ -1,57 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-    <title>EBS Resim Sıkılaştırma ve webp Dönüştürme</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <style>
-            body {
-                background-color: #877676; /* istediğiniz rengi buraya yazın */
-                color: #ffc107;
-            }
-            .form-control {
-                background-color: #333; /* istediğiniz renk kodunu buraya yazın */
-                color: #ffc107; /* yazı rengini beyaz yapar */
-            }
 
-        </style>
-    </head>
-    <body>
+<head>
+  <title>EBS Resim Sıkılaştırma ve webp Dönüştürme</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
+      background-position: center;
+      color: white;
+    }
 
-    <div class="container mt-3">
-        <img src="https://raw.githubusercontent.com/ebubekirbastama/ebubekirbastama/main/linkedin.png" alt="twitter" style="max-width: 100%;">
-            <h2>EBS (Sıkılaştırarak Webp Dönüştür)</h2>
-            <form>
-                <div class="mb-3">
-                    <label for="fileInput" class="form-label">Resim Seçin:</label>
-                    <input type="file" class="form-control" id="fileInput" multiple />
-                </div>
-                <div class="mb-3">
-                    <label for="qualityInput" class="form-label">Sıkıştırma Kalitesi:</label>
-                    <input type="range" class="form-range" min="0" max="1" step="0.1" value="1" id="qualityInput">
-                </div>
-                <button type="button" class="btn btn-primary" onclick="convertImages()">Resimleri Dönüştür ve İndir</button>
-            </form>
+    .container {
+      background-color: rgba(0, 0, 0, 0.6);
+      /* Yarı şeffaf arka plan */
+      border-radius: 10px;
+      padding: 30px;
+      margin-top: 50px;
+    }
 
-    </div>
-    <canvas id="canvas" style="display:none;"></canvas>
-    <a id="downloadLink" download="newFile.webp" style="display:none;">İndir</a>
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
 
-    <br/>
-    <h1 align="center" dir="auto"> ✨ GitHub Sponsor Olmak İstermisiniz. ✨</h1>
-    <p align="center" dir="auto">
-        <a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com/sponsors/ebubekirbastama">
-            <img src="https://camo.githubusercontent.com/dec0683928f7db306904f8ea2e7c0d81ca83800fe09fcd5ac792c962eaee02dc/68747470733a2f2f6769746875622e6769746875626173736574732e636f6d2f696d616765732f6d6f64756c65732f736974652f73706f6e736f72732f6c6f676f2d6d6f6e612e737667" height="200" width="200" alt="Mona logo" data-canonical-src="https://github.githubassets.com/images/modules/site/sponsors/logo-mona.svg" style="max-width: 100%;"></a>
-    </p>
-    <!-- Bootstrap JavaScript dosyası ve jQuery kütüphanesi -->
-    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha384-5BlViBgzuzUfxdTOx3gya9n3E9gPvNepccYvYDBfJ+Qj5bLQ4MXg4+sjPL4MYYdJ" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js" integrity="sha512-K9XUZ4mRanM6U/2Pn5z5r5D5Rkz5yg5QmgOD00nX22VZTwH3NY1n3qBrgp1F7w97zL99vfh8/IaL9h9YtV2ZGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    .file-list {
+      max-height: 400px;
+      overflow-y: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
 
-    <script>
-                   function _0x5292(){const _0x47d658=['6HcWXDQ','canvas','70OmVMif','75768QjdSWk','revokeObjectURL','106764bNoRmF','150015IJXLdq','112252ejOEQL','src','qualityInput','files','width','onload','toBlob','createElement','createObjectURL','value','split','fileInput','href','image/webp','2528379GwtAeW','height','16167cozbKR','drawImage','download','1468383cvDYCX'];_0x5292=function(){return _0x47d658;};return _0x5292();}function _0x5a9f(_0x4576f5,_0x1300ab){const _0x529224=_0x5292();return _0x5a9f=function(_0x5a9f80,_0x2b5ded){_0x5a9f80=_0x5a9f80-0x1f3;let _0x3a9b27=_0x529224[_0x5a9f80];return _0x3a9b27;},_0x5a9f(_0x4576f5,_0x1300ab);}(function(_0x579cc8,_0x18e74d){const _0x4d2b7c=_0x5a9f,_0x3124ca=_0x579cc8();while(!![]){try{const _0x4ad1fa=parseInt(_0x4d2b7c(0x20d))/0x1+parseInt(_0x4d2b7c(0x20a))/0x2*(parseInt(_0x4d2b7c(0x204))/0x3)+-parseInt(_0x4d2b7c(0x1f4))/0x4+parseInt(_0x4d2b7c(0x1f3))/0x5*(-parseInt(_0x4d2b7c(0x208))/0x6)+parseInt(_0x4d2b7c(0x207))/0x7+-parseInt(_0x4d2b7c(0x20b))/0x8+-parseInt(_0x4d2b7c(0x202))/0x9;if(_0x4ad1fa===_0x18e74d)break;else _0x3124ca['push'](_0x3124ca['shift']());}catch(_0x60cf10){_0x3124ca['push'](_0x3124ca['shift']());}}}(_0x5292,0x26408));function convertImages(){const _0x586acb=_0x5a9f,_0x2c801d=document['getElementById'](_0x586acb(0x1ff)),_0x5a91ad=_0x2c801d[_0x586acb(0x1f7)],_0x59b825=document['getElementById'](_0x586acb(0x1f6)),_0x2f4745=parseFloat(_0x59b825[_0x586acb(0x1fd)]);for(let _0x992281=0x0;_0x992281<_0x5a91ad['length'];_0x992281++){const _0x53d300=_0x5a91ad[_0x992281],_0x49318c=new Image();_0x49318c[_0x586acb(0x1f9)]=()=>{const _0x2bedf8=_0x586acb,_0x3eab5b=document[_0x2bedf8(0x1fb)](_0x2bedf8(0x209));_0x3eab5b[_0x2bedf8(0x1f8)]=_0x49318c[_0x2bedf8(0x1f8)],_0x3eab5b[_0x2bedf8(0x203)]=_0x49318c[_0x2bedf8(0x203)];const _0x3c5d43=_0x3eab5b['getContext']('2d');_0x3c5d43[_0x2bedf8(0x205)](_0x49318c,0x0,0x0),_0x3eab5b[_0x2bedf8(0x1fa)](_0x195e30=>{const _0x597d86=_0x2bedf8,_0x4d63c3=URL[_0x597d86(0x1fc)](_0x195e30),_0x40bd40=_0x53d300['name'][_0x597d86(0x1fe)]('.')[0x0]+'.webp',_0x26be9a=document['createElement']('a');_0x26be9a[_0x597d86(0x200)]=_0x4d63c3,_0x26be9a[_0x597d86(0x206)]=_0x40bd40,_0x26be9a['click'](),URL[_0x597d86(0x20c)](_0x4d63c3);},_0x2bedf8(0x201),_0x2f4745);},_0x49318c[_0x586acb(0x1f5)]=URL['createObjectURL'](_0x53d300);}}
+    .file-item {
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-    </script>
+    .file-item:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .info-section {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 50px;
+    }
+
+    .info-section h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .info-section ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .info-section ul li {
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .info-section ul li::before {
+      content: "✔ ";
+      color: #0d6efd;
+      font-weight: bold;
+    }
+
+    .form-control {
+      background-color: #333;
+      /* istediğiniz renk kodunu buraya yazın */
+      color: #ffc107;
+      /* yazı rengini beyaz yapar */
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="container mt-3">
+    <img src="https://raw.githubusercontent.com/ebubekirbastama/ebubekirbastama/main/linkedin.png" alt="twitter" style="max-width: 100%;">
+    <h2>EBS (Sıkılaştırarak Webp Dönüştür)</h2>
+    <form>
+      <div class="mb-3">
+        <label for="fileInput" class="form-label">Resim Seçin:</label>
+        <input type="file" class="form-control" id="fileInput" multiple />
+      </div>
+      <div class="mb-3">
+        <label for="qualityInput" class="form-label">Sıkıştırma Kalitesi:</label>
+        <input type="range" class="form-range" min="0" max="1" step="0.1" value="1" id="qualityInput">
+      </div>
+      <button type="button" class="btn btn-primary" onclick="convertImages()">Resimleri Dönüştür ve İndir</button>
+    </form>
+
+  </div>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <a id="downloadLink" download="newFile.webp" style="display:none;">İndir</a>
+
+  <br />
+
+  <!-- Bootstrap JavaScript dosyası ve jQuery kütüphanesi -->
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha384-5BlViBgzuzUfxdTOx3gya9n3E9gPvNepccYvYDBfJ+Qj5bLQ4MXg4+sjPL4MYYdJ" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.2/js/bootstrap.bundle.min.js" integrity="sha512-K9XUZ4mRanM6U/2Pn5z5r5D5Rkz5yg5QmgOD00nX22VZTwH3NY1n3qBrgp1F7w97zL99vfh8/IaL9h9YtV2ZGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    function _0x5292() {
+      const _0x47d658 = ['6HcWXDQ', 'canvas', '70OmVMif', '75768QjdSWk', 'revokeObjectURL', '106764bNoRmF', '150015IJXLdq', '112252ejOEQL', 'src', 'qualityInput', 'files', 'width', 'onload', 'toBlob', 'createElement', 'createObjectURL', 'value', 'split', 'fileInput', 'href', 'image/webp', '2528379GwtAeW', 'height', '16167cozbKR', 'drawImage', 'download', '1468383cvDYCX'];
+      _0x5292 = function() {
+        return _0x47d658;
+      };
+      return _0x5292();
+    }
+
+    function _0x5a9f(_0x4576f5, _0x1300ab) {
+      const _0x529224 = _0x5292();
+      return _0x5a9f = function(_0x5a9f80, _0x2b5ded) {
+        _0x5a9f80 = _0x5a9f80 - 0x1f3;
+        let _0x3a9b27 = _0x529224[_0x5a9f80];
+        return _0x3a9b27;
+      }, _0x5a9f(_0x4576f5, _0x1300ab);
+    }(function(_0x579cc8, _0x18e74d) {
+      const _0x4d2b7c = _0x5a9f,
+        _0x3124ca = _0x579cc8();
+      while (!![]) {
+        try {
+          const _0x4ad1fa = parseInt(_0x4d2b7c(0x20d)) / 0x1 + parseInt(_0x4d2b7c(0x20a)) / 0x2 * (parseInt(_0x4d2b7c(0x204)) / 0x3) + -parseInt(_0x4d2b7c(0x1f4)) / 0x4 + parseInt(_0x4d2b7c(0x1f3)) / 0x5 * (-parseInt(_0x4d2b7c(0x208)) / 0x6) + parseInt(_0x4d2b7c(0x207)) / 0x7 + -parseInt(_0x4d2b7c(0x20b)) / 0x8 + -parseInt(_0x4d2b7c(0x202)) / 0x9;
+          if (_0x4ad1fa === _0x18e74d) break;
+          else _0x3124ca['push'](_0x3124ca['shift']());
+        } catch (_0x60cf10) {
+          _0x3124ca['push'](_0x3124ca['shift']());
+        }
+      }
+    }(_0x5292, 0x26408));
+
+    function convertImages() {
+      const _0x586acb = _0x5a9f,
+        _0x2c801d = document['getElementById'](_0x586acb(0x1ff)),
+        _0x5a91ad = _0x2c801d[_0x586acb(0x1f7)],
+        _0x59b825 = document['getElementById'](_0x586acb(0x1f6)),
+        _0x2f4745 = parseFloat(_0x59b825[_0x586acb(0x1fd)]);
+      for (let _0x992281 = 0x0; _0x992281 < _0x5a91ad['length']; _0x992281++) {
+        const _0x53d300 = _0x5a91ad[_0x992281],
+          _0x49318c = new Image();
+        _0x49318c[_0x586acb(0x1f9)] = () => {
+          const _0x2bedf8 = _0x586acb,
+            _0x3eab5b = document[_0x2bedf8(0x1fb)](_0x2bedf8(0x209));
+          _0x3eab5b[_0x2bedf8(0x1f8)] = _0x49318c[_0x2bedf8(0x1f8)], _0x3eab5b[_0x2bedf8(0x203)] = _0x49318c[_0x2bedf8(0x203)];
+          const _0x3c5d43 = _0x3eab5b['getContext']('2d');
+          _0x3c5d43[_0x2bedf8(0x205)](_0x49318c, 0x0, 0x0), _0x3eab5b[_0x2bedf8(0x1fa)](_0x195e30 => {
+            const _0x597d86 = _0x2bedf8,
+              _0x4d63c3 = URL[_0x597d86(0x1fc)](_0x195e30),
+              _0x40bd40 = _0x53d300['name'][_0x597d86(0x1fe)]('.')[0x0] + '.webp',
+              _0x26be9a = document['createElement']('a');
+            _0x26be9a[_0x597d86(0x200)] = _0x4d63c3, _0x26be9a[_0x597d86(0x206)] = _0x40bd40, _0x26be9a['click'](), URL[_0x597d86(0x20c)](_0x4d63c3);
+          }, _0x2bedf8(0x201), _0x2f4745);
+        }, _0x49318c[_0x586acb(0x1f5)] = URL['createObjectURL'](_0x53d300);
+      }
+    }
+  </script>
 </body>
+
 </html>
