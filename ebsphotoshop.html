@@ -87,7 +87,7 @@
     <!-- Canvas boyutları -->
     <div class="form-group">
       <label for="canvasWidth">Canvas Genişliği</label>
-      <input type="number" id="canvasWidth" value="800" class="form-control">
+      <input type="number" id="canvasWidth" value="1200" class="form-control">
     </div>
     <div class="form-group">
       <label for="canvasHeight">Canvas Yüksekliği</label>
@@ -96,7 +96,7 @@
 
     <!-- Canvas alanı -->
     <div class="canvas-container" id="canvasContainer">
-      <canvas id="imageCanvas"></canvas>
+      <canvas id="imageCanvas" width="1200" height="800"></canvas>
     </div>
 
 
@@ -318,32 +318,27 @@
         }
     });
 
+// Resmi kaydet
+saveButton.addEventListener('click', () => {
+    // Kırmızı noktaları geçici olarak kaldır
+    redrawCanvasWithoutHandles();
+
+    // SEO uyumlu bir dosya ismi oluştur
+    const date = new Date();
+    const timestamp = date.toISOString().replace(/[-:.]/g, ''); // Örneğin: 20250102T123456
+    const seoFriendlyName = `ebs-image-${timestamp}.png`;
+
     // Resmi kaydet
-    saveButton.addEventListener('click', () => {
-        // Kırmızı noktaları geçici olarak kaldır
-        redrawCanvasWithoutHandles();
-    
-        // Resmi kaydet
-        const dataUrl = canvas.toDataURL('image/png');
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = 'edited-image.png';
-        a.click();
-    
-        // Kırmızı noktaları geri çiz
-        redrawCanvas();
-    });
-        // Resmi silme
-    deleteButton.addEventListener('click', () => {
-        if (selectedImage) {
-            // Seçili resmi overlayImages listesinden kaldır
-            overlayImages = overlayImages.filter(img => img !== selectedImage);
-            selectedImage = null;
-            redrawCanvas(); // Canvas'ı yeniden çiz
-        } else {
-            alert("Silmek için bir resim seçin.");
-        }
-    });
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = seoFriendlyName; // Dosya adı
+    a.click();
+
+    // Kırmızı noktaları geri çiz
+    redrawCanvas();
+});
+
     
         // Handle'sız canvas'ı yeniden çiz
      function redrawCanvasWithoutHandles() {
