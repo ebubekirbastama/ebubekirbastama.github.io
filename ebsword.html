@@ -74,6 +74,9 @@
     </style>
     <!-- Google Fonts API -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Lato&family=Open+Sans&family=Montserrat&family=Poppins&family=Raleway&family=Nunito&family=Merriweather&family=Playfair+Display&family=Quicksand&family=Fira+Sans&family=Oswald&family=Source+Sans+Pro&family=PT+Sans&family=Work+Sans&family=Ubuntu&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.0.1/pizzip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.20.1/docxtemplater.js"></script>
 </head>
 <body>
     <!-- Araç Çubuğu -->
@@ -123,6 +126,7 @@
     <div id="content" contenteditable="true" placeholder="Metninizi buraya yazın..."></div>
 
     <script>
+
         const content = document.getElementById("content");
         const wordCount = document.getElementById("wordCount");
         const sentenceCount = document.getElementById("sentenceCount");
@@ -176,6 +180,35 @@
             sentenceCount.textContent = `Cümle: ${sentences}`;
             lineCount.textContent = `Satır: ${lines}`;
         }
+
+       document.addEventListener('keydown', function (e) {
+           // Ctrl + S tuşuna basıldığında
+           if (e.ctrlKey && e.key === 's') {
+               e.preventDefault(); // Sayfanın kaydedilmesini engelle
+       
+               const text = content.innerHTML;
+               
+               // DOC formatında kaydetmek için
+               const docContent = `
+                   <html>
+                       <head>
+                           <meta charset="UTF-8">
+                           <style>
+                               body { font-family: Arial, sans-serif; }
+                           </style>
+                       </head>
+                       <body>
+                           ${text}
+                       </body>
+                   </html>
+               `;
+       
+               // Dosyayı kaydet
+               const contentBlob = new Blob([docContent], { type: "application/msword" });
+               saveAs(contentBlob, "ebsdocument.docx");
+           }
+       });
+
     </script>
 </body>
 </html>
