@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toplu WebP Dönüştürücü</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center">Toplu WebP Dönüştürücü</h1>
+    <p class="text-center text-muted">📷 Resimlerinizi seçin ve sıkıştırılmış WebP formatına dönüştürün!</p>
+
+    <!-- Resim Seçimi -->
+    <div class="mb-3">
+      <label for="imageInput" class="form-label">Resim Dosyaları:</label>
+      <input class="form-control" type="file" id="imageInput" accept="image/*" multiple>
+    </div>
+    <button class="btn btn-primary w-100" id="convertBtn">Dönüştür ve ZIP İndir</button>
+
+    <!-- Progress Bar -->
+    <div class="progress mt-4" style="height: 25px; display: none;" id="progressContainer">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="progressBar" style="width: 0%;">
+        0%
+      </div>
+    </div>
+
+    <!-- İşlem Durumu -->
+    <div id="status" class="mt-3 text-center"></div>
+
+    <!-- Açıklama Bölümü -->
+    <div class="mt-5 p-4 border rounded bg-light">
+      <h3 class="text-center mb-3">✨ Nasıl Kullanılır?</h3>
+      <ul class="list-unstyled">
+        <li>✅ <b>Adım 1:</b> Bilgisayarınızdan birden fazla resim seçmek için yukarıdaki dosya seçim alanını kullanın.</li>
+        <li>✅ <b>Adım 2:</b> "Dönüştür ve ZIP İndir" butonuna tıklayın.</li>
+        <li>✅ <b>Adım 3:</b> Dönüştürülen tüm resimler bir ZIP dosyası olarak otomatik indirilir.</li>
+      </ul>
+      <h3 class="text-center mt-4 mb-3">🎯 Neden Kullanmalısınız?</h3>
+      <ul>
+        <li>🌟 <b>WebP Sıkıştırma:</b> WebP formatı, dosya boyutlarını küçültür ve web sitelerinizin daha hızlı yüklenmesini sağlar.</li>
+        <li>🌟 <b>Modern Çözüm:</b> Tüm tarayıcılarla uyumlu, yüksek kaliteli ve optimize edilmiş resimler elde edersiniz.</li>
+        <li>🌟 <b>Hızlı ve Güvenli:</b> Tarayıcı üzerinde çalıştığı için resimleriniz başka bir yere gönderilmez.</li>
+      </ul>
+      <h3 class="text-center mt-4 mb-3">💡 Kullanım Avantajları</h3>
+      <ul>
+        <li>⚡ <b>Toplu İşlem:</b> Birden fazla dosyayı aynı anda dönüştürme imkanı.</li>
+        <li>⚡ <b>Boyut Azaltma:</b> Dosyaların boyutunu %50-75 oranında küçültme.</li>
+        <li>⚡ <b>Kullanıcı Dostu:</b> Basit ve anlaşılır bir arayüz.</li>
+      </ul>
+      <p class="text-center mt-4"><b>💻 Herkes için tasarlandı!</b> Hem geliştiriciler hem de günlük kullanıcılar için mükemmel bir araç.</p>
+    </div>
+  </div>
+
+  <!-- JSZip ve FileSaver -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    document.getElementById('convertBtn').addEventListener('click', async () => {
+      const input = document.getElementById('imageInput');
+      const progressBar = document.getElementById('progressBar');
+      const progressContainer = document.getElementById('progressContainer');
+      const statusDiv = document.getElementById('status');
+
+      progressContainer.style.display = 'block'; // İlerleme çubuğunu göster
+      progressBar.style.width = '0%';
+      progressBar.textContent = '0%';
+      statusDiv.innerHTML = '';
+
+      if (input.files.length === 0) {
+        alert("Lütfen en az bir resim dosyası seçin.");
+        progressContainer.style.display = 'none'; // İlerleme çubuğunu gizle
+        return;
+      }
+
+      const zip = new JSZip(); // Yeni bir ZIP dosyası oluştur
+      const totalFiles = input.files.length;
+
+      for (let i = 0; i < totalFiles; i++) {
+        const file = input.files[i];
+        const imageUrl = URL.createObjectURL(file);
+        const img = new Image();
+
+        img.src = imageUrl;
+        await img.decode();
+
+        // Canvas üzerinden sıkıştırma ve WebP dönüştürme işlemi
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        // WebP formatına sıkıştırma (%80 kalite)
+        const webpDataUrl = canvas.toDataURL('image/webp', 0.8);
+
+        // Data URL'den binary veri elde et
+        const binaryData = atob(webpDataUrl.split(',')[1]);
+        const arrayBuffer = new Uint8Array(binaryData.length);
+        for (let j = 0; j < binaryData.length; j++) {
+          arrayBuffer[j] = binaryData.charCodeAt(j);
+        }
+
+        // ZIP dosyasına ekle
+        const fileName = file.name.replace(/\.[^/.]+$/, ".webp"); // .webp uzantısını ekler
+        zip.file(fileName, arrayBuffer);
+
+        // İlerleme güncellemesi
+        const progress = Math.round(((i + 1) / totalFiles) * 100);
+        progressBar.style.width = `${progress}%`;
+        progressBar.textContent = `${progress}%`;
+        statusDiv.innerHTML = `Dönüştürülüyor: ${file.name} (${i + 1}/${totalFiles})`;
+
+        // Belleği temizle
+        URL.revokeObjectURL(imageUrl);
+      }
+
+      // ZIP dosyasını oluştur ve indir
+      statusDiv.innerHTML = "Dosyalar sıkıştırılıyor...";
+      zip.generateAsync({
+        type: "blob"
+      }).then((content) => {
+        saveAs(content, "dönüştürülmüş_resimler.zip"); // ZIP dosyasını indir
+        progressBar.style.width = '100%';
+        progressBar.textContent = 'Tamamlandı!';
+        statusDiv.innerHTML = "Tüm dosyalar başarıyla dönüştürüldü ve indirildi!";
+      });
+    });
+  </script>
+</body>
+
+</html>
