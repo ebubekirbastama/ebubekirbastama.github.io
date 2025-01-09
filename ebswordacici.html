@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Dosyası Okuma ve Kaydetme</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: url('https://ebubekirbastama.com.tr/circles.webp');
+    }
+        #editor {
+            min-height: 300px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-y: auto;
+        }
+        #editor[contenteditable="true"]:focus {
+            border-color: #0d6efd;
+            outline: none;
+            box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">📄✏️ Word Dosyası Okuma, Düzenleme ve Kaydetme 💾</h2>
+        
+        <!-- Dosya Yükleme -->
+        <div class="mb-3">
+            <label for="upload" class="form-label">Word Dosyası Yükle (.docx):</label>
+            <input type="file" id="upload" class="form-control" accept=".docx">
+        </div>
+        
+        <!-- Düzenleme Alanı -->
+        <div class="mb-3">
+            <div id="editor" contenteditable="true">
+                <p>Burada dosya içeriği görünecek ve düzenlenebilecektir...</p>
+            </div>
+        </div>
+        
+        <!-- Kaydetme Düğmesi -->
+        <div class="text-center">
+            <button id="save-btn" class="btn btn-primary">
+                <i class="bi bi-download"></i> Düzenlenmiş Metni Kaydet (.docx)
+            </button>
+        </div>
+    </div>
+
+    <!-- Mammoth.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <!-- docx.js -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@9.1.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+
+    <!-- FileSaver.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+
+    // Word dosyasını yükleme ve okuma
+    document.getElementById('upload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) {
+            alert('Lütfen bir dosya seçin!');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const arrayBuffer = event.target.result;
+
+            mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+                .then(function(result) {
+                    // Okunan içeriği düzenleme alanına aktar
+                    document.getElementById('editor').innerHTML = result.value;
+                    
+                    // Stil bilgilerini ekleme (isteğe bağlı)
+                    const paragraphs = document.getElementById('editor').querySelectorAll('p');
+                    paragraphs.forEach(function(paragraph) {
+                        const styles = window.getComputedStyle(paragraph);
+                        const fontSize = styles.fontSize;
+                        const fontFamily = styles.fontFamily;
+                        // Stil bilgilerini burada kullanabilirsiniz
+                        console.log(`Font: ${fontFamily}, Size: ${fontSize}`);
+                    });
+                })
+                .catch(function(err) {
+                    console.error("Hata:", err);
+                    document.getElementById('editor').textContent = "Bir hata oluştu!";
+                });
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
+
+
+    // Düzenlenmiş metni .docx olarak kaydetme
+    document.getElementById('save-btn').addEventListener('click', function() {
+        const editorContent = document.getElementById('editor');
+        const paragraphs = editorContent.querySelectorAll("p, div, span"); // Her bir paragrafı seç
+
+        const docParagraphs = Array.from(paragraphs).map(paragraph => {
+            const text = paragraph.innerText;
+
+            // Yazı tipi, boyut ve stil bilgilerini ekleme
+            const styles = window.getComputedStyle(paragraph);
+            const fontSize = parseInt(styles.fontSize, 10);
+            const isBold = styles.fontWeight === "bold" || parseInt(styles.fontWeight, 10) >= 700;
+            const isItalic = styles.fontStyle === "italic";
+            const fontFamily = styles.fontFamily;
+
+            return new docx.Paragraph({
+                text: text,
+                spacing: { after: 200 },
+                style: "customStyle", // Özelleştirilmiş stil uygulanacak
+                children: [
+                    new docx.TextRun({
+                        text: text,
+                        bold: isBold,
+                        italics: isItalic,
+                        font: fontFamily,
+                        size: fontSize * 2, // docx.js için boyut iki katı verilmeli
+                    }),
+                ],
+            });
+        });
+
+        const doc = new docx.Document({
+            sections: [
+                {
+                    properties: {},
+                    children: docParagraphs,
+                },
+            ],
+        });
+
+        // docx dosyasını indir
+        docx.Packer.toBlob(doc).then(blob => {
+            saveAs(blob, "duzenlenmis_dosya.docx");
+        });
+    });
+</script>
+
+</body>
+</html>
