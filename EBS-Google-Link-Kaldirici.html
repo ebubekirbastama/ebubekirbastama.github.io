@@ -67,11 +67,23 @@
                 let generatedCode = `(async () => {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  // XPath ile tek bir elementi seç
   const selectElementByXPath = (xpath, context = document) => {
     const result = document.evaluate(xpath, context, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
     return result.singleNodeValue;
   };
 
+  // XPath ile birden fazla elementi seç
+  const selectElementsByXPath = (xpath, context = document) => {
+    const result = document.evaluate(xpath, context, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    const elements = [];
+    for (let i = 0; i < result.snapshotLength; i++) {
+      elements.push(result.snapshotItem(i));
+    }
+    return elements;
+  };
+
+  // Elementin hemen var olup olmadığını kontrol et
   const waitForElement = async (xpath, maxRetries = 10, interval = 500) => {
     let retries = 0;
     let element = null;
@@ -83,9 +95,10 @@
       retries++;
       await delay(interval);
     }
-    throw new Error(\`Element bulunamadı: \${xpath}\`);
+    throw new Error(`Element bulunamadı: ${xpath}`);
   };
 
+  // 1. Yeni istek butonuna tıklama
   const clickNewRequestButton = async () => {
     const newRequestButtonXPath = "//*[@class='U26fgb O0WRkf oG5Srb C0oVfc ZGldwb M9Bg4d']";
     const newRequestButton = await waitForElement(newRequestButtonXPath);
@@ -93,36 +106,70 @@
     console.log("Yeni istek butonuna tıklandı.");
   };
 
+  // 2. Input alanının görünmesini bekle ve URL'yi gir
   const enterUrlInInput = async (url) => {
     const inputXPath = "//*[@class='VfPpkd-fmcmS-wGMbrd ']";
     const inputElement = await waitForElement(inputXPath);
     inputElement.value = url;
     inputElement.dispatchEvent(new Event("input", { bubbles: true }));
-    console.log(\`URL input alanına girildi: \${url}\`);
+    console.log(`URL input alanına girildi: ${url}`);
   };
 
+  // 3. Gönder butonlarından 2. olanına tıklama
+  const clickSecondSubmitButton = async () => {
+    const submitButtonXPath = "//*[@class='U26fgb O0WRkf oG5Srb C0oVfc kHssdc tWntE M9Bg4d']";
+    const submitButtons = await waitForElement(submitButtonXPath);
+    const secondSubmitButton = submitButtons[1];
+    if (secondSubmitButton) {
+      secondSubmitButton.click();
+      console.log("İkinci gönder butonuna tıklandı.");
+    } else {
+      throw new Error("Gönder butonunun ikinci elemanı bulunamadı!");
+    }
+  };
+
+  // 4. Son işlem butonunun gelmesini bekle ve tıkla (mouse click simülasyonu)
   const clickFinalButton = async () => {
     const finalButtonXPath = "//*[@class='U26fgb O0WRkf oG5Srb C0oVfc kHssdc sZloWc M9Bg4d']";
 
     try {
-      const finalButton = await waitForElement(finalButtonXPath, 20, 1000);
-        document.querySelectorAll(".U26fgb.O0WRkf.oG5Srb.C0oVfc.kHssdc.sZloWc.M9Bg4d")[3].click();
+      // finalButton öğesini bekleyelim
+      const finalButton = await waitForElement(finalButtonXPath, 20, 1000);  // maxRetries: 20, interval: 1000ms (1 saniye)
+      
+      document.querySelectorAll(".U26fgb.O0WRkf.oG5Srb.C0oVfc.kHssdc.sZloWc.M9Bg4d")[3].click();
+
       console.log("Son işlem butonuna tıklandı.");
     } catch (error) {
       console.error("Son işlem butonuna tıklanamadı: " + error.message);
     }
   };
 
+  // Enter tuşuna basma
+  const pressEnterOnElement = async (xpath) => {
+    const element = await waitForElement(xpath);
+    element.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Enter',
+      keyCode: 13,
+      code: 'Enter',
+      which: 13,
+      bubbles: true,
+      cancelable: true
+    }));
+    console.log("Enter tuşuna basıldı.");
+  };
+
   const removeUrl = async (url) => {
     try {
-      await clickNewRequestButton();
-      await enterUrlInInput(url);
-      await clickFinalButton();
-      console.log(\`URL kaldırma işlemi tamamlandı: \${url}\`);
+      await clickNewRequestButton(); // 1. Adım
+      await enterUrlInInput(url);    // 2. Adım
+      await pressEnterOnElement("//*[@class='U26fgb O0WRkf oG5Srb C0oVfc kHssdc tWntE M9Bg4d']"); // 3. Adım (Enter simülasyonu)
+      await clickFinalButton();       // 4. Adım
+      console.log("URL kaldırma işlemi tamamlandı!");
     } catch (error) {
       console.error("Hata oluştu:", error.message);
     }
   };
+
 
   const urlsToRemove = ${JSON.stringify(urls)};
 
