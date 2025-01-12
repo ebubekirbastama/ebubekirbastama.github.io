@@ -42,28 +42,6 @@
 
     <div class="container mt-5">
         <h1 class="mb-4">Google URL Kaldırma Kod Üretici</h1>
-        <!-- Kullanıcı Bilgileri -->
-        <div class="mb-3">
-            <label for="fetchurl" class="form-label">Fetch URL:</label>
-            <input type="text" class="form-control" id="fetchurl" placeholder="Fetch URL girin">
-        </div>
-        <div class="mb-3">
-            <label for="atkodu" class="form-label">At Kodu:</label>
-            <input type="text" class="form-control" id="atkodu" placeholder="At kodu girin">
-        </div>
-        <div class="mb-3">
-            <label for="atid" class="form-label">At ID:</label>
-            <input type="text" class="form-control" id="atid" placeholder="At ID girin">
-        </div>
-        <div class="mb-3">
-            <label for="xClientData" class="form-label">X-Client-Data:</label>
-            <input type="text" class="form-control" id="xClientData" placeholder="X-Client-Data girin">
-        </div>
-        <div class="mb-3">
-            <label for="siteUrl" class="form-label">Sitenizin URL Adresi:</label>
-            <input type="text" class="form-control" id="siteUrl" placeholder="Sitenizin URL adresini girin">
-        </div>
-
         <!-- URL Girişi -->
         <div class="mb-3">
             <label for="urlTextarea" class="form-label">URL'leri Alt Alta Girin:</label>
@@ -78,54 +56,86 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Kod oluşturma
             $('#generateCode').click(function () {
-                const fetchurl = $('#fetchurl').val().trim();
-                const atkodu = $('#atkodu').val().trim();
-                const atid = $('#atid').val().trim();
-                const xClientData = $('#xClientData').val().trim();
-                const siteUrl = $('#siteUrl').val().trim();
                 const urls = $('#urlTextarea').val().trim().split('\n').filter(url => url !== '');
 
-                if (!fetchurl || !atkodu || !atid || !xClientData || !siteUrl || urls.length === 0) {
-                    alert('Lütfen tüm alanları doldurun ve en az bir URL ekleyin.');
+                if (urls.length === 0) {
+                    alert('Lütfen en az bir URL ekleyin.');
                     return;
                 }
 
-                let generatedCode = 'const urls = [\n';
-                urls.forEach((url, index) => {
-                    generatedCode += `"${url.trim()}"${index < urls.length - 1 ? ',' : ''}\n`;
-                });
-                generatedCode += '];\n\n';
-                generatedCode += `urls.forEach(url => {
-  const requestBody = \`f.req=[[["vm16b","[\\\"${siteUrl}\\\",1,\\\"\${url}\\\",0]",null,"generic"]]]&at=${atkodu}:${atid}&\`;
+                let generatedCode = `(async () => {
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  fetch("${fetchurl}", {
-    "headers": {
-      "accept": "*/*",
-      "accept-language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
-      "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
-      "x-client-data": "${xClientData}"
-    },
-    "method": "POST",
-    "body": requestBody,
-    "mode": "cors"
-  }).then(response => {
-    if (response.ok) {
-      console.log(\`Request for \${url} succeeded.\`);
-    } else {
-      console.log(\`Request for \${url} failed.\`);
+  const selectElementByXPath = (xpath, context = document) => {
+    const result = document.evaluate(xpath, context, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    return result.singleNodeValue;
+  };
+
+  const waitForElement = async (xpath, maxRetries = 10, interval = 500) => {
+    let retries = 0;
+    let element = null;
+    while (retries < maxRetries) {
+      element = selectElementByXPath(xpath);
+      if (element) {
+        return element;
+      }
+      retries++;
+      await delay(interval);
     }
-  }).catch(error => {
-    console.log(\`Error with request for \${url}:\`, error);
-  });
-});`;
+    throw new Error(\`Element bulunamadı: \${xpath}\`);
+  };
+
+  const clickNewRequestButton = async () => {
+    const newRequestButtonXPath = "//*[@class='U26fgb O0WRkf oG5Srb C0oVfc ZGldwb M9Bg4d']";
+    const newRequestButton = await waitForElement(newRequestButtonXPath);
+    newRequestButton.click();
+    console.log("Yeni istek butonuna tıklandı.");
+  };
+
+  const enterUrlInInput = async (url) => {
+    const inputXPath = "//*[@class='VfPpkd-fmcmS-wGMbrd ']";
+    const inputElement = await waitForElement(inputXPath);
+    inputElement.value = url;
+    inputElement.dispatchEvent(new Event("input", { bubbles: true }));
+    console.log(\`URL input alanına girildi: \${url}\`);
+  };
+
+  const clickFinalButton = async () => {
+    const finalButtonXPath = "//*[@class='U26fgb O0WRkf oG5Srb C0oVfc kHssdc sZloWc M9Bg4d']";
+
+    try {
+      const finalButton = await waitForElement(finalButtonXPath, 20, 1000);
+      finalButton.click();
+      console.log("Son işlem butonuna tıklandı.");
+    } catch (error) {
+      console.error("Son işlem butonuna tıklanamadı: " + error.message);
+    }
+  };
+
+  const removeUrl = async (url) => {
+    try {
+      await clickNewRequestButton();
+      await enterUrlInInput(url);
+      await clickFinalButton();
+      console.log(\`URL kaldırma işlemi tamamlandı: \${url}\`);
+    } catch (error) {
+      console.error("Hata oluştu:", error.message);
+    }
+  };
+
+  const urlsToRemove = ${JSON.stringify(urls)};
+
+  for (const url of urlsToRemove) {
+    await removeUrl(url);
+    await delay(3000);
+  }
+})();`;
 
                 $('#generatedCode code').text(generatedCode);
                 hljs.highlightElement(document.querySelector('#generatedCode code'));
             });
 
-            // Kod kopyalama
             $('#generatedCode').click(function () {
                 const code = $(this).text();
                 navigator.clipboard.writeText(code).then(() => {
