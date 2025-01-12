@@ -54,18 +54,18 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#generateCode').click(function () {
-                const urls = $('#urlTextarea').val().trim().split('\n').filter(url => url !== '');
+   <script>
+  $(document).ready(function () {
+    $('#generateCode').click(function () {
+      const urls = $('#urlTextarea').val().trim().split('\n').filter(url => url !== '');
 
-                if (urls.length === 0) {
-                    alert('Lütfen en az bir URL ekleyin.');
-                    return;
-                }
+      if (urls.length === 0) {
+        alert('Lütfen en az bir URL ekleyin.');
+        return;
+      }
 
-                let generatedCode = `(async () => {
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      let generatedCode = `(async () => {
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   // XPath ile tek bir elementi seç
   const selectElementByXPath = (xpath, context = document) => {
@@ -95,7 +95,7 @@
       retries++;
       await delay(interval);
     }
-    throw new Error(`Element bulunamadı: ${xpath}`);
+    throw new Error(\`Element bulunamadı: \${xpath}\`);
   };
 
   // 1. Yeni istek butonuna tıklama
@@ -112,13 +112,13 @@
     const inputElement = await waitForElement(inputXPath);
     inputElement.value = url;
     inputElement.dispatchEvent(new Event("input", { bubbles: true }));
-    console.log(`URL input alanına girildi: ${url}`);
+    console.log(\`URL input alanına girildi: \${url}\`);
   };
 
   // 3. Gönder butonlarından 2. olanına tıklama
   const clickSecondSubmitButton = async () => {
     const submitButtonXPath = "//*[@class='U26fgb O0WRkf oG5Srb C0oVfc kHssdc tWntE M9Bg4d']";
-    const submitButtons = await waitForElement(submitButtonXPath);
+    const submitButtons = await selectElementsByXPath(submitButtonXPath);
     const secondSubmitButton = submitButtons[1];
     if (secondSubmitButton) {
       secondSubmitButton.click();
@@ -133,11 +133,8 @@
     const finalButtonXPath = "//*[@class='U26fgb O0WRkf oG5Srb C0oVfc kHssdc sZloWc M9Bg4d']";
 
     try {
-      // finalButton öğesini bekleyelim
-      const finalButton = await waitForElement(finalButtonXPath, 20, 1000);  // maxRetries: 20, interval: 1000ms (1 saniye)
-      
-      document.querySelectorAll(".U26fgb.O0WRkf.oG5Srb.C0oVfc.kHssdc.sZloWc.M9Bg4d")[3].click();
-
+      const finalButton = await waitForElement(finalButtonXPath, 20, 1000);
+      finalButton.click();
       console.log("Son işlem butonuna tıklandı.");
     } catch (error) {
       console.error("Son işlem butonuna tıklanamadı: " + error.message);
@@ -170,7 +167,6 @@
     }
   };
 
-
   const urlsToRemove = ${JSON.stringify(urls)};
 
   for (const url of urlsToRemove) {
@@ -179,17 +175,19 @@
   }
 })();`;
 
-                $('#generatedCode code').text(generatedCode);
-                hljs.highlightElement(document.querySelector('#generatedCode code'));
-            });
+      $('#generatedCode code').text(generatedCode);
+      hljs.highlightElement(document.querySelector('#generatedCode code'));
+    });
 
-            $('#generatedCode').click(function () {
-                const code = $(this).text();
-                navigator.clipboard.writeText(code).then(() => {
-                    alert('Kod kopyalandı!');
-                });
-            });
-        });
-    </script>
+    $('#generatedCode').click(function () {
+      const code = $(this).text();
+      navigator.clipboard.writeText(code).then(() => {
+        alert('Kod kopyalandı!');
+      });
+    });
+  });
+</script>
+
+
 </body>
 </html>
