@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+ <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google için Temel Meta Etiketleri -->
+    <title>EBSTakip Etmeyenleri Bul - Sosyal Medya Araçları</title>
+    <meta name="description" content="Takip etmeyenleri kolayca bulun. Takipçi ve takip edilen listelerinizi yükleyin, takip etmeyenleri anında görün.">
+    <meta name="keywords" content="takip etmeyenleri bul, sosyal medya araçları, takipçi listesi, takip edilenler listesi">
+    <meta name="author" content="Sosyal Medya Araçları">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .instructions {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .instructions h3 {
+            color: #0d6efd;
+        }
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .instructions ul li {
+            margin-bottom: 10px;
+        }
+        .instructions ul li i {
+            margin-right: 10px;
+            color: #0d6efd;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: url('https://ebubekirbastama.com.tr/circles.webp');
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Takip Etmeyenleri Bul</h1>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <label for="followersFile" class="form-label">Takipçilerinizi İçeren TXT Dosyasını Yükleyin</label>
+                <input class="form-control" type="file" id="followersFile" accept=".txt">
+            </div>
+            <div class="col-md-6">
+                <label for="followingFile" class="form-label">Takip Ettiklerinizi İçeren TXT Dosyasını Yükleyin</label>
+                <input class="form-control" type="file" id="followingFile" accept=".txt">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <button class="btn btn-primary w-100" onclick="findNonFollowers()">
+                    <i class="bi bi-search"></i> Takip Etmeyenleri Bul
+                </button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <label for="nonFollowersList" class="form-label">Takip Etmeyenler Listesi</label>
+                <textarea class="form-control" id="nonFollowersList" rows="10" readonly></textarea>
+            </div>
+        </div>
+
+        <!-- Kullanım Talimatları -->
+        <div class="instructions mt-5">
+            <h3><i class="bi bi-info-circle"></i> Nasıl Kullanılır?</h3>
+            <ul>
+                <li><i class="bi bi-1-circle"></i> İlk olarak, "Takipçilerinizi İçeren TXT Dosyasını Yükleyin" alanına takipçi listenizi içeren TXT dosyasını yükleyin.</li>
+                <li><i class="bi bi-2-circle"></i> Ardından, "Takip Ettiklerinizi İçeren TXT Dosyasını Yükleyin" alanına takip ettiklerinizi içeren TXT dosyasını yükleyin.</li>
+                <li><i class="bi bi-3-circle"></i> "Takip Etmeyenleri Bul" butonuna tıklayın.</li>
+                <li><i class="bi bi-4-circle"></i> Takip etmeyenler listesi, alt taraftaki metin kutusunda görüntülenecektir.</li>
+            </ul>
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-lightbulb"></i> <strong>İpucu:</strong> Dosyalarınızın her satırında bir kullanıcı adı olmalıdır. Örnek: <code>@kullanici1</code>, <code>@kullanici2</code>, vb.
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS ve Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        function findNonFollowers() {
+            const followersFile = document.getElementById('followersFile').files[0];
+            const followingFile = document.getElementById('followingFile').files[0];
+
+            if (!followersFile || !followingFile) {
+                alert("Lütfen her iki dosyayı da yükleyin.");
+                return;
+            }
+
+            const reader1 = new FileReader();
+            const reader2 = new FileReader();
+
+            reader1.onload = function (e) {
+                const followersContent = e.target.result.split('\n').map(line => line.trim());
+                reader2.onload = function (e) {
+                    const followingContent = e.target.result.split('\n').map(line => line.trim());
+
+                    // Takip etmeyenleri bul
+                    const nonFollowers = followingContent.filter(user => !followersContent.includes(user));
+
+                    // Sonucu textarea'ya yaz
+                    document.getElementById('nonFollowersList').value = nonFollowers.join('\n');
+                };
+                reader2.readAsText(followingFile);
+            };
+            reader1.readAsText(followersFile);
+        }
+    </script>
+</body>
+</html>
