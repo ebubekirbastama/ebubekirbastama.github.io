@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="description" content="PDF sayfalarını resme dönüştürüp zip dosyası olarak indirin.">
+    <meta name="keywords" content="PDF, resim, zip, indirme, Ebubekir Bastama">
+    <meta property="og:title" content="PDF Sayfalarını Resme Dönüştür ve Zip Olarak İndir">
+    <meta property="og:description" content="PDF sayfalarını resme dönüştürüp zip dosyası olarak indirin.">
+    <meta name="robots" content="index, follow">
+    <title>PDF Sayfalarını Resme Dönüştür ve Zip Olarak İndir</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <style>
+        body {
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        #fileInput {
+            margin-top: 20px;
+            width: 300px;
+        }
+
+        #loading {
+            display: none;
+            font-size: 18px;
+            color: #333;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Yükleniyor göstergesi -->
+<div id="loading">Yükleniyor...</div>
+
+<!-- Dosya seçici -->
+<input type="file" id="fileInput" accept="application/pdf" class="form-control">
+<div id="message"></div>
+
+<script type="text/javascript">
+    function loadPDF(file) {
+        // Yükleniyor göstergesini göster
+        $('#loading').show();
+
+        const fileReader = new FileReader();
+
+        fileReader.onload = function (e) {
+            const arrayBuffer = e.target.result;
+            const pdfData = new Uint8Array(arrayBuffer);
+
+            pdfjsLib.getDocument(pdfData).promise.then(function (pdf) {
+                const pages = pdf.numPages;
+                const zip = new JSZip();
+
+                let pagePromises = [];
+
+                for (let i = 1; i <= pages; i++) {
+                    pagePromises.push(pdf.getPage(i).then(function (page) {
+                        const scale = 1.5;
+                        const viewport = page.getViewport({scale: scale});
+
+                        const canvas = document.createElement("canvas");
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        return page.render({
+                            canvasContext: context,
+                            viewport: viewport
+                        }).promise.then(function () {
+                            const imgData = canvas.toDataURL();
+                            const img = new Image();
+                            img.src = imgData;
+
+                            return new Promise(function (resolve) {
+                                img.onload = function () {
+                                    zip.file("page_" + i + ".png", imgData.split(',')[1], {base64: true});
+                                    resolve();
+                                };
+                            });
+                        });
+                    }));
+                }
+
+                Promise.all(pagePromises).then(function () {
+                    zip.generateAsync({type: "blob"}).then(function (content) {
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(content);
+                        link.download = "pdf_pages.zip";
+                        link.click();
+
+                        // Yükleniyor göstergesini gizle
+                        $('#loading').hide();
+                    });
+                });
+            });
+        };
+
+        fileReader.readAsArrayBuffer(file);
+    }
+
+    $('#fileInput').on('change', function (e) {
+        const file = e.target.files[0];
+        if (file && file.type === 'application/pdf') {
+            loadPDF(file);
+        } else {
+            alert('Lütfen geçerli bir PDF dosyası yükleyin.');
+        }
+    });
+</script>
+
+</body>
+</html>
