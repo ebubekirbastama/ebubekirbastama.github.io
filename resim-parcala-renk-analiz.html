@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Resmi Parçala ve Renkleri Bul</title>
+  <style>
+    body { background: #1e1e1e; color: #fff; font-family: sans-serif; text-align: center; }
+    canvas { display: none; }
+    .color-box { width: 40px; height: 40px; display: inline-block; margin: 5px; border-radius: 5px; border: 2px solid #fff; }
+    .part { margin: 10px; padding: 10px; border: 1px solid #444; display: inline-block; background: #2a2a2a; }
+  </style>
+</head>
+<body>
+
+<h2>🎨 Otomatik Görsel Parçalama & Renk Analizi</h2>
+<input type="file" id="upload" accept="image/*">
+<canvas id="canvas"></canvas>
+<div id="output"></div>
+
+<script>
+  const upload = document.getElementById('upload');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  upload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => processImage(img);
+    img.src = URL.createObjectURL(file);
+  });
+
+  function processImage(img) {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const clusters = detectRegions(imgData);
+
+    displayRegions(clusters);
+  }
+
+  function detectRegions(imgData) {
+    const data = imgData.data;
+    const width = imgData.width;
+    const height = imgData.height;
+
+    const visited = new Uint8Array(width * height);
+    const clusters = [];
+
+    function getIndex(x, y) {
+      return y * width + x;
+    }
+
+    function getColorAt(x, y) {
+      const i = (y * width + x) * 4;
+      return [data[i], data[i + 1], data[i + 2]];
+    }
+
+    function colorDistance(c1, c2) {
+      return Math.sqrt(
+        (c1[0] - c2[0]) ** 2 +
+        (c1[1] - c2[1]) ** 2 +
+        (c1[2] - c2[2]) ** 2
+      );
+    }
+
+    const threshold = 40;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = getIndex(x, y);
+        if (visited[idx]) continue;
+
+        const baseColor = getColorAt(x, y);
+        const queue = [[x, y]];
+        const region = [];
+
+        while (queue.length) {
+          const [cx, cy] = queue.pop();
+          const cidx = getIndex(cx, cy);
+          if (visited[cidx]) continue;
+
+          const color = getColorAt(cx, cy);
+          if (colorDistance(baseColor, color) > threshold) continue;
+
+          visited[cidx] = 1;
+          region.push([cx, cy]);
+
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              const nx = cx + dx;
+              const ny = cy + dy;
+              if (nx >= 0 && ny >= 0 && nx < width && ny < height) {
+                const nidx = getIndex(nx, ny);
+                if (!visited[nidx]) {
+                  queue.push([nx, ny]);
+                }
+              }
+            }
+          }
+        }
+
+        if (region.length > 100) {
+          clusters.push(region);
+        }
+      }
+    }
+
+    return clusters;
+  }
+
+  function getAverageColor(region, imgData) {
+    const data = imgData.data;
+    let r = 0, g = 0, b = 0;
+
+    for (const [x, y] of region) {
+      const idx = (y * imgData.width + x) * 4;
+      r += data[idx];
+      g += data[idx + 1];
+      b += data[idx + 2];
+    }
+
+    const len = region.length;
+    return [Math.round(r / len), Math.round(g / len), Math.round(b / len)];
+  }
+
+  function displayRegions(clusters) {
+    const output = document.getElementById('output');
+    output.innerHTML = '';
+
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    clusters.forEach((region, i) => {
+      const partCanvas = document.createElement('canvas');
+      partCanvas.width = canvas.width;
+      partCanvas.height = canvas.height;
+      const partCtx = partCanvas.getContext('2d');
+      const partImageData = partCtx.createImageData(canvas.width, canvas.height);
+
+      for (const [x, y] of region) {
+        const idx = (y * canvas.width + x) * 4;
+        partImageData.data[idx] = imgData.data[idx];
+        partImageData.data[idx + 1] = imgData.data[idx + 1];
+        partImageData.data[idx + 2] = imgData.data[idx + 2];
+        partImageData.data[idx + 3] = 255;
+      }
+
+      partCtx.putImageData(partImageData, 0, 0);
+
+      const average = getAverageColor(region, imgData);
+      const colorHex = `#${average.map(c => c.toString(16).padStart(2, '0')).join('')}`;
+
+      const container = document.createElement('div');
+      container.className = 'part';
+      container.innerHTML = `
+        <strong>Bölge ${i + 1}</strong><br>
+        <div class="color-box" style="background:${colorHex}"></div>
+        <br><code>${colorHex}</code><br>
+        <img src="${partCanvas.toDataURL()}" width="100">
+      `;
+
+      output.appendChild(container);
+    });
+  }
+</script>
+
+</body>
+</html>
