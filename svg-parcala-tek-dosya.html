@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>SVG Parçalama ve Tek Dosyada İndirme</title>
+  <style>
+    body { background: #121212; color: white; font-family: sans-serif; text-align: center; }
+    canvas { display: none; }
+    .color-box { width: 30px; height: 30px; display: inline-block; border: 1px solid white; margin: 5px; }
+    button { padding: 8px 15px; background: #333; color: white; border: none; border-radius: 5px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<h2>🧩 Tek SVG İndirilebilir Görsel Parçalama</h2>
+<input type="file" id="upload" accept="image/*">
+<canvas id="canvas"></canvas>
+<div id="colors"></div>
+<button id="downloadAll" style="display:none">⬇️ Tümünü Tek SVG Olarak İndir</button>
+
+<script>
+  const upload = document.getElementById('upload');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const downloadBtn = document.getElementById('downloadAll');
+  let svgLayers = [];
+  let svgSize = { width: 0, height: 0 };
+
+  upload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => processImage(img);
+    img.src = URL.createObjectURL(file);
+  });
+
+  function processImage(img) {
+    svgLayers = [];
+    canvas.width = svgSize.width = img.width;
+    canvas.height = svgSize.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const clusters = detectRegions(imgData);
+    generateSVG(clusters, imgData);
+  }
+
+  function detectRegions(imgData) {
+    const data = imgData.data;
+    const width = imgData.width;
+    const height = imgData.height;
+    const visited = new Uint8Array(width * height);
+    const clusters = [];
+
+    function getIndex(x, y) {
+      return y * width + x;
+    }
+
+    function getColorAt(x, y) {
+      const i = (y * width + x) * 4;
+      return [data[i], data[i + 1], data[i + 2]];
+    }
+
+    function colorDistance(c1, c2) {
+      return Math.sqrt((c1[0]-c2[0])**2 + (c1[1]-c2[1])**2 + (c1[2]-c2[2])**2);
+    }
+
+    const threshold = 30;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const idx = getIndex(x, y);
+        if (visited[idx]) continue;
+
+        const baseColor = getColorAt(x, y);
+        const queue = [[x, y]];
+        const region = [];
+
+        while (queue.length) {
+          const [cx, cy] = queue.pop();
+          const cidx = getIndex(cx, cy);
+          if (visited[cidx]) continue;
+
+          const color = getColorAt(cx, cy);
+          if (colorDistance(baseColor, color) > threshold) continue;
+
+          visited[cidx] = 1;
+          region.push([cx, cy]);
+
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              const nx = cx + dx;
+              const ny = cy + dy;
+              if (nx >= 0 && ny >= 0 && nx < width && ny < height) {
+                const nidx = getIndex(nx, ny);
+                if (!visited[nidx]) queue.push([nx, ny]);
+              }
+            }
+          }
+        }
+
+        if (region.length > 150) {
+          clusters.push(region);
+        }
+      }
+    }
+
+    return clusters;
+  }
+
+  function getAverageColor(region, imgData) {
+    const data = imgData.data;
+    let r = 0, g = 0, b = 0;
+    for (const [x, y] of region) {
+      const idx = (y * imgData.width + x) * 4;
+      r += data[idx];
+      g += data[idx + 1];
+      b += data[idx + 2];
+    }
+    const len = region.length;
+    return [Math.round(r / len), Math.round(g / len), Math.round(b / len)];
+  }
+
+  function rgbToHex(rgb) {
+    return '#' + rgb.map(c => c.toString(16).padStart(2, '0')).join('');
+  }
+
+  function generateSVG(clusters, imgData) {
+    const colorBox = document.getElementById('colors');
+    colorBox.innerHTML = '';
+
+    clusters.forEach((region, i) => {
+      const avgColor = getAverageColor(region, imgData);
+      const hex = rgbToHex(avgColor);
+
+      const rects = region.map(([x, y]) =>
+        `<rect x="${x}" y="${y}" width="1" height="1" />`
+      ).join('');
+
+      const layer = `
+        <g id="bolge${i+1}" fill="${hex}">
+          ${rects}
+        </g>
+      `;
+
+      svgLayers.push(layer);
+
+      const swatch = document.createElement('div');
+      swatch.className = 'color-box';
+      swatch.title = `Bölge ${i + 1}: ${hex}`;
+      swatch.style.background = hex;
+      colorBox.appendChild(swatch);
+    });
+
+    downloadBtn.style.display = 'inline-block';
+  }
+
+  downloadBtn.addEventListener('click', () => {
+    const svgHeader = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgSize.width}" height="${svgSize.height}">`;
+    const svgBody = svgLayers.join('\n');
+    const svgContent = `${svgHeader}\n${svgBody}\n</svg>`;
+
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'parcali_tekdosya.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>
+
+</body>
+</html>
