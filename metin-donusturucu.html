@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Metin dönüştürme aracı ile büyük/küçük harf çevirme, ters yazı ve daha fazlasını kolayca yapın.">
+  <meta name="keywords" content="metin dönüştürme, büyük harf, küçük harf, ters yazı, kelime sayacı">
+  <meta name="author" content="Ebubekir Bastama">
+  <title>Metin Dönüştürme Aracı | Ebubekir Bastama</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+   body {
+      background: url(https://ebubekirbastama.com.tr/circles.webp);
+    }
+    textarea {
+      resize: vertical;
+    }
+     background: url('https://ebubekirbastama.com.tr/circles.webp');
+  </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <div class="mx-auto" style="max-width: 768px;">
+    <fieldset class="border rounded bg-white mb-4 shadow-sm">
+      <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Metin</h5>
+      </div>
+      <textarea id="input" class="form-control border-0 rounded-0" rows="5" placeholder="Metninizi buraya yazın veya kopyalayıp yapıştırın."></textarea>
+      <div class="p-2 border-top d-flex justify-content-between text-muted small">
+        <div><span class="word-count">0</span> Kelime</div>
+        <div><span class="character-count">0</span> Karakter</div>
+      </div>
+    </fieldset>
+
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-5">
+      <button id="upper-case" class="btn btn-outline-primary btn-sm">BÜYÜK HARF</button>
+      <button id="lower-case" class="btn btn-outline-primary btn-sm">küçük harf</button>
+      <button id="reverse-case" class="btn btn-outline-primary btn-sm">ızay sreT</button>
+      <button id="proper-case" class="btn btn-outline-primary btn-sm">Kelimelerin Baş Harfi Büyük</button>
+      <button id="toggle-case" class="btn btn-outline-primary btn-sm">BÜYÜK/küçük değiştir</button>
+      <button id="copy-text" class="btn btn-primary btn-sm">Kopyala</button>
+    </div>
+
+    <article class="bg-white p-4 rounded shadow-sm">
+      <h2>Küçük Harfleri Büyük Harfe Çevirme</h2>
+      <p>Metnin içerisindeki tüm küçük harfleri büyük yapabilirsiniz.</p>
+      <p>Örnek: KÜÇÜK HARFLERİN TAMAMININ BÜYÜK HARFE ÇEVRİLDİĞİ BİR CÜMLE</p>
+
+      <h2>Büyük Harfleri Küçük Harfe Çevirme</h2>
+      <p>Tüm büyük harfleri küçük yapabilirsiniz.</p>
+      <p>Örnek: büyük harflerin tamamının küçük harfe çevrildiği bir cümle</p>
+
+      <h2>Ayna Yazı</h2>
+      <p>Her bir harfi ters çevirerek metni eğlenceli hale getirin.</p>
+      <p>Örnek: ızɐʎ ɹᴉq ṡᴉɯๅᴉʇǝɹṇ ǝๅᴉ ızɐʎ ɐuʎⱯ</p>
+
+      <h2>Ters Yazı</h2>
+      <p>Metindeki harflerin sırasını tersine çevirin.</p>
+      <p>Örnek: ridelmüc rib şımlızay netsret uB</p>
+
+      <h2>Her Kelimenin Baş Harfi Büyük</h2>
+      <p>Her kelimenin baş harfini büyük yapabilirsiniz.</p>
+      <p>Örnek: Her Kelimenin Baş Harfinin Büyük Olduğu Bir Cümle</p>
+    </article>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('input');
+  const wordCount = document.querySelector('.word-count');
+  const charCount = document.querySelector('.character-count');
+
+  function updateCounts() {
+    wordCount.textContent = input.value.trim().split(/\s+/).filter(Boolean).length;
+    charCount.textContent = input.value.length;
+  }
+
+  input.addEventListener('input', updateCounts);
+
+  document.getElementById('upper-case').onclick = () => input.value = input.value.toUpperCase();
+  document.getElementById('lower-case').onclick = () => input.value = input.value.toLowerCase();
+  document.getElementById('reverse-case').onclick = () => input.value = input.value.split('').reverse().join('');
+  document.getElementById('proper-case').onclick = () => {
+    input.value = input.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+  };
+  document.getElementById('toggle-case').onclick = () => {
+    input.value = input.value.split('').map(char =>
+      char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase()
+    ).join('');
+  };
+  document.getElementById('copy-text').onclick = () => {
+    navigator.clipboard.writeText(input.value).then(() => alert("Metin kopyalandı!"));
+  };
+</script>
+
+</body>
+</html>
