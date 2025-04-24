@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>EBS Kolaj Oluşturucu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      body {
+      background: url(https://ebubekirbastama.com.tr/circles.webp);
+    }
+    #preview-grid {
+      display: grid;
+      gap: 5px;
+      background: #fff;
+      padding: 5px;
+    }
+    #preview-grid img {
+      width: 100%;
+      height: 100%;
+      object-fit: var(--fit-mode, cover);
+      object-position: center;
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <h2 class="mb-4 text-center">🎨EBS Kolaj Oluşturucu</h2>
+
+  <div class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label">Hazır Düzen</label>
+      <select id="layout" class="form-select">
+        <option value="">Elle Belirle</option>
+        <option value="2x2">2 x 2</option>
+        <option value="3x3">3 x 3</option>
+        <option value="4x4">4 x 4</option>
+        <option value="4x5">4 x 5</option>
+        <option value="5x4">5 x 4</option>
+        <option value="6x3">6 x 3</option>
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Sütun</label>
+      <input type="number" id="cols" class="form-control" value="4">
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Satır</label>
+      <input type="number" id="rows" class="form-control" value="4">
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Genişlik (px)</label>
+      <input type="number" id="width" class="form-control" value="600">
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Yükseklik (px)</label>
+      <input type="number" id="height" class="form-control" value="400">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Resim Yerleşimi</label>
+      <select id="fitMode" class="form-select">
+        <option value="cover">Kırparak Sığdır</option>
+        <option value="contain">Tam Sığdır</option>
+      </select>
+    </div>
+
+    <div class="col-md-9">
+      <label class="form-label">Resim Seç (çoklu)</label>
+      <input type="file" id="imageInput" class="form-control" accept="image/*" multiple>
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex justify-content-between align-items-center">
+    <h5>🧩 Önizleme:</h5>
+    <button class="btn btn-success" id="downloadBtn">Kolajı İndir (PNG)</button>
+  </div>
+
+  <div id="preview-grid" class="border mt-2"></div>
+</div>
+
+<script>
+  const layoutSelect = document.getElementById("layout");
+  const colsInput = document.getElementById("cols");
+  const rowsInput = document.getElementById("rows");
+  const widthInput = document.getElementById("width");
+  const heightInput = document.getElementById("height");
+  const fitMode = document.getElementById("fitMode");
+  const imageInput = document.getElementById("imageInput");
+  const previewGrid = document.getElementById("preview-grid");
+  const downloadBtn = document.getElementById("downloadBtn");
+
+  let imageFiles = [];
+
+  function updateGrid() {
+    const selectedLayout = layoutSelect.value;
+    if (selectedLayout) {
+      const [c, r] = selectedLayout.split("x").map(Number);
+      colsInput.value = c;
+      rowsInput.value = r;
+    }
+
+    const cols = parseInt(colsInput.value);
+    const rows = parseInt(rowsInput.value);
+    const width = parseInt(widthInput.value);
+    const height = parseInt(heightInput.value);
+    const total = cols * rows;
+
+    previewGrid.style.setProperty('--fit-mode', fitMode.value);
+    previewGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    previewGrid.style.width = width + "px";
+    previewGrid.style.height = height + "px";
+
+    previewGrid.innerHTML = "";
+
+    for (let i = 0; i < total; i++) {
+      const img = document.createElement("img");
+      img.crossOrigin = 'anonymous';               // CORS hatasını önlemek için
+      if (imageFiles[i]) {
+        img.src = URL.createObjectURL(imageFiles[i]);
+      } else {
+        //img.src = `https://picsum.photos/150/150?random=${i}`;
+      }
+      previewGrid.appendChild(img);
+    }
+  }
+
+  layoutSelect.addEventListener("change", updateGrid);
+  colsInput.addEventListener("input", updateGrid);
+  rowsInput.addEventListener("input", updateGrid);
+  widthInput.addEventListener("input", updateGrid);
+  heightInput.addEventListener("input", updateGrid);
+  fitMode.addEventListener("change", updateGrid);
+imageInput.addEventListener("change", function () {
+  // Eski resimleri temizle
+  imageFiles = [];
+  previewGrid.innerHTML = "";
+
+  // Yeni resimleri yükle
+  imageFiles = Array.from(imageInput.files);
+  updateGrid();
+});
+
+  downloadBtn.addEventListener("click", async () => {
+    const cols = parseInt(colsInput.value);
+    const rows = parseInt(rowsInput.value);
+    const width = parseInt(widthInput.value);
+    const height = parseInt(heightInput.value);
+    const cellW = width  / cols;
+    const cellH = height / rows;
+
+    const imgs = Array.from(previewGrid.querySelectorAll("img"));
+    await Promise.all(imgs.map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise(res => img.addEventListener("load", res));
+    }));
+
+    const canvas = document.createElement("canvas");
+    canvas.width  = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+
+    imgs.forEach((img, idx) => {
+      const x = (idx % cols) * cellW;
+      const y = Math.floor(idx/rows) * cellH;
+      ctx.drawImage(img, x, y, cellW, cellH);
+    });
+
+    canvas.toBlob(blob => {
+      if (!blob) {
+        alert('PNG blob oluşturulamadı. CORS veya resim yüklenmesi sorunu olabilir.');
+        return;
+      }
+      const link = document.createElement("a");
+      link.download = "kolaj.png";
+      link.href = URL.createObjectURL(blob);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    }, "image/png");
+  });
+
+  updateGrid();
+</script>
+
+</body>
+</html>
