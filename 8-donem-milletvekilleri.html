@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="8. Dönem Milletvekilleri Sandalye ve Cinsiyete Göre Dağılım Görselleştirmesi">
+  <meta name="keywords" content="Milletvekilleri, Sandalye Dağılımı, Cinsiyet Dağılımı, 8. Dönem, Türkiye, Parti, Kadın, Erkek">
+  <meta name="author" content="ebubekirbastama">
+  <meta name="robots" content="index, follow">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+     body {
+       /* Yumuşak mavi tonlarından bir degrade */
+       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+       /* Tam ekran kaplasın */
+       min-height: 100vh;
+       margin: 0;
+       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+       color: #fff;
+     }
+    h1, h2 {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    table {
+      background: white;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      border-radius: 0.5rem;
+    }
+    thead {
+      background-color: #0d6efd;
+      color: white;
+      font-weight: 600;
+    }
+    .chart-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
+      margin-top: 2rem;
+    }
+    .table-responsive {
+      margin-bottom: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="text-center mb-5">8. Dönem Milletvekilleri Sandalye Dağılımı</h1>
+
+    <!-- Parti Sandalye Dağılımı Tablosu -->
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Parti Adı</th>
+            <th class="text-end">Üye Sayısı</th>
+          </tr>
+        </thead>
+        <tbody id="partiSandalyeBody">
+          <!-- JS ile doldurulacak -->
+        </tbody>
+        <tfoot>
+          <tr class="fw-bold">
+            <td>Toplam</td>
+            <td class="text-end">592</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Grafik Parti Sandalye Dağılımı -->
+    <div class="chart-container">
+      <canvas id="chartPartiSandalye"></canvas>
+    </div>
+
+    <h2 class="mt-5">Cinsiyete Göre Dağılım</h2>
+
+    <!-- Cinsiyete Göre Dağılım Tablosu -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Parti Adı</th>
+            <th class="text-center">Kadın<br><small>(Sayı / Oran)</small></th>
+            <th class="text-center">Erkek<br><small>(Sayı / Oran)</small></th>
+            <th class="text-end">Parti Toplam</th>
+          </tr>
+        </thead>
+        <tbody id="cinsiyetBody">
+          <!-- JS ile doldurulacak -->
+        </tbody>
+        <tfoot>
+          <tr class="fw-bold">
+            <td>Genel Toplam</td>
+            <td class="text-center">118<br><small>%19,93</small></td>
+            <td class="text-center">474<br><small>%80,07</small></td>
+            <td class="text-end">592</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Grafik Cinsiyete Göre Dağılım (Kadın/Erkek toplam) -->
+    <div class="chart-container">
+      <canvas id="chartCinsiyet"></canvas>
+    </div>
+
+  </div>
+
+<script>
+  // Parti sandalye dağılımı verisi
+  const partiSandalyeData = [
+    { name: "ADALET VE KALKINMA PARTİSİ", count: 273 },
+    { name: "CUMHURİYET HALK PARTİSİ", count: 134 },
+    { name: "HALKLARIN EŞİTLİK VE DEMOKRASİ PARTİSİ", count: 56 },
+    { name: "MİLLİYETÇİ HAREKET PARTİSİ", count: 47 },
+    { name: "İYİ PARTİ", count: 29 },
+    { name: "YENİ YOL PARTİSİ", count: 23 },
+    { name: "BAĞIMSIZ MİLLETVEKİLİ", count: 9 },
+    { name: "HÜR DAVA PARTİSİ", count: 4 },
+    { name: "YENİDEN REFAH PARTİSİ", count: 4 },
+    { name: "TÜRKİYE İŞÇİ PARTİSİ", count: 3 },
+    { name: "DEMOKRATİK BÖLGELER PARTİSİ", count: 2 },
+    { name: "GELECEK PARTİSİ", count: 2 },
+    { name: "EMEK PARTİSİ", count: 2 },
+    { name: "DEMOKRASİ VE ATILIM PARTİSİ", count: 1 },
+    { name: "SAADET PARTİSİ", count: 1 },
+    { name: "DEMOKRATİK SOL PARTİ", count: 1 },
+    { name: "DEMOKRAT PARTİ", count: 1 }
+  ];
+
+  // Cinsiyete göre dağılım verisi
+  const cinsiyetData = [
+    { name: "ADALET VE KALKINMA PARTİSİ", kadin: 51, erkek: 222, toplam: 273 },
+    { name: "CUMHURİYET HALK PARTİSİ", kadin: 26, erkek: 108, toplam: 134 },
+    { name: "HALKLARIN EŞİTLİK VE DEMOKRASİ PARTİSİ", kadin: 27, erkek: 29, toplam: 56 },
+    { name: "MİLLİYETÇİ HAREKET PARTİSİ", kadin: 4, erkek: 43, toplam: 47 },
+    { name: "İYİ PARTİ", kadin: 3, erkek: 26, toplam: 29 },
+    { name: "YENİ YOL PARTİSİ", kadin: 2, erkek: 21, toplam: 23 },
+    { name: "BAĞIMSIZ MİLLETVEKİLİ", kadin: 1, erkek: 8, toplam: 9 },
+    { name: "HÜR DAVA PARTİSİ", kadin: 0, erkek: 4, toplam: 4 },
+    { name: "YENİDEN REFAH PARTİSİ", kadin: 0, erkek: 4, toplam: 4 },
+    { name: "TÜRKİYE İŞÇİ PARTİSİ", kadin: 1, erkek: 2, toplam: 3 },
+    { name: "DEMOKRATİK BÖLGELER PARTİSİ", kadin: 1, erkek: 1, toplam: 2 },
+    { name: "GELECEK PARTİSİ", kadin: 0, erkek: 2, toplam: 2 },
+    { name: "EMEK PARTİSİ", kadin: 1, erkek: 1, toplam: 2 },
+    { name: "DEMOKRASİ VE ATILIM PARTİSİ", kadin: 1, erkek: 0, toplam: 1 },
+    { name: "SAADET PARTİSİ", kadin: 0, erkek: 1, toplam: 1 },
+    { name: "DEMOKRATİK SOL PARTİ", kadin: 0, erkek: 1, toplam: 1 },
+    { name: "DEMOKRAT PARTİ", kadin: 0, erkek: 1, toplam: 1 }
+  ];
+
+  // Tabloyu doldur
+  function fillPartiTable() {
+    const tbody = document.getElementById('partiSandalyeBody');
+    tbody.innerHTML = "";
+    partiSandalyeData.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${p.name}</td>
+        <td class="text-end">${p.count}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function fillCinsiyetTable() {
+    const tbody = document.getElementById('cinsiyetBody');
+    tbody.innerHTML = "";
+    cinsiyetData.forEach(p => {
+      const kadinOran = ((p.kadin / p.toplam) * 100).toFixed(2) + "%";
+      const erkekOran = ((p.erkek / p.toplam) * 100).toFixed(2) + "%";
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${p.name}</td>
+        <td class="text-center">${p.kadin} <br><small>${kadinOran}</small></td>
+        <td class="text-center">${p.erkek} <br><small>${erkekOran}</small></td>
+        <td class="text-end">${p.toplam}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  fillPartiTable();
+  fillCinsiyetTable();
+
+  // Grafikler
+  const ctxParti = document.getElementById('chartPartiSandalye').getContext('2d');
+  const chartPartiSandalye = new Chart(ctxParti, {
+    type: 'bar',
+    data: {
+      labels: partiSandalyeData.map(p => p.name),
+      datasets: [{
+        label: 'Üye Sayısı',
+        data: partiSandalyeData.map(p => p.count),
+        backgroundColor: 'rgba(13, 110, 253, 0.7)',
+        borderColor: 'rgba(13, 110, 253, 1)',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true }
+      },
+      scales: {
+        x: {
+          ticks: { maxRotation: 90, minRotation: 45 },
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { drawBorder: false }
+        }
+      }
+    }
+  });
+
+  const ctxCinsiyet = document.getElementById('chartCinsiyet').getContext('2d');
+  // Kadın ve Erkek toplam sayıları
+  const toplamKadin = cinsiyetData.reduce((a,b) => a + b.kadin, 0);
+  const toplamErkek = cinsiyetData.reduce((a,b) => a + b.erkek, 0);
+
+  const chartCinsiyet = new Chart(ctxCinsiyet, {
+    type: 'doughnut',
+    data: {
+      labels: ['Kadın', 'Erkek'],
+      datasets: [{
+        label: 'Cinsiyete Göre Dağılım',
+        data: [toplamKadin, toplamErkek],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.7)', // Kadın kırmızı tonları
+          'rgba(54, 162, 235, 0.7)'  // Erkek mavi tonları
+        ],
+        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { size: 16 },
+            padding: 20
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed;
+              const total = context.chart._metasets[context.datasetIndex].total;
+              const percent = ((value / total) * 100).toFixed(2);
+              return `${label}: ${value} (%${percent})`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+</script>
+
+</body>
+</html>
