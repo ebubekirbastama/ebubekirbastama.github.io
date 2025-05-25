@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>EBS Çizgi Oyunu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Çizgi Oyunu - Sayıları Sırasıyla Boş Kare Bırakmadan Bağla</title>
+  <meta name="description" content="Modern tasarımlı, zorluk seviyeleri olan çizgi oyunu. Sayıları sırasıyla boş kare bırakmadan çiz ve en yüksek skoru yakala!">
+  <meta name="keywords" content="çizgi oyunu, sayı oyunu, zeka oyunu, bulmaca, zorluk seviyeleri, HTML5 oyun, JavaScript oyun">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="robots" content="index, follow">
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --cell-bg: #fff;
+      --cell-border: #dee2e6;
+      --visited-bg: #0d6efd;
+      --correct-bg: #198754;
+      --incorrect-bg: #dc3545;
+      --bonus-bg: #20c997;
+    }
+    .dark-mode {
+      --bg-color: #212529;
+      --text-color: #f8f9fa;
+      --cell-bg: #343a40;
+      --cell-border: #495057;
+      --visited-bg: #0a58ca;
+      --correct-bg: #146c43;
+      --incorrect-bg: #b02a37;
+      --bonus-bg: #099268;
+    }
+    body {
+	  background: url(https://ebubekirbastama.com.tr/circles.webp);
+
+      color: var(--text-color);
+      font-family: Arial, sans-serif;
+      transition: all 0.3s ease;
+      overflow-x: hidden;
+    }
+    .game-grid {
+      display: grid;
+      gap: 5px;
+      margin-top: 20px;
+      justify-content: center;
+      position: relative;
+    }
+    .cell {
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
+      text-align: center;
+      line-height: 60px;
+      border-radius: 8px;
+      background-color: var(--cell-bg);
+      border: 2px solid var(--cell-border);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    .cell.correct {
+      background-color: var(--correct-bg) !important;
+      color: white;
+      animation: pulse 0.5s;
+    }
+    .cell.incorrect {
+      background-color: var(--incorrect-bg) !important;
+      color: white;
+    }
+    .cell.visited {
+      background-color: var(--visited-bg);
+      color: white;
+      position: relative;
+    }
+    .cell.visited::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.3);
+      animation: blink 1s infinite alternate;
+    }
+    .cell.bonus {
+      background-color: var(--bonus-bg);
+      color: white;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .lives {
+      display: flex;
+      gap: 5px;
+    }
+    .life {
+      width: 20px;
+      height: 20px;
+      background-color: var(--incorrect-bg);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    .life.lost {
+      background-color: #6c757d;
+    }
+    .theme-toggle {
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background-color: var(--cell-bg);
+      border: 1px solid var(--cell-border);
+      margin-left: 10px;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    @keyframes blink {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+    .line-effect {
+      position: absolute;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), rgba(255,255,255,0));
+      height: 4px;
+      transform-origin: 0 0;
+      z-index: 1;
+      border-radius: 2px;
+      box-shadow: 0 0 5px rgba(255,255,255,0.7);
+    }
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      opacity: 0;
+      z-index: 1000;
+      animation: confettiFall 5s linear forwards;
+    }
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    .success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0,0,0,0.8);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 24px;
+      z-index: 1001;
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-4">
+  <div class="top-bar">
+    <div>
+      <label for="difficulty">Zorluk:</label>
+      <select id="difficulty" class="form-select d-inline w-auto">
+        <option value="3">Kolay (3x3)</option>
+        <option value="5" selected>Orta (5x5)</option>
+        <option value="7">Zor (7x7)</option>
+      </select>
+      <label for="gameMode" class="ms-2">Mod:</label>
+      <select id="gameMode" class="form-select d-inline w-auto">
+        <option value="normal">Normal</option>
+        <option value="time">Zamana Karşı</option>
+      </select>
+      <span class="theme-toggle" onclick="toggleTheme()">🌙 Karanlık Mod</span>
+    </div>
+    <div>
+      <div class="lives mb-1">
+        <div class="life"></div>
+        <div class="life"></div>
+        <div class="life"></div>
+      </div>
+      <strong>Süre:</strong> <span id="timer">0</span> sn |
+      <strong>Skor:</strong> <span id="score">0</span> |
+      <strong>Geri Al:</strong> <span id="undoCount">3</span>
+    </div>
+  </div>
+
+  <div id="game" class="game-grid"></div>
+
+  <div class="text-center mt-3">
+    <button onclick="startGame()" class="btn btn-primary">Oyunu Başlat</button>
+    <button onclick="undoMove()" class="btn btn-secondary ms-2" id="undoBtn">Geri Al</button>
+  </div>
+</div>
+
+<div class="success-message" id="successMessage">Tebrikler! 🎉</div>
+
+<!-- Ses Efektleri -->
+<audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+<audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/beep-10.mp3"></audio>
+<audio id="bonusSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
+<audio id="successSound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+
+<script>
+  let gridSize = 5;
+  let currentNumber = 1;
+  let timer = 0;
+  let timerInterval;
+  let score = 0;
+  let lives = 3;
+  let undoCount = 3;
+  let gameMode = 'normal';
+  let timeLimit = 60;
+  const gameContainer = document.getElementById('game');
+  const timerSpan = document.getElementById('timer');
+  const scoreSpan = document.getElementById('score');
+  const undoCountSpan = document.getElementById('undoCount');
+  const correctSound = document.getElementById('correctSound');
+  const wrongSound = document.getElementById('wrongSound');
+  const bonusSound = document.getElementById('bonusSound');
+  const successSound = document.getElementById('successSound');
+  const successMessage = document.getElementById('successMessage');
+  let lastMoves = [];
+  let bonusCells = [];
+  let lastVisitedCell = null;
+
+  document.getElementById('difficulty').addEventListener('change', function() {
+    gridSize = parseInt(this.value);
+    startGame();
+  });
+
+  document.getElementById('gameMode').addEventListener('change', function() {
+    gameMode = this.value;
+    startGame();
+  });
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    const themeToggle = document.querySelector('.theme-toggle');
+    if (document.body.classList.contains('dark-mode')) {
+      themeToggle.textContent = '☀️ Aydınlık Mod';
+    } else {
+      themeToggle.textContent = '🌙 Karanlık Mod';
+    }
+  }
+
+  function startGame() {
+    clearInterval(timerInterval);
+    timer = 0;
+    timerSpan.textContent = '0';
+    score = 0;
+    scoreSpan.textContent = '0';
+    currentNumber = 1;
+    lives = 3;
+    undoCount = 3;
+    lastMoves = [];
+    bonusCells = [];
+    lastVisitedCell = null;
+    updateLives();
+    updateUndoCount();
+    generateGrid();
+    
+    if (gameMode === 'time') {
+      timeLimit = gridSize * 12;
+      timer = timeLimit;
+      timerSpan.textContent = timer;
+      timerInterval = setInterval(() => {
+        timer--;
+        timerSpan.textContent = timer;
+        if (timer <= 0) {
+          clearInterval(timerInterval);
+          setTimeout(() => {
+            alert('⏰ Zaman doldu! Skorunuz: ' + score);
+            startGame();
+          }, 300);
+        }
+      }, 1000);
+    } else {
+      timerInterval = setInterval(() => {
+        timer++;
+        timerSpan.textContent = timer;
+      }, 1000);
+    }
+  }
+
+  function generateGrid() {
+    gameContainer.innerHTML = '';
+    gameContainer.style.gridTemplateColumns = `repeat(${gridSize}, 60px)`;
+    const totalCells = gridSize * gridSize;
+    const numbers = Array.from({ length: totalCells }, (_, i) => i + 1);
+    shuffle(numbers);
+
+    // Bonus hücreleri belirle (%5 oranında)
+    const bonusCount = Math.floor(totalCells * 0.05);
+    
+    for (let i = 0; i < bonusCount; i++) {
+      const randomIndex = Math.floor(Math.random() * totalCells);
+      if (!bonusCells.includes(randomIndex)) {
+        bonusCells.push(randomIndex);
+      }
+    }
+
+    for (let i = 0; i < totalCells; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.textContent = numbers[i];
+      cell.dataset.number = numbers[i];
+      cell.dataset.index = i;
+      
+      if (bonusCells.includes(i)) {
+        cell.classList.add('bonus');
+        cell.textContent = '⭐';
+      }
+      
+      cell.addEventListener('click', handleCellClick);
+      gameContainer.appendChild(cell);
+    }
+  }
+
+  function handleCellClick(e) {
+    const cell = e.target;
+    const num = parseInt(cell.dataset.number);
+    const cellIndex = parseInt(cell.dataset.index);
+    
+    // Bonus hücreye tıklandı
+    if (bonusCells.includes(cellIndex) && !cell.classList.contains('visited')) {
+      cell.classList.add('visited');
+      bonusSound.play();
+      score += 20;
+      if (gameMode === 'time') {
+        timer += 5;
+      }
+      scoreSpan.textContent = score;
+      timerSpan.textContent = timer;
+      return;
+    }
+    
+    // Normal hücre işlemleri
+    if (num === currentNumber) {
+      cell.classList.add('visited');
+      correctSound.play();
+      
+      // Çizgi efekti ekle
+      if (lastVisitedCell) {
+        createLineEffect(lastVisitedCell, cell);
+      }
+      lastVisitedCell = cell;
+      
+      lastMoves.push(cellIndex);
+      currentNumber++;
+      score += 10;
+      scoreSpan.textContent = score;
+      
+      if (currentNumber > gridSize * gridSize) {
+        clearInterval(timerInterval);
+        showSuccess();
+        setTimeout(() => {
+          startGame();
+        }, 3000);
+      }
+    } else if (!cell.classList.contains('visited')) {
+      cell.classList.add('incorrect');
+      wrongSound.play();
+      score = Math.max(0, score - 2);
+      scoreSpan.textContent = score;
+      lives--;
+      updateLives();
+      
+      setTimeout(() => {
+        cell.classList.remove('incorrect');
+      }, 400);
+      
+      if (lives <= 0) {
+        endGame();
+      }
+    }
+  }
+
+  function createLineEffect(fromCell, toCell) {
+    const fromRect = fromCell.getBoundingClientRect();
+    const toRect = toCell.getBoundingClientRect();
+    
+    const gameRect = gameContainer.getBoundingClientRect();
+    
+    const fromX = fromRect.left + fromRect.width/2 - gameRect.left;
+    const fromY = fromRect.top + fromRect.height/2 - gameRect.top;
+    const toX = toRect.left + toRect.width/2 - gameRect.left;
+    const toY = toRect.top + toRect.height/2 - gameRect.top;
+    
+    const length = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+    const angle = Math.atan2(toY - fromY, toX - fromX);
+    
+    const line = document.createElement('div');
+    line.className = 'line-effect';
+    line.style.left = fromX + 'px';
+    line.style.top = fromY + 'px';
+    line.style.width = length + 'px';
+    line.style.transform = `rotate(${angle}rad)`;
+    
+    gameContainer.appendChild(line);
+    
+    setTimeout(() => {
+      line.style.opacity = '0';
+      setTimeout(() => {
+        gameContainer.removeChild(line);
+      }, 1000);
+    }, 1000);
+  }
+
+  function showSuccess() {
+    successSound.play();
+    successMessage.style.display = 'block';
+    createConfetti();
+    
+    setTimeout(() => {
+      successMessage.style.display = 'none';
+    }, 2000);
+  }
+
+  function createConfetti() {
+    const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+    
+    for (let i = 0; i < 150; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.width = Math.random() * 10 + 5 + 'px';
+      confetti.style.height = Math.random() * 10 + 5 + 'px';
+      confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+      confetti.style.animationDelay = Math.random() * 2 + 's';
+      
+      document.body.appendChild(confetti);
+      
+      setTimeout(() => {
+        document.body.removeChild(confetti);
+      }, 5000);
+    }
+  }
+
+  function undoMove() {
+    if (undoCount <= 0 || lastMoves.length === 0 || currentNumber === 1) return;
+    
+    const lastCellIndex = lastMoves.pop();
+    const cells = document.querySelectorAll('.cell');
+    const lastCell = cells[lastCellIndex];
+    
+    if (lastCell) {
+      lastCell.classList.remove('visited');
+      currentNumber--;
+      score = Math.max(0, score - 5);
+      scoreSpan.textContent = score;
+      undoCount--;
+      updateUndoCount();
+      
+      // Son ziyaret edilen hücreyi güncelle
+      if (lastMoves.length > 0) {
+        lastVisitedCell = document.querySelector(`.cell[data-index="${lastMoves[lastMoves.length-1]}"]`);
+      } else {
+        lastVisitedCell = null;
+      }
+    }
+  }
+
+  function endGame() {
+    clearInterval(timerInterval);
+    setTimeout(() => {
+      alert('Oyun bitti! Skorunuz: ' + score);
+      startGame();
+    }, 500);
+  }
+
+  function updateLives() {
+    const lifeElements = document.querySelectorAll('.life');
+    lifeElements.forEach((life, index) => {
+      if (index < lives) {
+        life.classList.remove('lost');
+      } else {
+        life.classList.add('lost');
+      }
+    });
+  }
+
+  function updateUndoCount() {
+    undoCountSpan.textContent = undoCount;
+    document.getElementById('undoBtn').disabled = undoCount <= 0;
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  // Oyunu otomatik başlat
+  startGame();
+</script>
+</body>
+</html>
