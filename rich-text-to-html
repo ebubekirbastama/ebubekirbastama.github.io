@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+ <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>HTML Başlık ve Paragraf Dönüştürücü | Ebubekir Baştama</title>
+
+  <!-- ✅ Açıklama (SEO için) -->
+  <meta name="description" content="Rich Text içeriği otomatik olarak başlık (h2) ve paragraf (p) HTML etiketlerine dönüştürün. İçerik üreticileri, editörler ve yazılım geliştiricileri için kullanışlı bir araç.">
+
+  <!-- ✅ Anahtar Kelimeler -->
+  <meta name="keywords" content="HTML dönüştürücü, rich text parser, başlık dönüştürme, strong tag analiz, içerik editörü aracı, h2 parser, p tag üretici, Ebubekir Baştama, HTML araçları, içerik yönetimi, haber HTML formatı">
+
+  <!-- ✅ Yazar -->
+  <meta name="author" content="Ebubekir Baştama">
+
+  <!-- ✅ Dil -->
+  <meta name="language" content="tr">
+
+  <!-- ✅ Robots -->
+  <meta name="robots" content="index, follow">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      body {
+      background: url(https://ebubekirbastama.com.tr/circles.webp);
+    }
+    textarea {
+      min-height: 200px;
+      font-family: monospace;
+    }
+    .preview-box {
+      min-height: 200px;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+  <h1 class="mb-4">Zengin Metin Dönüştürücü</h1>
+
+  <div class="row g-4">
+    <!-- Giriş -->
+    <div class="col-md-6">
+      <label for="inputHtml" class="form-label">Giriş HTML (Rich Text ile):</label>
+      <textarea id="inputHtml" class="form-control" placeholder="Buraya strong ve p içeren HTML yapıştır..."></textarea>
+    </div>
+
+    <!-- Çıktı -->
+    <div class="col-md-6">
+      <label for="outputHtml" class="form-label">Dönüştürülmüş HTML:</label>
+      <textarea id="outputHtml" class="form-control" readonly></textarea>
+    </div>
+  </div>
+
+  <!-- Buton -->
+  <div class="text-end mt-3">
+    <button class="btn btn-primary" onclick="convert()">Dönüştür</button>
+  </div>
+
+  <!-- Önizleme -->
+  <div class="mt-5">
+    <h2>HTML Önizleme</h2>
+    <div id="preview" class="preview-box"></div>
+  </div>
+</div>
+
+<script>
+  function convert() {
+    const rawHtml = document.getElementById("inputHtml").value;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(rawHtml, "text/html");
+    const output = [];
+
+    doc.body.childNodes.forEach(el => {
+      if (el.nodeType === 1) {
+        if (el.tagName === 'P') {
+          const strong = el.querySelector('strong[data-start][data-end]');
+          if (strong) {
+            output.push(`<h2>${strong.textContent.trim()}</h2>`);
+            const clone = el.cloneNode(true);
+            clone.querySelector('strong')?.remove();
+            const restText = clone.textContent.trim();
+            if (restText) output.push(`<p>${restText}</p>`);
+          } else {
+            const text = el.textContent.trim();
+            if (text) output.push(`<p>${text}</p>`);
+          }
+        }
+      }
+    });
+
+    const finalHtml = output.join('\n');
+    document.getElementById("outputHtml").value = finalHtml;
+    document.getElementById("preview").innerHTML = finalHtml;
+  }
+</script>
+
+</body>
+</html>
