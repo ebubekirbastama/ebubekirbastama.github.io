@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBS | Elektro-Ağ Balistik Sistem</title>
+    <style>
+        :root {
+            --ebs-blue: #003366;
+            --ebs-red: #cc0000;
+            --ebs-orange: #ff6600;
+            --ebs-gray: #333333;
+            --ebs-light: #f0f0f0;
+        }
+        
+        @font-face {
+            font-family: 'EBS-Digital';
+            src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.7;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 51, 102, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(204, 0, 0, 0.15) 0%, transparent 20%);
+        }
+        
+        .ebs-header {
+            background: linear-gradient(135deg, var(--ebs-blue), var(--ebs-gray));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--ebs-orange);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ebs-header::before {
+            content: "EBS";
+            position: absolute;
+            font-family: 'EBS-Digital', sans-serif;
+            font-size: 15rem;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'EBS-Digital', 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(0, 102, 204, 0.7);
+            position: relative;
+        }
+        
+        h2 {
+            color: var(--ebs-orange);
+            font-size: 1.8rem;
+            border-left: 4px solid var(--ebs-orange);
+            padding-left: 1rem;
+            margin: 2.5rem 0 1.5rem;
+            background: linear-gradient(to right, rgba(255, 102, 0, 0.1), transparent);
+        }
+        
+        h3 {
+            color: var(--ebs-red);
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem;
+            border-bottom: 2px dashed var(--ebs-red);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .ebs-container {
+            padding: 0 2rem 2rem;
+        }
+        
+        .ebs-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid var(--ebs-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ebs-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+        }
+        
+        .ebs-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ebs-blue), var(--ebs-orange), var(--ebs-red));
+        }
+        
+        .ebs-schema-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .ebs-schema-box {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid var(--ebs-blue);
+            border-radius: 6px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+        
+        .ebs-schema-box h4 {
+            color: var(--ebs-orange);
+            margin-top: 0;
+            font-size: 1.2rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--ebs-blue);
+        }
+        
+        .ebs-schema {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #00cc99;
+            padding: 1rem;
+            overflow-x: auto;
+            border-left: 3px solid var(--ebs-orange);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .ebs-note {
+            background: rgba(0, 51, 102, 0.2);
+            border-left: 4px solid var(--ebs-blue);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .ebs-warning {
+            background: rgba(204, 0, 0, 0.15);
+            border-left: 4px solid var(--ebs-red);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .ebs-step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin: 1.5rem 0;
+        }
+        
+        .ebs-step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, var(--ebs-blue), var(--ebs-red));
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-family: 'EBS-Digital', sans-serif;
+        }
+        
+        .ebs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(30, 30, 30, 0.8);
+        }
+        
+        .ebs-table th {
+            background: linear-gradient(to right, var(--ebs-blue), var(--ebs-gray));
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .ebs-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ebs-table tr:nth-child(even) {
+            background: rgba(0, 51, 102, 0.1);
+        }
+        
+        .ebs-table tr:hover {
+            background: rgba(255, 102, 0, 0.1);
+        }
+        
+        .ebs-badge {
+            display: inline-block;
+            background: var(--ebs-red);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        
+        .ebs-footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--ebs-blue);
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .ebs-footer a {
+            color: var(--ebs-orange);
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .ebs-schema-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .ebs-container {
+                padding: 0 1rem 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="ebs-header">
+        <h1>EBS | Elektro-Ağ Balistik Sistem</h1>
+        <p>Gelişmiş Anti-Drone Savunma Platformu</p>
+    </header>
+    
+    <div class="ebs-container">
+        <div class="ebs-card">
+            <h2>Proje Tanımı</h2>
+            <p>EBS (Elektro-Ağ Balistik Sistem), dron tehditlerine karşı geliştirilmiş çok katmanlı bir savunma sistemidir. Sistem, fiziksel ağ atışı, elektriksel bozma ve termal etki kombinasyonuyla çalışır.</p>
+            
+            <div class="ebs-note">
+                <strong>EBS Özellikleri:</strong> Sistem, taşınabilir modüler yapısıyla hem sabit hem de mobil platformlarda kullanılabilir. Özel geliştirilen EBS-3000 serisi kartuşlar ile 100 metre menzile kadar etkilidir.
+            </div>
+            
+            <div class="ebs-warning">
+                <strong>Dikkat:</strong> EBS sistemleri yalnızca yetkili personel tarafından ve yasal izinler dahilinde kullanılabilir. Sistemin yanlış kullanımı ciddi yaralanmalara ve maddi hasarlara yol açabilir.
+            </div>
+        </div>
+        
+        <div class="ebs-card">
+            <h2>Teknik Özellikler</h2>
+            
+            <div class="ebs-table-container">
+                <table class="ebs-table">
+                    <thead>
+                        <tr>
+                            <th>Bileşen</th>
+                            <th>EBS Modeli</th>
+                            <th>Teknik Detaylar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ağ Fırlatıcı</td>
+                            <td>EBS-NT200</td>
+                            <td>Pnömatik sistem, 150m/s fırlatma hızı</td>
+                        </tr>
+                        <tr>
+                            <td>Elektroşok Modülü</td>
+                            <td>EBS-EM500</td>
+                            <td>200V kapasitör bank, 0.5ms darbe</td>
+                        </tr>
+                        <tr>
+                            <td>Termal Etki Sistemi</td>
+                            <td>EBS-TH100</td>
+                            <td>NiCr tel, 500°C lokal ısı</td>
+                        </tr>
+                        <tr>
+                            <td>Kontrol Ünitesi</td>
+                            <td>EBS-CU800</td>
+                            <td>ARM işlemci, RF/Bluetooth kontrol</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="ebs-card">
+            <h2>EBS Sistem Şemaları</h2>
+            
+            <div class="ebs-schema-container">
+                <div class="ebs-schema-box">
+                    <h4>EBS Fırlatma Sistemi</h4>
+                    <pre class="ebs-schema">[EBS Tetikleme] 
+    │
+    ▼
+[Pnömatik Valf Açılır]
+    │
+    ▼
+[Basınçlı Hava Salınımı]
+    │
+    ▼
+[Ağ Kartuşu Fırlatılır]
+    │
+    ▼
+[100m Menzil Hedefi]</pre>
+                </div>
+                
+                <div class="ebs-schema-box">
+                    <h4>EBS Elektroşok Devresi</h4>
+                    <pre class="ebs-schema">[Temas Algılandı]
+    │
+    ▼
+[Kapasitör Deşarj Devresi]
+    │
+    ▼
+[200V Darbe Üretimi]
+    │
+    ▼
+[Bakır İletkenler]
+    │
+    ▼
+[Drone Elektroniği Devre Dışı]</pre>
+                </div>
+                
+                <div class="ebs-schema-box">
+                    <h4>EBS Termal Modül</h4>
+                    <pre class="ebs-schema">[Tetikleme Sinyali]
+    │
+    ▼
+[NiCr Tel Aktif]
+    │
+    ▼
+[5A Akım Geçişi]
+    │
+    ▼
+[500°C Lokal Isı]
+    │
+    ▼
+[Yüzey Deformasyonu]</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ebs-card">
+            <h2>EBS Operasyonel Süreç</h2>
+            
+            <div class="ebs-step">
+                <h3>Hedef Tespit ve Kilitleme</h3>
+                <p>EBS radar ve optik sistemleri ile drone tespiti yapılır. Otomatik takip sistemi devreye girer.</p>
+            </div>
+            
+            <div class="ebs-step">
+                <h3>Atış Hazırlığı</h3>
+                <p>EBS kartuşu yüklenir, kapasitörler şarj edilir. Güvenlik kontrolleri tamamlanır.</p>
+            </div>
+            
+            <div class="ebs-step">
+                <h3>Fırlatma ve Yakalama</h3>
+                <p>Pnömatik sistem aktive edilir. Ağ hedef drone'u sarar ve fiziksel temas sağlanır.</p>
+            </div>
+            
+            <div class="ebs-step">
+                <h3>Elektro-Termal Etki</h3>
+                <p>Otomatik olarak elektroşok ve termal sistemler devreye girer. Drone etkisiz hale getirilir.</p>
+            </div>
+        </div>
+        
+        <div class="ebs-card">
+            <h2>EBS Güvenlik Protokolleri</h2>
+            
+            <div class="ebs-note">
+                <strong>EBS-01 Protokolü:</strong> Sistem kullanımı sırasında minimum 50m güvenlik mesafesi korunmalıdır.
+            </div>
+            
+            <div class="ebs-warning">
+                <strong>EBS-02 Protokolü:</strong> Kartuş değişimi sırasında sistem tamamen güçsüz durumda olmalıdır.
+            </div>
+            
+            <div class="ebs-note">
+                <strong>EBS-03 Protokolü:</strong> Sistem her kullanımdan sonra teknik kontrolden geçirilmelidir.
+            </div>
+        </div>
+    </div>
+    
+    <footer class="ebs-footer">
+        <p>EBS | Elektro-Ağ Balistik Sistem © 2025 | Tüm hakları saklıdır</p>
+        <p><a href="#">Gizlilik Politikası</a> | <a href="#">Kullanım Şartları</a> | <a href="#">Teknik Destek</a></p>
+    </footer>
+</body>
+</html>
