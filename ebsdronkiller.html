@@ -104,7 +104,408 @@
 </head>
 <body>
     <h1>Anti-Drone Sistemi Üretim Rehberi</h1>
-    
+        <h1>Anti-Drone Elektro-Ağ + Isıl İmha Sistemi</h1>
+
+    <h2>Proje Başlığı</h2>
+    <p>Elektro-Ağ Temelli, Isıl Destekli Portatif Anti-Drone Savunma Sistemi</p>
+
+    <h2>Proje Açıklaması</h2>
+    <p>Bu sistem, elle fırlatılabilen veya aparata monte edilebilen bir ağ ile dronlara karşı geliştirilmiştir. Hedef drona isabet eden ağ, hem fiziksel olarak pervanelere dolanarak uçuş kabiliyetini engeller, hem de içerisine entegre edilen yüksek voltaj modülü ile dronun bataryasını veya elektronik devrelerini bozar. Buna ek olarak, ağ yapısına dahil edilen yüksek dirençli ısıtıcı teller sayesinde isabet alan bölgede yüksek lokal ısı üretilerek, dronun yüzeyinde erime, deformasyon veya ek arızalar yaratılır.</p>
+
+    <div class="note">
+        <strong>Önemli Not:</strong> Bu sistemin ürettiği yüksek voltaj ve ısı etkisi, esas olarak <b>yakalanan hedef drone üzerinde</b> etkilidir. Kullanıcı tarafında uygun yalıtım, güvenlik protokolleri ve tasarım uygulandığında sistem taşıyıcıya zarar vermez. Tüm riskler hedef drone'un bataryası, devreleri veya yapısal parçaları üzerindedir.
+    </div>
+
+    <h2>Projede Kullanılması Gerekenler</h2>
+    <ul>
+        <li>Yüksek dayanımlı, hafif ağ (Kevlar veya balistik iplik)</li>
+        <li>Ağ içine entegre önceden şarjlı mini kapasitör grubu (200V)</li>
+        <li>Temas anında çalışan tetikleme devresi</li>
+        <li>İletken bakır tel (elektriksel darbe için)</li>
+        <li>Yüksek dirençli Nikel-Krom tel (Isıl etki için)</li>
+        <li>Güvenli taşıma için koruyucu kaplama</li>
+        <li>Elle veya aparata monte edilebilir fırlatma sistemi</li>
+    </ul>
+
+    <h2>Avantajlar</h2>
+    <ul>
+        <li>Çift Etkili: Fiziksel + Elektronik imha</li>
+        <li>Ekstra Termal Etki: Yüksek ısı ile yüzeyde deformasyon</li>
+        <li>Hafif ve taşınabilir yapı</li>
+        <li>Ateşli silah gerektirmeden sessiz müdahale</li>
+        <li>Özellikle sivil ve küçük dronlara karşı yüksek başarı</li>
+    </ul>
+
+    <h2>Riskler ve Zorluklar</h2>
+    <ul>
+        <li>Yüksek voltaj ve ısı hedef drone'un elektronik sistemlerine zarar verir.</li>
+        <li>Hedef drone bataryasında yangın veya patlama riski bulunur.</li>
+        <li>Kullanılan kapasitör ve tel sistemleri sınırlı kullanım ömrüne sahiptir, düzenli kontrol ve bakım gereklidir.</li>
+        <li>Piroteknik içerikli sistemler kullanıldığında yasal prosedürlere tam uyum gereklidir.</li>
+    </ul>
+
+    <div class="note">
+        <strong>Dikkat:</strong> Bu risklerin çoğunluğu hedef drone içindir. Doğru tasarlanmış taşıyıcı sistem, kullanıcıyı yüksek voltaj ve ısı etkilerinden korur. Yine de sistem taşınırken ve kullanılırken dikkat edilmelidir.
+    </div>
+
+    <h2>Malzeme Listesi</h2>
+    <table>
+        <tbody><tr>
+            <th>Bileşen</th>
+            <th>Teknik Özellik</th>
+            <th>Notlar</th>
+        </tr>
+        <tr>
+            <td>Ağ Gövdesi</td>
+            <td>Kevlar, Naylon veya balistik kumaş</td>
+            <td>Hafif, dayanıklı, yanmaz</td>
+        </tr>
+        <tr>
+            <td>İletken Tel/Şerit</td>
+            <td>Bakır tel</td>
+            <td>Elektriksel şok için</td>
+        </tr>
+        <tr>
+            <td>Isıtıcı Tel</td>
+            <td>Nikel-Krom tel (NiCr)</td>
+            <td>Yüksek direnç, 200-500°C lokal ısı üretimi</td>
+        </tr>
+        <tr>
+            <td>Kapasitör Grubu</td>
+            <td>200V çıkışlı, hızlı deşarj</td>
+            <td>4-6 adet, seri veya paralel bağlı</td>
+        </tr>
+        <tr>
+            <td>Mikro Tetikleme Devresi</td>
+            <td>Darbeye/temasa duyarlı anahtar</td>
+            <td>Temas anında devreyi tamamlar</td>
+        </tr>
+        <tr>
+            <td>Fırlatma Aparatı</td>
+            <td>Yaylı veya manuel sistem</td>
+            <td>Elle kullanım veya aparata montaj</td>
+        </tr>
+        <tr>
+            <td>Koruyucu Kaplama</td>
+            <td>Sert plastik veya silikon</td>
+            <td>Kullanıcı için güvenlik sağlar</td>
+        </tr>
+    </tbody></table>
+
+    <h2>Flowchart - Sistem Akış Diyagramı</h2>
+    <pre>┌─────────────────────────┐
+│     Kullanıcı Hazırlık  │
+│ Ağ + Kapasitör Şarjı    │
+└────────────┬────────────┘
+             │
+┌────────────▼────────────┐
+│  Elle veya Aparatla     │
+│     Ağ Fırlatma         │
+└────────────┬────────────┘
+             │
+┌────────────▼────────────┐
+│  Ağ Drone'a İsabet Eder │
+└────────────┬────────────┘
+             │
+ ┌───────────▼─────────────┐
+ │  Fiziksel Dolanma Etkisi│
+ └───────────┬─────────────┘
+             │
+ ┌───────────▼─────────────┐
+ │  Temas Tetikleyici Aktif│
+ └───────────┬─────────────┘
+             │
+ ┌───────────▼─────────────┐
+ │  Kapasitör Deşarjı (200V)│
+ └───────────┬─────────────┘
+             │
+ ┌───────────▼─────────────┐
+ │  Elektriksel Darbe ve Isıtıcı Tel Aktif │
+ └───────────┬─────────────┘
+             │
+ ┌───────────▼─────────────┐
+ │  Drone Batarya/Devre Bozulur │
+ │  Lokal Yüzeyde Yüksek Isı    │
+ └───────────┬─────────────┘
+             │
+ ┌───────────▼─────────────┐
+ │ Drone Uçuş Yetisi Kaybolur │
+ └───────────────────────────┘
+    </pre>
+
+    <h2>Geliştirme Önerileri ve Aşamaları</h2>
+
+    <h3>1. Uzaktan Kumandalı Tetikleme (Manuel Kontrol)</h3>
+    <p>
+        Sistemin tetikleme mekanizmasını, kullanıcı tarafından kablosuz olarak kontrol edilebilen bir yapıya dönüştürmek. Bu sayede ağın drona isabet ettiği anda, kullanıcı tetiklemeyi manuel olarak gerçekleştirebilir veya otomatik tetiklemeye ek olarak müdahale şansı olur.
+    </p>
+    <ul>
+        <li>RF, Bluetooth veya Wi-Fi tabanlı uzaktan tetikleme modülü</li>
+        <li>Gecikme ve güvenlik protokollerinin optimize edilmesi</li>
+        <li>Kullanıcı arayüzü ve tetikleme butonları tasarımı</li>
+    </ul>
+
+    <h3>2. EM Sinyal Karıştırıcı (Jammer) Entegrasyonu</h3>
+    <p>
+        Drone ile iletişimi kesmek amacıyla elektromanyetik sinyaller yayan, hedef dronun kumanda sinyallerini bloke eden jammer modülü eklemek. Böylece drone düşmeden önce kontrol kaybı yaşar veya otomatik güvenlik moduna geçer.
+    </p>
+    <ul>
+        <li>Frekans bantlarının belirlenmesi (2.4 GHz, 5.8 GHz vb.)</li>
+        <li>Güç ve kapsama alanı optimizasyonu</li>
+        <li>Yasal izin ve düzenlemelerin kontrolü</li>
+    </ul>
+
+    <h3>3. Akıllı Sensör ile Temas Algılama Sistemi</h3>
+    <p>
+        Ağın sadece drone hedefiyle fiziksel temas ettiğinde devreyi aktif hale getiren, gereksiz tetiklemeleri önleyen akıllı sensör teknolojisi. Bu sayede sistem verimliliği artar ve enerji tasarrufu sağlanır.
+    </p>
+    <ul>
+        <li>Basınç, ivme veya elektriksel temas sensörleri</li>
+        <li>Mikrodenetleyici ile entegre kontrol devresi</li>
+        <li>Hassasiyet ayarları ve hata toleransı</li>
+    </ul>
+
+    <h3>4. Piroteknik Isı Sistemi ile Yüksek Termal Etki</h3>
+    <p>
+        Isı etkisini artırmak için kimyasal piroteknik bileşenlerin ağ içine entegre edilmesi. Bu sistem temas sonrası lokal yüksek ısı patlaması yaratır ve drone üzerinde daha hızlı ve etkili hasar oluşturur.
+    </p>
+    <ul>
+        <li>Güvenlik ve taşıma için özel muhafaza ve düzenlemeler</li>
+        <li>Yasal izinler ve kullanım protokolleri</li>
+        <li>Kimyasal reaksiyon kontrolü ve tetikleme mekanizması</li>
+    </ul>
+    <h2>Geliştirme Önerileri ve Aşamaları</h2>
+    <h3>1. Uzaktan Kumandalı Tetikleme (Manuel Kontrol)</h3>
+    <p>
+        Sistemin tetikleme mekanizmasını, kullanıcı tarafından kablosuz olarak kontrol edilebilen bir yapıya dönüştürmek. Bu sayede ağın drona isabet ettiği anda, kullanıcı tetiklemeyi manuel olarak gerçekleştirebilir veya otomatik tetiklemeye ek olarak müdahale şansı olur.
+    </p>
+    <ul>
+        <li>RF, Bluetooth veya Wi-Fi tabanlı uzaktan tetikleme modülü</li>
+        <li>Gecikme ve güvenlik protokollerinin optimize edilmesi</li>
+        <li>Kullanıcı arayüzü ve tetikleme butonları tasarımı</li>
+    </ul>
+
+    <h3>2. EM Sinyal Karıştırıcı (Jammer) Entegrasyonu</h3>
+    <p>
+        Drone ile iletişimi kesmek amacıyla elektromanyetik sinyaller yayan, hedef dronun kumanda sinyallerini bloke eden jammer modülü eklemek. Böylece drone düşmeden önce kontrol kaybı yaşar veya otomatik güvenlik moduna geçer.
+    </p>
+    <ul>
+        <li>Frekans bantlarının belirlenmesi (2.4 GHz, 5.8 GHz vb.)</li>
+        <li>Güç ve kapsama alanı optimizasyonu</li>
+        <li>Yasal izin ve düzenlemelerin kontrolü</li>
+    </ul>
+
+    <h3>3. Akıllı Sensör ile Temas Algılama Sistemi</h3>
+    <p>
+        Ağın sadece drone hedefiyle fiziksel temas ettiğinde devreyi aktif hale getiren, gereksiz tetiklemeleri önleyen akıllı sensör teknolojisi. Bu sayede sistem verimliliği artar ve enerji tasarrufu sağlanır.
+    </p>
+    <ul>
+        <li>Basınç, ivme veya elektriksel temas sensörleri</li>
+        <li>Mikrodenetleyici ile entegre kontrol devresi</li>
+        <li>Hassasiyet ayarları ve hata toleransı</li>
+    </ul>
+
+    <h3>4. Piroteknik Isı Sistemi ile Yüksek Termal Etki</h3>
+    <p>
+        Isı etkisini artırmak için kimyasal piroteknik bileşenlerin ağ içine entegre edilmesi. Bu sistem temas sonrası lokal yüksek ısı patlaması yaratır ve drone üzerinde daha hızlı ve etkili hasar oluşturur.
+    </p>
+    <ul>
+        <li>Güvenlik ve taşıma için özel muhafaza ve düzenlemeler</li>
+        <li>Yasal izinler ve kullanım protokolleri</li>
+        <li>Kimyasal reaksiyon kontrolü ve tetikleme mekanizması</li>
+    </ul>
+
+    <h2>Ek Geliştirme Alanları</h2>
+
+    <h3>1. Akıllı Algoritmalar ve Sensör Entegrasyonu</h3>
+    <p>
+        Drone tespit ve takip için gelişmiş kamera sistemleri ve yapay zeka tabanlı görüntü işleme algoritmaları kullanılabilir. Bu sayede, hedef doğruluğu ve sistem verimliliği artırılır.
+    </p>
+    <ul>
+        <li>Gerçek zamanlı görüntü işleme</li>
+        <li>Drone hız, mesafe ve yön analizleri</li>
+        <li>Otomatik tetikleme algoritmaları</li>
+    </ul>
+
+    <h3>2. Enerji Yönetimi ve Güç Verimliliği</h3>
+    <p>
+        Kapasitör ve batarya sistemleri optimize edilerek enerji verimliliği sağlanabilir. Süper kapasitörler ve enerji geri kazanım sistemleri geliştirilebilir.
+    </p>
+    <ul>
+        <li>Yüksek yoğunluklu enerji depolama</li>
+        <li>Akıllı güç yönetim modülleri</li>
+        <li>Enerji geri kazanım mekanizmaları</li>
+    </ul>
+
+    <h3>3. Güvenlik ve Kullanıcı Koruması</h3>
+    <p>
+        Kullanıcı ve çevre güvenliği için izolasyon teknikleri ve acil durdurma sistemleri geliştirilmeli. Yanlış tetiklemeleri önlemek için güvenlik protokolleri uygulanmalı.
+    </p>
+    <ul>
+        <li>Elektriksel ve termal izolasyon</li>
+        <li>Acil durdurma butonu veya devresi</li>
+        <li>Kullanıcı eğitim ve kılavuzları</li>
+    </ul>
+
+    <h3>4. Taşıma ve Uygulama Mekanizmaları</h3>
+    <p>
+        Sistemin kullanım kolaylığı ve etkinliği için farklı fırlatma mekanizmaları geliştirilebilir. Modüler tasarım ile bakım ve onarım kolaylaştırılır.
+    </p>
+    <ul>
+        <li>Dron entegre fırlatma sistemleri</li>
+        <li>Pnömatik, elektrikli veya robotik fırlatma mekanizmaları</li>
+        <li>Modüler tasarım ve hızlı parça değişimi</li>
+    </ul>
+
+    <h3>5. Test ve Simülasyon</h3>
+    <p>
+        Isıl ve elektriksel testler ile sistem dayanıklılığı ve performansı optimize edilmeli. Farklı senaryolarda saha testleri ile gerçek dünya performansı ölçülmeli.
+    </p>
+    <ul>
+        <li>Termal simülasyonlar ve ısı kameraları</li>
+        <li>Gerçek kullanım koşullarında dayanıklılık testleri</li>
+        <li>Farklı drone modelleri ile saha testleri</li>
+    </ul>
+    <h2>1. Uzaktan Kumandalı Tetikleme (Manuel Kontrol) Şeması</h2>
+
+      <pre>
+[Kullanıcı] 
+    │
+    ▼
+[Uzaktan Kumanda (RF/Bluetooth)]
+    │
+    ▼
+[Tetikleme Modülü]
+    │
+    ▼
+[Ağ Tetikleme Devresi]
+    │
+    ▼
+[Ağın Elektrik/Isı Aktifleşmesi]
+    </pre>
+
+    <h2>2. EM Sinyal Karıştırıcı (Jammer) Entegrasyonu Şeması</h2>
+    <pre>
+[Anti-Drone Sistem Kontrol Ünitesi]
+            │
+            ▼
+     [Jammer Modülü]
+            │
+            ▼
+[Elektromanyetik Dalga Yayımı]
+            │
+            ▼
+    [Drone Kumanda Sinyali Bloke]
+            │
+            ▼
+    [Drone Kontrol Kaybı]
+    </pre>
+
+    <h2>3. Akıllı Sensör ile Temas Algılama Sistemi Şeması</h2>
+    <pre>
+[Ağ Temas Noktaları]
+        │
+        ▼
+  [Basınç/İvme/Kapasitif Sensörler]
+        │
+        ▼
+  [Mikrodenetleyici Sensör Girişi]
+        │
+        ▼
+[Temas Algılandı mı?]
+    ┌─────┴─────┐
+   Hayır       Evet
+    │           │
+    ▼           ▼
+[Devre Kapat] [Tetikleme Devresini Aktif Et]
+    </pre>
+
+    <h2>4. Piroteknik Isı Sistemi Şeması</h2>
+    <pre>
+[Temas Tetikleme]
+      │
+      ▼
+[Piroteknik Patlayıcı Tetikleme Devresi]
+      │
+      ▼
+[Lokal Yüksek Isı Açığa Çıkışı]
+      │
+      ▼
+[Drone Yüzeyinde Termal Hasar]
+    </pre>
+
+    <h2>5. Akıllı Algoritmalar ve Sensör Entegrasyonu Şeması</h2>
+    <pre>
+[Kamera ve Sensörler]
+        │
+        ▼
+[Veri Toplama & Ön İşleme]
+        │
+        ▼
+[Yapay Zeka / Görüntü İşleme Algoritmaları]
+        │
+        ▼
+[Hedef Drone Tespiti ve Takibi]
+        │
+        ▼
+[Tetikleme Kararı]
+    </pre>
+
+    <h2>6. Enerji Yönetimi ve Güç Verimliliği Şeması</h2>
+    <pre>
+[Şarjlı Batarya / Kapasitör]
+           │
+           ▼
+  [Güç Yönetim Modülü]
+           │
+           ▼
+[Enerji Depolama & Dağıtımı]
+           │
+           ▼
+[Tetikleme Anında Yüksek Voltaj & Isı Üretimi]
+    </pre>
+
+    <h2>7. Güvenlik ve Kullanıcı Koruması Şeması</h2>
+    <pre>
+[Yalıtım & Koruyucu Kaplama]
+           │
+           ▼
+[Elektriksel İzolasyon Devresi]
+           │
+           ▼
+[Acil Durdurma Butonu]
+           │
+           ▼
+[Sistem Durumu ve Güvenlik İzleme]
+    </pre>
+
+    <h2>8. Taşıma ve Uygulama Mekanizmaları Şeması</h2>
+    <pre>
+[Modüler Ağ Sistemi]
+          │
+          ▼
+[Fırlatma Aparatı (Yaylı / Elektrikli / Robotik)]
+          │
+          ▼
+[Ağın Hedefe Fırlatılması]
+    </pre>
+
+    <h2>9. Test ve Simülasyon Süreci Şeması</h2>
+    <pre>
+[Tasarım ve Prototip]
+          │
+          ▼
+[Isıl ve Elektriksel Simülasyon]
+          │
+          ▼
+[Laboratuvar Testleri]
+          │
+          ▼
+[Saha Testleri]
+          │
+          ▼
+[Geri Bildirim ve Optimizasyon]
+    </pre>
     <div class="warning-box">
         <strong>⚠ ÖNEMLİ UYARI:</strong> Bu sistemin bazı bileşenleri (özellikle RF jammer ve piroteknik sistemler) birçok ülkede yasal olmayabilir. Prototip oluşturmadan önce yerel yönetmelikleri kontrol ediniz. Tüm testleri kontrollü ortamlarda yapınız.
     </div>
