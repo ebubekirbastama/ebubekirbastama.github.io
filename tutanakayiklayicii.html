@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>EBS TBMM Konuşma Ayrıştırıcı</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+      background: url(https://ebubekirbastama.com.tr/circles.webp);
+    }
+    textarea { height: 250px; font-family: monospace; }
+    .card { margin-bottom: 1rem; }
+    
+  </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+  <h2 class="mb-4">🗣️ TBMM Tutanak Ayrıştırıcı</h2>
+
+  <div class="mb-3">
+    <label class="form-label">Tutanak Metni:</label>
+    <textarea id="inputText" rows="10" class="form-control" placeholder="Tutanak metnini buraya yapıştırın..."></textarea>
+  </div>
+
+  <button class="btn btn-primary mb-3" onclick="ayristir()">Konuşmaları Ayrıştır</button>
+
+  <div class="mb-3">
+    <label class="form-label">Vekil Seç:</label>
+    <select id="vekilSelect" class="form-select" onchange="vekilGoster()">
+      <option selected disabled>-- Seçiniz --</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Konuşma:</label>
+    <textarea id="konusmalar" rows="8" class="form-control" readonly></textarea>
+  </div>
+
+  <div class="d-flex gap-3">
+    <button class="btn btn-success" onclick="jsonIndir()">💾 JSON Dışa Aktar</button>
+    <button class="btn btn-secondary" onclick="txtZipIndir()">🗂️ TXT (.zip) Olarak Kaydet</button>
+  </div>
+</div>
+
+<script>
+let tumKonusmalar = {};
+
+function temizleGereksizSatirlar(metin) {
+  return metin
+    .split('\n')
+    .filter(line => {
+      return !(
+        line.match(/^\d{1,2} [A-Za-zçÇğĞıİöÖşŞüÜ]+ \d{4}/) ||         // Tarih
+        line.match(/^Açılma Saati:/) ||
+        line.match(/^İKİNCİ OTURUM|BİRİNCİ OTURUM|ÜÇÜNCÜ OTURUM/) ||
+        line.match(/^BAŞKAN:|^BAŞKAN\s*-/) ||
+        line.match(/^KÂTİP ÜYELER:/) ||
+        line.match(/^-----+\s*0\s*-----+/) ||
+        line.match(/^Türkiye Büyük Millet Meclisi Başkanlığına/) ||
+        line.match(/^Danışma Kurulu.*$/) ||
+        line.match(/^Grup Başkan/) ||
+        line.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/) ||
+        line.trim() === ""
+      );
+    })
+    .join('\n');
+}
+
+function ayristir() {
+  const girisMetni = document.getElementById("inputText").value;
+  const temizMetin = temizleGereksizSatirlar(girisMetni);
+
+  const select = document.getElementById("vekilSelect");
+  const container = document.getElementById("konusmalar");
+
+  tumKonusmalar = {};
+  select.innerHTML = '<option selected disabled>-- Seçiniz --</option>';
+  container.value = '';
+
+  const regex = /([A-ZÇĞİÖŞÜ\s]+)\s+\(([A-ZÇĞİÖŞÜa-zçğıöşü\s]+)\)(?: \(Devamla\))?\s*-\s*(.*?)(?=(?:[A-ZÇĞİÖŞÜ\s]+\s+\([A-ZÇĞİÖŞÜa-zçğıöşü\s]+\)(?: \(Devamla\))?\s*-\s*)|(?:BAŞKAN\s+-)|\Z)/gs;
+
+  let match;
+  while ((match = regex.exec(temizMetin)) !== null) {
+    const isim = match[1].trim().replace(/\s+/g, ' ');
+    const sehir = match[2].trim();
+    const konusma = match[3].trim();
+    const anahtar = `${isim} (${sehir})`;
+    if (!tumKonusmalar[anahtar]) tumKonusmalar[anahtar] = [];
+    tumKonusmalar[anahtar].push(konusma);
+  }
+
+  for (let vekil in tumKonusmalar) {
+    const opt = document.createElement("option");
+    opt.value = vekil;
+    opt.textContent = vekil;
+    select.appendChild(opt);
+  }
+
+  alert("✅ Konuşmalar başarıyla ayrıştırıldı!");
+}
+
+function vekilGoster() {
+  const secilen = document.getElementById("vekilSelect").value;
+  const alan = document.getElementById("konusmalar");
+  alan.value = tumKonusmalar[secilen].join("\n\n---\n\n");
+}
+
+function jsonIndir() {
+  const veri = JSON.stringify(tumKonusmalar, null, 2);
+  const blob = new Blob([veri], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "vekil_konusmalari.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function txtZipIndir() {
+  const zip = new JSZip();
+  for (let vekil in tumKonusmalar) {
+    const dosyaAdi = vekil.replace(/[^\wğüşöçĞÜŞİÖÇ\s]/gi, '').replace(/\s+/g, '_') + ".txt";
+    zip.file(dosyaAdi, tumKonusmalar[vekil].join("\n\n---\n\n"));
+  }
+  zip.generateAsync({ type: "blob" }).then(function (blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "vekil_konusmalari.zip";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+
+</body>
+</html>
