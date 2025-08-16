@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>EBS Modern Responsive Test Sistemi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="EBS Responsive Test Sistemi, HTML ve web sayfalarınızı farklı cihaz ve ekran boyutlarında anında test etmenizi sağlar. Mobil ve masaüstü önizleme özelliği ile web tasarımınızı tüm cihazlarda nasıl görüneceğini hızlıca kontrol edebilirsiniz.">
+<meta name="keywords" content="responsive test, mobil önizleme, HTML önizleme, cihaz simülatörü, web geliştirme, EBS">
+<meta name="author" content="Ebubekir Bastama">
+
+<style>
+  body { font-family: 'Arial', sans-serif; margin: 20px; background: url(https://ebubekirbastama.com.tr/circles.webp); }
+  h1 { text-align: center; color: #333; }
+  textarea { width: 100%; height: 200px; font-family: monospace; padding:10px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 10px; resize: vertical; }
+  select, button { padding: 10px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc; margin-right: 10px; margin-bottom: 20px; cursor: pointer; }
+  button { background: #4CAF50; color: #fff; border: none; transition: 0.3s; }
+  button:hover { background: #45a049; }
+
+  .iframe-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+  .device { border: 1px solid #ccc; border-radius: 10px; background: #fff; padding: 10px; text-align: center; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+  .device iframe { border: none; margin-top: 5px; border-radius: 6px; }
+  .device-name { font-weight: bold; margin-top: 5px; font-size: 14px; color: #555; }
+
+  @media(max-width:768px){
+    .iframe-container { flex-direction: column; align-items: center; }
+  }
+  .info-box {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.info-box:hover {
+  transform: translateY(-5px);
+}
+
+.info-box h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.info-box p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media(max-width:768px){
+  .info-box h2 {
+    font-size: 20px;
+  }
+  .info-box p {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1>EBS Modern Responsive Test Sistemi</h1>
+<div class="info-box">
+  <h2>Modern Responsive Test Sistemi</h2>
+  <p>Bu sistem sayesinde HTML ve web sayfalarınızı tüm cihazlarda anında test edebilirsiniz. Mobil, tablet ve masaüstü önizlemelerle tasarımınızı hızlıca kontrol edin.</p>
+  <p>Hızlı, kolay ve %100 responsive!</p>
+</div>
+<textarea id="htmlInput" placeholder="HTML kodunu buraya yapıştır..."></textarea>
+<br>
+
+<select id="brandSelect" onchange="updatePreview()">
+  <option value="">Marka Seçin</option>
+  <option value="samsung">Samsung</option>
+  <option value="apple">Apple</option>
+  <option value="xiaomi">Xiaomi</option>
+  <option value="tecno">Tecno</option>
+  <option value="realme">Realme</option>
+  <option value="vivo">Vivo</option>
+  <option value="oppo">Oppo</option>
+  <option value="reeder">Reeder</option>
+  <option value="honor">Honor</option>
+  <option value="huawei">Huawei</option>
+  <option value="poco">Poco</option>
+  <option value="omix">Omix</option>
+  <option value="gigaset">Gigaset</option>
+  <option value="casper">Casper</option>
+  <option value="digiphone">Digiphone</option>
+  <option value="ulefone">Ulefone</option>
+  <option value="nothing">Nothing</option>
+  <option value="nokia">Nokia</option>
+  <option value="panasonic">Panasonic</option>
+  <option value="cmf">CMF</option>
+  <option value="infinix">Infinix</option>
+  <option value="itel">İtel</option>
+  <option value="tcl">TCL</option>
+  <option value="welio">Welio</option>
+  <option value="oneplus">Oneplus</option>
+  <option value="oukitel">Oukitel</option>
+  <option value="zte">ZTE</option>
+  <option value="generalmobile">General Mobile</option>
+  <option value="alcatel">Alcatel</option>
+  <option value="bilicra">Bilicra</option>
+  <option value="mipo">Mipo</option>
+  <option value="philips">Philips</option>
+  <option value="ixtech">İxtech</option>
+</select>
+
+<div class="iframe-container" id="iframeContainer"></div>
+
+<script>
+// --- Marka & Model Çözünürlükleri ---
+const devicesByBrand = {
+samsung: [
+  {name:"Galaxy S", width:320,height:480},
+  {name:"Galaxy S II", width:320,height:480},
+  {name:"Galaxy S III", width:360,height:640},
+  {name:"Galaxy S4", width:360,height:640},
+  {name:"Galaxy S5", width:360,height:640},
+  {name:"Galaxy S6", width:360,height:640},
+  {name:"Galaxy S7", width:360,height:640},
+  {name:"Galaxy S8", width:360,height:740},
+  {name:"Galaxy S9", width:360,height:740},
+  {name:"Galaxy S10", width:360,height:800},
+  {name:"Galaxy S20", width:360,height:800},
+  {name:"Galaxy S21", width:360,height:800},
+  {name:"Galaxy S22", width:360,height:800},
+  {name:"Galaxy S22 Ultra", width:412,height:915},
+  {name:"Galaxy S23", width:360,height:800},
+  {name:"Galaxy S24", width:360,height:800},
+  {name:"Galaxy S25", width:360,height:800},
+  {name:"Galaxy S25+", width:412,height:915},
+  {name:"Galaxy S25 Ultra", width:430,height:932},
+  
+  {name:"Galaxy A3", width:320,height:480},
+  {name:"Galaxy A5", width:360,height:640},
+  {name:"Galaxy A7", width:360,height:640},
+  {name:"Galaxy A8", width:360,height:640},
+  {name:"Galaxy A9", width:360,height:640},
+  {name:"Galaxy A10", width:360,height:640},
+  {name:"Galaxy A20", width:360,height:640},
+  {name:"Galaxy A30", width:360,height:640},
+  {name:"Galaxy A50", width:360,height:800},
+  {name:"Galaxy A51", width:360,height:800},
+  {name:"Galaxy A52", width:360,height:800},
+  {name:"Galaxy A53", width:360,height:800},
+  {name:"Galaxy A54", width:360,height:800},
+  {name:"Galaxy A55", width:360,height:800},
+  {name:"Galaxy A56", width:360,height:800},
+  
+  {name:"Galaxy Z Fold", width:430,height:932},
+  {name:"Galaxy Z Flip", width:360,height:800},
+  {name:"Galaxy Z Fold 2", width:430,height:932},
+  {name:"Galaxy Z Flip 3", width:360,height:800},
+  {name:"Galaxy Z Fold 3", width:430,height:932},
+  {name:"Galaxy Z Flip 4", width:360,height:800},
+  {name:"Galaxy Z Fold 4", width:430,height:932},
+  {name:"Galaxy Z Flip 5", width:360,height:800},
+  {name:"Galaxy Z Fold 5", width:430,height:932},
+  {name:"Galaxy Z Flip 6", width:360,height:800},
+  {name:"Galaxy Z Fold 6", width:430,height:932},
+  {name:"Galaxy Z Flip 7", width:360,height:800},
+  {name:"Galaxy Z Fold 7", width:430,height:932},
+  
+  {name:"Galaxy Note 20", width:412,height:915},
+  {name:"Galaxy Note 20 Ultra", width:430,height:932}
+],
+apple: [
+  {name:"iPhone", width:320,height:480},
+  {name:"iPhone 3G", width:320,height:480},
+  {name:"iPhone 3GS", width:320,height:480},
+  {name:"iPhone 4", width:320,height:480},
+  {name:"iPhone 4S", width:320,height:480},
+  {name:"iPhone 5", width:320,height:568},
+  {name:"iPhone 5c", width:320,height:568},
+  {name:"iPhone 5s", width:320,height:568},
+  {name:"iPhone 6", width:375,height:667},
+  {name:"iPhone 6 Plus", width:414,height:736},
+  {name:"iPhone 6s", width:375,height:667},
+  {name:"iPhone 6s Plus", width:414,height:736},
+  {name:"iPhone SE (1. nesil)", width:320,height:568},
+  {name:"iPhone 7", width:375,height:667},
+  {name:"iPhone 7 Plus", width:414,height:736},
+  {name:"iPhone 8", width:375,height:667},
+  {name:"iPhone 8 Plus", width:414,height:736},
+  {name:"iPhone X", width:375,height:812},
+  {name:"iPhone XS", width:375,height:812},
+  {name:"iPhone XS Max", width:414,height:896},
+  {name:"iPhone XR", width:414,height:896},
+  {name:"iPhone 11", width:414,height:896},
+  {name:"iPhone 11 Pro", width:375,height:812},
+  {name:"iPhone 11 Pro Max", width:414,height:896},
+  {name:"iPhone SE (2. nesil)", width:375,height:667},
+  {name:"iPhone 12 mini", width:360,height:780},
+  {name:"iPhone 12", width:390,height:844},
+  {name:"iPhone 12 Pro", width:390,height:844},
+  {name:"iPhone 12 Pro Max", width:430,height:932},
+  {name:"iPhone 13 mini", width:360,height:780},
+  {name:"iPhone 13", width:390,height:844},
+  {name:"iPhone 13 Pro", width:390,height:844},
+  {name:"iPhone 13 Pro Max", width:430,height:932},
+  {name:"iPhone SE (3. nesil)", width:375,height:667},
+  {name:"iPhone 14", width:390,height:844},
+  {name:"iPhone 14 Plus", width:414,height:896},
+  {name:"iPhone 14 Pro", width:390,height:852},
+  {name:"iPhone 14 Pro Max", width:430,height:932},
+  {name:"iPhone 15", width:390,height:844},
+  {name:"iPhone 15 Plus", width:414,height:896},
+  {name:"iPhone 15 Pro", width:390,height:852},
+  {name:"iPhone 15 Pro Max", width:430,height:932},
+  {name:"iPhone 16", width:390,height:844},
+  {name:"iPhone 16 Plus", width:414,height:896},
+  {name:"iPhone 16 Pro", width:390,height:852},
+  {name:"iPhone 16 Pro Max", width:430,height:932},
+  {name:"iPhone 16e", width:375,height:667},
+  {name:"iPhone 17", width:390,height:844},
+  {name:"iPhone 17 Pro", width:390,height:852},
+  {name:"iPhone 17 Pro Max", width:430,height:932},
+  {name:"iPhone 17 Air", width:375,height:812},
+  {name:"iPad Mini", width:768,height:1024},
+  {name:"iPad Pro", width:1024,height:1366}
+],
+xiaomi: [
+  {name:"Redmi Note 10", width:360,height:800},
+  {name:"Redmi Note 10 Pro", width:360,height:800},
+  {name:"Redmi Note 10 5G", width:360,height:800},
+  {name:"Redmi Note 11", width:360,height:800},
+  {name:"Redmi Note 11 Pro", width:360,height:800},
+  {name:"Redmi Note 11 Pro 5G", width:360,height:800},
+  {name:"Redmi Note 11S", width:360,height:800},
+  {name:"Redmi Note 12", width:360,height:800},
+  {name:"Redmi Note 12 Pro", width:360,height:800},
+  {name:"Redmi Note 12 Pro 5G", width:360,height:800},
+  {name:"Redmi Note 12S", width:360,height:800},
+  {name:"Redmi Note 13", width:360,height:800},
+  {name:"Redmi Note 13 Pro", width:360,height:800},
+  {name:"Redmi Note 13 Pro 5G", width:360,height:800},
+  {name:"Redmi Note 13S", width:360,height:800},
+  {name:"Redmi Note 14", width:360,height:800},
+  {name:"Redmi Note 14 Pro", width:360,height:800},
+  {name:"Redmi Note 14 Pro 5G", width:360,height:800},
+  {name:"Redmi Note 14 Pro+", width:360,height:800},
+  {name:"Mi 11", width:412,height:915},
+  {name:"Mi 11 Pro", width:412,height:915},
+  {name:"Mi 11 Ultra", width:412,height:915},
+  {name:"Mi 11i", width:412,height:915},
+  {name:"Mi 11X", width:412,height:915},
+  {name:"Mi 11X Pro", width:412,height:915},
+  {name:"Mi 12", width:412,height:915},
+  {name:"Mi 12 Pro", width:412,height:915},
+  {name:"Mi 12 Ultra", width:412,height:915},
+  {name:"Mi 12X", width:412,height:915},
+  {name:"Mi 13", width:412,height:915},
+  {name:"Mi 13 Pro", width:412,height:915},
+  {name:"Mi 13 Ultra", width:412,height:915},
+  {name:"Mi 13X", width:412,height:915},
+  {name:"Mi 14", width:412,height:915},
+  {name:"Mi 14 Pro", width:412,height:915},
+  {name:"Mi 14 Ultra", width:412,height:915},
+  {name:"Mi 14X", width:412,height:915}
+],
+tecno: [
+  {name:"Tecno Spark 8", width:360,height:800},
+  {name:"Tecno Spark 8P", width:360,height:800},
+  {name:"Tecno Spark 9", width:360,height:800},
+  {name:"Tecno Spark 10", width:360,height:800},
+  {name:"Tecno Spark 20", width:360,height:800},
+  {name:"Tecno Spark 20C", width:360,height:800},
+  {name:"Tecno Spark 20 Pro", width:360,height:800},
+  {name:"Tecno Spark 20 Pro+", width:360,height:800},
+  {name:"Tecno Spark 30C", width:360,height:800},
+  {name:"Tecno Spark 30C 5G", width:360,height:800},
+  {name:"Tecno Spark 30", width:360,height:800},
+  {name:"Tecno Spark 30 Pro", width:360,height:800},
+  {name:"Tecno Spark 40", width:360,height:800},
+  {name:"Tecno Spark 40 Pro", width:360,height:800},
+  {name:"Tecno Spark 40 Pro+", width:360,height:800},
+  {name:"Tecno Camon 17", width:360,height:800},
+  {name:"Tecno Camon 17P", width:360,height:800},
+  {name:"Tecno Camon 17 Pro", width:360,height:800},
+  {name:"Tecno Camon 18", width:360,height:800},
+  {name:"Tecno Camon 18P", width:360,height:800},
+  {name:"Tecno Camon 18 Premier", width:360,height:800},
+  {name:"Tecno Camon 19", width:360,height:800},
+  {name:"Tecno Camon 19 Pro", width:360,height:800},
+  {name:"Tecno Camon 19 Pro 5G", width:360,height:800},
+  {name:"Tecno Camon 20", width:360,height:800},
+  {name:"Tecno Camon 20 Pro", width:360,height:800},
+  {name:"Tecno Camon 20 Premier", width:360,height:800},
+  {name:"Tecno Camon 30", width:360,height:800},
+  {name:"Tecno Camon 30s", width:360,height:800},
+  {name:"Tecno Camon 30s Pro", width:360,height:800},
+  {name:"Tecno Camon 30 Pro 5G", width:360,height:800},
+  {name:"Tecno Camon 30 Premier 5G", width:360,height:800},
+  {name:"Tecno Camon 40", width:360,height:800},
+  {name:"Tecno Camon 40 Pro", width:360,height:800},
+  {name:"Tecno Camon 40 Pro 5G", width:360,height:800},
+  {name:"Tecno Camon 40 Premier 5G", width:360,height:800}
+],
+realme: [
+  {name:"Realme 8", width:360,height:800},
+  {name:"Realme 8 Pro", width:360,height:800},
+  {name:"Realme 8 5G", width:360,height:800},
+  {name:"Realme 8i", width:360,height:800},
+  {name:"Realme 8s", width:360,height:800},
+  {name:"Realme 8s 5G", width:360,height:800},
+  {name:"Realme 8 5G SE", width:360,height:800},
+  {name:"Realme GT", width:412,height:915},
+  {name:"Realme GT Pro", width:412,height:915},
+  {name:"Realme GT 5G", width:412,height:915},
+  {name:"Realme GT Master Edition", width:412,height:915},
+  {name:"Realme GT Neo", width:412,height:915},
+  {name:"Realme GT Neo 2", width:412,height:915},
+  {name:"Realme GT Neo 3", width:412,height:915},
+  {name:"Realme GT Neo 4", width:412,height:915},
+  {name:"Realme GT Neo 5", width:412,height:915},
+  {name:"Realme GT Neo 6", width:412,height:915},
+  {name:"Realme GT 7", width:412,height:915},
+  {name:"Realme GT 7 Pro", width:412,height:915},
+  {name:"Realme GT 7T", width:412,height:915},
+  {name:"Realme GT 7T Pro", width:412,height:915}
+],
+vivo: [
+  {name:"Vivo V21", width:74,height:160},
+  {name:"Vivo V21e", width:74,height:160},
+  {name:"Vivo V21s", width:74,height:160},
+  {name:"Vivo V21 Pro", width:74,height:160},
+  {name:"Vivo V21 Ultra", width:74,height:160},
+  {name:"Vivo X60", width:75,height:160},
+  {name:"Vivo X60 Pro", width:75,height:160},
+  {name:"Vivo X60 Pro+", width:75,height:160},
+  {name:"Vivo X70", width:75,height:160},
+  {name:"Vivo X70 Pro", width:75,height:160},
+  {name:"Vivo X70 Pro+", width:75,height:160},
+  {name:"Vivo X80", width:75,height:160},
+  {name:"Vivo X80 Pro", width:75,height:160},
+  {name:"Vivo X80 Pro+", width:75,height:160},
+  {name:"Vivo X90", width:75,height:160},
+  {name:"Vivo X90 Pro", width:75,height:160},
+  {name:"Vivo X90 Pro+", width:75,height:160}
+],
+oppo: [
+  {name:"Oppo A54", width:75.7,height:163.6},
+  {name:"Oppo A54 5G", width:74.7,height:162.9},
+  {name:"Oppo A74", width:75.5,height:162.9},
+  {name:"Oppo A74 5G", width:74.7,height:162.9},
+  {name:"Oppo A94", width:73.2,height:160.1},
+  {name:"Oppo A94 5G", width:73.2,height:160.1},
+  {name:"Oppo A95", width:73.2,height:160.1},
+  {name:"Oppo A96", width:73.2,height:160.1},
+  {name:"Oppo A97", width:73.2,height:160.1},
+  {name:"Oppo A98", width:73.2,height:160.1},
+  {name:"Oppo A99", width:73.2,height:160.1},
+  {name:"Oppo Find X3", width:74.0,height:163.6},
+  {name:"Oppo Find X3 Pro", width:74.0,height:163.6},
+  {name:"Oppo Find X3 Neo", width:73.4,height:159.9},
+  {name:"Oppo Find X3 Lite", width:73.4,height:159.1}
+],
+  reeder:[
+    {name:"Reeder P13", width:360,height:800}
+  ],
+honor: [
+  {name:"Honor 50", width:412,height:915},
+  {name:"Honor 50 Pro", width:412,height:915},
+  {name:"Honor 50 SE", width:412,height:915},
+  {name:"Honor 50 Lite", width:412,height:915},
+  {name:"Honor 60", width:412,height:915},
+  {name:"Honor 60 Pro", width:412,height:915},
+  {name:"Honor 70", width:412,height:915},
+  {name:"Honor 70 Pro", width:412,height:915}
+],
+huawei: [
+  {name:"Huawei P20", width:360,height:800},
+  {name:"Huawei P20 Pro", width:412,height:915},
+  {name:"Huawei P20 Lite", width:360,height:800},
+  {name:"Huawei P30", width:360,height:800},
+  {name:"Huawei P30 Pro", width:412,height:915},
+  {name:"Huawei P30 Lite", width:360,height:800},
+  {name:"Huawei P40", width:360,height:800},
+  {name:"Huawei P40 Pro", width:412,height:915},
+  {name:"Huawei P40 Pro+", width:412,height:915},
+  {name:"Huawei P50", width:412,height:915},
+  {name:"Huawei P50 Pro", width:412,height:915},
+  {name:"Huawei P60", width:412,height:915},
+  {name:"Huawei P60 Pro", width:412,height:915},
+  {name:"Huawei P70", width:412,height:915},
+  {name:"Huawei P70 Pro", width:412,height:915},
+  {name:"Huawei P70 Ultra", width:412,height:915},
+  {name:"Huawei Pura 80", width:412,height:915},
+  {name:"Huawei Pura 80 Pro", width:412,height:915},
+  {name:"Huawei Pura 80 Ultra", width:412,height:915}
+],
+poco: [
+  {name:"Poco X3", width:360,height:800},
+  {name:"Poco X3 Pro", width:360,height:800},
+  {name:"Poco X4", width:360,height:800},
+  {name:"Poco X4 Pro", width:412,height:915},
+  {name:"Poco F3", width:412,height:915},
+  {name:"Poco F3 GT", width:412,height:915},
+  {name:"Poco F4", width:412,height:915},
+  {name:"Poco F4 GT", width:412,height:915},
+  {name:"Poco F5", width:412,height:915},
+  {name:"Poco F5 Pro", width:412,height:915},
+  {name:"Poco M4 Pro", width:360,height:800},
+  {name:"Poco M5", width:360,height:800},
+  {name:"Poco M5 Pro", width:360,height:800}
+],
+omix: [
+  {name:"Omix X1", width:360,height:800},
+  {name:"Omix X2", width:360,height:820},
+  {name:"Omix X3", width:360,height:820},
+  {name:"Omix X4", width:360,height:820},
+  {name:"Omix X5", width:360,height:820}
+],
+gigaset: [
+  {name:"Gigaset GS4", width:360,height:800},
+  {name:"Gigaset GS5", width:360,height:820},
+  {name:"Gigaset GS195", width:360,height:800},
+  {name:"Gigaset GS290", width:360,height:820},
+  {name:"Gigaset GS3", width:360,height:800}
+]
+,
+casper: [
+  {name:"Casper VIA A3", width:360,height:800},
+  {name:"Casper VIA G1", width:360,height:810},
+  {name:"Casper VIA A4", width:360,height:800},
+  {name:"Casper VIA G2", width:360,height:810},
+  {name:"Casper VIA M2", width:360,height:810}
+]
+,
+digiphone: [
+  {name:"Digiphone D1", width:360,height:800},
+  {name:"Digiphone D2", width:360,height:820},
+  {name:"Digiphone D3", width:360,height:820},
+  {name:"Digiphone D4", width:360,height:820},
+  {name:"Digiphone D5", width:360,height:820}
+]
+,
+ulefone: [
+  {name:"Ulefone Note 12", width:360,height:800},
+  {name:"Ulefone Note 13", width:360,height:800},
+  {name:"Ulefone Armor 12", width:412,height:915},
+  {name:"Ulefone Armor 13", width:412,height:915},
+  {name:"Ulefone Power 12", width:360,height:800},
+  {name:"Ulefone Power 13", width:360,height:800}
+]
+,
+nothing: [
+  {name:"Nothing Phone 1", width:412,height:915},
+  {name:"Nothing Phone 2", width:412,height:915},
+  {name:"Nothing Phone 3", width:412,height:915}
+]
+,
+nokia: [
+  {name:"Nokia 5.4", width:360,height:800},
+  {name:"Nokia 5.4 5G", width:360,height:800},
+  {name:"Nokia 8.3", width:412,height:915},
+  {name:"Nokia 8.3 5G", width:412,height:915},
+  {name:"Nokia G20", width:360,height:800},
+  {name:"Nokia G21", width:360,height:800},
+  {name:"Nokia G50", width:360,height:800}
+]
+,
+panasonic: [
+  {name:"Panasonic Eluga", width:360,height:800},
+  {name:"Panasonic Eluga X", width:360,height:800},
+  {name:"Panasonic Lumix S", width:412,height:915},
+  {name:"Panasonic Lumix Z", width:412,height:915}
+]
+,
+cmf: [
+  {name:"CMF M1", width:360,height:800},
+  {name:"CMF M2", width:360,height:800},
+  {name:"CMF X1", width:360,height:820},
+  {name:"CMF X2", width:360,height:820},
+  {name:"CMF X3", width:360,height:820}
+]
+,
+infinix: [
+  {name:"Infinix Note 10", width:360,height:800},
+  {name:"Infinix Note 11", width:360,height:800},
+  {name:"Infinix Zero 8", width:412,height:915},
+  {name:"Infinix Zero 10", width:412,height:915},
+  {name:"Infinix Hot 12", width:360,height:800},
+  {name:"Infinix Hot 13", width:360,height:800}
+]
+,
+itel: [
+  {name:"Itel Vision 1", width:360,height:800},
+  {name:"Itel Vision 2", width:360,height:800},
+  {name:"Itel S16", width:360,height:820},
+  {name:"Itel S17", width:360,height:820},
+  {name:"Itel P36", width:360,height:800}
+]
+,
+tcl: [
+  {name:"TCL 20 SE", width:360,height:800},
+  {name:"TCL 20 Pro", width:360,height:800},
+  {name:"TCL 10 Pro", width:412,height:915},
+  {name:"TCL 10L", width:360,height:800},
+  {name:"TCL 30 SE", width:360,height:800}
+]
+,
+welio: [
+  {name:"Welio W1", width:360,height:800},
+  {name:"Welio W2", width:360,height:800},
+  {name:"Welio W3", width:360,height:800}
+]
+,
+oneplus: [
+  {name:"OnePlus 9", width:412,height:915},
+  {name:"OnePlus 9 Pro", width:412,height:915},
+  {name:"OnePlus Nord 2", width:412,height:915},
+  {name:"OnePlus Nord 2T", width:412,height:915},
+  {name:"OnePlus 10 Pro", width:412,height:915}
+]
+,
+oukitel: [
+  {name:"Oukitel WP6", width:360,height:800},
+  {name:"Oukitel WP7", width:360,height:800},
+  {name:"Oukitel C21", width:360,height:820},
+  {name:"Oukitel C22", width:360,height:820},
+  {name:"Oukitel K13", width:360,height:800}
+]
+,
+zte: [
+  {name:"ZTE Axon 30", width:412,height:915},
+  {name:"ZTE Axon 30 Ultra", width:412,height:915},
+  {name:"ZTE Blade A7", width:360,height:800},
+  {name:"ZTE Blade V30", width:360,height:800},
+  {name:"ZTE Nubia Red Magic 6", width:412,height:915}
+]
+,
+generalmobile: [
+  {name:"General Mobile GM 20", width:360,height:800},
+  {name:"General Mobile GM 21", width:360,height:820},
+  {name:"General Mobile GM 22", width:360,height:820},
+  {name:"General Mobile GM 23", width:360,height:820},
+  {name:"General Mobile GM 24", width:360,height:820}
+]
+,
+alcatel: [
+  {name:"Alcatel 1S", width:360,height:800},
+  {name:"Alcatel 1C", width:360,height:800},
+  {name:"Alcatel 3X", width:360,height:820},
+  {name:"Alcatel 3L", width:360,height:820},
+  {name:"Alcatel 5V", width:412,height:915}
+]
+,
+bilicra: [
+  {name:"Bilicra B1", width:360,height:800},
+  {name:"Bilicra B2", width:360,height:800},
+  {name:"Bilicra B3", width:360,height:800}
+],
+mipo: [
+  {name:"Mipo M1", width:360,height:800},
+  {name:"Mipo M2", width:360,height:800},
+  {name:"Mipo M3", width:360,height:800}
+],
+
+philips: [
+  {name:"Philips Xenium", width:360,height:800},
+  {name:"Philips S326", width:360,height:820},
+  {name:"Philips S337", width:360,height:820},
+  {name:"Philips S398", width:360,height:820}
+],
+ixtech: [
+  {name:"İxtech X1", width:360,height:800},
+  {name:"İxtech X2", width:360,height:800},
+  {name:"İxtech X3", width:360,height:800}
+]
+
+
+};
+
+// --- Önizleme ---
+function updatePreview(){
+  const htmlCode = document.getElementById("htmlInput").value;
+  const brand = document.getElementById("brandSelect").value;
+  const container = document.getElementById("iframeContainer");
+  container.innerHTML = "";
+
+  if(!brand || !devicesByBrand[brand]) return;
+
+  devicesByBrand[brand].forEach(device => {
+    const div = document.createElement("div");
+    div.className = "device";
+
+    const iframe = document.createElement("iframe");
+    iframe.width = device.width;
+    iframe.height = device.height;
+    iframe.srcdoc = htmlCode;
+
+    const name = document.createElement("div");
+    name.className = "device-name";
+    name.textContent = device.name + ` (${device.width}x${device.height})`;
+
+    div.appendChild(name);
+    div.appendChild(iframe);
+    container.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>
