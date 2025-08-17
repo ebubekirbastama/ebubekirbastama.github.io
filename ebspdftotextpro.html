@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>PDF Metni Çıkar (ABCD alt alta)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:24px}
+    header{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .btn{padding:8px 12px;border:1px solid #ccc;border-radius:8px;background:#f7f7f7;cursor:pointer}
+    #status{font-size:.95rem;color:#555}.err{color:#b00020}
+    .page{margin-top:16px;border:1px solid #eee;border-radius:10px;padding:12px;background:#fff}
+    .page h3{margin:0 0 6px 0;font-size:1rem;color:#333}
+    pre{white-space:pre-wrap;word-wrap:break-word;margin:0;font:14px/1.6 ui-monospace,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+  <header>
+    <input id="file" type="file" accept="application/pdf" />
+    <button id="save" class="btn" disabled>Metni .txt indir</button>
+    <span id="status"></span>
+  </header>
+  <div id="out"></div>
+
+  <!-- PDF.js 2.16.105 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+    const $file = document.getElementById('file');
+    const $save = document.getElementById('save');
+    const $status = document.getElementById('status');
+    const $out = document.getElementById('out');
+
+    let allText = "";
+
+    $file.addEventListener('change', async () => {
+      resetUI();
+      const f = $file.files?.[0];
+      if (!f) return;
+
+      try {
+        setStatus("PDF yükleniyor…");
+        const buf = await f.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+        setStatus(`Sayfa sayısı: ${pdf.numPages}. Metin çıkarılıyor…`);
+
+        const parts = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const tc = await page.getTextContent();
+
+          // 1) Öğeleri sırala (üstten alta, soldan sağa)
+          const items = tc.items.slice().sort((a, b) => {
+            const ay = a.transform[5], by = b.transform[5];
+            if (Math.abs(by - ay) > 3) return by - ay;
+            const ax = a.transform[4], bx = b.transform[4];
+            return ax - bx;
+          });
+
+          // 2) Satırlara grupla
+          const lines = [];
+          const EPS_Y = 4;
+          for (const it of items) {
+            const y = it.transform[5], x = it.transform[4], str = it.str;
+            let line = null;
+            for (const ln of lines) if (Math.abs(ln.y - y) <= EPS_Y) { line = ln; break; }
+            if (!line) { line = { y, parts: [] }; lines.push(line); }
+            line.parts.push({ x, str, w: it.width || 0 });
+          }
+
+          // 3) Satırları birleştir
+          let pageLines = lines
+            .sort((a, b) => b.y - a.y)
+            .map(ln => {
+              ln.parts.sort((a,b)=>a.x-b.x);
+              let s = "", lastX=null, lastW=0;
+              for (const p of ln.parts) {
+                if (lastX !== null) {
+                  const gap = p.x - (lastX + lastW);
+                  if (gap > 2) s += " ";
+                }
+                s += p.str;
+                lastX = p.x; lastW = p.w;
+              }
+              return s.trim();
+            });
+
+          // 4) ABCD aynı satırdaysa alt alta böl
+          pageLines = pageLines.flatMap(splitChoicesToLines);
+
+          const txt = pageLines.join("\n").trim();
+          renderPage(i, txt);
+          parts.push(`--- Sayfa ${i} ---\n${txt}`);
+          setStatus(`Sayfa ${i}/${pdf.numPages} tamamlandı…`);
+        }
+
+        allText = parts.join("\n\n");
+        $save.disabled = !allText;
+        setStatus(`Bitti. Karakter: ${new Intl.NumberFormat('tr-TR').format(allText.length)}`);
+      } catch (err) {
+        console.error(err);
+        let msg = "Bir hata oluştu.";
+        const s = String(err && (err.message || err));
+        if (s.includes("Password")) msg = "Bu PDF şifreli görünüyor. Şifresiz bir kopya gerekli.";
+        else if (s.includes("InvalidPDF") || s.includes("bad XRef")) msg = "PDF bozuk veya tam indirilemedi.";
+        setStatus(msg + " Ayrıntı: " + s, true);
+      }
+    });
+
+    $save.addEventListener('click', () => {
+      if (!allText) return;
+      const blob = new Blob([allText], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "pdf-metin.txt";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // --- ŞIKLARI ALT ALTA AYIRAN FONKSİYON ---
+    // Aşağıdaki işaretleri yakalar: "A)", "B)", "C)", "D)" veya "A.", "B.", "C.", "D:" (büyük/küçük fark etmez)
+    function splitChoicesToLines(line) {
+      const markers = [];
+      const re = /(^|\s)([ABCD])\s*[\)\.\:]/gi;
+      let m;
+      while ((m = re.exec(line)) !== null) {
+        markers.push({ idx: m.index + m[1].length, label: m[2].toUpperCase() });
+      }
+
+      // En az 2 işaret varsa, parçala
+      if (markers.length >= 2) {
+        const parts = [];
+        for (let i = 0; i < markers.length; i++) {
+          const start = markers[i].idx;
+          const end = (i + 1 < markers.length) ? markers[i+1].idx : line.length;
+          const chunk = line.slice(start, end).trim();
+          if (chunk) parts.push(chunk);
+        }
+        // Güvenlik: gerçekten A/B/C/D ile mi başlıyorlar?
+        const looksLikeChoices = parts.every(p => /^[ABCD]\s*[\)\.\:]/i.test(p));
+        if (looksLikeChoices) return parts;
+      }
+      return [line];
+    }
+
+    function renderPage(n, text) {
+      const box = document.createElement('div');
+      box.className = 'page';
+      box.innerHTML = `<h3>Sayfa ${n}</h3><pre></pre>`;
+      box.querySelector('pre').textContent = text;
+      document.getElementById('out').appendChild(box);
+    }
+    function setStatus(t, isErr=false){ $status.textContent=t; $status.className=isErr?'err':''; }
+    function resetUI(){ $status.textContent=''; $status.className=''; $out.innerHTML=''; allText=""; $save.disabled=true; }
+  </script>
+</body>
+</html>
