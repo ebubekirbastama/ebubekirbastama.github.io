@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SEO Denetleyici LITE – Temiz</title>
+  <style>
+    :root{--b:#111827;--t:#e5e7eb;--m:#9ca3af;--br:#263246;--a:#3b82f6}
+    *{box-sizing:border-box} body{margin:0;background:var(--b);color:var(--t);font:14px/1.5 system-ui,Segoe UI,Roboto}
+    header{position:sticky;top:0;background:#0b1220cc;backdrop-filter:blur(8px);border-bottom:1px solid var(--br)}
+    .wrap{max-width:1000px;margin:0 auto;padding:12px 16px;display:flex;gap:8px;align-items:center}
+    .sp{flex:1}
+    button{background:var(--a);border:0;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+    button.gh{background:transparent;border:1px solid var(--br);color:#dbe3ff}
+    main{max-width:1000px;margin:16px auto;padding:0 16px;display:grid;gap:12px}
+    .card{border:1px solid var(--br);border-radius:12px;background:linear-gradient(180deg,#111a2d,#0f172a)}
+    .card>h3{margin:0;padding:10px 12px;border-bottom:1px solid var(--br);font-size:15px}
+    .cnt{padding:12px}
+    .grid{display:grid;gap:12px}
+    .col2{grid-template-columns:1fr 1fr}
+    @media(max-width:900px){.col2{grid-template-columns:1fr}}
+    textarea{width:100%;min-height:220px;background:#0b1222;border:1px solid var(--br);color:#e6eeff;border-radius:10px;padding:10px}
+    input[type=file]{accent-color:var(--a)}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--br);padding:6px 8px;text-align:left}
+    .muted{color:var(--m)}
+    .serp{background:#fff;color:#111;border:1px solid #e5e7eb;border-radius:10px;padding:12px}
+    .serp .u{color:#188038;font-size:12px}
+    .serp .t{color:#1a0dab;font-size:18px;margin:6px 0}
+    .serp .d{color:#4d5156;font-size:14px}
+    .pill{display:inline-block;border:1px solid var(--br);border-radius:999px;padding:2px 6px;font-size:12px;margin:2px 6px 0 0}
+    .issue{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--br);border-radius:10px;padding:8px;background:#111a2d}
+    .sev{border-radius:6px;padding:2px 6px;font-size:12px}
+    .ok{background:#093616;border:1px solid #155e2c}
+    .wrn{background:#3a2b06;border:1px solid #7a5d10}
+    .bad{background:#3a0b0b;border:1px solid #7a1515}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <strong>SEO Denetleyici <span class="muted">LITE – Temiz</span></strong>
+      <div class="sp"></div>
+      <button id="clr" class="gh">Temizle</button>
+      <button id="exp" class="gh">JSON Dışa Aktar</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h3>1) HTML'i yapıştır veya dosya yükle</h3>
+      <div class="cnt grid col2">
+        <div>
+          <textarea id="in" placeholder="Sayfanızın HTML kaynak kodunu buraya yapıştırın…"></textarea>
+          <div class="muted" style="margin-top:6px">Yapıştırdıktan ~0.5sn sonra otomatik analiz başlar. Örnek içerik ekleyici KALDIRILDI.</div>
+        </div>
+        <div>
+          <input type="file" id="file" accept=".html,.htm,text/html" />
+          <div class="muted" style="margin-top:8px">Script'ler çalıştırılmaz; yalnızca DOM analiz edilir.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>2) SERP önizleme</h3>
+      <div class="cnt">
+        <div class="serp">
+          <div class="u" id="serpU">örnek.com › …</div>
+          <div class="t" id="serpT">Başlık</div>
+          <div class="d" id="serpD">Meta açıklaması ya da sayfadan ilk paragraf…</div>
+          <div id="serpFAQ" style="margin-top:8px"></div>
+        </div>
+        <div id="types" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>3) Temel sinyaller</h3>
+      <div class="cnt grid col2">
+        <div>
+          <table>
+            <tr><th>Başlık (title)</th><td id="tTitle" class="mono"></td></tr>
+            <tr><th>Açıklama</th><td id="tDesc" class="mono"></td></tr>
+            <tr><th>Canonical</th><td id="tCan" class="mono"></td></tr>
+            <tr><th>Robots</th><td id="tRob" class="mono"></td></tr>
+            <tr><th>Viewport</th><td id="tVp" class="mono"></td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><th>HTML lang</th><td id="tLang" class="mono"></td></tr>
+            <tr><th>H1 sayısı</th><td id="tH1" class="mono"></td></tr>
+            <tr><th>Hreflang</th><td id="tHref" class="mono"></td></tr>
+            <tr><th>OG/Twitter</th><td id="tSoc" class="mono"></td></tr>
+            <tr><th>Resim alt oranı</th><td id="tAlt" class="mono"></td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>4) Yapılandırılmış veri</h3>
+      <div class="cnt grid col2">
+        <div>
+          <div id="sum"></div>
+        </div>
+        <div>
+          <details>
+            <summary>JSON‑LD ham veri</summary>
+            <pre id="raw" class="mono muted">—</pre>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>5) Uyarılar & öneriler</h3>
+      <div class="cnt" id="issues"></div>
+    </section>
+  </main>
+
+  <script>
+  const $=s=>document.querySelector(s);
+  const ta=$('#in'), fi=$('#file');
+  const set=(id,txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt||'—') }
+  const crop=(s,n)=>{ s=s||''; return s.length>n? s.slice(0,n-1)+'…': s }
+  const esc=s=>(s+'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]))
+
+  // UI handlers
+  let timer; ta.addEventListener('input',()=>{clearTimeout(timer); timer=setTimeout(()=>analyze(ta.value),500)})
+  fi.addEventListener('change',async e=>{const f=e.target.files?.[0]; if(!f) return; const t=await f.text(); ta.value=t; analyze(t)})
+  $('#clr').onclick=()=>{ ta.value=''; renderEmpty() }
+  $('#exp').onclick=()=>{ if(!window.__doc) return alert('Önce analiz yapın'); const data=buildExport(window.__doc); const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='seo-lite-rapor.json'; a.click(); URL.revokeObjectURL(a.href) }
+
+  function renderEmpty(){
+    set('serpU','örnek.com › …'); set('serpT','Başlık'); set('serpD','Meta açıklaması ya da sayfadan ilk paragraf…'); $('#serpFAQ').innerHTML='';
+    ['tTitle','tDesc','tCan','tRob','tVp','tLang','tH1','tHref','tSoc','tAlt'].forEach(k=>set(k,'—'));
+    $('#types').innerHTML=''; $('#sum').innerHTML=''; set('raw','—'); $('#issues').innerHTML=''; window.__doc=null;
+  }
+  renderEmpty();
+
+  function analyze(html) {
+  if (!html || !html.trim()) return renderEmpty();
+
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  window.__doc = doc;
+
+  // Temel alanlar
+  const title = doc.querySelector('title')?.textContent?.trim() || '';
+  const desc =
+    doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+  const canon =
+    doc.querySelector('link[rel="canonical"]')?.getAttribute('href') || '';
+  const robots =
+    (doc.querySelector('meta[name="robots"]') ||
+     doc.querySelector('meta[name="googlebot"]'))?.getAttribute('content') || '';
+  const viewport =
+    doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
+  const lang = doc.documentElement.getAttribute('lang') || '';
+
+  // SERP önizleme
+  const ogUrl = doc.querySelector('meta[property="og:url"]')?.getAttribute('content') || '';
+  const host = canon ? safeHost(canon) : (ogUrl ? safeHost(ogUrl) : 'örnek.com');
+  set('serpU', host + ' › …');
+  set('serpT', crop(title || '(başlık yok)', 64));
+  set('serpD', crop(desc || firstParagraph(doc) || '(açıklama yok)', 160));
+
+  // JSON-LD / zengin sonuçlar
+  const j = parseJSONLD(doc);
+  set('raw', j.raw || '—');
+  $('#serpFAQ').innerHTML = j.faqHtml || '';
+  $('#types').innerHTML = j.types.map(t => `<span class="pill">@type ${esc(t)}</span>`).join('');
+  $('#sum').innerHTML = j.summary || '';
+
+  // Sinyaller
+  set('tTitle', title || '—');
+  set('tDesc', desc || '—');
+  set('tCan', canon || '—');
+  set('tRob', robots || '—');
+  set('tVp', viewport || '—');
+  set('tLang', lang || '—');
+
+  const h1s = [...doc.querySelectorAll('h1')]
+    .map(h => h.textContent.trim())
+    .filter(Boolean);
+  set('tH1', h1s.length ? String(h1s.length) : '0');
+
+  const hreflangs = [...doc.querySelectorAll('link[rel="alternate"][hreflang]')]
+    .map(l => `${l.getAttribute('hreflang')} → ${l.getAttribute('href')}`);
+  set('tHref', hreflangs.slice(0, 3).join("\n") || '—');
+
+  const ogCount = ['og:title', 'og:description', 'og:image', 'og:url']
+    .filter(p => doc.querySelector(`meta[property="${p}"]`)).length;
+  const twCount = ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image']
+    .filter(n => doc.querySelector(`meta[name="${n}"]`)).length;
+  set('tSoc', `${ogCount ? 'OG:' + ogCount : ''} ${twCount ? ' TW:' + twCount : ''}`.trim() || '—');
+
+  const imgs = [...doc.querySelectorAll('img')];
+  const missingAlt = imgs.filter(i => !(i.getAttribute('alt') || '').trim()).length;
+  const altRate = imgs.length ? Math.round(100 * (imgs.length - missingAlt) / imgs.length) : 100;
+  set('tAlt', imgs.length ? `${altRate}% (toplam ${imgs.length})` : '—');
+
+  // Uyarılar
+  $('#issues').innerHTML = issuesHTML({ title, desc, viewport, robots, lang, h1s, canon, doc, imgs });
+}
+
+  function issuesHTML(c){
+    const out=[]; const add=(sev,msg,det='')=>out.push(`<div class="issue"><span class="sev ${sev}">${sev.toUpperCase()}</span><div><strong>${esc(msg)}</strong>${det?` <span class=muted>${esc(det)}</span>`:''}</div></div>`)
+    if(!c.title) add('bad','Title eksik'); else if(c.title.length>65) add('wrn','Title uzun',`${c.title.length} karakter`); else if(c.title.length<10) add('wrn','Title kısa',`${c.title.length} karakter`);
+    if(!c.desc) add('wrn','Meta description yok'); else if(c.desc.length>170) add('wrn','Description uzun olabilir',`${c.desc.length} karakter`);
+    if(/noindex/i.test(c.robots||'')) add('bad','noindex etkin');
+    if(!c.viewport) add('wrn','Viewport eksik');
+    if(!c.lang) add('wrn','<html lang> eksik');
+    if(!c.h1s.length) add('wrn','H1 eksik'); if(c.h1s.length>1) add('wrn',`Birden fazla H1 (${c.h1s.length})`);
+    const cans=[...c.doc.querySelectorAll('link[rel="canonical"]')]; if(!cans.length) add('wrn','Canonical yok'); if(cans.length>1) add('wrn','Birden fazla canonical');
+    const altsMissing = c.imgs.filter(i=>!(i.getAttribute('alt')||'').trim()).length; if(altsMissing) add('wrn',`Alt etiketi eksik`,`${altsMissing}/${c.imgs.length}`);
+    return out.length? out.join('') : `<div class="issue"><span class="sev ok">OK</span><div><strong>Ciddi sorun yok.</strong></div></div>`
+  }
+
+  function parseJSONLD(doc){
+    const blocks=[...doc.querySelectorAll('script[type="application/ld+json"]')];
+    const raw=[]; const types=[]; let faqHtml='';
+    for(const b of blocks){ const txt=b.textContent.trim(); if(!txt) continue; raw.push(txt); try{ const j=JSON.parse(txt); const arr=Array.isArray(j)?j:[j]; for(const it of arr){ types.push(...flatTypes(it)); if(hasType(it,'FAQPage') && Array.isArray(it.mainEntity)){ faqHtml = it.mainEntity.slice(0,3).map(q=>`<details><summary>${esc(crop(q.name||'Soru',110))}</summary><div class=muted>${esc(crop(q.acceptedAnswer?.text||'—',240))}</div></details>`).join('') } } }catch(e){ raw.push(`/* JSON hata: ${e.message} */`) } }
+    const known=['Product','Article','NewsArticle','Recipe','BreadcrumbList','HowTo','VideoObject','SoftwareSourceCode','LocalBusiness','Organization','Event','FAQPage'];
+    const chips=[...new Set(types)].filter(t=>known.includes(t));
+    const summary = chips.length? `<div class=muted>Bulunan türler: ${chips.join(', ')}</div>` : '<div class=muted>JSON‑LD bulunamadı ya da desteklenen tür yok.</div>';
+    return {raw:raw.join('\n\n'), types:[...new Set(types)], faqHtml, summary}
+  }
+  function flatTypes(it){ const t=it['@type']; const arr=t? (Array.isArray(t)?t:[t]) : []; if(Array.isArray(it['@graph'])) it['@graph'].forEach(n=>arr.push(...flatTypes(n))); return arr }
+  function hasType(it,t){ return flatTypes(it).includes(t) }
+  function firstParagraph(doc){ const p=doc.querySelector('main p, article p, p'); return p?.textContent?.trim()||'' }
+  function safeHost(u){ try{ return new URL(u).host }catch{ return '' } }
+  function buildExport(d){
+    const title=d.querySelector('title')?.textContent||''; const desc=d.querySelector('meta[name="description"]')?.content||''; const canonical=d.querySelector('link[rel="canonical"]')?.href||''; 
+	const robots = (d.querySelector('meta[name="robots"]') || d.querySelector('meta[name="googlebot"]'))?.getAttribute('content') || '';
+const lang   = d.documentElement.getAttribute('lang') || '';
+
+    const jsonld=[...d.querySelectorAll('script[type="application/ld+json"]')].map(s=>s.textContent.trim());
+    const images=[...d.querySelectorAll('img')].map(img=>({src:img.getAttribute('src')||'', alt:img.getAttribute('alt')||''}));
+    const links=[...d.querySelectorAll('a[href]')].map(a=>({text:a.textContent.trim(), href:a.getAttribute('href'), rel:a.getAttribute('rel')||''}));
+    return {title,desc,canonical,robots,lang,jsonld,images,links, analyzedAt:new Date().toISOString()}
+  }
+  </script>
+</body>
+</html>
