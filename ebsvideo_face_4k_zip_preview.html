@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EBS Videodan Yüzlü Kareler · 4K + ZIP (Ebubekir Bastama)</title>
+<style>
+:root{
+  --bg:#0b1220; --panel:#0f172a; --muted:#94a3b8; --line:#162033;
+  --accent:#1da1f2; --accent-2:#22c55e; --accent-3:#8b5cf6;
+  --text:#e5e7eb;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:var(--bg); color:var(--text);
+}
+.header{
+  padding:18px 20px; border-bottom:1px solid var(--line);
+  display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px;
+  background:linear-gradient(180deg,#0f172a,#0b1220);
+}
+.header h1{margin:0;font-size:20px;font-weight:700}
+.header .sub{font-size:12px;color:var(--muted)}
+.container{padding:20px;display:grid;gap:20px;max-width:1300px;margin:0 auto}
+.panel{
+  background:linear-gradient(180deg,rgba(13,20,36,.6),rgba(8,14,26,.6));
+  border:1px solid var(--line);border-radius:16px;padding:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+label{font-size:13px;color:var(--muted)}
+input[type="number"],input[type="text"]{
+  background:#0b1426;color:var(--text);border:1px solid #1c2740;
+  border-radius:12px;padding:9px 12px;min-width:90px;
+}
+input[type="file"]{accent-color:var(--accent)}
+button{
+  background:var(--accent);color:#02101f;border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;
+}
+button.secondary{background:#15213a;color:var(--text);border:1px solid #223055}
+button.ghost{background:transparent;color:var(--text);border:1px dashed #324567}
+button:disabled{opacity:.6;cursor:not-allowed}
+.switch{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.progress{height:10px;width:100%;background:#08101f;border-radius:999px;overflow:hidden;border:1px solid #122038}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3))}
+.status{font-size:13px;color:var(--muted)}
+.media{display:grid;gap:12px}
+video{width:100%;max-height:55vh;background:#000;border-radius:12px;border:1px solid #17243d}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.card{border:1px solid #17243d;background:#0b1426;border-radius:10px;overflow:hidden}
+.thumb{width:100%;aspect-ratio:16/9;object-fit:cover}
+.meta{padding:6px 10px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.footer{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+a{color:var(--accent);text-decoration:none}
+@media(min-width:900px){.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>🎯 Videodan Yüzlü Kareler</h1>
+    <div class="sub">4K · ZIP İndir · Metro Dark</div>
+  </div>
+  <div class="sub">
+    Yazan: <b>Ebubekir Bastama</b> · <a href="https://www.ebubekirbastama.com.tr" target="_blank">www.ebubekirbastama.com.tr</a>
+  </div>
+</div>
+
+<div class="container">
+  <section class="panel">
+    <div class="row">
+      <input type="file" id="file" accept="video/*">
+      <label>Tarama aralığı (ms): <input id="step" type="number" value="300" min="50" max="2000"></label>
+      <label>Model eşiği: <input id="thresh" type="number" value="0.4" min="0.1" max="0.9" step="0.05"></label>
+      <label>Input size: <input id="inpsize" type="number" value="512" min="128" max="1024"></label>
+      <label class="switch"><input type="checkbox" id="upscale4k" checked>4K Kalite</label>
+      <label class="switch"><input type="checkbox" id="showPreview" checked>Önizleme Göster</label>
+    </div>
+    <div class="row">
+      <button id="start" disabled>Başlat</button>
+      <button id="stop" class="secondary" disabled>Durdur</button>
+      <button id="downloadZip" class="ghost" disabled>ZIP olarak indir</button>
+    </div>
+    <div class="row">
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="status" id="status">Model yükleniyor…</div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <h3>🎞️ Video Önizleme</h3>
+      <video id="video" controls playsinline></video>
+    </section>
+
+    <section class="panel">
+      <h3>🧩 Bulunan Kareler</h3>
+      <div class="status">Toplam: <span id="count">0</span> adet</div>
+      <div id="grid" class="grid"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h3>📘 Kullanım Kılavuzu</h3>
+    <p>1️⃣ Videonuzu seçin.<br>
+       2️⃣ Ayarları yapın (tarama aralığı, model eşiği, input size).<br>
+       3️⃣ "Önizleme Göster" kapalıysa kareleri göstermeden doğrudan ZIP oluşturur.<br>
+       4️⃣ "Başlat" → Yüzleri bulur ve 4K kareleri oluşturur.<br>
+       5️⃣ "ZIP olarak indir" → Tüm kareleri indir.</p>
+  </section>
+
+  <div class="footer">
+    <div>© <span id="yil"></span> Ebubekir Bastama · Metro Dark Arayüz</div>
+    <div>Yapay zekâ yüz tespiti: @vladmandic/face-api.js</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+<script type="module">
+import * as faceapi from "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.5.7/dist/face-api.esm.js";
+
+const $=s=>document.querySelector(s);
+const video=$("#video"), file=$("#file"), start=$("#start"), stopBtn=$("#stop"), zipBtn=$("#downloadZip");
+const step=$("#step"), thresh=$("#thresh"), inpsize=$("#inpsize"), upscale4k=$("#upscale4k"), showPreview=$("#showPreview");
+const statusEl=$("#status"), bar=$("#bar"), countEl=$("#count"), grid=$("#grid");
+
+let running=false, frames=[], objectUrl=null;
+
+// Telif yılı
+$("#yil").textContent=new Date().getFullYear();
+
+// Model yükle
+const MODEL_URL="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.5.7/model/";
+await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+statusEl.textContent="✅ Model yüklendi. Lütfen video seçin.";
+file.disabled=false;
+
+file.addEventListener("change",async()=>{
+  cleanup();
+  const f=file.files?.[0];
+  if(!f) return;
+  objectUrl=URL.createObjectURL(f);
+  video.src=objectUrl;
+  await video.play().catch(()=>{});
+  video.pause();
+  start.disabled=false;
+  statusEl.textContent=`🎥 Video yüklendi (${Math.round(video.duration)} sn)`;
+});
+
+function cleanup(){
+  grid.innerHTML=""; frames=[]; countEl.textContent="0";
+  if(objectUrl) URL.revokeObjectURL(objectUrl);
+}
+
+function updateProgress(){
+  const pct=(video.currentTime/video.duration)*100;
+  bar.style.width=pct.toFixed(2)+"%";
+}
+
+function fmt(t){
+  const m=Math.floor(t/60), s=Math.floor(t%60);
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+async function frameBlob(v){
+  const srcW=v.videoWidth, srcH=v.videoHeight;
+  let w=srcW,h=srcH;
+  if(upscale4k.checked && srcW<3840){const s=3840/srcW; w=3840; h=Math.round(srcH*s);}
+  const c=document.createElement("canvas"); c.width=w; c.height=h;
+  const ctx=c.getContext("2d",{alpha:false});
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(v,0,0,w,h);
+  return new Promise(r=>c.toBlob(b=>r(b),"image/jpeg",0.96));
+}
+
+async function processVideo(){
+  const interval=parseInt(step.value)||300;
+  const score=parseFloat(thresh.value)||0.4;
+  const input=parseInt(inpsize.value)||512;
+  frames=[]; grid.innerHTML=""; countEl.textContent="0";
+  statusEl.textContent="Taranıyor…";
+  let found=0;
+  while(running && video.currentTime<video.duration){
+    updateProgress();
+    video.currentTime=Math.min(video.currentTime+interval/1000,video.duration);
+    await new Promise(r=>video.addEventListener("seeked",r,{once:true}));
+    const det=await faceapi.detectAllFaces(video,new faceapi.TinyFaceDetectorOptions({inputSize:input,scoreThreshold:score}));
+    if(det.length>0){
+      const t=video.currentTime;
+      const blob=await frameBlob(video);
+      const name=`frame_${Math.round(t*1000)}ms.jpg`;
+      frames.push({blob,name});
+      found++; countEl.textContent=found;
+      if(showPreview.checked){
+        const url=URL.createObjectURL(blob);
+        const card=document.createElement("div"); card.className="card";
+        card.innerHTML=`<img src="${url}" class="thumb"><div class="meta"><span>${fmt(t)}</span><span>${name}</span></div>`;
+        grid.appendChild(card);
+      }
+    }
+  }
+  running=false;
+  start.disabled=false; stopBtn.disabled=true; zipBtn.disabled=frames.length===0;
+  bar.style.width="100%";
+  statusEl.textContent=`✅ ${frames.length} kare bulundu.`;
+}
+
+start.addEventListener("click",()=>{
+  if(!file.files?.[0]) return alert("Video seçin.");
+  running=true; start.disabled=true; stopBtn.disabled=false; zipBtn.disabled=true;
+  processVideo();
+});
+
+stopBtn.addEventListener("click",()=>{running=false;stopBtn.disabled=true;start.disabled=false;});
+
+zipBtn.addEventListener("click",async()=>{
+  if(frames.length===0) return;
+  zipBtn.disabled=true;
+  statusEl.textContent="📦 ZIP hazırlanıyor...";
+  const zip=new JSZip(), folder=zip.folder("faces");
+  for(const f of frames) folder.file(f.name,f.blob);
+  const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE"});
+  saveAs(blob,"faces_4k.zip");
+  zipBtn.disabled=false; statusEl.textContent="✅ ZIP indirildi.";
+});
+</script>
+</body>
+</html>
