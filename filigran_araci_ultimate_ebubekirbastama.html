@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Filigran Ekleme Aracı | Ultimate Sürüm | Ebubekir Bastama</title>
+  <meta name="description" content="Online Filigran Aracı: Metin veya görsel filigran ekle, sürükle-bırak ile hizala, gölge ve çerçeve ekle, arka plan kaldır. Geliştirici: Ebubekir Bastama - www.ebubekirbastama.com.tr">
+  <meta name="keywords" content="filigran, watermark, resim, logo, metin, arka plan kaldırma, gölge efekti, çerçeve, toplu indirme, Ebubekir Bastama, www.ebubekirbastama.com.tr">
+  <meta name="author" content="Ebubekir Bastama">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <style>
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d47a1 0%, #1976d2 40%, #1da1f2 100%);
+  background-attachment: fixed;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  color: #ffffff;
+}
+
+/* Kart ve panel alanları */
+.card-bg {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  color: #fff;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Resim önizleme alanı */
+.preview-area {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  max-width: 100%;
+  transition: transform 0.2s ease-in-out;
+}
+.preview-area:hover {
+  transform: scale(1.02);
+  border-color: #1da1f2;
+}
+
+/* Filigran metin */
+.watermark {
+  position: absolute;
+  cursor: move;
+  top: 12px;
+  left: 12px;
+  opacity: 0.9;
+  user-select: none;
+  color: #ffffff;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+}
+.wm-text {
+  white-space: nowrap;
+}
+
+/* Butonlar */
+.btn,
+button {
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+.btn:hover,
+button:hover {
+  transform: translateY(-2px);
+}
+.text-muted {
+    --bs-text-opacity: 1;
+    color: rgb(243 243 243 / 75%) !important;
+}
+/* Birincil renk (Twitter mavisi) */
+.btn-primary {
+  background-color: #1da1f2;
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: #0d8ae5;
+}
+
+/* Başarı rengi (daha koyu mavi ton) */
+.btn-success {
+  background-color: #0b78d0;
+  color: #fff;
+}
+.btn-success:hover {
+  background-color: #0865b5;
+}
+
+/* Nötr butonlar */
+.btn-outline-secondary {
+  border: 1px solid #1da1f2;
+  color: #1da1f2;
+  background-color: transparent;
+}
+.btn-outline-secondary:hover {
+  background-color: #1da1f2;
+  color: #fff;
+}
+
+/* Form alanları */
+.form-control,
+.form-select {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.form-control:focus,
+.form-select:focus {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #1da1f2;
+  box-shadow: 0 0 0 0.2rem rgba(29, 161, 242, 0.25);
+}
+
+/* Slider ve renk seçici */
+input[type="range"] {
+  accent-color: #1da1f2;
+}
+input[type="color"] {
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #1da1f2;
+}
+
+/* Footer */
+footer {
+  background: #0a2a57;
+  color: #d0e7ff;
+  text-align: center;
+  padding: 20px;
+  border-top: 4px solid #1da1f2;
+  margin-top: 50px;
+}
+footer a {
+  color: #1da1f2;
+  text-decoration: none;
+  font-weight: 500;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <header class="mb-3 text-center">
+      <h1 class="mb-2">📸 Filigran Ekleme Aracı — Ultimate</h1>
+      <p class="text-muted mb-0">Metin veya görsel filigran ekle, sürükle-bırak ve köşe hizalama ile konumlandır, gölge/çerçeve uygula, arka planı kaldır ve hepsini ZIP olarak indir.</p>
+    </header>
+
+    <!-- Kontrol Paneli -->
+    <div class="panel-sticky py-3">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label section-title">📥 Resimleri Yükle (çoklu)</label>
+          <input type="file" id="imageUpload" class="form-control" multiple accept="image/*">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label section-title">🧾 İsimlendirme</label>
+          <select id="namingSelect" class="form-select">
+            <option value="original">Orijinal isim</option>
+            <option value="random">Rastgele isim</option>
+          </select>
+        </div>
+        <div class="col-md-3 d-grid">
+          <label class="form-label section-title invisible">.</label>
+          <button id="downloadZip" class="btn btn-success">📦 Tümünü ZIP Olarak İndir</button>
+        </div>
+      </div>
+
+      <hr class="my-3">
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label section-title">🎯 Filigran Türü</label>
+          <select id="watermarkType" class="form-select">
+            <option value="image">Görsel Filigran</option>
+            <option value="text">Metin Filigran</option>
+          </select>
+        </div>
+
+        <!-- Görsel Filigran Alanları -->
+        <div class="col-md-3 wm-image-only">
+          <label class="form-label">Filigran Görseli</label>
+          <input type="file" id="watermarkUpload" class="form-control" accept="image/*">
+        </div>
+        <div class="col-md-3 wm-image-only">
+          <label class="form-label">Görsel Filigran Boyutu (%)</label>
+          <input type="range" id="imgWmSize" class="form-range" min="10" max="60" step="2" value="25">
+        </div>
+        <div class="col-md-3 wm-image-only">
+          <label class="form-label">Görsel Filigran Saydamlığı</label>
+          <input type="range" id="imgWmOpacity" class="form-range" min="0.1" max="1" step="0.05" value="0.85">
+        </div>
+
+        <!-- Metin Filigran Alanları -->
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Metin</label>
+          <input type="text" id="watermarkText" class="form-control" placeholder="Filigran metni">
+        </div>
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Renk</label>
+          <input type="color" id="textColor" class="form-control" value="#ffffff">
+        </div>
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Font</label>
+          <select id="textFont" class="form-select">
+            <option>Arial</option><option>Verdana</option><option>Times New Roman</option>
+            <option>Courier New</option><option>Georgia</option><option>Tahoma</option>
+          </select>
+        </div>
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Yazı Boyutu (px)</label>
+          <input type="number" id="textSize" class="form-control" value="42" min="10" max="180">
+        </div>
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Metin Saydamlığı</label>
+          <input type="range" id="textOpacity" class="form-range" min="0.1" max="1" step="0.05" value="0.85">
+        </div>
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Gölge Rengi</label>
+          <input type="color" id="shadowColor" class="form-control" value="#000000">
+        </div>
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Gölge Yumuşatma (px)</label>
+          <input type="range" id="shadowBlur" class="form-range" min="0" max="30" step="1" value="6">
+        </div>
+        <div class="col-md-3 wm-text-only d-none">
+          <label class="form-label">Çerçeve (Stroke px)</label>
+          <input type="range" id="textStroke" class="form-range" min="0" max="10" step="1" value="0">
+        </div>
+
+        <!-- Arka Plan Kaldırma (Görsel Filigran) -->
+        <div class="col-md-3 wm-image-only">
+          <label class="form-label section-title">🧹 Arka Plan Kaldır (Beta)</label>
+          <div class="d-flex align-items-center gap-2">
+            <input class="form-check-input" type="checkbox" id="removeBg">
+            <span class="text-muted">Düz arka planlı logolarda en iyi sonuç</span>
+          </div>
+          <div class="mt-2">
+            <label class="form-label mb-1">Tolerans</label>
+            <input type="range" id="bgTolerance" class="form-range" min="5" max="120" step="1" value="40">
+          </div>
+          <button id="applyRemoveBg" class="btn btn-outline-secondary btn-sm mt-1">Arka Planı Uygula</button>
+        </div>
+      </div>
+
+      <!-- Köşe Hizalama -->
+      <div class="mt-3 text-center">
+        <label class="form-label d-block section-title">🧭 Köşe Hizalama</label>
+        <div>
+          <button class="btn btn-outline-secondary corner-btn" data-pos="top-left">Sol Üst</button>
+          <button class="btn btn-outline-secondary corner-btn" data-pos="top-right">Sağ Üst</button>
+          <button class="btn btn-outline-secondary corner-btn" data-pos="bottom-left">Sol Alt</button>
+          <button class="btn btn-outline-secondary corner-btn" data-pos="bottom-right">Sağ Alt</button>
+          <button class="btn btn-outline-secondary corner-btn" data-pos="center">Orta</button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-4">
+    <div id="previewContainer" class="d-flex flex-wrap justify-content-center"></div>
+  </div>
+
+  <script>
+    // --- DOM Referansları ---
+    const imageUpload = document.getElementById('imageUpload');
+    const previewContainer = document.getElementById('previewContainer');
+    const watermarkType = document.getElementById('watermarkType');
+    const namingSelect = document.getElementById('namingSelect');
+    const downloadZip = document.getElementById('downloadZip');
+
+    // Görsel WM
+    const watermarkUpload = document.getElementById('watermarkUpload');
+    const imgWmSize = document.getElementById('imgWmSize');
+    const imgWmOpacity = document.getElementById('imgWmOpacity');
+    const removeBg = document.getElementById('removeBg');
+    const bgTolerance = document.getElementById('bgTolerance');
+    const applyRemoveBg = document.getElementById('applyRemoveBg');
+
+    // Metin WM
+    const watermarkText = document.getElementById('watermarkText');
+    const textColor = document.getElementById('textColor');
+    const textFont = document.getElementById('textFont');
+    const textSize = document.getElementById('textSize');
+    const textOpacity = document.getElementById('textOpacity');
+    const shadowColor = document.getElementById('shadowColor');
+    const shadowBlur = document.getElementById('shadowBlur');
+    const textStroke = document.getElementById('textStroke');
+
+    // Durum
+    let watermarkImageDataURL = null; // işlenmiş WM görseli (arka plan kaldırılmış olabilir)
+
+    // --- Yardımcılar ---
+    function showOnly(classNameToShow){ // wm-image-only / wm-text-only
+      document.querySelectorAll('.wm-image-only').forEach(el => el.classList.toggle('d-none', classNameToShow!=='wm-image-only'));
+      document.querySelectorAll('.wm-text-only').forEach(el => el.classList.toggle('d-none', classNameToShow!=='wm-text-only'));
+    }
+
+    function loadImage(src){
+      return new Promise(res => { const i=new Image(); i.onload=()=>res(i); i.src=src; });
+    }
+
+    function randomName(){ return Math.random().toString(36).slice(2,10)+'.jpg'; }
+
+    function enableDrag(el){
+      let dragging=false, offX=0, offY=0;
+      el.addEventListener('mousedown',e=>{dragging=true;offX=e.offsetX;offY=e.offsetY;});
+      document.addEventListener('mouseup',()=>dragging=false);
+      document.addEventListener('mousemove',e=>{
+        if(!dragging) return;
+        const rect = el.parentElement.getBoundingClientRect();
+        let x = e.clientX-rect.left-offX;
+        let y = e.clientY-rect.top-offY;
+        el.style.left = Math.max(0, Math.min(x, rect.width - el.offsetWidth)) + 'px';
+        el.style.top  = Math.max(0, Math.min(y, rect.height - el.offsetHeight)) + 'px';
+      });
+    }
+
+    function applyCorner(pos){
+      document.querySelectorAll('.watermark').forEach(wm=>{
+        const parent=wm.parentElement, pw=parent.offsetWidth, ph=parent.offsetHeight, ww=wm.offsetWidth, wh=wm.offsetHeight, m=12;
+        const map={
+          "top-left":   {left:m, top:m},
+          "top-right":  {left:pw-ww-m, top:m},
+          "bottom-left":{left:m, top:ph-wh-m},
+          "bottom-right":{left:pw-ww-m, top:ph-wh-m},
+          "center":     {left:(pw-ww)/2, top:(ph-wh)/2}
+        }[pos];
+        wm.style.left = map.left+'px';
+        wm.style.top  = map.top +'px';
+      });
+    }
+
+    function clearExistingWM(container){
+      const ex = container.querySelector('.watermark');
+      if(ex) ex.remove();
+    }
+
+    function refreshPreviewTextWM(container){
+      clearExistingWM(container);
+      const text = watermarkText.value.trim();
+      if(!text) return;
+      const div = document.createElement('div');
+      div.className = 'watermark wm-text';
+      div.textContent = text;
+      div.style.fontFamily = textFont.value;
+      div.style.fontSize = textSize.value + 'px';
+      div.style.color = textColor.value;
+      div.style.opacity = textOpacity.value;
+      // CSS önizleme için gölge ve stroke
+      const blur = parseInt(shadowBlur.value,10);
+      div.style.textShadow = `2px 2px ${blur}px ${shadowColor.value}`;
+      const strokePx = parseInt(textStroke.value,10);
+      div.style.webkitTextStroke = strokePx>0 ? `${strokePx}px ${shadowColor.value}` : '0';
+      container.appendChild(div);
+      enableDrag(div);
+    }
+
+    function refreshPreviewImageWM(container){
+      clearExistingWM(container);
+      if(!watermarkImageDataURL) return;
+      const img = document.createElement('img');
+      img.className='watermark wm-image';
+      img.src = watermarkImageDataURL;
+      img.style.width = imgWmSize.value + '%';
+      img.style.opacity = imgWmOpacity.value;
+      container.appendChild(img);
+      enableDrag(img);
+    }
+
+    function refreshAllPreviews(){
+      const previews = document.querySelectorAll('.preview-area');
+      previews.forEach(p=>{
+        if(watermarkType.value==='text'){ refreshPreviewTextWM(p); }
+        else{ refreshPreviewImageWM(p); }
+      });
+    }
+
+    // --- Etkinlikler: Yüklemeler ---
+    imageUpload.addEventListener('change', e=>{
+      previewContainer.innerHTML='';
+      [...e.target.files].forEach(file=>{
+        const reader = new FileReader();
+        reader.onload = ()=>{
+          const div = document.createElement('div');
+          div.className='preview-area';
+          div.innerHTML = `<img src="${reader.result}" data-filename="${file.name}">`;
+          previewContainer.appendChild(div);
+          // yeni resim geldiğinde aktif WM varsa uygula
+          if(watermarkType.value==='text') refreshPreviewTextWM(div);
+          else if(watermarkImageDataURL) refreshPreviewImageWM(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    watermarkUpload.addEventListener('change', e=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader=new FileReader();
+      reader.onload=()=>{ watermarkImageDataURL = reader.result; refreshAllPreviews(); };
+      reader.readAsDataURL(file);
+    });
+
+    // --- Tür Vites ---
+    watermarkType.addEventListener('change', ()=>{
+      if(watermarkType.value==='text'){ showOnly('wm-text-only'); }
+      else{ showOnly('wm-image-only'); }
+      refreshAllPreviews();
+    });
+
+    // --- Metin Ayarları (canlı) ---
+    [watermarkText,textColor,textFont,textSize,textOpacity,shadowColor,shadowBlur,textStroke].forEach(el=>{
+      el.addEventListener('input', refreshAllPreviews);
+    });
+
+    // --- Görsel WM Ayarları ---
+    [imgWmSize,imgWmOpacity].forEach(el=>el.addEventListener('input', ()=>{
+      document.querySelectorAll('.wm-image').forEach(w=>{
+        if(el===imgWmSize) w.style.width = imgWmSize.value + '%';
+        if(el===imgWmOpacity) w.style.opacity = imgWmOpacity.value;
+      });
+    }));
+
+    // --- Köşe Hizalama ---
+    document.querySelectorAll('.corner-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>applyCorner(btn.dataset.pos));
+    });
+
+    // --- Arka Plan Kaldır (Beta) ---
+    applyRemoveBg.addEventListener('click', async ()=>{
+      if(!removeBg.checked || !watermarkImageDataURL){ alert('Önce görsel filigranı yükleyin ve "Arka Plan Kaldır" kutusunu işaretleyin.'); return; }
+      const cleaned = await removeBackgroundDataURL(watermarkImageDataURL, parseInt(bgTolerance.value,10));
+      watermarkImageDataURL = cleaned;
+      refreshAllPreviews();
+    });
+
+    async function removeBackgroundDataURL(dataURL, tolerance=40){
+      const img = await loadImage(dataURL);
+      const c = document.createElement('canvas'); const ctx = c.getContext('2d');
+      c.width = img.width; c.height = img.height;
+      ctx.drawImage(img,0,0);
+      const imgData = ctx.getImageData(0,0,c.width,c.height);
+      const d = imgData.data;
+      // Köşe ortalaması ile arka plan rengi tahmini
+      function pick(px,py){ const i=(py*c.width+px)*4; return [d[i],d[i+1],d[i+2]]; }
+      const samples=[pick(0,0),pick(c.width-1,0),pick(0,c.height-1),pick(c.width-1,c.height-1)];
+      const bg=[0,1,2].map(k=> Math.round(samples.reduce((s,v)=>s+v[k],0)/samples.length));
+      for(let i=0;i<d.length;i+=4){
+        const dr = Math.abs(d[i]-bg[0])+Math.abs(d[i+1]-bg[1])+Math.abs(d[i+2]-bg[2]);
+        if(dr<tolerance) d[i+3]=0;
+      }
+      ctx.putImageData(imgData,0,0);
+      return c.toDataURL('image/png');
+    }
+
+    // --- ZIP İndirme ---
+    downloadZip.addEventListener('click', async ()=>{
+      const imgs = document.querySelectorAll('.preview-area img');
+      if(imgs.length===0){ alert('Önce resim yükleyin.'); return; }
+      const zip=new JSZip();
+
+      for(const baseImg of imgs){
+        const base = await loadImage(baseImg.src);
+        const container = baseImg.parentElement;
+        const wm = container.querySelector('.watermark');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width=base.width; canvas.height=base.height;
+        ctx.drawImage(base,0,0);
+
+        if(wm){
+          const rectPreview = baseImg.getBoundingClientRect();
+          const scaleX = base.width / rectPreview.width;
+          const scaleY = base.height / rectPreview.height;
+          const left = parseFloat(wm.style.left)||12;
+          const top  = parseFloat(wm.style.top)||12;
+
+          if(wm.classList.contains('wm-image')){
+            // Görsel filigran
+            const mark = await loadImage(wm.src);
+            const wmDispW = wm.offsetWidth; // piksel (önizleme)
+            const wmRealW = wmDispW * scaleX;
+            const wmRealH = mark.height * (wmRealW / mark.width);
+            ctx.globalAlpha = parseFloat(wm.style.opacity||imgWmOpacity.value);
+            ctx.drawImage(mark, left*scaleX, top*scaleY, wmRealW, wmRealH);
+            ctx.globalAlpha = 1.0;
+          } else {
+            // Metin filigran
+            const fontPx = parseInt(wm.style.fontSize||textSize.value,10);
+            ctx.globalAlpha = parseFloat(wm.style.opacity||textOpacity.value);
+            ctx.font = `${fontPx*scaleY}px ${wm.style.fontFamily||textFont.value}`;
+            ctx.fillStyle = wm.style.color||textColor.value;
+
+            // Gölge & Stroke (Canvas)
+            ctx.shadowColor = shadowColor.value;
+            ctx.shadowBlur  = parseInt(shadowBlur.value,10)*scaleY;
+
+            const strokeW = parseInt(textStroke.value,10);
+            if(strokeW>0){
+              ctx.lineWidth = strokeW*scaleY;
+              ctx.strokeStyle = shadowColor.value;
+              ctx.strokeText(wm.textContent, left*scaleX, top*scaleY + fontPx*scaleY);
+            }
+            ctx.fillText(wm.textContent, left*scaleX, top*scaleY + fontPx*scaleY);
+            // Reset
+            ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.globalAlpha=1.0;
+          }
+        }
+
+        const blob = await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.95));
+        const fileName = namingSelect.value==='random' ? randomName() : baseImg.dataset.filename;
+        zip.file(fileName, blob);
+      }
+
+      const content = await zip.generateAsync({type:'blob'});
+      saveAs(content,'filigranli_resimler.zip');
+    });
+
+    // Başlangıç görünümü
+    showOnly('wm-image-only');
+  </script>
+    <footer>
+    <p>© <span id="yil"></span> | Geliştirici: <strong>Ebubekir Bastama</strong> |
+      <a href="https://www.ebubekirbastama.com.tr" target="_blank">www.ebubekirbastama.com.tr</a><br>
+      Modern arka plan tasarımı & tüm hakları saklıdır.
+    </p>
+  </footer>
+  <script>document.getElementById("yil").textContent = new Date().getFullYear();</script>
+</body>
+</html>
