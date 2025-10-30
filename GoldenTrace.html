@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>💎 Full Color Görsel → SVG Vektörleştirici</title>
+<style>
+:root {
+  --gold: #d4af37;
+  --gold-light: #f5e7a1;
+  --dark-bg: #0f0f0f;
+  --card-bg: rgba(255,255,255,0.08);
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #1b1b1b, #2a2a2a);
+  color: #fff6e5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+h1 {
+  color: var(--gold);
+  font-size: 2rem;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(212,175,55,0.4);
+}
+
+p {
+  color: #ccc8b3;
+  max-width: 700px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.container {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  box-shadow: 0 4px 35px rgba(0,0,0,0.5);
+  padding: 30px;
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 25px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+input[type="file"], button, a {
+  background: var(--gold);
+  color: #111;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 22px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+input[type="file"] {
+  background: #222;
+  color: var(--gold-light);
+  border: 1px solid var(--gold);
+}
+
+button:hover, a:hover {
+  background: var(--gold-light);
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(212,175,55,0.5);
+}
+
+#preview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+#canvas, #svgOut {
+  background: #1b1b1b;
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  width: 48%;
+  min-height: 400px;
+  box-shadow: 0 0 15px rgba(212,175,55,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#canvas:hover, #svgOut:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 25px rgba(212,175,55,0.4);
+}
+
+#svgOut svg {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+@media (max-width: 900px) {
+  #canvas, #svgOut {
+    width: 100%;
+  }
+  h1 { font-size: 1.6rem; }
+  p { font-size: 0.95rem; }
+}
+</style>
+</head>
+<body>
+
+<h1>💎 Full Color Görsel → SVG Dönüştürücü</h1>
+<p>Tüm renkleri korur, baskıya uygun altın dokulu SVG çıktısı oluşturur. İşlem tamamen tarayıcıda yapılır — hiçbir veri dışarı çıkmaz.</p>
+
+<div class="container">
+  <input type="file" id="fileInput" accept="image/*">
+  <button id="convertBtn">Vektöre Dönüştür (Tüm Renkler)</button>
+  <a id="downloadLink" style="display:none;" download="fullcolor.svg">SVG'yi İndir</a>
+
+  <div id="preview">
+    <canvas id="canvas"></canvas>
+    <div id="svgOut"></div>
+  </div>
+</div>
+
+<script>
+const fileInput=document.getElementById('fileInput');
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let w=0,h=0;
+
+fileInput.addEventListener('change',e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  const img=new Image();
+  img.onload=()=>{
+    w=img.width;h=img.height;
+    canvas.width=w;canvas.height=h;
+    ctx.drawImage(img,0,0,w,h);
+  };
+  img.src=URL.createObjectURL(file);
+});
+
+document.getElementById('convertBtn').addEventListener('click',()=>{
+  if(!w)return alert("Lütfen önce görsel yükle!");
+  const {data}=ctx.getImageData(0,0,w,h);
+  let svgParts=[];
+  for(let y=0;y<h;y++){
+    let row="";
+    for(let x=0;x<w;x++){
+      const i=(y*w+x)*4;
+      const r=data[i],g=data[i+1],b=data[i+2],a=data[i+3]/255;
+      if(a===0)continue;
+      const fill=`rgba(${r},${g},${b},${a})`;
+      row+=`<rect x='${x}' y='${y}' width='1' height='1' fill='${fill}'/>`;
+    }
+    svgParts.push(row);
+  }
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${w} ${h}'>${svgParts.join('')}</svg>`;
+  document.getElementById('svgOut').innerHTML=svg;
+  const blob=new Blob([svg],{type:'image/svg+xml'});
+  const link=document.getElementById('downloadLink');
+  link.href=URL.createObjectURL(blob);
+  link.style.display='inline-block';
+});
+</script>
+</body>
+</html>
