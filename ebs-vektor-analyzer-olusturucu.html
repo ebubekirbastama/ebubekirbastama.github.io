@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- 🔍 SEO Meta Bilgileri -->
+<title>Online Görsel Vektörleştirme Aracı | Ebubekir Bastama</title>
+<meta name="description" content="Ebubekir Bastama'nın geliştirdiği online görsel vektörleştirme aracı ile logolarınızı, çizimlerinizi veya fotoğraflarınızı yüksek kalite SVG formatına dönüştürün. Responsive, zoom destekli ve baskıya hazır.">
+<meta name="keywords" content="vektörleştirme, SVG dönüştürücü, online vektör aracı, logo dönüştür, Ebubekir Bastama, vektör converter, görselden svg">
+<meta name="author" content="Ebubekir Bastama">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#f4f4f7">
+<link rel="canonical" href="https://www.ebubekirbastama.com.tr/vektor-analyzer.html">
+
+
+<style>
+:root{
+  --bg:#f7f8fa;--fg:#1b1c1f;--card:#ffffff;--bd:#d0d3d6;--mut:#5a5a5a;
+}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:'Segoe UI',Roboto,sans-serif;overflow-x:hidden;
+}
+.wrap{max-width:1400px;margin:30px auto;padding:0 20px}
+h1{text-align:center;font-size:26px;margin-bottom:14px;font-weight:700;color:#111}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(480px,1fr));
+  gap:20px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  aspect-ratio:16/10;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+h3{text-align:center;margin:4px 0 12px;color:#222}
+.pane{
+  background:#f0f0f2;
+  border:1px solid #ccc;
+  border-radius:10px;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  position:relative;
+  cursor:grab;
+}
+canvas,#svgInline{
+  transform-origin:0 0;
+  display:block;
+  max-width:none;
+  max-height:none;
+}
+.zoom-indicator{
+  position:absolute;right:10px;top:8px;
+  font-size:12px;color:#333;background:#fff9;
+  padding:3px 6px;border-radius:6px;border:1px solid #ccc;
+}
+.controls{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;margin-top:20px;
+}
+label{font-size:13px;color:#444;display:block;margin-bottom:4px}
+input,select,button{
+  width:100%;
+  background:#fff;
+  color:#111;
+  border:1px solid #bbb;
+  border-radius:8px;
+  padding:9px;
+  font-size:14px;
+}
+button{cursor:pointer;font-weight:600;transition:0.2s all ease}
+button:hover{background:#007bff;color:#fff;border-color:#007bff}
+#download{display:none}
+#log{white-space:pre-wrap;font-size:13px;color:#444;margin-top:16px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🎨 Online Görsel Vektörleştirme Aracı (Ebubekir Bastama)</h1>
+
+<div class="grid">
+  <div class="card">
+    <h3>Orijinal Görsel</h3>
+    <div class="pane" id="paneCanvas">
+      <div class="zoom-indicator" id="zoomCanvas">100%</div>
+      <canvas id="raster"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Vektör (SVG) Önizleme</h3>
+    <div class="pane" id="paneSVG">
+      <div class="zoom-indicator" id="zoomSVG">100%</div>
+      <div id="svgContainer"></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div><label>Görsel</label><input id="file" type="file" accept="image/*"></div>
+  <div><label>Renk Sayısı</label><input id="numberofcolors" type="number" min="2" max="16" value="8"></div>
+  <div><label>Detay (ltres)</label><input id="ltres" type="number" step="0.5" min="0.5" value="1.0"></div>
+  <div><label>Eğri Ayrıntısı (qtres)</label><input id="qtres" type="number" step="0.5" min="0.5" value="1.0"></div>
+  <div><label>Küçük parçaları at (pathomit)</label><input id="pathomit" type="number" min="0" value="8"></div>
+  <div><label>Köşe iyileştirme</label>
+    <select id="rightangleenhance"><option value="true" selected>Açık</option><option value="false">Kapalı</option></select>
+  </div>
+  <div><label>Stroke (px)</label><input id="strokewidth" type="number" min="0" step="0.5" value="0"></div>
+  <div><label>&nbsp;</label><button id="run">Vektöre Dönüştür</button></div>
+  <div><label>&nbsp;</label><button id="download">SVG'yi İndir</button></div>
+</div>
+<div id="log"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/jankovicsandras/imagetracerjs@master/imagetracer_v1.2.6.min.js"></script>
+<script>
+const log=m=>document.getElementById('log').textContent+=m+"\\n";
+const canvas=document.getElementById('raster'),ctx=canvas.getContext('2d');
+const svgContainer=document.getElementById('svgContainer'),dl=document.getElementById('download');
+let currentSVG='';
+
+// Görsel yükleme
+document.getElementById('file').addEventListener('change',e=>{
+ const f=e.target.files?.[0]; if(!f)return;
+ const url=URL.createObjectURL(f),img=new Image();
+ img.onload=()=>{
+   const max=2400;let w=img.width,h=img.height;
+   const r=(w>h?max/w:max/h);if(r<1){w=Math.round(w*r);h=Math.round(h*r);}
+   canvas.width=w;canvas.height=h;
+   ctx.clearRect(0,0,w,h);
+   ctx.drawImage(img,0,0,w,h);
+   log(`🖼️ Görsel yüklendi: ${img.width}x${img.height} → ${w}x${h}`);
+   URL.revokeObjectURL(url);
+ };
+ img.src=url;
+});
+
+// Vektörleştirme
+document.getElementById('run').onclick=()=>{
+ if(!canvas.width)return alert("Önce görsel yükle!");
+ log("⏳ Dönüştürülüyor...");
+ const opts={
+   numberofcolors:+document.getElementById('numberofcolors').value||8,
+   ltres:+document.getElementById('ltres').value||1,
+   qtres:+document.getElementById('qtres').value||1,
+   pathomit:+document.getElementById('pathomit').value||8,
+   rightangleenhance:(document.getElementById('rightangleenhance').value==="true"),
+   strokewidth:+document.getElementById('strokewidth').value||0,
+   colorsampling:2,linefilter:true,scale:1,viewbox:true
+ };
+ const dataURL=canvas.toDataURL('image/png');
+ ImageTracer.imageToSVG(dataURL,svg=>{
+   currentSVG=svg;
+   svgContainer.innerHTML=svg;
+   dl.style.display='inline-block';
+   log("✅ Vektör dosyası hazır.");
+   enableZoomPan(document.getElementById('paneSVG'),svgContainer.firstElementChild,document.getElementById('zoomSVG'));
+ },opts);
+};
+
+// İndir
+dl.onclick=()=>{
+ if(!currentSVG)return;
+ const blob=new Blob([currentSVG],{type:'image/svg+xml'});
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='trace.svg';
+ a.click();
+};
+
+// Zoom & Pan
+function enableZoomPan(container,target,label){
+ if(!target)return;
+ let s=1,pos={x:0,y:0},start={x:0,y:0},drag=false;
+ const upd=()=>{target.style.transform=`translate(${pos.x}px,${pos.y}px) scale(${s})`;label.textContent=Math.round(s*100)+'%';};
+ container.onwheel=e=>{e.preventDefault();s=Math.min(8,Math.max(0.25,s*(e.deltaY<0?1.1:0.9)));upd();};
+ container.onmousedown=e=>{drag=true;container.style.cursor='grabbing';start={x:e.clientX-pos.x,y:e.clientY-pos.y};};
+ ['mouseup','mouseleave'].forEach(ev=>container.addEventListener(ev,()=>{drag=false;container.style.cursor='grab';}));
+ container.onmousemove=e=>{if(!drag)return;pos.x=e.clientX-start.x;pos.y=e.clientY-start.y;upd();};
+}
+enableZoomPan(document.getElementById('paneCanvas'),canvas,document.getElementById('zoomCanvas'));
+</script>
+</body>
+</html>
