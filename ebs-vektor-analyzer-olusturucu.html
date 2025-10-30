@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<!-- 🔍 SEO Meta Bilgileri -->
 <title>Online Görsel Vektörleştirme Aracı | Ebubekir Bastama</title>
 <meta name="description" content="Ebubekir Bastama'nın geliştirdiği online görsel vektörleştirme aracı ile logolarınızı, çizimlerinizi veya fotoğraflarınızı yüksek kalite SVG formatına dönüştürün. Responsive, zoom destekli ve baskıya hazır.">
 <meta name="keywords" content="vektörleştirme, SVG dönüştürücü, online vektör aracı, logo dönüştür, Ebubekir Bastama, vektör converter, görselden svg">
@@ -12,7 +11,6 @@
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#f4f4f7">
 <link rel="canonical" href="https://www.ebubekirbastama.com.tr/vektor-analyzer.html">
-
 
 <style>
 :root{
@@ -44,7 +42,7 @@ h1{text-align:center;font-size:26px;margin-bottom:14px;font-weight:700;color:#11
 }
 h3{text-align:center;margin:4px 0 12px;color:#222}
 .pane{
-  background:#f0f0f2;
+  background:repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 0 / 20px 20px; /* şeffaflık zemini */
   border:1px solid #ccc;
   border-radius:10px;
   width:100%;
@@ -116,6 +114,9 @@ button:hover{background:#007bff;color:#fff;border-color:#007bff}
     <select id="rightangleenhance"><option value="true" selected>Açık</option><option value="false">Kapalı</option></select>
   </div>
   <div><label>Stroke (px)</label><input id="strokewidth" type="number" min="0" step="0.5" value="0"></div>
+  <div><label>Arka Planı Kaldır</label>
+    <select id="removebg"><option value="false" selected>Kapalı</option><option value="true">Açık</option></select>
+  </div>
   <div><label>&nbsp;</label><button id="run">Vektöre Dönüştür</button></div>
   <div><label>&nbsp;</label><button id="download">SVG'yi İndir</button></div>
 </div>
@@ -139,6 +140,23 @@ document.getElementById('file').addEventListener('change',e=>{
    canvas.width=w;canvas.height=h;
    ctx.clearRect(0,0,w,h);
    ctx.drawImage(img,0,0,w,h);
+
+   // 🔹 Basit arka plan kaldırma
+   if(document.getElementById('removebg').value==="true"){
+     const imgData = ctx.getImageData(0,0,w,h);
+     const d = imgData.data;
+     // Sol üst köşe pikselini referans al
+     const r0=d[0], g0=d[1], b0=d[2];
+     const tolerance=60; // fark eşiği (0-255 arası)
+     let removed=0;
+     for(let i=0;i<d.length;i+=4){
+       const dr=Math.abs(d[i]-r0), dg=Math.abs(d[i+1]-g0), db=Math.abs(d[i+2]-b0);
+       if(dr+dg+db<tolerance){ d[i+3]=0; removed++; }
+     }
+     ctx.putImageData(imgData,0,0);
+     log(`🪄 Arka plan kaldırıldı (basit yöntem, ${removed} piksel şeffaf).`);
+   }
+
    log(`🖼️ Görsel yüklendi: ${img.width}x${img.height} → ${w}x${h}`);
    URL.revokeObjectURL(url);
  };
