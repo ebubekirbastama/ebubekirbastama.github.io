@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Online Görsel Dönüştürücü | WebP, JPG, PNG, GIF → PNG Dönüştürme</title>
+
+  <meta name="description" content="Tüm resim formatlarını (WEBP, JPG, JPEG, PNG, GIF, BMP, AVIF, HEIC) kalite kaybı olmadan PNG formatına dönüştürün. Tek dosya veya toplu dönüşüm desteği, ZIP indir seçeneği ve tamamen tarayıcı içi çalışma!">
+  <meta name="keywords" content="görsel dönüştürücü, webp png dönüştür, jpg png çevir, online resim çevirici, heic png, ücretsiz dönüştürme, resim formatı çevirme, ebubekir bastama">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="tr">
+  <meta name="revisit-after" content="7 days">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+  <meta property="og:title" content="Online Görsel Dönüştürücü | WebP, JPG, PNG, GIF → PNG Dönüştürme">
+  <meta property="og:description" content="Tüm resim formatlarını kalite kaybı olmadan PNG’ye dönüştürün. Tamamen tarayıcı içinde, güvenli ve ücretsiz.">
+  <meta property="og:image" content="https://www.ebubekirbastama.com.tr/images/seo/convert-preview.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Online Görsel Dönüştürücü | WebP, JPG, PNG, GIF → PNG Dönüştürme">
+  <meta name="twitter:description" content="Tüm görsel formatlarını kolayca PNG’ye dönüştürün. Hızlı, ücretsiz ve tarayıcı içinde!">
+  <meta name="twitter:image" content="https://www.ebubekirbastama.com.tr/images/seo/convert-preview.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://www.ebubekirbastama.com.tr/favicon.png">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Online Görsel Dönüştürücü",
+    "url": "https://www.ebubekirbastama.com.tr/",
+    "description": "Tüm resim formatlarını (WEBP, JPG, JPEG, PNG, GIF, BMP, AVIF, HEIC) PNG’ye dönüştürün. Kalite kaybı yok, tamamen tarayıcı içinde çalışır.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "All",
+    "creator": {
+      "@type": "Person",
+      "name": "Ebubekir Bastama",
+      "url": "https://www.ebubekirbastama.com.tr"
+    }
+  }
+  </script>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body { background:#f8f9fa; }
+    .converter-card {
+      max-width: 700px; margin: 60px auto; padding: 30px;
+      background: #fff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .preview-img {
+      max-width: 120px; height: auto; margin: 5px;
+      border-radius: 6px; border:1px solid #ccc;
+    }
+    .info-card {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 25px 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    .info-card h4 {
+      color: #0d6efd;
+      margin-bottom: 15px;
+    }
+    .info-list li {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="converter-card text-center">
+  <h3 class="mb-4 text-primary">🖼️ Görsel ➜ PNG Dönüştürücü</h3>
+  <p class="text-muted mb-3">Desteklenen formatlar: WEBP, JPG, JPEG, PNG, GIF, BMP, AVIF, HEIC...</p>
+
+  <div class="mb-3">
+    <input type="file" id="fileInput" class="form-control" accept="image/*" multiple>
+  </div>
+
+  <button id="convertBtn" class="btn btn-success px-4">
+    <i class="bi bi-arrow-repeat"></i> Dönüştür
+  </button>
+
+  <div id="progress" class="mt-4 text-muted"></div>
+  <div id="previewArea" class="mt-3 d-flex flex-wrap justify-content-center"></div>
+</div>
+
+<!-- 💡 Bilgilendirme Kartı -->
+<div class="info-card">
+  <h4>ℹ️ Bu Araç Nedir?</h4>
+  <p>
+    Bu araç, bilgisayarınızdaki veya telefonunuzdaki tüm resim formatlarını (<strong>.webp, .jpg, .jpeg, .png, .gif, .bmp, .avif, .heic</strong> vb.) 
+    hiçbir kalite kaybı olmadan <strong>PNG formatına</strong> dönüştürmenizi sağlar. Tamamen tarayıcınızda çalışır — dosyalarınız hiçbir yere yüklenmez. 🔒
+  </p>
+
+  <h4 class="mt-4">🚀 Özellikler</h4>
+  <ul class="info-list">
+    <li>✅ Tüm resim formatlarını destekler (.webp, .jpg, .jpeg, .png, .gif, .bmp, .avif, .heic vs.)</li>
+    <li>✅ Kalite kaybı olmadan PNG’ye dönüştürür</li>
+    <li>✅ Birden fazla dosya yüklenirse → tek <strong>ZIP</strong> dosyası indirir</li>
+    <li>✅ Tek dosya yüklenirse → doğrudan <strong>resim olarak indirir</strong></li>
+    <li>✅ Modern Bootstrap 5 tasarımına sahiptir</li>
+    <li>✅ Tamamen tarayıcıda çalışır, <strong>hiçbir veri yüklenmez</strong></li>
+  </ul>
+
+  <h4 class="mt-4">🧭 Nasıl Kullanılır?</h4>
+  <ol class="info-list">
+    <li>1️⃣ “Dosya Seç” butonuna tıklayıp resimleri seç.</li>
+    <li>2️⃣ “Dönüştür” butonuna bas.</li>
+    <li>3️⃣ Eğer tek dosya seçtiysen → PNG olarak otomatik indir.</li>
+    <li>4️⃣ Birden fazla dosya seçtiysen → hepsi ZIP dosyası içinde indirilecektir.</li>
+  </ol>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JSZip -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- FileSaver -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+document.getElementById("convertBtn").addEventListener("click", async () => {
+  const input = document.getElementById("fileInput");
+  const progress = document.getElementById("progress");
+  const previewArea = document.getElementById("previewArea");
+  previewArea.innerHTML = "";
+  progress.textContent = "";
+
+  if (!input.files.length) {
+    alert("Lütfen en az bir resim seçin!");
+    return;
+  }
+
+  const zip = new JSZip();
+  let completed = 0;
+  const total = input.files.length;
+  const convertedImages = [];
+
+  for (const file of input.files) {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+
+    await new Promise(resolve => {
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob((blob) => {
+          const pngName = file.name.replace(/\.[^.]+$/, ".png");
+          convertedImages.push({ name: pngName, blob });
+
+          const thumb = document.createElement("img");
+          thumb.src = URL.createObjectURL(blob);
+          thumb.className = "preview-img";
+          previewArea.appendChild(thumb);
+
+          completed++;
+          progress.textContent = `${completed} / ${total} dönüştürüldü`;
+          resolve();
+        }, "image/png");
+      };
+    });
+  }
+
+  if (convertedImages.length === 1) {
+    saveAs(convertedImages[0].blob, convertedImages[0].name);
+    progress.textContent = "✅ Tek dosya dönüştürüldü ve indirildi.";
+  } else {
+    progress.textContent = "🔄 ZIP oluşturuluyor...";
+    convertedImages.forEach(img => zip.file(img.name, img.blob));
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+    saveAs(zipBlob, "donusturulmus_gorseller.zip");
+    progress.textContent = "✅ Tüm dosyalar ZIP olarak indirildi!";
+  }
+});
+</script>
+</body>
+</html>
