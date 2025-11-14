@@ -1,541 +1,573 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Diyabet ve Demir Eksikliği İçin Gıdalar – Özellikler</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg: #0f172a;
-      --bg-soft: #111827;
-      --card: #1f2937;
-      --text: #e5e7eb;
-      --accent: #22c55e;
-      --muted: #9ca3af;
-      --border: #374151;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
-      color: var(--text);
-      line-height: 1.5;
-    }
-
-    .page {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
-
-    header {
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 1.6rem;
-      margin-bottom: 0.5rem;
-      color: #f9fafb;
-    }
-
-    header p {
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-
-    .tagline {
-      display: inline-block;
-      margin-top: 0.75rem;
-      padding: 0.2rem 0.7rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 0.75rem;
-      color: var(--accent);
-      background: rgba(34, 197, 94, 0.06);
-    }
-
-    .section {
-      margin-bottom: 1.5rem;
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-      font-size: 1.05rem;
-      color: #e5e7eb;
-    }
-
-    .section-title span.icon {
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(148, 163, 184, 0.14);
-      font-size: 0.8rem;
-    }
-
-    .grid {
-      display: grid;
-      gap: 0.75rem;
-    }
-
-    @media (min-width: 768px) {
-      .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+  <head>
+    <meta charset="UTF-8" />
+    <title>Diyabet ve Demir Eksikliği İçin Gıdalar – Özellikler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #0f172a;
+        --bg-soft: #111827;
+        --card: #1f2937;
+        --text: #e5e7eb;
+        --accent: #22c55e;
+        --muted: #9ca3af;
+        --border: #374151;
       }
-    }
 
-    @media (min-width: 1024px) {
-      .grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
-    }
 
-    .card {
-      background: radial-gradient(circle at top left, #1f2937 0, #020617 65%);
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      padding: 0.8rem 0.9rem;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
-    }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+        color: var(--text);
+        line-height: 1.5;
+      }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.4rem;
-    }
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.5rem;
+      }
 
-    .card-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
+      header {
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
 
-    .card-tag {
-      font-size: 0.7rem;
-      padding: 0.1rem 0.5rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      color: var(--muted);
-      white-space: nowrap;
-    }
+      header h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+        color: #f9fafb;
+      }
 
-    .card-list {
-      list-style: none;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
+      header p {
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
 
-    .card-list li {
-      position: relative;
-      padding-left: 0.9rem;
-      margin-bottom: 0.25rem;
-    }
+      .tagline {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.2rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        font-size: 0.75rem;
+        color: var(--accent);
+        background: rgba(34, 197, 94, 0.06);
+      }
 
-    .card-list li::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: var(--accent);
-      font-size: 0.8rem;
-    }
+      .section {
+        margin-bottom: 1.5rem;
+      }
 
-    footer {
-      margin-top: 1.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <header>
-      <h1>Diyabet ve Demir Eksikliğinde Kullandığımız Gıdalar</h1>
-      <p>
-        Aşağıda bugüne kadar konuştuğumuz sebze, meyve, kuruyemiş, balık ve diğer
-        gıdaların ne işe yaradığını özet halinde bulabilirsiniz.
-      </p>
-      <div class="tagline">
-        Şeker dengesi • Demir desteği • Tansiyon ve nabız kontrolü
-      </div>
-    </header>
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 1.05rem;
+        color: #e5e7eb;
+      }
 
-    <!-- SEBZELER -->
-    <section class="section">
-      <h2 class="section-title">
-        <span class="icon">🥦</span>
-        Sebzeler – Ne İşe Yarar?
-      </h2>
-      <div class="grid">
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">1. Ispanak</div>
-            <div class="card-tag">Demir &amp; Şeker</div>
-          </div>
-          <ul class="card-list">
-            <li>Ferritini yükseltmeye yardımcı olur.</li>
-            <li>Kansızlığa iyi gelir.</li>
-            <li>Kan şekerini dengeler, düşürmeye destek olur.</li>
-            <li>Mideyi ve bağırsakları rahatlatır.</li>
-          </ul>
-        </article>
+      .section-title span.icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(148, 163, 184, 0.14);
+        font-size: 0.8rem;
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">2. Beyaz lahana</div>
-            <div class="card-tag">Bağırsak</div>
-          </div>
-          <ul class="card-list">
-            <li>Şekeri yavaş yükseltir, glisemik yükü düşüktür.</li>
-            <li>Vücuttan toksin atılımına (detoks) destek olur.</li>
-            <li>Bağırsak florasını ve sindirimi düzenler.</li>
-            <li>Gece terlemelerini azaltmaya yardımcı olabilir.</li>
-          </ul>
-        </article>
+      .grid {
+        display: grid;
+        gap: 0.75rem;
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">3. Kırmızı lahana</div>
-            <div class="card-tag">Antioksidan</div>
-          </div>
-          <ul class="card-list">
-            <li>En güçlü doğal antioksidan sebzelerden biridir.</li>
-            <li>Kan damarlarını güçlendirmeye destek olur.</li>
-            <li>Gece terlemesini ve yorgunluk hissini azaltabilir.</li>
-            <li>Sindirimi ve bağırsak hareketlerini düzenler.</li>
-            <li>B grubu vitaminleri destekler.</li>
-            <li>Şeker hastaları için oldukça uygun bir sebzedir.</li>
-          </ul>
-        </article>
+      @media (min-width: 768px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">4. Kıvırcık marul</div>
-            <div class="card-tag">Lif</div>
-          </div>
-          <ul class="card-list">
-            <li>Yüksek lif içeriğiyle kan şekerini dengelemeye yardım eder.</li>
-            <li>Sindirimi ve bağırsak hareketlerini hızlandırır.</li>
-            <li>Mideyi hafif ve rahat hissettirir.</li>
-            <li>Tokluk hissini artırır.</li>
-          </ul>
-        </article>
+      @media (min-width: 1024px) {
+        .grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">5. Roka</div>
-            <div class="card-tag">Karaciğer</div>
-          </div>
-          <ul class="card-list">
-            <li>Karaciğerin daha rahat çalışmasına destek olur.</li>
-            <li>Yağ sindirimini kolaylaştırır.</li>
-            <li>Demir emilimini artırmaya yardımcıdır.</li>
-            <li>Şeker kontrolünde salata içinde iyi bir tamamlayıcıdır.</li>
-          </ul>
-        </article>
+      .card {
+        background: radial-gradient(circle at top left, #1f2937 0, #020617 65%);
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        padding: 0.8rem 0.9rem;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">6. Pırasa</div>
-            <div class="card-tag">Damar &amp; Şeker</div>
-          </div>
-          <ul class="card-list">
-            <li>Kan şekerinin yavaş ve kontrollü yükselmesine yardımcı olur.</li>
-            <li>C vitaminiyle demir emilimini destekler.</li>
-            <li>Gece terlemelerini bir miktar azaltabilir.</li>
-            <li>Bağırsakları ve sindirimi düzenler.</li>
-            <li>Nabzı ve dolaşımı sakinleştirmeye destek olur.</li>
-          </ul>
-        </article>
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.4rem;
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">7. Yeşil biber</div>
-            <div class="card-tag">C Vitamini</div>
-          </div>
-          <ul class="card-list">
-            <li>Güçlü C vitamini kaynağıdır.</li>
-            <li>Demir emilimini 2–3 kat artırmaya yardımcı olabilir.</li>
-            <li>Kan şekerini düşürmeye/dengede tutmaya destek sağlar.</li>
-            <li>Bağışıklık sistemini güçlendirir.</li>
-          </ul>
-        </article>
+      .card-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">8. Turp</div>
-            <div class="card-tag">Sindirim</div>
-          </div>
-          <ul class="card-list">
-            <li>Bağırsakları çalıştırır, sindirimi hızlandırır.</li>
-            <li>Karaciğerin yükünü hafifletmeye destek olur.</li>
-            <li>Şekeri yükseltmez, salatada güvenle kullanılabilir.</li>
-          </ul>
-        </article>
+      .card-tag {
+        font-size: 0.7rem;
+        padding: 0.1rem 0.5rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        color: var(--muted);
+        white-space: nowrap;
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">9. Havuç</div>
-            <div class="card-tag">Beta Karoten</div>
-          </div>
-          <ul class="card-list">
-            <li>Göz ve cilt sağlığı için beta karoten kaynağıdır.</li>
-            <li>Bağırsak hareketlerini artırır.</li>
-            <li>Salata içinde kullanıldığında şeker yükü düşüktür.</li>
-            <li>Tokluk hissine katkı sağlar.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
+      .card-list {
+        list-style: none;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 0.25rem;
+      }
 
-    <!-- PROTEINLER -->
-    <section class="section">
-      <h2 class="section-title">
-        <span class="icon">🍗</span>
-        Et ve Protein Kaynakları – Ne İşe Yarar?
-      </h2>
-      <div class="grid">
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">10. Tavuk (haşlama)</div>
-            <div class="card-tag">Protein</div>
-          </div>
-          <ul class="card-list">
-            <li>Şekeri yükseltmez, dengede kalmasına yardımcı olur.</li>
-            <li>Nabzı ve kas fonksiyonlarını destekler.</li>
-            <li>Mideyi yormadan protein sağlar.</li>
-            <li>Akşam ve öğle öğünlerinde güvenle kullanılabilir.</li>
-          </ul>
-        </article>
+      .card-list li {
+        position: relative;
+        padding-left: 0.9rem;
+        margin-bottom: 0.25rem;
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">11. Kıymalı sebze yemekleri</div>
-            <div class="card-tag">Demir + Lif</div>
-          </div>
-          <ul class="card-list">
-            <li>Hem demir hem lif sağlar.</li>
-            <li>Kan şekerinin kontrollü yükselmesine yardımcı olur.</li>
-            <li>Uzun süre tok tutar.</li>
-            <li>Gece şeker düşmesini önlemeye destek olabilir.</li>
-          </ul>
-        </article>
+      .card-list li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--accent);
+        font-size: 0.8rem;
+      }
 
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">12. Ciğer</div>
-            <div class="card-tag">Ferritin</div>
-          </div>
-          <ul class="card-list">
-            <li>Ferritin (demir deposu) değerini en hızlı yükselten gıdalardandır.</li>
-            <li>Kansızlığın toparlanmasına yardımcı olur.</li>
-            <li>Zihinsel açıklık ve enerji artışı sağlayabilir.</li>
-            <li>Daha iyi oksijenlenme sayesinde nabzı zamanla düşürmeye destek olur.</li>
-            <li>Haftada 1–2 kez tüketilmesi genelde yeterlidir.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- BALIKLAR -->
-    <section class="section">
-      <h2 class="section-title">
-        <span class="icon">🐟</span>
-        Balıklar – Ne İşe Yarar?
-      </h2>
-      <div class="grid">
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">13. Hamsi</div>
-            <div class="card-tag">Omega-3 &amp; B12</div>
-          </div>
-          <ul class="card-list">
-            <li>Omega-3 ve B12 açısından zengindir.</li>
-            <li>Kan şekerinin dengede kalmasına yardımcı olur.</li>
-            <li>Kalp ritmini ve nabzı düzenlemeye destek verir.</li>
-            <li>Beyin fonksiyonlarını ve odaklanmayı güçlendirir.</li>
-            <li>Demir emilimine ve genel enerjiye katkı sağlar.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">14. Levrek / İstavrit / Somon</div>
-            <div class="card-tag">Kalp &amp; Damar</div>
-          </div>
-          <ul class="card-list">
-            <li>Yüksek omega-3 içerir.</li>
-            <li>Nabzı sakinleştirir, damar sağlığını destekler.</li>
-            <li>Şeker dengesi için uygun protein kaynağıdır.</li>
-            <li>Özellikle akşam öğününde hafif ve faydalı bir seçimdir.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- MEYVELER -->
-    <section class="section">
-      <h2 class="section-title">
-        <span class="icon">🍎</span>
-        Meyveler – Ne İşe Yarar?
-      </h2>
-      <div class="grid">
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">15. Muz (küçük boy)</div>
-            <div class="card-tag">Potasyum</div>
-          </div>
-          <ul class="card-list">
-            <li>Potasyum sayesinde nabzın sakinleşmesine destek olur.</li>
-            <li>Hafif ve kontrollü enerji sağlar.</li>
-            <li>Kabızlık sorununu azaltmaya yardımcıdır.</li>
-            <li>Az miktarda yenildiğinde şeker dengesini bozmaz.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- KURUYEMIS -->
-    <section class="section">
-      <h2 class="section-title">
-        <span class="icon">🥜</span>
-        Kuruyemişler – Ne İşe Yarar?
-      </h2>
-      <div class="grid">
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">16. Sarı leblebi</div>
-            <div class="card-tag">Düşük GI</div>
-          </div>
-          <ul class="card-list">
-            <li>Kan şekerinin yavaş ve dengeli yükselmesine yardım eder.</li>
-            <li>Bağırsaklara ve sindirime iyi gelir.</li>
-            <li>Tokluk hissini artırır.</li>
-            <li>Düşük glisemik yüke sahip pratik bir ara öğündür.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">17. Badem (çiğ)</div>
-            <div class="card-tag">Magnezyum</div>
-          </div>
-          <ul class="card-list">
-            <li>Şekeri dengede tutmaya yardımcı olur.</li>
-            <li>Magnezyum içeriğiyle nabzı ve kasları sakinleştirir.</li>
-            <li>Kalp sağlığı için faydalıdır.</li>
-            <li>Tat kaybı ve sinir yorgunluğu dönemlerinde destekleyicidir.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">18. Fındık</div>
-            <div class="card-tag">Damar</div>
-          </div>
-          <ul class="card-list">
-            <li>Damar duvarını güçlendiren sağlıklı yağlar içerir.</li>
-            <li>Şeker yükünü azaltmaya yardımcı olur.</li>
-            <li>Beyin fonksiyonlarını destekler.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">19. Ceviz</div>
-            <div class="card-tag">Sinir Sistemi</div>
-          </div>
-          <ul class="card-list">
-            <li>Yüksek omega-3 ile sinir sistemini destekler.</li>
-            <li>Gece terlemelerini ve sinirsel gerginliği azaltmaya yardımcı olabilir.</li>
-            <li>Şekeri yükseltmez, güvenli bir ara öğündür.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- OT & ICECEKLER -->
-    <section class="section">
-      <h2 class="section-title">
-        <span class="icon">🍵</span>
-        Otlar, Yağlar ve İçecekler – Ne İşe Yarar?
-      </h2>
-      <div class="grid">
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">20. Ihlamur</div>
-            <div class="card-tag">Sakinleştirici</div>
-          </div>
-          <ul class="card-list">
-            <li>Sinir sistemini ve zihni sakinleştirir.</li>
-            <li>Tansiyon ve nabzın dengelenmesine destek olur.</li>
-            <li>Mideyi ve sindirimi rahatlatır.</li>
-            <li>Şekeri yükseltmez, gün içinde güvenle içilebilir.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">21. Zeytin yaprağı çayı</div>
-            <div class="card-tag">Şeker</div>
-          </div>
-          <ul class="card-list">
-            <li>Doğal antioksidan içerir.</li>
-            <li>Kan şekerini düşürmeye destek olabilir.</li>
-            <li>Tansiyonu hafif aşağı çekebilir.</li>
-            <li>Her gün değil, gerektiğinde ve kontrollü kullanılmalıdır.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">22. Zeytinyağı</div>
-            <div class="card-tag">Kalp Dostu</div>
-          </div>
-          <ul class="card-list">
-            <li>Kalp ve damar sağlığını destekleyen sağlıklı yağdır.</li>
-            <li>Şekerin hızlı yükselmesini engelleyebilir.</li>
-            <li>Tansiyonun dengelenmesine yardımcı olur.</li>
-            <li>Antioksidan etkisiyle hücreleri korur.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <div class="card-header">
-            <div class="card-title">23. Salatalık</div>
-            <div class="card-tag">Hafif &amp; Nötr</div>
-          </div>
-          <ul class="card-list">
-            <li>Vücudun su dengesini destekler.</li>
-            <li>Kan şekerini yükseltmez.</li>
-            <li>Gece terlemelerini azaltmaya yardımcı olabilir.</li>
-            <li>Mideyi ferah ve rahat hissettirir.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <footer>
-      Bu sayfa, doktorun yerine geçmez; mevcut diyet ve ilaç tedavinize ek olarak
-      rehber niteliğinde hazırlanmıştır.
-    </footer>
-  </div>
-</body>
+      footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <h1>Diyabet ve Demir Eksikliğinde Kullandığımız Gıdalar</h1>
+        <p> Aşağıda bugüne kadar konuştuğumuz sebze, meyve, kuruyemiş, balık ve diğer gıdaların ne işe yaradığını özet halinde bulabilirsiniz. </p>
+        <div class="tagline"> Şeker dengesi • Demir desteği • Tansiyon ve nabız kontrolü </div>
+      </header>
+      <!-- SEBZELER -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="icon">🥦</span> Sebzeler – Ne İşe Yarar?
+        </h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">1. Ispanak</div>
+              <div class="card-tag">Demir &amp; Şeker</div>
+            </div>
+            <ul class="card-list">
+              <li>Ferritini yükseltmeye yardımcı olur.</li>
+              <li>Kansızlığa iyi gelir.</li>
+              <li>Kan şekerini dengeler, düşürmeye destek olur.</li>
+              <li>Mideyi ve bağırsakları rahatlatır.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">2. Beyaz lahana</div>
+              <div class="card-tag">Bağırsak</div>
+            </div>
+            <ul class="card-list">
+              <li>Şekeri yavaş yükseltir, glisemik yükü düşüktür.</li>
+              <li>Vücuttan toksin atılımına (detoks) destek olur.</li>
+              <li>Bağırsak florasını ve sindirimi düzenler.</li>
+              <li>Gece terlemelerini azaltmaya yardımcı olabilir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">3. Kırmızı lahana</div>
+              <div class="card-tag">Antioksidan</div>
+            </div>
+            <ul class="card-list">
+              <li>En güçlü doğal antioksidan sebzelerden biridir.</li>
+              <li>Kan damarlarını güçlendirmeye destek olur.</li>
+              <li>Gece terlemesini ve yorgunluk hissini azaltabilir.</li>
+              <li>Sindirimi ve bağırsak hareketlerini düzenler.</li>
+              <li>B grubu vitaminleri destekler.</li>
+              <li>Şeker hastaları için oldukça uygun bir sebzedir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">4. Kıvırcık marul</div>
+              <div class="card-tag">Lif</div>
+            </div>
+            <ul class="card-list">
+              <li>Yüksek lif içeriğiyle kan şekerini dengelemeye yardım eder.</li>
+              <li>Sindirimi ve bağırsak hareketlerini hızlandırır.</li>
+              <li>Mideyi hafif ve rahat hissettirir.</li>
+              <li>Tokluk hissini artırır.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">5. Roka</div>
+              <div class="card-tag">Karaciğer</div>
+            </div>
+            <ul class="card-list">
+              <li>Karaciğerin daha rahat çalışmasına destek olur.</li>
+              <li>Yağ sindirimini kolaylaştırır.</li>
+              <li>Demir emilimini artırmaya yardımcıdır.</li>
+              <li>Şeker kontrolünde salata içinde iyi bir tamamlayıcıdır.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">6. Pırasa</div>
+              <div class="card-tag">Damar &amp; Şeker</div>
+            </div>
+            <ul class="card-list">
+              <li>Kan şekerinin yavaş ve kontrollü yükselmesine yardımcı olur.</li>
+              <li>C vitaminiyle demir emilimini destekler.</li>
+              <li>Gece terlemelerini bir miktar azaltabilir.</li>
+              <li>Bağırsakları ve sindirimi düzenler.</li>
+              <li>Nabzı ve dolaşımı sakinleştirmeye destek olur.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">7. Yeşil biber</div>
+              <div class="card-tag">C Vitamini</div>
+            </div>
+            <ul class="card-list">
+              <li>Güçlü C vitamini kaynağıdır.</li>
+              <li>Demir emilimini 2–3 kat artırmaya yardımcı olabilir.</li>
+              <li>Kan şekerini düşürmeye/dengede tutmaya destek sağlar.</li>
+              <li>Bağışıklık sistemini güçlendirir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">8. Turp</div>
+              <div class="card-tag">Sindirim</div>
+            </div>
+            <ul class="card-list">
+              <li>Bağırsakları çalıştırır, sindirimi hızlandırır.</li>
+              <li>Karaciğerin yükünü hafifletmeye destek olur.</li>
+              <li>Şekeri yükseltmez, salatada güvenle kullanılabilir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">9. Havuç</div>
+              <div class="card-tag">Beta Karoten</div>
+            </div>
+            <ul class="card-list">
+              <li>Göz ve cilt sağlığı için beta karoten kaynağıdır.</li>
+              <li>Bağırsak hareketlerini artırır.</li>
+              <li>Salata içinde kullanıldığında şeker yükü düşüktür.</li>
+              <li>Tokluk hissine katkı sağlar.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">10. Domates</div>
+              <div class="card-tag">Likopen</div>
+            </div>
+            <ul class="card-list">
+              <li>Güçlü antioksidan olan likopen içerir.</li>
+              <li>Şeker yükü düşüktür, salatalarda güvenle kullanılabilir.</li>
+              <li>Tansiyonun dengelenmesine yardımcı olabilir.</li>
+              <li>Bağırsak ve mideyi rahatlatır.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">11. Dereotu</div>
+              <div class="card-tag">Sindirim</div>
+            </div>
+            <ul class="card-list">
+              <li>Şişkinlik ve gazı azaltmaya yardımcı olur.</li>
+              <li>Kan şekeri üzerinde olumlu etkisi vardır.</li>
+              <li>Lif içeriğiyle sindirimi destekler.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">12. Kuzukulağı</div>
+              <div class="card-tag">C Vitamini</div>
+            </div>
+            <ul class="card-list">
+              <li>Yüksek C vitamini ile demir emilimini artırır.</li>
+              <li>Şeker yükselişini yavaşlatır.</li>
+              <li>Hafif ekşi tadıyla salatada ferahlık sağlar.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">13. Semizotu</div>
+              <div class="card-tag">Omega-3</div>
+            </div>
+            <ul class="card-list">
+              <li>Bitkisel omega-3 kaynağıdır.</li>
+              <li>Tansiyon ve şeker dengesini destekler.</li>
+              <li>Yüksek lif ile bağırsakları çalıştırır.</li>
+              <li>Vücudu serinletici özelliği vardır.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <!-- PROTEINLER -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="icon">🍗</span> Et ve Protein Kaynakları – Ne İşe Yarar?
+        </h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">10. Tavuk (haşlama)</div>
+              <div class="card-tag">Protein</div>
+            </div>
+            <ul class="card-list">
+              <li>Şekeri yükseltmez, dengede kalmasına yardımcı olur.</li>
+              <li>Nabzı ve kas fonksiyonlarını destekler.</li>
+              <li>Mideyi yormadan protein sağlar.</li>
+              <li>Akşam ve öğle öğünlerinde güvenle kullanılabilir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">11. Kıymalı sebze yemekleri</div>
+              <div class="card-tag">Demir + Lif</div>
+            </div>
+            <ul class="card-list">
+              <li>Hem demir hem lif sağlar.</li>
+              <li>Kan şekerinin kontrollü yükselmesine yardımcı olur.</li>
+              <li>Uzun süre tok tutar.</li>
+              <li>Gece şeker düşmesini önlemeye destek olabilir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">12. Ciğer</div>
+              <div class="card-tag">Ferritin</div>
+            </div>
+            <ul class="card-list">
+              <li>Ferritin (demir deposu) değerini en hızlı yükselten gıdalardandır.</li>
+              <li>Kansızlığın toparlanmasına yardımcı olur.</li>
+              <li>Zihinsel açıklık ve enerji artışı sağlayabilir.</li>
+              <li>Daha iyi oksijenlenme sayesinde nabzı zamanla düşürmeye destek olur.</li>
+              <li>Haftada 1–2 kez tüketilmesi genelde yeterlidir.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <!-- BALIKLAR -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="icon">🐟</span> Balıklar – Ne İşe Yarar?
+        </h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">13. Hamsi</div>
+              <div class="card-tag">Omega-3 &amp; B12</div>
+            </div>
+            <ul class="card-list">
+              <li>Omega-3 ve B12 açısından zengindir.</li>
+              <li>Kan şekerinin dengede kalmasına yardımcı olur.</li>
+              <li>Kalp ritmini ve nabzı düzenlemeye destek verir.</li>
+              <li>Beyin fonksiyonlarını ve odaklanmayı güçlendirir.</li>
+              <li>Demir emilimine ve genel enerjiye katkı sağlar.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">14. Levrek / İstavrit / Somon</div>
+              <div class="card-tag">Kalp &amp; Damar</div>
+            </div>
+            <ul class="card-list">
+              <li>Yüksek omega-3 içerir.</li>
+              <li>Nabzı sakinleştirir, damar sağlığını destekler.</li>
+              <li>Şeker dengesi için uygun protein kaynağıdır.</li>
+              <li>Özellikle akşam öğününde hafif ve faydalı bir seçimdir.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <!-- MEYVELER -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="icon">🍎</span> Meyveler – Ne İşe Yarar?
+        </h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">15. Muz (küçük boy)</div>
+              <div class="card-tag">Potasyum</div>
+            </div>
+            <ul class="card-list">
+              <li>Potasyum sayesinde nabzın sakinleşmesine destek olur.</li>
+              <li>Hafif ve kontrollü enerji sağlar.</li>
+              <li>Kabızlık sorununu azaltmaya yardımcıdır.</li>
+              <li>Az miktarda yenildiğinde şeker dengesini bozmaz.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">16. Mandalina</div>
+              <div class="card-tag">C Vitamini</div>
+            </div>
+            <ul class="card-list">
+              <li>C vitamini ile bağışıklığı güçlendirir.</li>
+              <li>Şeker yükü kontrollüdür, küçük porsiyon uygundur.</li>
+              <li>Nabzı ve tansiyonu bir miktar sakinleştirebilir.</li>
+              <li>Yorgunluk ve halsizliği azaltmaya yardımcıdır.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <!-- KURUYEMIS -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="icon">🥜</span> Kuruyemişler – Ne İşe Yarar?
+        </h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">16. Sarı leblebi</div>
+              <div class="card-tag">Düşük GI</div>
+            </div>
+            <ul class="card-list">
+              <li>Kan şekerinin yavaş ve dengeli yükselmesine yardım eder.</li>
+              <li>Bağırsaklara ve sindirime iyi gelir.</li>
+              <li>Tokluk hissini artırır.</li>
+              <li>Düşük glisemik yüke sahip pratik bir ara öğündür.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">17. Badem (çiğ)</div>
+              <div class="card-tag">Magnezyum</div>
+            </div>
+            <ul class="card-list">
+              <li>Şekeri dengede tutmaya yardımcı olur.</li>
+              <li>Magnezyum içeriğiyle nabzı ve kasları sakinleştirir.</li>
+              <li>Kalp sağlığı için faydalıdır.</li>
+              <li>Tat kaybı ve sinir yorgunluğu dönemlerinde destekleyicidir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">18. Fındık</div>
+              <div class="card-tag">Damar</div>
+            </div>
+            <ul class="card-list">
+              <li>Damar duvarını güçlendiren sağlıklı yağlar içerir.</li>
+              <li>Şeker yükünü azaltmaya yardımcı olur.</li>
+              <li>Beyin fonksiyonlarını destekler.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">19. Ceviz</div>
+              <div class="card-tag">Sinir Sistemi</div>
+            </div>
+            <ul class="card-list">
+              <li>Yüksek omega-3 ile sinir sistemini destekler.</li>
+              <li>Gece terlemelerini ve sinirsel gerginliği azaltmaya yardımcı olabilir.</li>
+              <li>Şekeri yükseltmez, güvenli bir ara öğündür.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">20. Kaju</div>
+              <div class="card-tag">Enerji</div>
+            </div>
+            <ul class="card-list">
+              <li>Orta düzeyde sağlıklı yağ ve protein içerir.</li>
+              <li>Aşırı tüketilmediğinde şeker dengesini bozmaz.</li>
+              <li>Yorgunluk ve halsizlik dönemlerinde enerji sağlar.</li>
+              <li>Tuzsuz ve az miktarda tüketilmelidir.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <!-- OT & ICECEKLER -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="icon">🍵</span> Otlar, Yağlar ve İçecekler – Ne İşe Yarar?
+        </h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">20. Ihlamur</div>
+              <div class="card-tag">Sakinleştirici</div>
+            </div>
+            <ul class="card-list">
+              <li>Sinir sistemini ve zihni sakinleştirir.</li>
+              <li>Tansiyon ve nabzın dengelenmesine destek olur.</li>
+              <li>Mideyi ve sindirimi rahatlatır.</li>
+              <li>Şekeri yükseltmez, gün içinde güvenle içilebilir.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">21. Zeytin yaprağı çayı</div>
+              <div class="card-tag">Şeker</div>
+            </div>
+            <ul class="card-list">
+              <li>Doğal antioksidan içerir.</li>
+              <li>Kan şekerini düşürmeye destek olabilir.</li>
+              <li>Tansiyonu hafif aşağı çekebilir.</li>
+              <li>Her gün değil, gerektiğinde ve kontrollü kullanılmalıdır.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">22. Zeytinyağı</div>
+              <div class="card-tag">Kalp Dostu</div>
+            </div>
+            <ul class="card-list">
+              <li>Kalp ve damar sağlığını destekleyen sağlıklı yağdır.</li>
+              <li>Şekerin hızlı yükselmesini engelleyebilir.</li>
+              <li>Tansiyonun dengelenmesine yardımcı olur.</li>
+              <li>Antioksidan etkisiyle hücreleri korur.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">23. Salatalık</div>
+              <div class="card-tag">Hafif &amp; Nötr</div>
+            </div>
+            <ul class="card-list">
+              <li>Vücudun su dengesini destekler.</li>
+              <li>Kan şekerini yükseltmez.</li>
+              <li>Gece terlemelerini azaltmaya yardımcı olabilir.</li>
+              <li>Mideyi ferah ve rahat hissettirir.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <footer> Bu sayfa, doktorun yerine geçmez; mevcut diyet ve ilaç tedavinize ek olarak rehber niteliğinde hazırlanmıştır. </footer>
+    </div>
+  </body>
 </html>
