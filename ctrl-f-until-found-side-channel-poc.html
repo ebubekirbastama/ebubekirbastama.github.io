@@ -77,9 +77,15 @@
 
 </div>
 
-<!-- until-found adayları -->
+<!-- ⚠️ KRİTİK NOKTA: layout içinde, görünmez ama render ediliyor -->
 <div id="search-candidates"
-     style="position:absolute; left:-9999px; top:-9999px;"></div>
+     style="
+       font-size:1px;
+       line-height:1px;
+       height:1px;
+       overflow:hidden;
+     ">
+</div>
 
 <script>
 let detectedSequence = "";
@@ -114,7 +120,7 @@ function generateCandidates(prefix = "") {
 
     const p = document.createElement("p");
 
-    /* 🔴 KRİTİK FIX */
+    /* 🔴 ASIL OLAY */
     p.setAttribute("hidden", "until-found");
 
     p.id = id;
