@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- SEO -->
+<title>EBS Ultra Görsel Sıkıştırıcı | JPG PNG WEBP ZIP | Ebubekir Bastama</title>
+<meta name="description" content="Ultra Görsel Sıkıştırıcı ile JPG, PNG ve WEBP dosyalarını kalite kaybı olmadan küçültün. Çoklu yükleme, ZIP indirme ve akıllı optimizasyon sistemi. Yazılımcı: Ebubekir Bastama.">
+<meta name="keywords" content="görsel sıkıştırma, jpg küçültme, png optimize, webp dönüştürme, zip indirme, tiny png alternatifi, online resim küçültme">
+<meta name="author" content="Ebubekir Bastama">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Ultra Görsel Sıkıştırıcı">
+<meta property="og:description" content="Kalite kaybı olmadan görsellerinizi küçültün. Akıllı sıkıştırma ve ZIP indirme desteği.">
+<meta property="og:type" content="website">
+
+<!-- Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Ultra Görsel Sıkıştırıcı",
+  "operatingSystem": "Web",
+  "applicationCategory": "MultimediaApplication",
+  "creator": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama"
+  },
+  "description": "Kalite kaybı olmadan JPG, PNG ve WEBP görselleri sıkıştırma aracı."
+}
+</script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+body {
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color: white;
+}
+.drop-zone {
+    border: 2px dashed #00d4ff;
+    border-radius: 15px;
+    padding: 50px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.drop-zone:hover {
+    background: rgba(255,255,255,0.05);
+}
+.preview-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    padding: 15px;
+}
+</style>
+</head>
+<body>
+
+<div class="container py-5">
+
+    <h2 class="text-center mb-4">🚀 EBS Ultra Görsel Sıkıştırıcı</h2>
+
+    <div class="drop-zone mb-4" id="dropZone">
+        <h5>Dosyaları sürükleyin veya tıklayın</h5>
+        <input type="file" id="fileInput" hidden multiple accept="image/*">
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label>Kalite (Önerilen 0.85)</label>
+            <input type="range" id="quality" class="form-range" min="0.5" max="1" step="0.05" value="0.85">
+        </div>
+        <div class="col-md-4">
+            <label>Maks Genişlik (px)</label>
+            <input type="number" id="maxWidth" class="form-control" placeholder="1920">
+        </div>
+        <div class="col-md-4">
+            <label>Format</label>
+            <select id="format" class="form-select">
+                <option value="auto">Akıllı Seç</option>
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/webp">WEBP (En iyi)</option>
+                <option value="image/png">PNG</option>
+            </select>
+        </div>
+    </div>
+
+    <button class="btn btn-info w-100 mb-4" onclick="processImages()">Sıkıştır</button>
+
+    <div class="progress mb-4" style="height:20px; display:none;" id="progressBar">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%"></div>
+    </div>
+
+    <div class="row" id="previewArea"></div>
+
+</div>
+
+<script>
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+let filesList = [];
+
+dropZone.addEventListener("click", () => fileInput.click());
+dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.style.background="rgba(255,255,255,0.1)"; });
+dropZone.addEventListener("dragleave", () => dropZone.style.background="transparent");
+dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    filesList = Array.from(e.dataTransfer.files);
+    dropZone.style.background="transparent";
+});
+fileInput.addEventListener("change", e => {
+    filesList = Array.from(e.target.files);
+});
+
+async function processImages() {
+
+    if(filesList.length === 0) return alert("Dosya seçmediniz.");
+
+    const quality = parseFloat(document.getElementById("quality").value);
+    const maxWidth = parseInt(document.getElementById("maxWidth").value);
+    const formatSelect = document.getElementById("format").value;
+
+    const zip = new JSZip();
+    const progressBar = document.getElementById("progressBar");
+    const bar = progressBar.querySelector(".progress-bar");
+    progressBar.style.display="block";
+    bar.style.width="0%";
+
+    let processedFiles = [];
+
+    for(let i=0;i<filesList.length;i++){
+
+        const file = filesList[i];
+
+        const img = await createImageBitmap(file);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let width = img.width;
+        let height = img.height;
+
+        if(maxWidth && width > maxWidth){
+            height *= maxWidth/width;
+            width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img,0,0,width,height);
+
+        let finalFormat = formatSelect;
+        if(formatSelect === "auto"){
+            finalFormat = (file.type === "image/png") ? "image/webp" : "image/jpeg";
+        }
+
+        const blob = await new Promise(resolve =>
+            canvas.toBlob(resolve, finalFormat, quality)
+        );
+
+        processedFiles.push({
+            name: file.name.split(".")[0] + "." + finalFormat.split("/")[1],
+            blob: blob,
+            original: file.size,
+            compressed: blob.size
+        });
+
+        bar.style.width = ((i+1)/filesList.length*100)+"%";
+    }
+
+    // Download logic
+    if(processedFiles.length === 1){
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(processedFiles[0].blob);
+        a.download = processedFiles[0].name;
+        a.click();
+    } else {
+        processedFiles.forEach(f => zip.file(f.name, f.blob));
+        const zipBlob = await zip.generateAsync({type:"blob"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(zipBlob);
+        a.download = "compressed_images.zip";
+        a.click();
+    }
+
+    progressBar.style.display="none";
+    alert("İşlem tamamlandı 🚀");
+}
+</script>
+<!-- Bilgilendirme Bölümü -->
+<section class="container-fluid py-5 mt-5" style="background:#111827;">
+  <div class="container text-light">
+
+    <div class="row">
+      <div class="col-12 text-center mb-4">
+        <h2 class="fw-bold">Ultra Görsel Sıkıştırıcı Nedir?</h2>
+        <p class="text-secondary">
+          Ultra Görsel Sıkıştırıcı, kalite kaybını minimuma indirerek JPG, PNG ve WEBP dosyalarını optimize eden gelişmiş bir web uygulamasıdır.
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-6">
+        <div class="p-4 rounded bg-dark h-100">
+          <h4>📌 Ne İşe Yarar?</h4>
+          <ul>
+            <li>Web siteleri için görsel boyutunu küçültür</li>
+            <li>Site hızını artırır</li>
+            <li>SEO performansını iyileştirir</li>
+            <li>Depolama alanından tasarruf sağlar</li>
+            <li>Çoklu dosyaları ZIP olarak indirir</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="p-4 rounded bg-dark h-100">
+          <h4>🚀 Neden Kullanılmalı?</h4>
+          <ul>
+            <li>Google PageSpeed skorunu yükseltir</li>
+            <li>Daha hızlı açılan web sayfaları sağlar</li>
+            <li>Mobil veri tasarrufu sağlar</li>
+            <li>Hosting maliyetini azaltır</li>
+            <li>Akıllı format dönüşümü yapar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="p-4 rounded bg-dark h-100">
+          <h4>⭐ Avantajları</h4>
+          <ul>
+            <li>Tarayıcı tabanlı güvenli işlem</li>
+            <li>Sunucuya yükleme yok</li>
+            <li>Toplu işlem desteği</li>
+            <li>WEBP ve JPEG optimizasyon</li>
+            <li>ZIP otomatik indirme</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="p-4 rounded bg-dark h-100">
+          <h4>⚙ Teknik Özellikler</h4>
+          <ul>
+            <li>Canvas tabanlı yeniden encode</li>
+            <li>Akıllı format seçimi</li>
+            <li>Kalite kontrol slider</li>
+            <li>Responsive Bootstrap tasarım</li>
+            <li>JSZip ile otomatik arşivleme</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 text-center">
+        <hr class="border-secondary">
+        <h5>Yazılımcı: <strong>Ebubekir Bastama</strong></h5>
+        <p class="text-secondary">
+          Bu uygulama, modern web performans standartlarına uygun olarak geliştirilmiştir. 
+          SEO, hız optimizasyonu ve kullanıcı deneyimi ön planda tutulmuştur.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>
