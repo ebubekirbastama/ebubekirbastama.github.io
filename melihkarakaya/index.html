@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Melih Karakaya | Beykoz CHP Meclis Üyesi | Güncel Haberler ve İletişim</title>
+<link rel="icon" href="https://www.melihkarakaya.com.tr/favicon.ico" type="image/x-icon">
+<meta name="description" content="Melih Karakaya, Beykoz Belediyesi CHP Meclis Üyesi. Güncel haberler, projeler ve iletişim bilgilerini keşfedin.">
+<!-- Open Graph -->
+<meta property="og:title" content="Melih Karakaya | Beykoz CHP Meclis Üyesi">
+<meta property="og:description" content="Melih Karakaya, Beykoz Belediyesi CHP Meclis Üyesi. Güncel haberler ve iletişim bilgileri.">
+<meta property="og:image" content="https://www.melihkarakaya.com.tr/wp-content/uploads/2024/01/melih-home-e1706369775952.png">
+<meta property="og:url" content="https://www.melihkarakaya.com.tr/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Melih Karakaya Resmi Web Sitesi">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Melih Karakaya | Beykoz CHP Meclis Üyesi">
+<meta name="twitter:description" content="Melih Karakaya, Beykoz Belediyesi CHP Meclis Üyesi. Güncel haberler ve iletişim bilgileri.">
+<meta name="twitter:image" content="https://www.melihkarakaya.com.tr/wp-content/uploads/2024/01/melih-home-e1706369775952.png">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Inter',sans-serif;
+    background:#f5f5f5;
+    color:#333;
+    overflow-x:hidden;
+}
+
+/* NAVBAR */
+.navbar{
+    background:rgba(255,255,255,0.95);
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* HERO */
+.hero{
+    padding:100px 20px 60px;
+    text-align:center;
+    background: linear-gradient(135deg,#1877f2,#0a3d91);
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    border-bottom-left-radius:50% 20%;
+    border-bottom-right-radius:50% 20%;
+}
+
+.hero h1{
+    font-weight:700;
+    font-size:2.8rem;
+}
+
+.hero::before, .hero::after{
+    content:'';
+    position:absolute;
+    border-radius:50%;
+    opacity:0.3;
+    transform:translate(-50%, -50%);
+}
+
+.hero::before{
+    width:400px;
+    height:400px;
+    background:#1da1f2;
+    top:20%;
+    left:10%;
+}
+
+.hero::after{
+    width:300px;
+    height:300px;
+    background:#6495ed;
+    bottom:10%;
+    right:15%;
+}
+
+/* CONTENT BOX FLEX */
+.content-box{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    max-width:900px;
+    margin:auto;
+    background:#fff;
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    margin-top:-60px;
+    position:relative;
+    z-index:2;
+}
+
+/* GLASS */
+.glass{
+    flex: 1 1 300px;
+    max-width: 450px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:25px;
+    padding:40px;
+    text-align:center;
+}
+
+/* HERO IMAGE */
+.hero-img{
+    flex: 1 1 300px;
+    max-width: 450px;
+    border-radius:25px;
+    transition:0.5s;
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+.hero-img:hover{
+    transform:scale(1.07) rotate(-1deg);
+}
+
+/* HERO TEXT */
+.glass h1 {
+    font-size: 2.5rem;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+.glass h2 {
+    font-size: 1.5rem;
+    opacity:0.85;
+}
+
+/* FOOTER */
+.footer{
+    background:#0a0a0a;
+    padding:60px 0;
+    color:#aaa;
+}
+
+/* LINKS */
+.footer a{
+    color:#aaa;
+    text-decoration:none;
+    display:block;
+    margin-bottom:8px;
+    transition:0.3s;
+}
+
+.footer a:hover{
+    color:#fff;
+    transform:translateX(5px);
+}
+
+/* SOCIAL ICONS MODERN */
+.social-icons a{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:50px;
+    height:50px;
+    margin-right:10px;
+    border-radius:50%;
+    background:#fff;
+    color:#333;
+    font-size:18px;
+    font-weight:600;
+    position:relative;
+    overflow:hidden;
+    transition:0.4s;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+}
+
+.social-icons a::before{
+    content:'';
+    position:absolute;
+    width:120%;
+    height:120%;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0);
+    transition:0.4s;
+}
+
+/* FACEBOOK */
+.social-icons a.facebook:hover{
+    background:#1877f2;
+    color:#fff;
+}
+.social-icons a.facebook::before{
+    background:rgba(24,119,242,0.2);
+}
+.social-icons a.facebook:hover::before{
+    transform:translate(-50%,-50%) scale(1);
+}
+
+/* INSTAGRAM */
+.social-icons a.instagram:hover{
+    background:linear-gradient(45deg,#feda75,#d62976,#8134af,#515bd4);
+    color:#fff;
+}
+.social-icons a.instagram::before{
+    background:rgba(255,255,255,0.1);
+}
+.social-icons a.instagram:hover::before{
+    transform:translate(-50%,-50%) scale(1);
+}
+
+/* X / TWITTER */
+.social-icons a.twitter:hover{
+    background:#1da1f2;
+    color:#fff;
+}
+.social-icons a.twitter::before{
+    background:rgba(29,161,242,0.2);
+}
+.social-icons a.twitter:hover::before{
+    transform:translate(-50%,-50%) scale(1);
+}
+
+/* COPYRIGHT */
+.copy{
+    opacity:0.6;
+    font-size:14px;
+    margin-top:20px;
+}
+
+/* MOBILE */
+@media(max-width:992px){
+    .glass h1{
+        font-size:2rem;
+    }
+    .glass h2{
+        font-size:1.3rem;
+    }
+}
+
+@media(max-width:576px){
+    .glass h1{
+        font-size:1.5rem;
+    }
+    .glass h2{
+        font-size:1.1rem;
+    }
+    .content-box{
+        flex-direction: column;
+    }
+    .hero-img{
+        max-width:80%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+<div class="container">
+<a class="navbar-brand" href="index.html">
+<!-- Navbar logo -->
+<img src="https://melihkarakaya.com.tr/wp-content/uploads/2024/01/imza3.png" alt="Melih Karakaya İmza Logo" style="height:45px;" loading="lazy">
+
+</a>
+<button class="navbar-toggler text-dark" data-bs-toggle="collapse" data-bs-target="#menu">☰</button>
+<div class="collapse navbar-collapse" id="menu">
+<ul class="navbar-nav ms-auto">
+<li class="nav-item"><a class="nav-link" href="index.html">Ana Sayfa</a></li>
+<li class="nav-item"><a class="nav-link" href="beni-taniyin.html">Beni Tanıyın</a></li>
+<li class="nav-item"><a class="nav-link" href="iletisim.html">İletişim</a></li>
+</ul>
+</div>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="container">
+<h2 class="text-white">Ana Sayfa</h2>
+</div>
+</section>
+
+<!-- CONTENT -->
+<section class="pb-5">
+<div class="container">
+<div class="content-box text-center">
+    <!-- YAZI -->
+    <div class="glass">
+    <h1 class="text-Black">Melih Karakaya</h1> <!-- Ana başlık -->
+    <h2 class="text-Black">Beykoz CHP Meclis Üyesi</h2> <!-- Alt başlık -->
+    </div>
+    <!-- GÖRSEL -->
+   <!-- Hero image -->
+<img src="https://www.melihkarakaya.com.tr/wp-content/uploads/2024/01/melih-home-e1706369775952.png" class="hero-img" alt="Melih Karakaya Beykoz CHP Meclis Üyesi" loading="lazy">
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+<div class="container">
+<div class="row">
+
+<div class="col-md-4 mb-4">
+<h5>Site Haritası</h5>
+<a href="index.html">Ana Sayfa</a>
+<a href="beni-taniyin.html">Beni Tanıyın</a>
+<a href="iletisim.html">İletişim</a>
+</div>
+
+<div class="col-md-4 mb-4">
+<h5>Sosyal</h5>
+<div class="social-icons mt-3">
+<a href="https://www.facebook.com/karakaya.melihr/" class="facebook"><i class="fab fa-facebook-f"></i></a>
+<a href="https://www.instagram.com/karakaya.melihr" class="instagram"><i class="fab fa-instagram"></i></a>
+<a href="https://x.com/melihkarakaya__" class="twitter"><i class="fab fa-x-twitter"></i></a>
+</div>
+</div>
+
+<div class="col-md-4 mb-4">
+<h5>Bilgi</h5>
+<p class="copy">© 2026 Tüm Hakları Saklıdır</p>
+</div>
+
+</div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Melih Karakaya",
+  "url": "https://www.melihkarakaya.com.tr/",
+  "image": "https://www.melihkarakaya.com.tr/wp-content/uploads/2024/01/melih-home-e1706369775952.png",
+  "jobTitle": "CHP Meclis Üyesi",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Beykoz Belediyesi"
+  },
+  "sameAs": [
+    "https://www.facebook.com/karakaya.melihr/",
+    "https://www.instagram.com/karakaya.melihr",
+    "https://x.com/melihkarakaya__"
+  ]
+}
+</script>
+</body>
+</html>
