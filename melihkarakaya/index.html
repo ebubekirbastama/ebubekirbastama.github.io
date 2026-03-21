@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<link rel="canonical" href="https://www.melihkarakaya.com.tr/">
 <title>Melih Karakaya | Beykoz CHP Meclis Üyesi | Güncel Haberler ve İletişim</title>
+<meta name="keywords" content="Melih Karakaya, Beykoz CHP, Beykoz Meclis Üyesi, CHP Beykoz">
 <link rel="icon" href="https://www.melihkarakaya.com.tr/favicon.ico" type="image/x-icon">
 <meta name="description" content="Melih Karakaya, Beykoz Belediyesi CHP Meclis Üyesi. Güncel haberler, projeler ve iletişim bilgilerini keşfedin.">
+<meta name="robots" content="index, follow">
+
 <!-- Open Graph -->
 <meta property="og:title" content="Melih Karakaya | Beykoz CHP Meclis Üyesi">
 <meta property="og:description" content="Melih Karakaya, Beykoz Belediyesi CHP Meclis Üyesi. Güncel haberler ve iletişim bilgileri.">
@@ -83,11 +86,11 @@ body{
 
 /* CONTENT BOX FLEX */
 .content-box{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
     max-width:900px;
     margin:auto;
     background:#fff;
@@ -102,8 +105,8 @@ body{
 
 /* GLASS */
 .glass{
-    flex: 1 1 300px;
-    max-width: 450px;
+    flex:1 1 300px;
+    max-width:450px;
     background:rgba(255,255,255,0.08);
     backdrop-filter:blur(15px);
     border:1px solid rgba(255,255,255,0.1);
@@ -114,11 +117,14 @@ body{
 
 /* HERO IMAGE */
 .hero-img{
-    flex: 1 1 300px;
-    max-width: 450px;
+    flex:1 1 300px;
+    max-width:450px;
     border-radius:25px;
     transition:0.5s;
     box-shadow:0 20px 60px rgba(0,0,0,0.6);
+
+    display:block;
+    margin:0 auto; /* 🔥 ORTALAMA FIX */
 }
 
 .hero-img:hover{
@@ -126,14 +132,14 @@ body{
 }
 
 /* HERO TEXT */
-.glass h1 {
-    font-size: 2.5rem;
+.glass h1{
+    font-size:2.5rem;
     font-weight:700;
     letter-spacing:1px;
 }
 
-.glass h2 {
-    font-size: 1.5rem;
+.glass h2{
+    font-size:1.5rem;
     opacity:0.85;
 }
 
@@ -158,7 +164,7 @@ body{
     transform:translateX(5px);
 }
 
-/* SOCIAL ICONS MODERN */
+/* SOCIAL ICONS */
 .social-icons a{
     display:inline-flex;
     align-items:center;
@@ -213,7 +219,7 @@ body{
     transform:translate(-50%,-50%) scale(1);
 }
 
-/* X / TWITTER */
+/* TWITTER / X */
 .social-icons a.twitter:hover{
     background:#1da1f2;
     color:#fff;
@@ -232,30 +238,44 @@ body{
     margin-top:20px;
 }
 
-/* MOBILE */
-@media(max-width:992px){
-    .glass h1{
-        font-size:2rem;
-    }
-    .glass h2{
-        font-size:1.3rem;
-    }
-}
-
+/* MOBILE OPTIMIZED */
 @media(max-width:576px){
+    /* Content Box */
+    .content-box{
+        flex-direction: column;
+        padding:15px;        /* overall padding küçültüldü */
+        gap:15px;            /* elemanlar arası boşluk azaltıldı */
+        text-align:center;   /* yazı ve resim ortalansın */
+    }
+
+    /* Glass Box */
+    .glass{
+        flex:1 1 auto;
+        max-width:100%;
+        padding:20px 15px;   /* üst-alt ve sağ-sol padding mobilde küçültüldü */
+        margin-bottom:0;     /* ekstra boşluk kaldırıldı */
+    }
+
+    /* Hero Image */
+    .hero-img{
+        flex:1 1 auto;
+        max-width:85%;       /* resim mobil ekran için optimize edildi */
+        margin:10px auto 0 auto; /* yazıya yakınlaştırıldı */
+        display:block;       /* ortalama garantisi */
+    }
+
+    /* Glass Text */
     .glass h1{
-        font-size:1.5rem;
+        font-size:1.5rem;    /* yazı daha okunaklı ve uygun boyutta */
+        line-height:1.3;
     }
     .glass h2{
         font-size:1.1rem;
-    }
-    .content-box{
-        flex-direction: column;
-    }
-    .hero-img{
-        max-width:80%;
+        line-height:1.4;
     }
 }
+
+
 </style>
 </head>
 
@@ -266,7 +286,7 @@ body{
 <div class="container">
 <a class="navbar-brand" href="index.html">
 <!-- Navbar logo -->
-<img src="imza3.png" alt="Melih Karakaya İmza Logo" style="height:45px;" loading="lazy">
+<img src="https://melihkarakaya.com.tr/wp-content/uploads/2024/01/imza3.png" alt="Melih Karakaya resmi imza logosu" style="height:45px;">
 
 </a>
 <button class="navbar-toggler text-dark" data-bs-toggle="collapse" data-bs-target="#menu">☰</button>
@@ -289,18 +309,16 @@ body{
 
 <!-- CONTENT -->
 <section class="pb-5">
-<div class="container">
 <div class="content-box text-center">
     <!-- YAZI -->
     <div class="glass">
-    <h1 class="text-Black">Melih Karakaya</h1> <!-- Ana başlık -->
-    <h2 class="text-Black">Beykoz CHP Meclis Üyesi</h2> <!-- Alt başlık -->
+    <h1 class="text-dark">Melih Karakaya  Beykoz CHP Meclis Üyesi</h1>
     </div>
     <!-- GÖRSEL -->
    <!-- Hero image -->
-<img src="melih-home-e1706369775952.png" class="hero-img" alt="Melih Karakaya Beykoz CHP Meclis Üyesi" loading="lazy">
+<img src="https://www.melihkarakaya.com.tr/wp-content/uploads/2024/01/melih-home-e1706369775952.png" class="hero-img" alt="Melih Karakaya Beykoz Belediyesi CHP Meclis Üyesi resmi" loading="lazy">
 </div>
-</div>
+
 </section>
 
 <!-- FOOTER -->
@@ -340,7 +358,7 @@ body{
   "@type": "Person",
   "name": "Melih Karakaya",
   "url": "https://www.melihkarakaya.com.tr/",
-  "image": "melih-home-e1706369775952.png",
+  "image": "https://www.melihkarakaya.com.tr/wp-content/uploads/2024/01/melih-home-e1706369775952.png",
   "jobTitle": "CHP Meclis Üyesi",
   "worksFor": {
     "@type": "Organization",
