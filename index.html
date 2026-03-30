@@ -1,302 +1,917 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-Frame-Options" content="deny">
-  <title>EBS Time (Ebubekir Bastama)</title>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <meta name="fediverse:creator" content="@ebubekirbastama@sosyal.teknofest.app">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EBS Free Tools</title>
   <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: rgba(255,255,255,0.06);
+      --card: rgba(15, 23, 42, 0.88);
+      --card-border: rgba(255,255,255,0.08);
+      --text: #e5eefc;
+      --muted: #9fb0d0;
+      --primary: #4f8cff;
+      --primary-soft: rgba(79, 140, 255, 0.16);
+      --success: #1dd1a1;
+      --warning: #ffb020;
+      --danger: #ff5d73;
+      --shadow: 0 20px 60px rgba(0,0,0,0.28);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --container: 1400px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      background: url(https://ebubekirbastama.com.tr/circles.webp);
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79,140,255,0.28), transparent 32%),
+        radial-gradient(circle at top right, rgba(29,209,161,0.14), transparent 24%),
+        linear-gradient(135deg, #07111f 0%, #0b1020 45%, #111827 100%);
+      min-height: 100vh;
     }
 
-    .ebsred {
-      color: red;
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(var(--container), calc(100% - 32px));
+      margin: 0 auto;
     }
 
-    .emoji-button {
-      font-size: 1.5rem;
-      margin: 5px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      background-color: #f8f9fa;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(6, 10, 20, 0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
-    .emoji-button:hover {
-      background-color: #007bff;
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      letter-spacing: 0.4px;
       color: white;
+      background: linear-gradient(135deg, var(--primary), #7c5cff);
+      box-shadow: 0 10px 25px rgba(79,140,255,0.35);
+      flex-shrink: 0;
     }
 
-    .footer-links {
+    .brand-text h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.1;
+    }
+
+    .brand-text p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      transition: .25s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #7c5cff);
+      color: white;
+      box-shadow: 0 10px 28px rgba(79,140,255,0.28);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .tool-link:hover,
+    .chip:hover,
+    .search-input:focus {
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-soft);
+      border-color: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+
+    .hero {
+      padding: 40px 0 26px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .summary-card,
+    .category-card,
+    .tool-card,
+    .empty-state {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-card {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,140,255,0.22), transparent 65%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(29,209,161,0.12);
+      color: #89f0d0;
+      font-size: .84rem;
+      font-weight: 700;
+      border: 1px solid rgba(29,209,161,0.16);
+      margin-bottom: 18px;
+    }
+
+    .hero h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.9rem, 4vw, 3.3rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 68ch;
+    }
+
+    .hero-meta {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .meta-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text);
+      font-size: .92rem;
+    }
+
+    .summary-card {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .summary-card h3,
+    .section-title {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.45rem;
+      margin-bottom: 6px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .search-panel {
+      margin: 10px 0 18px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .search-wrap {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(7, 12, 23, 0.7);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 18px;
+      border-radius: 16px;
+      outline: none;
+      font-size: 1rem;
+      transition: .25s ease;
+    }
+
+    .search-help {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .section {
+      padding: 16px 0 26px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .96rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
       gap: 10px;
     }
 
-    .navbar-brand,
-    .nav-link {
-      font-weight: bold;
+    .chip {
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      border-radius: 999px;
+      color: var(--text);
+      cursor: pointer;
+      transition: .25s ease;
+      font-weight: 600;
     }
 
-    .section-header {
+    .chip.active {
+      background: var(--primary-soft);
+      border-color: rgba(79,140,255,0.35);
+      color: #dce8ff;
+      box-shadow: inset 0 0 0 1px rgba(79,140,255,0.12);
+    }
+
+    .categories {
+      display: grid;
+      gap: 22px;
+    }
+
+    .category-card {
+      padding: 22px;
+    }
+
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .category-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .category-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      background: rgba(79,140,255,0.12);
+      border: 1px solid rgba(79,140,255,0.22);
+      flex-shrink: 0;
+    }
+
+    .category-title {
+      margin: 0;
+      font-size: 1.22rem;
+    }
+
+    .category-desc {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .count-badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .88rem;
+      color: #d8e4ff;
+      background: rgba(124,92,255,0.14);
+      border: 1px solid rgba(124,92,255,0.25);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .tool-card {
+      padding: 18px;
+      border-radius: 20px;
+      transition: .25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 170px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    }
+
+    .tool-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(79,140,255,0.22);
+      box-shadow: 0 24px 50px rgba(0,0,0,0.26);
+    }
+
+    .tool-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .tool-emoji {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.06);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .tool-tag {
+      font-size: .76rem;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.07);
+      white-space: nowrap;
+    }
+
+    .tool-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.45;
+      min-height: 2.9em;
+    }
+
+    .tool-meta {
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+
+    .tool-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(79,140,255,0.12);
+      border: 1px solid rgba(79,140,255,0.2);
+      color: #dbe7ff;
+      font-weight: 700;
+      transition: .25s ease;
+    }
+
+    .empty-state {
+      padding: 34px 24px;
       text-align: center;
-      margin: 20px 0;
+      color: var(--muted);
     }
 
-    .panel {
-      border: 1px solid #110f0f;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0px 1px 0px 14px rgb(10 10 10 / 10%);
+    .footer {
+      padding: 28px 0 42px;
+      color: var(--muted);
+      text-align: center;
+      font-size: .92rem;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .search-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        width: min(calc(100% - 20px), var(--container));
+      }
+      .topbar-inner,
+      .section-head,
+      .category-header,
+      .brand {
+        align-items: flex-start;
+      }
+      .topbar-inner {
+        flex-direction: column;
+      }
+      .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-card,
+      .summary-card,
+      .category-card {
+        padding: 18px;
+        border-radius: 20px;
+      }
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+      .tool-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h2 {
+        font-size: 1.8rem;
+      }
     }
   </style>
-
 </head>
-
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="https://www.ebubekirbastama.com">EBS Time Web Site</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="menuTools" role="button" data-toggle="dropdown">Şifreleme Araçları</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="https://ebubekirbastama.com.tr/PBKDF2.html" target="_blank">PBKDF2 Encoder</a>
-            <a class="dropdown-item" href="https://ebubekirbastama.com.tr/HMAC256.html" target="_blank">HMAC-SHA256 Encoder</a>
-            <a class="dropdown-item" href="aesencode_decode.html" target="_blank">Aes Encode & Decode</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/base64encoder.html" target="_blank">Base64 Encode</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/base64decode.html" target="_blank">Base64 Decode</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/sha1encode.html" target="_blank">Sha1 Encoder</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/md5.html" target="_blank">Md5 Encoder</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBSbcrypt.html" target="_blank">Bcrypt</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="menuDeveloper" role="button" data-toggle="dropdown">Yazılımcı Araçları</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/CurltoPhp/index.html" target="_blank">Curl-To-Php</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsregex.html" target="_blank">Regex Tester</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsformatjson.html" target="_blank">JSON Formatter</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscodeeditor.html" target="_blank">Code Editör (HTML, JS, CSS)</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="menuMultimedia" role="button" data-toggle="dropdown">Multimedya Araçları</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/instagram-grid-olusturucu.html" target="_blank">Instagram Grid Oluşturucu</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/videodanresimcikarma.html" target="_blank">Videodan Resim Çıkartıcı</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsrspnimg.html" target="_blank">Responsive Img</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebspdfgoruntuleyici.html" target="_blank">PDF Görüntüleyici</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebstemplatematching.html" target="_blank">Şablon Eşleştirme</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsssim.html" target="_blank">Resim Karşılaştırma</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebsocr.html" target="_blank">İmage OCR</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="menuPdfTools" role="button" data-toggle="dropdown">PDF Araçları</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBSPDFOkuyucu.html" target="_blank">PDF Okuyucu</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebszipgoruntuleyici.html" target="_blank">Zip Görüntüleyicisi</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="menuDataTools" role="button" data-toggle="dropdown">Veri Araçları</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscsvparsertext.html" target="_blank">Csv Görüntüleyici</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscsvparser.html" target="_blank">Csv Görüntüleyici (Zengin)</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebscsvmarge.html" target="_blank">Csv Birleştirme</a>
-            <a class="dropdown-item" href="https://ebubekirbastama.com.tr/EBSLuhn.html" target="_blank">Luhn Algoritması</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebslog.html" target="_blank">FTPLog Analiz Sistemi</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="menuOtherTools" role="button" data-toggle="dropdown">Diğer Araçlar</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebszipgoruntuleyici.html" target="_blank">Zip Görüntüleyici</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/LinkAcici.html" target="_blank">Link Açıcı</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBS-Google-Link-Kaldirici.html" target="_blank">Google URL Kaldırma</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/ebshtmlclear.html" target="_blank">HTML Temizleyici</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/EBSWebpConvert.html" target="_blank">İmage Webp Dönüştürücü</a>
-            <a class="dropdown-item" href="https://www.ebubekirbastama.com.tr/8-donem-milletvekilleri.html" target="_blank">8. Dönem Millet Vekilleri Analiz</a>
-            <a class="dropdown-item" href="https://ebubekirbastama.com.tr/windows-wmi-hatasi-invalid-class-cozumu.html" target="_blank">Windows 10 ve 11'de WMI Hatası Çözümü</a>
-           
-            
-          </div>
-        </li>
-      </ul>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">EBS</div>
+        <div class="brand-text">
+          <h1>EBS Time Web Site</h1>
+          <p>Kategorili, modern ve arama destekli araç merkezi</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-secondary" href="https://www.ebubekirbastama.com/" target="_blank" rel="noopener">Ana Site</a>
+        <a class="btn btn-primary" href="https://sosyal.teknofest.app/@ebubekirbastama" target="_blank" rel="noopener">TEKNOFEST Sosyal</a>
+      </div>
     </div>
-  </nav>
-<a rel="me" href="https://sosyal.teknofest.app/@ebubekirbastama" target="_blank"
-   style="display: inline-block; background-color: #0d6efd; color: white; padding: 10px 20px; font-size: 16px;
-          font-weight: 500; text-align: center; text-decoration: none; border-radius: 6px; border: none;
-          cursor: pointer; margin:20px auto; display:block; max-width:250px; text-align:center;">
-  🔗 TEKNOFEST Sosyal Profilim
-</a>
+  </header>
 
-
-  <div class="container">
-    <h2 class="section-header">EBS Yazılım</h2>
-    <div id="EBSİP" class="text-center text-danger mb-4"></div>
-
-    <div class="container mt-5">
-      <div class="panel">
-        <h3>Şifreleme Araçları</h3>
-        <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebsapikeygenerater.html', '_blank')">🔒 API Key Generator</button>
-        <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/PBKDF2.html', '_blank')">🔐 PBKDF2 Encode</button>
-        <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/HMAC256.html', '_blank')">🔐 HMAC-SHA256 Encode</button>
-        <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/base64encoder.html', '_blank')">🔐 Base64 Encode</button>
-        <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/base64decode.html', '_blank')">🔓 Base64 Decode</button>
-        <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/sha1encode.html', '_blank')">🔒 Sha1 Encoder</button>
-        <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/md5.html', '_blank')">🔑 Md5 Encoder</button>
-        <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html', '_blank')">🔐 Exe Hash(SHA-256)</button>
-        <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/EBSbcrypt.html', '_blank')">🔐 Bcrypt Encoder</button>
-      </div>
-
-      <div class="container mt-5">
-        <div class="panel">
-          <h3>Dönüştürücü Araçları</h3>
-          <button class="emoji-button" onclick="window.open('ebsresindonusturici.html', '_blank')">🖼️🔄 EBS Resim Format Dönüştürücü (Tüm Formatlar → PNG)</button>
-          <button class="emoji-button" onclick="window.open('asciiartolusturucu.html', '_blank')">🖼️🔄 EBS Ascii Art Olusturucu</button>
-          <button class="emoji-button" onclick="window.open('rich_text_to.html', '_blank')">🖼️🔄 EBS Openai To Text</button>
-          <button class="emoji-button" onclick="window.open('tersresimdonusturucu.html', '_blank')">🖼️🔄 EBS Ters Resim Renk Dönüştürücü</button>
-          <button class="emoji-button" onclick="window.open('ebspdftoimage.html', '_blank')">📄📸 EBS PDF'den Resim Dönüştürücü</button>
-          <button class="emoji-button" onclick="window.open('ebstxtbirlestirici.html', '_blank')">📄➕ EBS Txt Birleştirici</button>
-          <button class="emoji-button" onclick="window.open('ebsotolinkolusturucu.html', '_blank')"> 🚀🔗✨ EBSLink İşleme Uygulaması(Oto Birleştirici) </button>
-          <button class="emoji-button" onclick="window.open('ebscsvtoexcel.html', '_blank')">📑 Csv To Excel Dönüştürücü</button>
-          <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/EBSWebpConvert.html', '_blank')">🖼️ İmage (.Webp) Dönüştürücü</button>
-          <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebsxmltotext.html', '_blank')">🖼️ Sitemap(XML) to Text</button>
-         <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebsultragorselboyutdusurme.html', '_blank')"> 🖼️ Görsel Boyut Küçültme </button>
-        </div>
-
-      </div>
-      <div class="container mt-5">
-        <div class="panel">
-          <h3>Multimedya Araçları</h3>
-          <button class="emoji-button" onclick="window.open('feather-blend-images.html', '_blank')">🖼️✨Kesişime göre Resim Birleştir</button>
-          <button class="emoji-button" onclick="window.open('ebs-vektor-analyzer-olusturucu.html', '_blank')">🎨📐 EBS Vektör Analyzer Oluşturucu</button>
-          <button class="emoji-button" onclick="window.open('ebsrenkanalizindirmeotomasyonu/index.html', '_blank')">🧩🎨🖼️📐🖍️ EBS Profesyonel Resim Düzenleyici</button>
-          <button class="emoji-button" onclick="window.open('ebskolajolusturucu.html', '_blank')">🧩🎨🖼️ EBS Kolaj Oluşturucu</button>
-          <button class="emoji-button" onclick="window.open('ebsrandomkolajolusturucu.html', '_blank')">🎲🧩🎨🖼️ EBS Random Kolaj Oluşturucu</button>
-          <button class="emoji-button" onclick="window.open('svg-parcala-tek-dosya.html', '_blank')">🧩🎨 SVG Parçala & Tek Dosya</button>
-          <button class="emoji-button" onclick="window.open('resim-parcala-renk-analiz.html', '_blank')">  🧩🎨 Resim Parçala & Renk Analiz</button>
-          <button class="emoji-button" onclick="window.open('EBSpdftoimage/index.html', '_blank')">📄 PDF Sayfalarını Resme Dönüştür ve Zip Olarak İndir</button>
-          <button class="emoji-button" onclick="window.open('EBSFlipbook/index.html', '_blank')">📄 PDF Flipbook Oluşturucu</button>
-          <button class="emoji-button" onclick="window.open('ebsallwep.html', '_blank')">🖼️ WebP Toplu Dönüştürücü</button>
-          <button class="emoji-button" onclick="window.open('filigran_araci_ultimate_ebubekirbastama.html', '_blank')">🖼️💧 EBS Filigran Aracı Ultimate</button>
-          <button class="emoji-button" onclick="window.open('ebsphotoshop.html', '_blank')">🎨 EBS Photoshop Aracı</button>
-          <button class="emoji-button" onclick="window.open('ebsimageresize.html', '_blank')">🖼️ EBS Görüntü Yeniden Boyutlandırma Aracı</button>
-          <button class="emoji-button" onclick="window.open('image-goruntuleyici.html', '_blank')">🖼️ EBS Resim Görüntüleyici</button>
-          <button class="emoji-button" onclick="window.open('ebsmansetolusturici.html', '_blank')">🖼️ EBS Manset Oluşturucu (İmage)</button>
-          <button class="emoji-button" onclick="window.open('ebsocr.html', '_blank')">🖼️ EBS İmage OCR</button>
-          <button class="emoji-button" onclick="window.open('ebstemplatematching.html', '_blank')">🖼️ EBS Resim Eşleştirme {Şablon Eşleştirme}</button>
-          <button class="emoji-button" onclick="window.open('ebsssim.html', '_blank')">📸 EBS Resim Karşılaştırma</button>
-          <button class="emoji-button" onclick="window.open('EBSYoutubeCanlıYayin.html', '_blank')">🎤 Youtube Videodan Ses Çıkarma</button>
-          <button class="emoji-button" onclick="window.open('videodanresimcikarma.html', '_blank')">🎥 EBS Videodan Resim Çıkartıcı</button>
-          <button class="emoji-button" onclick="window.open('ebsvideo_face_4k_zip_preview.html', '_blank')">🎥 EBS Videodan 4K Resim Çıkartıcı</button>
-          <button class="emoji-button" onclick="window.open('ebsrspnimg.html', '_blank')">📸 EBS Responsive img Oluşturucu</button>
-          <button class="emoji-button" onclick="window.open('ebspdfgoruntuleyici.html', '_blank')">📄 EBS Pdf Görüntüleyici</button>
-          <button class="emoji-button" onclick="window.open('ebspdftotextpro.html', '_blank')">📄 EBS Pdf Görüntüleyici(Profesyonel)</button>
-          <button class="emoji-button" onclick="window.open('EBSPDFOkuyucu.html', '_blank')">📑 PDF Okuyucu</button>
-        </div>
-      </div>
-
-      <div class="container mt-5">
-        <div class="panel">
-          <h3>Yazılım Araçları</h3>
-       <button class="emoji-button" onclick="window.open('ebsgoogleprintscreen.html', '_blank')">📜🇹🇷🏛️  Google PrintScreen</button>
-           <button class="emoji-button" onclick="window.open('tutanakayiklayici.html', '_blank')">🏛️🇹🇷📜 🗣️📢 TBMM Tutanak Ayıklayıcı</button>
-           <button class="emoji-button" onclick="window.open('tutanakayiklayicii.html', '_blank')">🏛️🇹🇷📜 🗣️📢 TBMM Tutanak Ayıklayıcı1</button>
-          <button class="emoji-button" onclick="window.open('htaccess-toplu-guncelleme-araci.html', '_blank')">🛠️.htaccess Toplu Güncelleme Scripti Oluşturucu</button>
-          <button class="emoji-button" onclick="window.open('ebsUUIDcikarici.html', '_blank')">🔍Ebs UUID Çıkarıcı 🌐</button>
-          <button class="emoji-button" onclick="window.open('ebstakipetmeyenleribulma.html', '_blank')">🔍 x.com EBS Takip Etmeyenleri Bulma Aracı 🌐</button>
-          <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebsgoogleonizleme.html', '_blank')">🔍 EBS Google Önizleme Aracı 🌐</button>
-          <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebstestaraci.html', '_blank')">🚀 EBS Test Aracı 🌐</button>
-          <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebsiptplbanscript.html', '_blank')">🚀 Toplu IP Yasaklama Scripti 🌐</button>
-          <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/code-beautifier.html', '_blank')">✨ Betaful Javascript 🌐</button>
-          <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebsregex.html', '_blank')">🧩🔍 Regex Test Aracı</button>
-          <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebsformatjson.html', '_blank')">📜 Json Test Aracı</button>
-          <button class="emoji-button" onclick="window.open('ebscodeeditor.html', '_blank')">🖥️ EBS Code Editör (html, javascript, css)</button>
-          <button class="emoji-button" onclick="window.open('ebs-code-viewer.html', '_blank')">🔍 EBS Tam Sayfa Kod Görüntüleyici</button>
-          <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/CurltoPhp/index.html', '_blank')">🌐🔗🐘 Curl-To-Php</button>
-          <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/EBSLuhn.html', '_blank')">🔢 Luhn Algoritması</button>
-          <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html', '_blank')">🔗 Url Decode Parçalama</button>
-          <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html', '_blank')">🔗 Url Encode & Decode</button>
-          <button class="emoji-button" onclick="window.open('ebshtmlclear.html', '_blank')">🧹 Html Attribute Temizleyici</button>
-          <button class="emoji-button" onclick="window.open('LinkAcici.html', '_blank')">🔗🌐 EBS Link Açıcı</button>
-          <button class="emoji-button" onclick="window.open('ebs_makale_dizay.html', '_blank')">📰 EBS Makale Dizayn Tool</button>
-          <button class="emoji-button" onclick="window.open('ebskaristirici.html', '_blank')">🔀 EBS Karıştırıcı</button>
-          <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/ebslog.html', '_blank')">📊 FTP Log Analiz Sistemi</button>
-          <button class="emoji-button" onclick="window.open('https://github.com/ebubekirbastama/TexttxtDosyasi-Bolme-Programi/raw/main/EBS%20Txt%20Par%C3%A7alama.zip', '_blank')">📂 Txt Dosyaları Parçalama Programı</button>
-        </div>
-
-        <div class="container mt-5">
-          <div class="panel">
-            <h3>Görüntüleytici Araçları</h3>
-            <button class="emoji-button" onclick="window.open('metin-donusturucu.html', '_blank')">🔤 Metin Dönüştürücü (Büyük/Küçük/Ters/Proper Case)</button>
-            <button class="emoji-button" onclick="window.open('ebswordacici.html', '_blank')">📄✏️ EBS Word Dosyası Okuma, Düzenleme ve Kaydetme 💾</button>
-            <button class="emoji-button" onclick="window.open('ebsword.html', '_blank')">📝 EBS Zengin Belge Oluşturucu</button>
-            <button class="emoji-button" onclick="window.open('ebsrsslisteleyici.html', '_blank')">📡 EBS Rss Listeleyici</button>
-            <button class="emoji-button" onclick="window.open('ebscsvparsertext.html', '_blank')">📊 EBS Csv Görüntüleyici</button>
-            <button class="emoji-button" onclick="window.open('ebscsvparser.html', '_blank')">📈 EBS Csv Görüntüleyici (Zengin Versiyon)</button>
-            <button class="emoji-button" onclick="window.open('ebszipgoruntuleyici.html', '_blank')">📁 EBS Zip Görüntüleyicisi</button>
-            <button class="emoji-button" onclick="window.open('EbsYoutubeAcici/EbsYoutubeAcici.html', '_blank')">📺 Youtube Link Açıcı</button>
-            <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/binance.html', '_blank')">📈 Binance Canlı Veri Listeleme</button>
-            <button class="emoji-button" onclick="window.open('https://github.com/ebubekirbastama/EBSvCardReading/raw/main/bin/Debug/EBSVcard%20Olu%C5%9Fturucu.zip', '_blank')">📇 Vcard Oluşturucu</button>
-            <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebscsvmarge.html', '_blank')">📅 Csv Birleştirme ve İndirme Sistemi</button>
-            <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/youtube_responsive_link_creater.html', '_blank')">🎬 YouTube Responsive Video Aracı</button>
-           
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow">● Yeni Arayüz Deneyimi</div>
+          <h2>Tüm araçları tek ekranda daha modern ve daha hızlı yönetin</h2>
+          <p>
+            Mevcut yapıyı daha çağdaş bir tasarımla yeniden düzenledim. Kategoriler korunuyor,
+            kullanıcı arama yapabiliyor, kategori bazlı filtreleme uygulanabiliyor ve her araç kart yapısıyla
+            daha okunabilir biçimde sunuluyor.
+          </p>
+          <div class="hero-meta">
+            <div class="meta-pill">Responsive grid yapı</div>
+            <div class="meta-pill">Canlı arama</div>
+            <div class="meta-pill">Kategori filtreleme</div>
+            <div class="meta-pill">Kart tabanlı görünüm</div>
           </div>
+        </div>
 
-          <div class="container mt-5">
-            <div class="panel">
-              <h3>Ekran Kayıt Araçları</h3>
-             <button class="emoji-button" onclick="window.open('ebstarayıcısesikaydetme.html', '_blank')">🎙️ Ekran Sesi Kaydet</button>
-              <button class="emoji-button" onclick="window.open('EBSScreenVideoSaveSound.html', '_blank')">🎥 Ekran Videosu Çek (Sesli)</button>
-              <button class="emoji-button" onclick="window.open('EBSScreenVideoSave.html', '_blank')">🎬 Ekran Videosu Çek</button>
+        <aside class="summary-card">
+          <h3>Hızlı Özet</h3>
+          <div class="summary-grid">
+            <div class="stat">
+              <strong id="totalTools">0</strong>
+              <span>Toplam araç</span>
             </div>
+            <div class="stat">
+              <strong id="totalCategories">0</strong>
+              <span>Kategori</span>
+            </div>
+            <div class="stat">
+              <strong id="visibleTools">0</strong>
+              <span>Görünen araç</span>
+            </div>
+            <div class="stat">
+              <strong id="userIp">Yükleniyor</strong>
+              <span>Kullanıcı IP</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
 
-            <div class="container mt-5">
-              <div class="panel">
-                <h3>Diğer Araçları</h3>
-                <button class="emoji-button" onclick="window.open('EBScalculater/index.html', '_blank')">🧮 Hesap Makinası</button>
-                <button class="emoji-button" onclick="window.open('ebsgeciskelimeler.html', '_blank')">🔤 EBS Makale Geçiş Kelime Ekleyici</button>
-                <button class="emoji-button" onclick="window.open('ebssubdomaintakeover.html', '_blank')">🌐 Subdomain Takeover Kontrolü</button>
-                <button class="emoji-button" onclick="window.open('ebskelimehesaplayici.html', '_blank')">📝 Charcounter (Kelime Sayıcı)</button>
-                <button class="emoji-button" onclick="window.open('EBS-Google-Link-Kaldirici.html', '_blank')">🚫 Google URL Kaldırma Kod Üretici</button>
-                <button class="emoji-button" onclick="window.open('RandomNameorSurnameCreate.html', '_blank')">👤 Random AD-Soyad Oluşturucu</button>
-                <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/taksitakip.html', '_blank')">🚖 Taksi Takip Sistemi</button>
-                <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/mekke.html', '_blank')">🕌 Kabe Harita</button>
-                <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebstakip.html', '_blank')">📍 Pursaklar Mekanlar</button>
-                <button class="emoji-button" onclick="window.open('https://www.ebubekirbastama.com.tr/ebsbul.html', '_blank')">📡 Bluetooth Device Scanner</button>
-                <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/darg-drop.html', '_blank')">🖱️ Drag Drop Örneği</button>
-                <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/barcode.html', '_blank')">📊 Barcode Okuyucu</button>
-                <button class="emoji-button" onclick="window.open('https://ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html', '_blank')">📍 Pursaklar Toplanma Merkezleri</button>
+    <section class="section">
+      <div class="container">
+        <div class="search-panel">
+          <div class="search-wrap">
+            <input id="searchInput" class="search-input" type="text" placeholder="Araç ara... örn: pdf, regex, csv, youtube, base64" />
+            <button id="clearSearch" class="btn btn-secondary" type="button">Temizle</button>
+          </div>
+          <div class="search-help">Araç adı, kategori ya da anahtar kelimeye göre filtreleme yapılır.</div>
+        </div>
+
+        <div class="section-head">
+          <div>
+            <h3 class="section-title">Kategoriler</h3>
+            <p class="section-subtitle">İstediğiniz kategoriye geçin veya tüm araçları birlikte görüntüleyin.</p>
+          </div>
+          <div id="categoryChips" class="chips"></div>
+        </div>
+
+        <div id="categoriesContainer" class="categories"></div>
+        <div id="emptyState" class="empty-state hidden">
+          <h3>Sonuç bulunamadı</h3>
+          <p>Arama kelimesini değiştirin veya kategori filtresini temizleyin.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      EBS araç merkezi modernleştirilmiş örnek arayüz • Tek dosya HTML • Responsive tasarım
+    </div>
+  </footer>
+
+  <script>
+const toolData = [
+  {
+    key: 'sifreleme',
+    title: 'Şifreleme Araçları',
+    icon: '🔐',
+    description: 'Hash, encode ve güvenlik odaklı yardımcı araçlar.',
+    tools: [
+      { name: 'API Key Generator', url: 'https://ebubekirbastama.com.tr/ebsapikeygenerater.html', emoji: '🔒', keywords: ['api', 'key', 'generator'] },
+      { name: 'PBKDF2 Encode', url: 'https://ebubekirbastama.com.tr/PBKDF2.html', emoji: '🔐', keywords: ['pbkdf2', 'hash'] },
+      { name: 'HMAC-SHA256 Encode', url: 'https://ebubekirbastama.com.tr/HMAC256.html', emoji: '🛡️', keywords: ['hmac', 'sha256'] },
+      { name: 'Aes Encode & Decode', url: 'aesencode_decode.html', emoji: '🔏', keywords: ['aes', 'encode', 'decode', 'sifreleme'] },
+      { name: 'Base64 Encode', url: 'https://www.ebubekirbastama.com.tr/base64encoder.html', emoji: '🧬', keywords: ['base64', 'encode'] },
+      { name: 'Base64 Decode', url: 'https://www.ebubekirbastama.com.tr/base64decode.html', emoji: '🔓', keywords: ['base64', 'decode'] },
+      { name: 'Sha1 Encoder', url: 'https://www.ebubekirbastama.com.tr/sha1encode.html', emoji: '🗝️', keywords: ['sha1', 'encoder'] },
+      { name: 'Md5 Encoder', url: 'https://www.ebubekirbastama.com.tr/md5.html', emoji: '🧿', keywords: ['md5', 'encoder'] },
+      { name: 'Exe Hash (SHA-256)', url: 'https://ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html', emoji: '📦', keywords: ['exe', 'sha256', 'hash'] },
+      { name: 'Bcrypt Encoder', url: 'https://ebubekirbastama.com.tr/EBSbcrypt.html', emoji: '🔐', keywords: ['bcrypt'] }
+    ]
+  },
+  {
+    key: 'donusturucu',
+    title: 'Dönüştürücü Araçları',
+    icon: '🔄',
+    description: 'Dosya, metin ve format dönüşümü için pratik araçlar.',
+    tools: [
+      { name: 'Resim Format Dönüştürücü', url: 'ebsresindonusturici.html', emoji: '🖼️', keywords: ['resim', 'png', 'format'] },
+      { name: 'Ascii Art Oluşturucu', url: 'asciiartolusturucu.html', emoji: '🎨', keywords: ['ascii', 'art'] },
+      { name: 'OpenAI To Text', url: 'rich_text_to.html', emoji: '✍️', keywords: ['text', 'openai'] },
+      { name: 'Ters Resim Renk Dönüştürücü', url: 'tersresimdonusturucu.html', emoji: '🌗', keywords: ['resim', 'renk'] },
+      { name: 'PDF’den Resim Dönüştürücü', url: 'ebspdftoimage.html', emoji: '📄', keywords: ['pdf', 'image'] },
+      { name: 'Txt Birleştirici', url: 'ebstxtbirlestirici.html', emoji: '📄', keywords: ['txt', 'merge'] },
+      { name: 'Link İşleme Uygulaması', url: 'ebsotolinkolusturucu.html', emoji: '🔗', keywords: ['link'] },
+      { name: 'Csv To Excel Dönüştürücü', url: 'ebscsvtoexcel.html', emoji: '📑', keywords: ['csv', 'excel'] },
+      { name: 'Image Webp Dönüştürücü', url: 'https://www.ebubekirbastama.com.tr/EBSWebpConvert.html', emoji: '🧊', keywords: ['webp', 'image'] },
+      { name: 'Sitemap XML to Text', url: 'https://www.ebubekirbastama.com.tr/ebsxmltotext.html', emoji: '🗺️', keywords: ['xml', 'sitemap', 'text'] },
+      { name: 'Görsel Boyut Küçültme', url: 'https://www.ebubekirbastama.com.tr/ebsultragorselboyutdusurme.html', emoji: '📉', keywords: ['gorsel', 'boyut'] }
+    ]
+  },
+  {
+    key: 'multimedya',
+    title: 'Multimedya Araçları',
+    icon: '🖼️',
+    description: 'Görsel, video ve PDF işleme araçları tek alanda.',
+    tools: [
+      { name: 'Instagram Grid Oluşturucu', url: 'https://www.ebubekirbastama.com.tr/instagram-grid-olusturucu.html', emoji: '🟪', keywords: ['instagram', 'grid', 'kolaj'] },
+      { name: 'Kesişime Göre Resim Birleştir', url: 'feather-blend-images.html', emoji: '🧩', keywords: ['resim', 'merge'] },
+      { name: 'Vektör Analyzer Oluşturucu', url: 'ebs-vektor-analyzer-olusturucu.html', emoji: '📐', keywords: ['vektor'] },
+      { name: 'Profesyonel Resim Düzenleyici', url: 'ebsrenkanalizindirmeotomasyonu/index.html', emoji: '🎨', keywords: ['editor', 'resim'] },
+      { name: 'Kolaj Oluşturucu', url: 'ebskolajolusturucu.html', emoji: '🖼️', keywords: ['kolaj'] },
+      { name: 'Random Kolaj Oluşturucu', url: 'ebsrandomkolajolusturucu.html', emoji: '🎲', keywords: ['kolaj', 'random'] },
+      { name: 'SVG Parçala & Tek Dosya', url: 'svg-parcala-tek-dosya.html', emoji: '✂️', keywords: ['svg'] },
+      { name: 'Resim Parçala & Renk Analiz', url: 'resim-parcala-renk-analiz.html', emoji: '🧠', keywords: ['resim', 'analiz'] },
+      { name: 'PDF Sayfalarını Resme Dönüştür', url: 'EBSpdftoimage/index.html', emoji: '📄', keywords: ['pdf', 'zip'] },
+      { name: 'PDF Flipbook Oluşturucu', url: 'EBSFlipbook/index.html', emoji: '📚', keywords: ['pdf', 'flipbook'] },
+      { name: 'WebP Toplu Dönüştürücü', url: 'ebsallwep.html', emoji: '🗂️', keywords: ['webp', 'toplu'] },
+      { name: 'Filigran Aracı Ultimate', url: 'filigran_araci_ultimate_ebubekirbastama.html', emoji: '💧', keywords: ['filigran'] },
+      { name: 'Photoshop Aracı', url: 'ebsphotoshop.html', emoji: '🪄', keywords: ['photoshop'] },
+      { name: 'Görüntü Yeniden Boyutlandırma', url: 'ebsimageresize.html', emoji: '📐', keywords: ['resize', 'image'] },
+      { name: 'Resim Görüntüleyici', url: 'image-goruntuleyici.html', emoji: '🖼️', keywords: ['image'] },
+      { name: 'Manşet Oluşturucu', url: 'ebsmansetolusturici.html', emoji: '📰', keywords: ['manset'] },
+      { name: 'Image OCR', url: 'ebsocr.html', emoji: '🔎', keywords: ['ocr'] },
+      { name: 'Resim Eşleştirme', url: 'ebstemplatematching.html', emoji: '🧷', keywords: ['template', 'matching'] },
+      { name: 'Resim Karşılaştırma', url: 'ebsssim.html', emoji: '📸', keywords: ['ssim', 'karsilastirma'] },
+      { name: 'Youtube Videodan Ses Çıkarma', url: 'EBSYoutubeCanlıYayin.html', emoji: '🎤', keywords: ['youtube', 'ses'] },
+      { name: 'Videodan Resim Çıkartıcı', url: 'videodanresimcikarma.html', emoji: '🎥', keywords: ['video', 'resim'] },
+      { name: 'Videodan 4K Resim Çıkartıcı', url: 'ebsvideo_face_4k_zip_preview.html', emoji: '🌟', keywords: ['4k', 'video'] },
+      { name: 'Responsive Img Oluşturucu', url: 'ebsrspnimg.html', emoji: '📱', keywords: ['responsive', 'img'] },
+      { name: 'PDF Görüntüleyici', url: 'ebspdfgoruntuleyici.html', emoji: '📘', keywords: ['pdf'] },
+      { name: 'PDF Görüntüleyici (Profesyonel)', url: 'ebspdftotextpro.html', emoji: '📗', keywords: ['pdf', 'pro'] },
+      { name: 'PDF Okuyucu', url: 'EBSPDFOkuyucu.html', emoji: '📑', keywords: ['pdf', 'okuyucu'] }
+    ]
+  },
+  {
+    key: 'yazilim',
+    title: 'Yazılım Araçları',
+    icon: '💻',
+    description: 'Geliştirici ve analiz iş akışları için teknik araçlar.',
+    tools: [
+      { name: 'Google PrintScreen', url: 'ebsgoogleprintscreen.html', emoji: '📜', keywords: ['google', 'printscreen'] },
+      { name: 'TBMM Tutanak Ayıklayıcı', url: 'tutanakayiklayici.html', emoji: '🏛️', keywords: ['tbmm', 'tutanak'] },
+      { name: 'TBMM Tutanak Ayıklayıcı1', url: 'tutanakayiklayicii.html', emoji: '🏛️', keywords: ['tbmm', 'tutanak'] },
+      { name: '.htaccess Toplu Güncelleme', url: 'htaccess-toplu-guncelleme-araci.html', emoji: '🛠️', keywords: ['htaccess'] },
+      { name: 'UUID Çıkarıcı', url: 'ebsUUIDcikarici.html', emoji: '🆔', keywords: ['uuid'] },
+      { name: 'x.com Takip Etmeyenleri Bulma', url: 'ebstakipetmeyenleribulma.html', emoji: '🐦', keywords: ['x', 'takip'] },
+      { name: 'Google Önizleme Aracı', url: 'https://ebubekirbastama.com.tr/ebsgoogleonizleme.html', emoji: '🔍', keywords: ['google', 'onizleme'] },
+      { name: 'EBS Test Aracı', url: 'https://ebubekirbastama.com.tr/ebstestaraci.html', emoji: '🚀', keywords: ['test'] },
+      { name: 'Toplu IP Yasaklama Scripti', url: 'https://ebubekirbastama.com.tr/ebsiptplbanscript.html', emoji: '🚫', keywords: ['ip', 'ban'] },
+      { name: 'Beautify Javascript', url: 'https://ebubekirbastama.com.tr/code-beautifier.html', emoji: '✨', keywords: ['beautify', 'javascript'] },
+      { name: 'Regex Test Aracı', url: 'https://ebubekirbastama.com.tr/ebsregex.html', emoji: '🧩', keywords: ['regex'] },
+      { name: 'Json Test Aracı', url: 'https://ebubekirbastama.com.tr/ebsformatjson.html', emoji: '📜', keywords: ['json'] },
+      { name: 'Code Editör', url: 'ebscodeeditor.html', emoji: '🖥️', keywords: ['html', 'css', 'javascript'] },
+      { name: 'Tam Sayfa Kod Görüntüleyici', url: 'ebs-code-viewer.html', emoji: '🧾', keywords: ['code', 'viewer'] },
+      { name: 'Curl-To-Php', url: 'https://www.ebubekirbastama.com.tr/CurltoPhp/index.html', emoji: '🐘', keywords: ['curl', 'php'] },
+      { name: 'Luhn Algoritması', url: 'https://www.ebubekirbastama.com.tr/EBSLuhn.html', emoji: '🔢', keywords: ['luhn'] },
+      { name: 'Url Decode Parçalama', url: 'https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html', emoji: '🔗', keywords: ['url', 'decode'] },
+      { name: 'Url Encode & Decode', url: 'https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html', emoji: '🔗', keywords: ['url', 'encode', 'decode'] },
+      { name: 'Html Attribute Temizleyici', url: 'ebshtmlclear.html', emoji: '🧹', keywords: ['html', 'clear'] },
+      { name: 'Link Açıcı', url: 'LinkAcici.html', emoji: '🌐', keywords: ['link'] },
+      { name: 'Makale Dizayn Tool', url: 'ebs_makale_dizay.html', emoji: '📰', keywords: ['makale'] },
+      { name: 'EBS Karıştırıcı', url: 'ebskaristirici.html', emoji: '🔀', keywords: ['karistirici'] },
+      { name: 'FTP Log Analiz Sistemi', url: 'https://ebubekirbastama.com.tr/ebslog.html', emoji: '📊', keywords: ['ftp', 'log'] },
+      { name: 'Txt Dosyaları Parçalama Programı', url: 'https://github.com/ebubekirbastama/TexttxtDosyasi-Bolme-Programi/raw/main/EBS%20Txt%20Par%C3%A7alama.zip', emoji: '📂', keywords: ['txt', 'parcalama'] }
+    ]
+  },
+  {
+    key: 'goruntuleyici',
+    title: 'Görüntüleyici Araçları',
+    icon: '📂',
+    description: 'Belge, veri ve içerik görüntüleme odaklı araçlar.',
+    tools: [
+      { name: 'Metin Dönüştürücü', url: 'metin-donusturucu.html', emoji: '🔤', keywords: ['metin'] },
+      { name: 'Word Dosyası Okuma / Düzenleme', url: 'ebswordacici.html', emoji: '📄', keywords: ['word'] },
+      { name: 'Zengin Belge Oluşturucu', url: 'ebsword.html', emoji: '📝', keywords: ['belge'] },
+      { name: 'Rss Listeleyici', url: 'ebsrsslisteleyici.html', emoji: '📡', keywords: ['rss'] },
+      { name: 'Csv Görüntüleyici', url: 'ebscsvparsertext.html', emoji: '📊', keywords: ['csv'] },
+      { name: 'Csv Görüntüleyici (Zengin)', url: 'ebscsvparser.html', emoji: '📈', keywords: ['csv'] },
+      { name: 'Zip Görüntüleyicisi', url: 'ebszipgoruntuleyici.html', emoji: '📁', keywords: ['zip'] },
+      { name: 'Youtube Link Açıcı', url: 'EbsYoutubeAcici/EbsYoutubeAcici.html', emoji: '📺', keywords: ['youtube'] },
+      { name: 'Binance Canlı Veri Listeleme', url: 'https://ebubekirbastama.com.tr/binance.html', emoji: '📈', keywords: ['binance'] },
+      { name: 'Vcard Oluşturucu', url: 'https://github.com/ebubekirbastama/EBSvCardReading/raw/main/bin/Debug/EBSVcard%20Olu%C5%9Fturucu.zip', emoji: '📇', keywords: ['vcard'] },
+      { name: 'Csv Birleştirme ve İndirme', url: 'https://www.ebubekirbastama.com.tr/ebscsvmarge.html', emoji: '📅', keywords: ['csv', 'birlestirme'] },
+      { name: 'YouTube Responsive Video Aracı', url: 'https://www.ebubekirbastama.com.tr/youtube_responsive_link_creater.html', emoji: '🎬', keywords: ['youtube', 'responsive'] }
+    ]
+  },
+  {
+    key: 'ekran-kayit',
+    title: 'Ekran Kayıt Araçları',
+    icon: '🎥',
+    description: 'Ekran ve ses kayıt işlevleri için hızlı erişim.',
+    tools: [
+      { name: 'Ekran Sesi Kaydet', url: 'ebstarayıcısesikaydetme.html', emoji: '🎙️', keywords: ['ses', 'kayit'] },
+      { name: 'Ekran Videosu Çek (Sesli)', url: 'EBSScreenVideoSaveSound.html', emoji: '🎥', keywords: ['ekran', 'video', 'sesli'] },
+      { name: 'Ekran Videosu Çek', url: 'EBSScreenVideoSave.html', emoji: '🎬', keywords: ['ekran', 'video'] }
+    ]
+  },
+  {
+    key: 'diger',
+    title: 'Diğer Araçlar',
+    icon: '🧰',
+    description: 'Yardımcı, niş ve günlük kullanım araçları.',
+    tools: [
+      { name: 'Hesap Makinası', url: 'EBScalculater/index.html', emoji: '🧮', keywords: ['hesap'] },
+      { name: 'Makale Geçiş Kelime Ekleyici', url: 'ebsgeciskelimeler.html', emoji: '🔤', keywords: ['makale'] },
+      { name: 'Subdomain Takeover Kontrolü', url: 'ebssubdomaintakeover.html', emoji: '🌐', keywords: ['subdomain'] },
+      { name: 'Charcounter', url: 'ebskelimehesaplayici.html', emoji: '📝', keywords: ['kelime', 'sayac'] },
+      { name: 'Google URL Kaldırma Kod Üretici', url: 'EBS-Google-Link-Kaldirici.html', emoji: '🚫', keywords: ['google', 'url'] },
+      { name: 'Random Ad-Soyad Oluşturucu', url: 'RandomNameorSurnameCreate.html', emoji: '👤', keywords: ['random', 'ad', 'soyad'] },
+      { name: 'Taksi Takip Sistemi', url: 'https://www.ebubekirbastama.com.tr/taksitakip.html', emoji: '🚖', keywords: ['taksi'] },
+      { name: 'Kabe Harita', url: 'https://www.ebubekirbastama.com.tr/mekke.html', emoji: '🕌', keywords: ['kabe', 'harita'] },
+      { name: 'Pursaklar Mekanlar', url: 'https://www.ebubekirbastama.com.tr/ebstakip.html', emoji: '📍', keywords: ['pursaklar'] },
+      { name: 'Bluetooth Device Scanner', url: 'https://www.ebubekirbastama.com.tr/ebsbul.html', emoji: '📡', keywords: ['bluetooth'] },
+      { name: 'Drag Drop Örneği', url: 'https://ebubekirbastama.com.tr/darg-drop.html', emoji: '🖱️', keywords: ['drag', 'drop'] },
+      { name: 'Barcode Okuyucu', url: 'https://ebubekirbastama.com.tr/barcode.html', emoji: '📊', keywords: ['barcode'] },
+      { name: 'Pursaklar Toplanma Merkezleri', url: 'https://ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html', emoji: '📍', keywords: ['pursaklar', 'toplanma'] }
+    ]
+  }
+];
+
+    const categoriesContainer = document.getElementById('categoriesContainer');
+    const categoryChips = document.getElementById('categoryChips');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const emptyState = document.getElementById('emptyState');
+    const totalToolsEl = document.getElementById('totalTools');
+    const totalCategoriesEl = document.getElementById('totalCategories');
+    const visibleToolsEl = document.getElementById('visibleTools');
+
+    let activeCategory = 'all';
+
+    const totalTools = toolData.reduce((sum, category) => sum + category.tools.length, 0);
+    totalToolsEl.textContent = totalTools;
+    totalCategoriesEl.textContent = toolData.length;
+
+    function createChips() {
+      const allChip = document.createElement('button');
+      allChip.className = 'chip active';
+      allChip.textContent = 'Tümü';
+      allChip.dataset.category = 'all';
+      categoryChips.appendChild(allChip);
+
+      toolData.forEach(category => {
+        const chip = document.createElement('button');
+        chip.className = 'chip';
+        chip.textContent = category.title;
+        chip.dataset.category = category.key;
+        categoryChips.appendChild(chip);
+      });
+
+      categoryChips.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        activeCategory = chip.dataset.category;
+        document.querySelectorAll('.chip').forEach(item => item.classList.remove('active'));
+        chip.classList.add('active');
+        render();
+      });
+    }
+
+    function normalize(value) {
+      return value
+        .toLocaleLowerCase('tr-TR')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function matchesSearch(tool, category, query) {
+      if (!query) return true;
+      const haystack = [tool.name, category.title, category.description, ...(tool.keywords || [])]
+        .join(' ');
+      return normalize(haystack).includes(normalize(query));
+    }
+
+    function render() {
+      const query = searchInput.value.trim();
+      categoriesContainer.innerHTML = '';
+
+      let visibleCount = 0;
+      let visibleCategoryCount = 0;
+
+      toolData.forEach(category => {
+        if (activeCategory !== 'all' && activeCategory !== category.key) return;
+
+        const filteredTools = category.tools.filter(tool => matchesSearch(tool, category, query));
+        if (!filteredTools.length) return;
+
+        visibleCategoryCount++;
+        visibleCount += filteredTools.length;
+
+        const section = document.createElement('section');
+        section.className = 'category-card';
+        section.innerHTML = `
+          <div class="category-header">
+            <div class="category-title-wrap">
+              <div class="category-icon">${category.icon}</div>
+              <div>
+                <h3 class="category-title">${category.title}</h3>
+                <p class="category-desc">${category.description}</p>
               </div>
+            </div>
+            <div class="count-badge">${filteredTools.length} araç</div>
+          </div>
+          <div class="tools-grid"></div>
+        `;
 
+        const grid = section.querySelector('.tools-grid');
+        filteredTools.forEach(tool => {
+          const card = document.createElement('article');
+          card.className = 'tool-card';
+          card.innerHTML = `
+            <div class="tool-top">
+              <div class="tool-emoji">${tool.emoji || '🧰'}</div>
+              <div class="tool-tag">${category.title}</div>
+            </div>
+            <h4 class="tool-title">${tool.name}</h4>
+            <div class="tool-meta">${(tool.keywords || []).slice(0, 4).join(' • ') || 'Araç bağlantısı'}</div>
+            <a class="tool-link" href="${tool.url}" target="_blank" rel="noopener">Aracı Aç →</a>
+          `;
+          grid.appendChild(card);
+        });
 
-              <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-              <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-              <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-              <script>
-                fetch('https://api.ipify.org?format=json')
-                  .then(response => response.json())
-                  .then(data => {
-                    document.getElementById("EBSİP").innerHTML = "Your IP address is: " + data.ip;
-                  });
-              </script>
+        categoriesContainer.appendChild(section);
+      });
 
+      visibleToolsEl.textContent = visibleCount;
+      emptyState.classList.toggle('hidden', visibleCount > 0);
+      categoriesContainer.classList.toggle('hidden', visibleCount === 0);
+    }
+
+    clearSearch.addEventListener('click', () => {
+      searchInput.value = '';
+      render();
+      searchInput.focus();
+    });
+
+    searchInput.addEventListener('input', render);
+
+    createChips();
+    render();
+
+    fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('userIp').textContent = data.ip;
+      })
+      .catch(() => {
+        document.getElementById('userIp').textContent = 'Alınamadı';
+      });
+  </script>
 </body>
-
 </html>
