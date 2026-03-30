@@ -14,76 +14,99 @@
 
 <style>
 body {
-    margin:0;
+    margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color:#fff;
-    text-align:center;
+    color: #fff;
+    text-align: center;
 }
 
-h1 { margin:20px 0; }
+h1 { margin: 20px 0; }
 
 .wrapper {
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
 }
 
 .drop-area {
-    border:2px dashed #aaa;
-    border-radius:12px;
-    padding:30px;
-    margin:10px;
-    transition:0.3s;
-    cursor:pointer;
-    user-select:none;
+    border: 2px dashed #aaa;
+    border-radius: 12px;
+    padding: 30px;
+    margin: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+    user-select: none;
 }
 
 .drop-area:hover {
-    border-color:#00d4ff;
-    background:rgba(255,255,255,0.05);
+    border-color: #00d4ff;
+    background: rgba(255,255,255,0.05);
 }
 
 .controls {
-    margin-top:20px;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:10px;
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
 .control-box {
-    background:rgba(255,255,255,0.1);
-    padding:10px 15px;
-    border-radius:10px;
+    background: rgba(255,255,255,0.1);
+    padding: 10px 15px;
+    border-radius: 10px;
+    min-width: 150px;
 }
 
-input[type=range] { width:120px; }
+input[type=range] { width: 150px; }
 
 select, button {
-    padding:6px;
-    border:none;
-    border-radius:6px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 6px;
 }
 
 button {
-    background:#00d4ff;
-    color:#000;
-    font-weight:bold;
-    cursor:pointer;
+    background: #00d4ff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.secondary {
+    background: #ffffff22;
+    color: #fff;
+    border: 1px solid #ffffff33;
 }
 
 canvas {
-    margin-top:20px;
-    border-radius:10px;
-    max-width:100%;
-    background:#000;
+    margin-top: 20px;
+    border-radius: 10px;
+    max-width: 100%;
+    background: #000;
+    cursor: grab;
+}
+
+canvas.dragging {
+    cursor: grabbing;
+}
+
+.info {
+    margin-top: 12px;
+    font-size: 14px;
+    opacity: 0.9;
 }
 
 footer {
-    margin-top:40px;
-    font-size:14px;
-    opacity:0.7;
+    margin-top: 40px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.active-select {
+    outline: 2px solid #00d4ff;
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.15);
 }
 </style>
 </head>
@@ -92,59 +115,140 @@ footer {
 
 <div class="wrapper">
 
-<h1>🧩 Image Blend Tool</h1>
-<p>Blend two images smoothly with feather transition. Drag & drop your images below or click to select.</p>
+    <h1>🧩 Image Blend Tool</h1>
+    <p>
+        Blend two images smoothly with feather transition.<br>
+        Drag & drop or click to select. Then choose an image and drag it inside the canvas.
+    </p>
 
-<div id="drop1" class="drop-area">📥 Drag & Drop First Image<br><small>veya tıklayıp seçin</small></div>
-<input type="file" id="file1" accept="image/*" hidden>
+    <div id="drop1" class="drop-area">📥 First Image<br><small>Drag & drop or click to select</small></div>
+    <input type="file" id="file1" accept="image/*" hidden>
 
-<div id="drop2" class="drop-area">📥 Drag & Drop Second Image<br><small>veya tıklayıp seçin</small></div>
-<input type="file" id="file2" accept="image/*" hidden>
+    <div id="drop2" class="drop-area">📥 Second Image<br><small>Drag & drop or click to select</small></div>
+    <input type="file" id="file2" accept="image/*" hidden>
 
-<div class="controls">
+    <div class="controls">
 
-<div class="control-box">
-Feather<br>
-<input type="range" id="feather" min="1" max="400" value="120">
-</div>
+        <div class="control-box">
+            Feather<br>
+            <input type="range" id="feather" min="1" max="400" value="120">
+            <div><small id="featherVal">120 px</small></div>
+        </div>
 
-<div class="control-box">
-Position<br>
-<input type="range" id="position" min="0" max="100" value="50">
-</div>
+        <div class="control-box">
+            Position<br>
+            <input type="range" id="position" min="0" max="100" value="50">
+            <div><small id="positionVal">50%</small></div>
+        </div>
 
-<div class="control-box">
-Direction<br>
-<select id="direction">
-<option value="horizontal">Horizontal</option>
-<option value="vertical">Vertical</option>
-</select>
-</div>
+        <div class="control-box">
+            Direction<br>
+            <select id="direction">
+                <option value="horizontal">Horizontal</option>
+                <option value="vertical">Vertical</option>
+                <option value="diagonal-ltr">Diagonal Left → Right</option>
+                <option value="diagonal-rtl">Diagonal Right → Left</option>
+                <option value="radial">Radial / Circle</option>
+            </select>
+        </div>
 
-<div class="control-box">
-<br>
-<button onclick="downloadImage()">Download</button>
-</div>
+        <div class="control-box">
+            Move Image<br>
+            <button id="selectImg1" type="button">Select Image 1</button>
+            <button id="selectImg2" type="button" class="secondary">Select Image 2</button>
+        </div>
 
-</div>
+        <div class="control-box">
+            Actions<br>
+            <button type="button" onclick="resetPositions()">Reset Position</button>
+        </div>
 
-<canvas id="canvas" width="900" height="550"></canvas>
+        <div class="control-box">
+            Download<br>
+            <button type="button" onclick="downloadImage()">PNG</button>
+        </div>
+
+    </div>
+
+    <div class="info">
+        Tip: Select Image 1 or 2, then drag inside the canvas to move it.
+    </div>
+
+    <canvas id="canvas" width="900" height="550"></canvas>
 
 </div>
 
 <footer>
-© 2026 ebubekirbastama.com.tr - Free Online Tools
+    © 2026 ebubekirbastama.com.tr - Free Online Tools
 </footer>
 
 <script>
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+const featherInput = document.getElementById("feather");
+const positionInput = document.getElementById("position");
+const directionInput = document.getElementById("direction");
+const featherVal = document.getElementById("featherVal");
+const positionVal = document.getElementById("positionVal");
+
+const selectImg1Btn = document.getElementById("selectImg1");
+const selectImg2Btn = document.getElementById("selectImg2");
+
 let img1 = new Image();
 let img2 = new Image();
 
 let loaded1 = false;
 let loaded2 = false;
+
+// her görsel için konum
+let img1State = { x: 0, y: 0, scale: 1 };
+let img2State = { x: 0, y: 0, scale: 1 };
+
+// seçili sürüklenecek görsel
+let selectedImage = 1;
+
+// drag durumu
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let startOffsetX = 0;
+let startOffsetY = 0;
+
+function updateSelectedButtons() {
+    if (selectedImage === 1) {
+        selectImg1Btn.classList.remove("secondary");
+        selectImg1Btn.classList.add("active-select");
+
+        selectImg2Btn.classList.add("secondary");
+        selectImg2Btn.classList.remove("active-select");
+    } else {
+        selectImg2Btn.classList.remove("secondary");
+        selectImg2Btn.classList.add("active-select");
+
+        selectImg1Btn.classList.add("secondary");
+        selectImg1Btn.classList.remove("active-select");
+    }
+}
+
+selectImg1Btn.addEventListener("click", () => {
+    selectedImage = 1;
+    updateSelectedButtons();
+});
+
+selectImg2Btn.addEventListener("click", () => {
+    selectedImage = 2;
+    updateSelectedButtons();
+});
+
+updateSelectedButtons();
+
+function fitImageToCanvas(image, state) {
+    const scale = Math.max(canvas.width / image.width, canvas.height / image.height);
+    state.scale = scale;
+    state.x = (canvas.width - image.width * scale) / 2;
+    state.y = (canvas.height - image.height * scale) / 2;
+}
 
 function loadImageFile(file, callback) {
     if (!file || !file.type.startsWith("image/")) return;
@@ -177,7 +281,6 @@ function setupDrop(element, inputElement, callback) {
     element.addEventListener("drop", e => {
         e.preventDefault();
         element.style.borderColor = "#aaa";
-
         const file = e.dataTransfer.files[0];
         loadImageFile(file, callback);
     });
@@ -187,8 +290,13 @@ setupDrop(
     document.getElementById("drop1"),
     document.getElementById("file1"),
     src => {
+        img1 = new Image();
         img1.src = src;
-        img1.onload = () => { loaded1 = true; draw(); };
+        img1.onload = () => {
+            loaded1 = true;
+            fitImageToCanvas(img1, img1State);
+            draw();
+        };
     }
 );
 
@@ -196,54 +304,188 @@ setupDrop(
     document.getElementById("drop2"),
     document.getElementById("file2"),
     src => {
+        img2 = new Image();
         img2.src = src;
-        img2.onload = () => { loaded2 = true; draw(); };
+        img2.onload = () => {
+            loaded2 = true;
+            fitImageToCanvas(img2, img2State);
+            draw();
+        };
     }
 );
 
-document.getElementById("feather").oninput = draw;
-document.getElementById("position").oninput = draw;
-document.getElementById("direction").onchange = draw;
+featherInput.addEventListener("input", () => {
+    featherVal.textContent = featherInput.value + " px";
+    draw();
+});
 
-function draw() {
-    if (!loaded1 || !loaded2) return;
+positionInput.addEventListener("input", () => {
+    positionVal.textContent = positionInput.value + "%";
+    draw();
+});
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.drawImage(img1, 0, 0, canvas.width, canvas.height);
+directionInput.addEventListener("change", draw);
 
-    let feather = +document.getElementById("feather").value;
-    let pos = +document.getElementById("position").value / 100;
-    let dir = document.getElementById("direction").value;
+function drawPlacedImage(image, state) {
+    const w = image.width * state.scale;
+    const h = image.height * state.scale;
+    ctx.drawImage(image, state.x, state.y, w, h);
+}
+
+function createBlendMask() {
+    const feather = +featherInput.value;
+    const pos = +positionInput.value / 100;
+    const dir = directionInput.value;
 
     let gradient;
 
     if (dir === "horizontal") {
-        let x = canvas.width * pos;
+        const x = canvas.width * pos;
         gradient = ctx.createLinearGradient(x - feather, 0, x + feather, 0);
-    } else {
-        let y = canvas.height * pos;
+    } else if (dir === "vertical") {
+        const y = canvas.height * pos;
         gradient = ctx.createLinearGradient(0, y - feather, 0, y + feather);
+    } else if (dir === "diagonal-ltr") {
+        const center = (canvas.width + canvas.height) * pos;
+        gradient = ctx.createLinearGradient(
+            center - feather, center - feather,
+            center + feather, center + feather
+        );
+    } else if (dir === "diagonal-rtl") {
+        const base = (canvas.width + canvas.height) * pos;
+        gradient = ctx.createLinearGradient(
+            canvas.width - base + feather, base - feather,
+            canvas.width - base - feather, base + feather
+        );
+    } else if (dir === "radial") {
+        const radiusBase = Math.max(canvas.width, canvas.height) * pos;
+        const innerRadius = Math.max(0, radiusBase - feather);
+        const outerRadius = radiusBase + feather;
+
+        gradient = ctx.createRadialGradient(
+            canvas.width / 2, canvas.height / 2, innerRadius,
+            canvas.width / 2, canvas.height / 2, outerRadius
+        );
     }
 
     gradient.addColorStop(0, "rgba(0,0,0,1)");
     gradient.addColorStop(1, "rgba(0,0,0,0)");
 
-    ctx.globalCompositeOperation = "destination-in";
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    return gradient;
+}
 
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!loaded1 && !loaded2) {
+        ctx.fillStyle = "#111";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#888";
+        ctx.font = "24px Segoe UI";
+        ctx.textAlign = "center";
+        ctx.fillText("Upload two images to start", canvas.width / 2, canvas.height / 2);
+        return;
+    }
+
+    if (loaded1 && !loaded2) {
+        drawPlacedImage(img1, img1State);
+        return;
+    }
+
+    if (!loaded1 && loaded2) {
+        drawPlacedImage(img2, img2State);
+        return;
+    }
+
+    // 1. görsel
+    ctx.save();
+    drawPlacedImage(img1, img1State);
+
+    // maske uygula
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.fillStyle = createBlendMask();
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+
+    // 2. görsel arka katmanda
+    ctx.save();
     ctx.globalCompositeOperation = "destination-over";
-    ctx.drawImage(img2, 0, 0, canvas.width, canvas.height);
+    drawPlacedImage(img2, img2State);
+    ctx.restore();
 
     ctx.globalCompositeOperation = "source-over";
 }
 
+function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+    };
+}
+
+canvas.addEventListener("mousedown", e => {
+    if (!(loaded1 || loaded2)) return;
+
+    isDragging = true;
+    canvas.classList.add("dragging");
+
+    const pos = getMousePos(e);
+    dragStartX = pos.x;
+    dragStartY = pos.y;
+
+    if (selectedImage === 1) {
+        startOffsetX = img1State.x;
+        startOffsetY = img1State.y;
+    } else {
+        startOffsetX = img2State.x;
+        startOffsetY = img2State.y;
+    }
+});
+
+window.addEventListener("mousemove", e => {
+    if (!isDragging) return;
+
+    const pos = getMousePos(e);
+    const dx = pos.x - dragStartX;
+    const dy = pos.y - dragStartY;
+
+    if (selectedImage === 1 && loaded1) {
+        img1State.x = startOffsetX + dx;
+        img1State.y = startOffsetY + dy;
+    } else if (selectedImage === 2 && loaded2) {
+        img2State.x = startOffsetX + dx;
+        img2State.y = startOffsetY + dy;
+    }
+
+    draw();
+});
+
+window.addEventListener("mouseup", () => {
+    isDragging = false;
+    canvas.classList.remove("dragging");
+});
+
+function resetPositions() {
+    if (loaded1) fitImageToCanvas(img1, img1State);
+    if (loaded2) fitImageToCanvas(img2, img2State);
+    draw();
+}
+
 function downloadImage() {
-    let link = document.createElement("a");
+    const link = document.createElement("a");
     link.download = "image-blend.png";
-    link.href = canvas.toDataURL();
+    link.href = canvas.toDataURL("image/png");
     link.click();
 }
+
+featherVal.textContent = featherInput.value + " px";
+positionVal.textContent = positionInput.value + "%";
+draw();
 </script>
 
 </body>
