@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini LLM Eğitim ve Soru-Cevap Sistemi v2</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #121933;
+      --panel: rgba(18, 25, 51, 0.78);
+      --panel-2: rgba(20, 29, 59, 0.92);
+      --text: #eef2ff;
+      --muted: #a5b4fc;
+      --soft: #94a3b8;
+      --line: rgba(148, 163, 184, 0.18);
+      --primary: #6366f1;
+      --primary-2: #8b5cf6;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(circle at top right, rgba(99, 102, 241, 0.22), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.18), transparent 28%),
+        linear-gradient(180deg, #0b1020, #0f172a 60%, #0b1020);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100%;
+    }
+    .app { width: min(1280px, calc(100% - 32px)); margin: 24px auto 48px; }
+    .hero { display: grid; grid-template-columns: 1.3fr .9fr; gap: 18px; margin-bottom: 18px; }
+    .hero-card,.stats-card,.panel,.record-card,.answer-card,.empty,.toast {
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+    .hero-card { padding: 26px; position: relative; overflow: hidden; }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,.3), transparent 70%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
+      background: rgba(99, 102, 241, 0.14); border: 1px solid rgba(129, 140, 248, 0.22);
+      color: #c7d2fe; border-radius: 999px; font-size: 13px; margin-bottom: 14px;
+    }
+    h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); line-height: 1.08; letter-spacing: -0.03em; }
+    .hero p { color: #cbd5e1; margin: 12px 0 0; line-height: 1.7; font-size: 15px; }
+    .stats-card { padding: 24px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; align-content: start; }
+    .stat { background: rgba(15, 23, 42, 0.55); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+    .stat-label { color: var(--soft); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+    .layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; align-items: start; }
+    .panel { padding: 18px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 16px; }
+    .panel-title { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+    .panel-subtitle { color: var(--soft); margin-top: 6px; font-size: 14px; line-height: 1.5; }
+    .grid { display: grid; gap: 14px; }
+    .grid.two { grid-template-columns: repeat(2, 1fr); }
+    .field { display: grid; gap: 8px; }
+    .field label { color: #dbe4ff; font-size: 13px; font-weight: 700; }
+    .hint { font-size: 12px; color: var(--soft); line-height: 1.5; }
+    input[type="text"], textarea, input[type="file"], select {
+      width: 100%; background: rgba(15, 23, 42, 0.75); color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 16px; outline: none;
+      padding: 14px 15px; font-size: 14px; transition: .2s ease;
+    }
+    input[type="text"]:focus, textarea:focus, input[type="file"]:focus, select:focus {
+      border-color: rgba(129, 140, 248, 0.75); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    }
+    textarea { min-height: 150px; resize: vertical; line-height: 1.65; }
+    .actions,.chips,.top-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      appearance: none; border: 0; cursor: pointer; color: white; border-radius: 14px;
+      padding: 12px 16px; font-weight: 700; font-size: 14px;
+      transition: transform .12s ease, opacity .2s ease, box-shadow .2s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: 0 12px 30px rgba(99, 102, 241, 0.28); }
+    .btn-secondary { background: rgba(30, 41, 59, 0.94); border: 1px solid rgba(148, 163, 184, .2); color: #e2e8f0; }
+    .btn-success { background: linear-gradient(135deg, #16a34a, #22c55e); }
+    .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .record-list,.results { display: grid; gap: 12px; margin-top: 14px; }
+    .record-card,.answer-card,.empty { background: var(--panel-2); border: 1px solid var(--line); padding: 16px; }
+    .record-top,.answer-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .record-title,.answer-title { margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+    .badge {
+      display: inline-flex; align-items: center; justify-content: center; padding: 8px 11px; border-radius: 999px;
+      font-size: 12px; font-weight: 800; color: #dbeafe; background: rgba(59, 130, 246, 0.14);
+      border: 1px solid rgba(96, 165, 250, 0.2); white-space: nowrap;
+    }
+    .badge.success { color: #dcfce7; background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.25); }
+    .badge.warn { color: #fef3c7; background: rgba(245, 158, 11, 0.16); border-color: rgba(245, 158, 11, 0.25); }
+    .record-meta,.answer-meta { color: var(--soft); font-size: 13px; margin-bottom: 10px; line-height: 1.6; }
+    .record-content,.answer-content,.matched-chunks { color: #e5e7eb; font-size: 14px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; }
+    .chips { margin-top: 12px; }
+    .chip { padding: 8px 10px; border-radius: 999px; font-size: 12px; color: #c7d2fe; background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(129, 140, 248, 0.2); }
+    .split { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .qa-box { display: grid; gap: 12px; }
+    .empty { padding: 22px; text-align: center; color: #cbd5e1; line-height: 1.8; }
+    .footer-note { margin-top: 16px; color: var(--soft); font-size: 12px; line-height: 1.7; }
+    .toast {
+      position: fixed; right: 18px; bottom: 18px; padding: 14px 16px; background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.22); color: white; z-index: 999; opacity: 0;
+      transform: translateY(16px); pointer-events: none; transition: .25s ease; max-width: min(92vw, 420px); line-height: 1.6;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    @media (max-width: 1040px) { .hero,.layout { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) {
+      .app { width: min(100% - 20px, 1280px); margin-top: 10px; }
+      .hero-card,.stats-card,.panel { padding: 16px; }
+      .grid.two { grid-template-columns: 1fr; }
+      .stats-card { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 28px; }
+      .btn { width: 100%; }
+      .actions .btn,.top-actions .btn { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">⚡ Modern Responsive Mini LLM Sistemi v2</div>
+        <h1>Çoklu Dataset Birleştirme + Güçlü Benzerlik Motoru</h1>
+        <p>Bu sürüm birden fazla eğitim dosyasını birleştirir, aynı kayıtları ayıklar ve sorularda token genişletme, n-gram, fuzzy eşleşme ve Jaccard benzerliği ile daha iyi sonuç üretir.</p>
+      </div>
+      <div class="stats-card">
+        <div class="stat"><div class="stat-label">Kayıt Sayısı</div><div class="stat-value" id="statRecordCount">0</div></div>
+        <div class="stat"><div class="stat-label">Toplam Parça</div><div class="stat-value" id="statChunkCount">0</div></div>
+        <div class="stat"><div class="stat-label">Yüklenen Dataset</div><div class="stat-value" id="statDataset">Yok</div></div>
+        <div class="stat"><div class="stat-label">Motor</div><div class="stat-value" style="font-size:18px;line-height:1.3">Hybrid Similarity v2</div></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">1. Eğitim Modülü</h2>
+            <div class="panel-subtitle">Konu ekleyin, sistem metni parçalayıp indekslesin. Aynı içerik fingerprint ile tekrar eklenmez.</div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="grid two">
+            <div class="field"><label for="assistantName">Asistan Adı</label><input type="text" id="assistantName" placeholder="Örn: PHP Eğitmen Botu" /></div>
+            <div class="field"><label for="datasetTopic">Konu / Alan</label><input type="text" id="datasetTopic" placeholder="Örn: PHP, JavaScript, MySQL" /></div>
+          </div>
+          <div class="field"><label for="recordTitle">Konu Başlığı</label><input type="text" id="recordTitle" placeholder="Örn: PHP print_r() kullanımı" /></div>
+          <div class="field">
+            <label for="recordText">Eğitim Metni</label>
+            <textarea id="recordText" placeholder="Buraya detaylı teknik açıklamayı yapıştırın."></textarea>
+            <div class="hint">Uzun, örnekli ve karşılaştırmalı anlatımlar daha iyi skor üretir.</div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" id="analyzeBtn">Metni Analiz Et ve Kayda Ekle</button>
+            <button class="btn btn-secondary" id="clearFormBtn">Formu Temizle</button>
+            <button class="btn btn-success" id="downloadBtn">Eğitilmiş Dosyayı İndir</button>
+            <button class="btn btn-danger" id="resetAllBtn">Tüm Kayıtları Sıfırla</button>
+          </div>
+        </div>
+        <div class="record-list" id="recordList"><div class="empty"><strong>Henüz eğitim kaydı yok.</strong><br>İlk kaydı eklediğinizde burada listelenecek.</div></div>
+        <div class="footer-note">JSON indirerek farklı eğitim setleri oluşturabilir, sonra birden fazla dosyayı aynı anda sisteme yükleyebilirsiniz.</div>
+      </div>
+
+      <div class="split">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">2. Çoklu Dosya Yükleme</h2>
+              <div class="panel-subtitle">Bir veya birden fazla JSON dosyası seçin. Aynı kayıtlar ayıklanır ve birleşik dataset oluşturulur.</div>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="field"><label for="fileLoader">Eğitilmiş JSON Dosyaları</label><input type="file" id="fileLoader" accept="application/json" multiple /></div>
+            <div class="top-actions"><button class="btn btn-secondary" id="loadCurrentBtn">Mevcut Eğitim Verisini Soru-Cevaba Aktar</button></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">3. Soru-Cevap Modülü</h2>
+              <div class="panel-subtitle">Başlık, anahtar kelime, chunk ve fuzzy yakınlık bir arada kullanılır. Gerekirse ikinci konudan da destek alınır.</div>
+            </div>
+          </div>
+          <div class="qa-box">
+            <div class="field"><label for="questionInput">Sorunuz</label><textarea id="questionInput" placeholder="Örn: print_r ile var_dump farkı nedir ve çıktıyı dosyaya kaydedebilir miyim?"></textarea></div>
+            <div class="actions">
+              <button class="btn btn-primary" id="askBtn">Soruyu Yanıtla</button>
+              <button class="btn btn-secondary" id="demoQuestionBtn">Demo Soru Doldur</button>
+            </div>
+          </div>
+          <div class="results" id="answerArea"><div class="empty"><strong>Henüz cevap yok.</strong><br>Önce bir dataset yükleyin veya mevcut kayıtları aktarın.</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const stopWords = new Set(['ve','veya','ile','icin','için','bu','bir','da','de','mi','mı','mu','mü','ne','nedir','nasil','nasıl','olan','olarak','ama','gibi','cok','çok','en','daha','ise','ki','su','şu','o','ya','hem','fakat','ancak','cunku','çünkü','gore','göre','uzere','üzere','the','a','an','of','to','in','on','for','is','are','be','it','that','from','by','or','and']);
+
+    const state = {
+      trainingSet: { version: '1.1', assistantName: '', topic: '', createdAt: '', records: [] },
+      activeDataset: null
+    };
+
+    const els = {
+      assistantName: document.getElementById('assistantName'),
+      datasetTopic: document.getElementById('datasetTopic'),
+      recordTitle: document.getElementById('recordTitle'),
+      recordText: document.getElementById('recordText'),
+      analyzeBtn: document.getElementById('analyzeBtn'),
+      clearFormBtn: document.getElementById('clearFormBtn'),
+      downloadBtn: document.getElementById('downloadBtn'),
+      resetAllBtn: document.getElementById('resetAllBtn'),
+      recordList: document.getElementById('recordList'),
+      fileLoader: document.getElementById('fileLoader'),
+      loadCurrentBtn: document.getElementById('loadCurrentBtn'),
+      questionInput: document.getElementById('questionInput'),
+      askBtn: document.getElementById('askBtn'),
+      demoQuestionBtn: document.getElementById('demoQuestionBtn'),
+      answerArea: document.getElementById('answerArea'),
+      statRecordCount: document.getElementById('statRecordCount'),
+      statChunkCount: document.getElementById('statChunkCount'),
+      statDataset: document.getElementById('statDataset'),
+      toast: document.getElementById('toast')
+    };
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add('show');
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => els.toast.classList.remove('show'), 2800);
+    }
+
+    function normalizeText(text) {
+      return (text || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/ı/g, 'i').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ö/g, 'o').replace(/ç/g, 'c')
+        .replace(/[`"'“”‘’(){}\[\],;:!?]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function tokenize(text) {
+      const cleaned = normalizeText(text).replace(/[^a-z0-9_#+./\-\s]/g, ' ').replace(/\s+/g, ' ').trim();
+      if (!cleaned) return [];
+      return cleaned.split(' ').map(t => t.trim()).filter(Boolean).filter(t => t.length > 1 || /\d/.test(t)).filter(t => !stopWords.has(t));
+    }
+
+    function unique(arr) { return [...new Set(arr)]; }
+
+    function ngrams(token, size = 3) {
+      const grams = [];
+      if (!token) return grams;
+      if (token.length <= size) return [token];
+      for (let i = 0; i <= token.length - size; i++) grams.push(token.slice(i, i + size));
+      return grams;
+    }
+
+    function buildExpandedTokenSet(text) {
+      const base = tokenize(text);
+      const expanded = new Set(base);
+      base.forEach(token => {
+        ngrams(token, 3).forEach(g => expanded.add(g));
+        if (token.endsWith('lar') || token.endsWith('ler')) expanded.add(token.slice(0, -3));
+        if (token.endsWith('lari') || token.endsWith('leri')) expanded.add(token.slice(0, -4));
+        if (token.endsWith('si') || token.endsWith('su')) expanded.add(token.slice(0, -2));
+        if (token.endsWith('dir') || token.endsWith('dur')) expanded.add(token.slice(0, -3));
+      });
+      return [...expanded].filter(Boolean);
+    }
+
+    function extractKeywords(text, title = '') {
+      const words = buildExpandedTokenSet(title + ' ' + text);
+      const counts = {};
+      for (const word of words) {
+        if (word.length < 2) continue;
+        counts[word] = (counts[word] || 0) + 1;
+      }
+      return Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'tr')).slice(0, 20).map(([word]) => word);
+    }
+
+    function splitIntoChunks(text) {
+      const raw = text.split(/\n{2,}|(?<=\.)\s+(?=[0-9]+\.)|(?<=:)\s+(?=[A-ZÇĞİÖŞÜa-zçğıöşü0-9])/g).map(s => s.trim()).filter(Boolean);
+      const chunks = [];
+      for (const part of raw) {
+        if (part.length <= 420) {
+          chunks.push(part);
+        } else {
+          const sentences = part.match(/[^.!?\n]+[.!?]?/g) || [part];
+          let buffer = '';
+          for (const sentence of sentences) {
+            const next = (buffer + ' ' + sentence).trim();
+            if (next.length > 420 && buffer) { chunks.push(buffer.trim()); buffer = sentence.trim(); }
+            else buffer = next;
+          }
+          if (buffer) chunks.push(buffer.trim());
+        }
+      }
+      return chunks;
+    }
+
+    function detectChunkType(chunk) {
+      const lower = normalizeText(chunk);
+      if (/(ornek|kullanim ornekleri|syntax|soz dizimi|sozdizimi|php\$|print_r\()/i.test(chunk)) return 'örnek / sözdizimi';
+      if (/(fark|vs|karsilastirma|var_dump)/i.test(lower)) return 'karşılaştırma';
+      if (/(ipuc|not|dikkat|oner|uyari|production|canli ortam)/i.test(lower)) return 'not / uyarı';
+      if (/(return|dosya|log|file_put_contents)/i.test(lower)) return 'return / kayıt';
+      if (/(object|nesne|class|public)/i.test(lower)) return 'nesne';
+      if (/(array|dizi|\[0\]|=>)/i.test(lower)) return 'dizi';
+      if (/(nedir|ne ise yarar|amac|debug)/i.test(lower)) return 'tanım';
+      return 'genel';
+    }
+
+    function makeFingerprint(title, fullText) { return normalizeText(title + '||' + fullText).slice(0, 1200); }
+
+    function createRecord(title, text) {
+      const chunks = splitIntoChunks(text).map((chunk, index) => ({
+        id: 'chunk_' + Date.now() + '_' + index + '_' + Math.random().toString(36).slice(2, 7),
+        type: detectChunkType(chunk),
+        text: chunk,
+        keywords: extractKeywords(chunk, title),
+        tokenSet: buildExpandedTokenSet(title + ' ' + chunk)
+      }));
+      return {
+        id: 'rec_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        title,
+        fullText: text,
+        keywords: unique(extractKeywords(text, title)),
+        tokenSet: buildExpandedTokenSet(title + ' ' + text),
+        chunks,
+        fingerprint: makeFingerprint(title, text),
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+    function updateStats() {
+      const records = state.trainingSet.records || [];
+      const chunkCount = records.reduce((sum, rec) => sum + (rec.chunks?.length || 0), 0);
+      els.statRecordCount.textContent = String(records.length);
+      els.statChunkCount.textContent = String(chunkCount);
+      els.statDataset.textContent = state.activeDataset?.assistantName || 'Yok';
+    }
+
+    function renderRecords() {
+      const records = state.trainingSet.records || [];
+      if (!records.length) {
+        els.recordList.innerHTML = '<div class="empty"><strong>Henüz eğitim kaydı yok.</strong><br>İlk kaydı eklediğinizde burada listelenecek.</div>';
+        updateStats();
+        return;
+      }
+      els.recordList.innerHTML = records.map(record => `
+        <div class="record-card">
+          <div class="record-top">
+            <div>
+              <h3 class="record-title">${escapeHtml(record.title)}</h3>
+              <div class="record-meta">${new Date(record.createdAt).toLocaleString('tr-TR')} · ${record.chunks.length} parça</div>
+            </div>
+            <div class="actions" style="margin:0">
+              <span class="badge">${record.keywords.length} anahtar kelime</span>
+              <button class="btn btn-secondary" style="min-height:40px;padding:10px 12px" onclick="deleteRecord('${record.id}')">Sil</button>
+            </div>
+          </div>
+          <div class="record-content">${escapeHtml(record.fullText.slice(0, 340))}${record.fullText.length > 340 ? '...' : ''}</div>
+          <div class="chips">${record.keywords.slice(0, 10).map(k => `<span class="chip">${escapeHtml(k)}</span>`).join('')}</div>
+        </div>
+      `).join('');
+      updateStats();
+    }
+
+    window.deleteRecord = function(recordId) {
+      state.trainingSet.records = state.trainingSet.records.filter(r => r.id !== recordId);
+      renderRecords();
+      showToast('Kayıt silindi.');
+    };
+
+    function buildDatasetPayload() {
+      return {
+        version: '1.1',
+        assistantName: els.assistantName.value.trim() || 'Mini Eğitim Botu',
+        topic: els.datasetTopic.value.trim() || 'Genel',
+        createdAt: new Date().toISOString(),
+        records: state.trainingSet.records
+      };
+    }
+
+    function downloadJSON(data, filename) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    function jaccardSimilarity(aTokens, bTokens) {
+      const a = new Set(aTokens || []), b = new Set(bTokens || []);
+      if (!a.size || !b.size) return 0;
+      let intersection = 0;
+      a.forEach(token => { if (b.has(token)) intersection++; });
+      const union = new Set([...a, ...b]).size;
+      return union ? intersection / union : 0;
+    }
+
+    function fuzzyTokenHit(questionTokens, recordTokens) {
+      let hits = 0;
+      const recordSet = new Set(recordTokens || []);
+      questionTokens.forEach(q => {
+        if (recordSet.has(q)) { hits += 1; return; }
+        for (const r of recordSet) {
+          if (q.length >= 4 && r.length >= 4 && (q.includes(r) || r.includes(q))) { hits += 0.7; break; }
+        }
+      });
+      return hits;
+    }
+
+    function scoreQuestionAgainstRecord(question, record) {
+      const questionTokens = buildExpandedTokenSet(question);
+      const titleTokens = buildExpandedTokenSet(record.title);
+      const recordTokens = record.tokenSet || buildExpandedTokenSet(record.title + ' ' + record.fullText);
+      const keywordTokens = record.keywords || [];
+
+      let score = 0;
+      const titleJaccard = jaccardSimilarity(questionTokens, titleTokens);
+      const recordJaccard = jaccardSimilarity(questionTokens, recordTokens);
+      const fuzzyHits = fuzzyTokenHit(questionTokens, recordTokens);
+      const keywordHits = fuzzyTokenHit(questionTokens, keywordTokens);
+
+      score += titleJaccard * 42;
+      score += recordJaccard * 36;
+      score += fuzzyHits * 4.5;
+      score += keywordHits * 5.5;
+
+      const qNorm = normalizeText(question);
+      const chunkScores = (record.chunks || []).map(chunk => {
+        const chunkTokens = chunk.tokenSet || buildExpandedTokenSet(record.title + ' ' + chunk.text);
+        const chunkJaccard = jaccardSimilarity(questionTokens, chunkTokens);
+        const chunkFuzzy = fuzzyTokenHit(questionTokens, chunkTokens);
+        let chunkScore = (chunkJaccard * 50) + (chunkFuzzy * 4);
+        if (/fark|vs|karsilastirma/.test(qNorm) && chunk.type === 'karşılaştırma') chunkScore += 12;
+        if (/ornek|syntax|sozdizimi|kod/.test(qNorm) && chunk.type === 'örnek / sözdizimi') chunkScore += 12;
+        if (/return|dosya|log/.test(qNorm) && chunk.type === 'return / kayıt') chunkScore += 12;
+        if (/uyari|oner|dikkat|production/.test(qNorm) && chunk.type === 'not / uyarı') chunkScore += 10;
+        return { ...chunk, score: chunkScore };
+      }).sort((a, b) => b.score - a.score);
+
+      const topChunks = chunkScores.filter(c => c.score > 2).slice(0, 4);
+      score += topChunks.reduce((sum, c) => sum + c.score, 0);
+      return { record, score, topChunks };
+    }
+
+    function generateAnswer(question, bestMatches) {
+      const primary = bestMatches[0];
+      if (!primary || !primary.record) return null;
+      const topBlocks = [];
+      bestMatches.slice(0, 2).forEach(match => {
+        (match.topChunks || []).slice(0, 2).forEach(chunk => {
+          if (!topBlocks.some(x => x.text === chunk.text)) topBlocks.push({ title: match.record.title, ...chunk });
+        });
+      });
+      const intro = 'Sorunuza en yakın eğitim konusu: ' + primary.record.title + '.';
+      const body = topBlocks.length ? topBlocks.map(block => block.text.trim()).join('\n\n') : primary.record.fullText.slice(0, 700);
+      const related = bestMatches[1] ? '\n\nEk destek veren konu: ' + bestMatches[1].record.title + '.' : '';
+      return (intro + '\n\n' + body + related).trim();
+    }
+
+    function renderAnswer(question, ranked) {
+      const best = ranked[0];
+      if (!best || best.score <= 0) {
+        els.answerArea.innerHTML = '<div class="empty"><strong>Yeterli eşleşme bulunamadı.</strong><br>Daha fazla eğitim verisi ekleyin ya da soruyu farklı şekilde yazın.</div>';
+        return;
+      }
+      const answerText = generateAnswer(question, ranked.slice(0, 3));
+      const percent = Math.min(98, Math.max(12, Math.round(best.score)));
+      const badgeClass = percent >= 70 ? 'success' : percent >= 40 ? 'warn' : '';
+      els.answerArea.innerHTML = `
+        <div class="answer-card">
+          <div class="answer-top">
+            <div>
+              <h3 class="answer-title">Eşleşen Konu: ${escapeHtml(best.record.title)}</h3>
+              <div class="answer-meta">Soru: ${escapeHtml(question)}</div>
+            </div>
+            <span class="badge ${badgeClass}">Güven Skoru %${percent}</span>
+          </div>
+          <div class="answer-content">${escapeHtml(answerText)}</div>
+          <div class="chips" style="margin-top:14px">${(best.record.keywords || []).slice(0, 12).map(k => `<span class="chip">${escapeHtml(k)}</span>`).join('')}</div>
+          <div class="matched-chunks" style="margin-top:16px">
+            <strong style="display:block;margin-bottom:10px">Kullanılan Parçalar</strong>
+            ${best.topChunks.map((chunk, i) => `
+              <div style="padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:rgba(15,23,42,.45)">
+                <div class="answer-meta">#${i + 1} · ${escapeHtml(chunk.type)} · parça skoru ${Math.round(chunk.score)}</div>
+                <div>${escapeHtml(chunk.text)}</div>
+              </div>`).join('')}
+          </div>
+          ${ranked.length > 1 ? `
+            <div class="matched-chunks" style="margin-top:16px">
+              <strong style="display:block;margin-bottom:10px">Alternatif Eşleşmeler</strong>
+              ${ranked.slice(1, 3).map(item => `
+                <div style="padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:rgba(15,23,42,.35)">
+                  <div class="answer-meta">${escapeHtml(item.record.title)} · skor ${Math.round(item.score)}</div>
+                  <div>${escapeHtml(item.record.fullText.slice(0, 180))}${item.record.fullText.length > 180 ? '...' : ''}</div>
+                </div>`).join('')}
+            </div>` : ''}
+        </div>`;
+    }
+
+    function mergeDatasetIntoTrainingSet(incoming) {
+      if (!incoming || !Array.isArray(incoming.records)) throw new Error('Geçersiz dataset');
+      const existing = new Map((state.trainingSet.records || []).map(r => [r.fingerprint || makeFingerprint(r.title, r.fullText), r]));
+      let added = 0, skipped = 0;
+      incoming.records.forEach(record => {
+        const normalized = {
+          ...record,
+          tokenSet: record.tokenSet || buildExpandedTokenSet((record.title || '') + ' ' + (record.fullText || '')),
+          keywords: record.keywords || extractKeywords(record.fullText || '', record.title || ''),
+          fingerprint: record.fingerprint || makeFingerprint(record.title || '', record.fullText || ''),
+          chunks: (record.chunks || []).map(chunk => ({
+            ...chunk,
+            keywords: chunk.keywords || extractKeywords(chunk.text || '', record.title || ''),
+            tokenSet: chunk.tokenSet || buildExpandedTokenSet((record.title || '') + ' ' + (chunk.text || ''))
+          }))
+        };
+        if (existing.has(normalized.fingerprint)) { skipped += 1; return; }
+        state.trainingSet.records.unshift(normalized);
+        existing.set(normalized.fingerprint, normalized);
+        added += 1;
+      });
+      if (!state.trainingSet.assistantName && incoming.assistantName) state.trainingSet.assistantName = incoming.assistantName;
+      if (!state.trainingSet.topic && incoming.topic) state.trainingSet.topic = incoming.topic;
+      if (!els.assistantName.value && state.trainingSet.assistantName) els.assistantName.value = state.trainingSet.assistantName;
+      if (!els.datasetTopic.value && state.trainingSet.topic) els.datasetTopic.value = state.trainingSet.topic;
+      return { added, skipped };
+    }
+
+    els.analyzeBtn.addEventListener('click', () => {
+      const title = els.recordTitle.value.trim();
+      const text = els.recordText.value.trim();
+      state.trainingSet.assistantName = els.assistantName.value.trim();
+      state.trainingSet.topic = els.datasetTopic.value.trim();
+      if (!title || !text) return showToast('Konu başlığı ve eğitim metni zorunludur.');
+      const record = createRecord(title, text);
+      const exists = state.trainingSet.records.some(r => (r.fingerprint || makeFingerprint(r.title, r.fullText)) === record.fingerprint);
+      if (exists) return showToast('Aynı içerik zaten mevcut.');
+      state.trainingSet.records.unshift(record);
+      renderRecords();
+      showToast('Kayıt analiz edilip eklendi.');
+    });
+
+    els.clearFormBtn.addEventListener('click', () => { els.recordTitle.value = ''; els.recordText.value = ''; showToast('Form temizlendi.'); });
+
+    els.downloadBtn.addEventListener('click', () => {
+      if (!state.trainingSet.records.length) return showToast('İndirilecek kayıt yok.');
+      const payload = buildDatasetPayload();
+      const safeName = (payload.assistantName || 'mini-egitim-botu').toLowerCase().replace(/[^a-z0-9çğıöşü]+/gi, '-').replace(/^-+|-+$/g, '');
+      downloadJSON(payload, (safeName || 'mini-egitim-botu') + '.json');
+      showToast('Eğitilmiş dosya indirildi.');
+    });
+
+    els.resetAllBtn.addEventListener('click', () => {
+      if (!confirm('Tüm eğitim kayıtları silinsin mi?')) return;
+      state.trainingSet.records = []; renderRecords(); showToast('Tüm kayıtlar sıfırlandı.');
+    });
+
+    els.loadCurrentBtn.addEventListener('click', () => {
+      if (!state.trainingSet.records.length) return showToast('Aktarılacak kayıt yok.');
+      state.activeDataset = buildDatasetPayload(); updateStats(); showToast('Mevcut eğitim verisi soru-cevap modülüne aktarıldı.');
+    });
+
+    els.fileLoader.addEventListener('change', async (e) => {
+      const files = [...(e.target.files || [])];
+      if (!files.length) return;
+      let mergedCount = 0, skippedCount = 0;
+      try {
+        for (const file of files) {
+          const text = await file.text();
+          const data = JSON.parse(text);
+          if (!data || !Array.isArray(data.records)) throw new Error(file.name + ' geçerli bir eğitim dosyası değil.');
+          const result = mergeDatasetIntoTrainingSet(data);
+          mergedCount += result.added; skippedCount += result.skipped;
+        }
+        state.activeDataset = {
+          version: '1.1',
+          assistantName: els.assistantName.value.trim() || state.trainingSet.assistantName || 'Birleşik Dataset',
+          topic: els.datasetTopic.value.trim() || state.trainingSet.topic || 'Genel',
+          createdAt: new Date().toISOString(),
+          records: state.trainingSet.records
+        };
+        renderRecords(); updateStats();
+        showToast(files.length + ' dosya işlendi. ' + mergedCount + ' kayıt eklendi, ' + skippedCount + ' kayıt atlandı.');
+      } catch (err) {
+        console.error(err); showToast('Dosya yüklenemedi. JSON formatını kontrol edin.');
+      } finally {
+        e.target.value = '';
+      }
+    });
+
+    els.askBtn.addEventListener('click', () => {
+      const dataset = state.activeDataset; const question = els.questionInput.value.trim();
+      if (!dataset || !Array.isArray(dataset.records) || !dataset.records.length) return showToast('Önce bir dataset yükleyin veya mevcut veriyi aktarın.');
+      if (!question) return showToast('Lütfen bir soru yazın.');
+      const ranked = dataset.records.map(record => scoreQuestionAgainstRecord(question, record)).filter(s => s.score > 0.5).sort((a, b) => b.score - a.score).slice(0, 5);
+      renderAnswer(question, ranked);
+    });
+
+    els.demoQuestionBtn.addEventListener('click', () => {
+      els.questionInput.value = 'print_r ile var_dump farkı nedir ve print_r çıktısını dosyaya kaydedebilir miyim?';
+      showToast('Demo soru dolduruldu.');
+    });
+
+    renderRecords(); updateStats();
+  </script>
+</body>
+</html>
