@@ -10,14 +10,6 @@
 <meta name="keywords" content="image blend tool, merge images online, soft blend images, photo merge tool, feather mask tool, image mixer online">
 <meta name="author" content="ebubekirbastama.com.tr">
 
-<!-- Open Graph -->
-<meta property="og:title" content="Free Image Blend Tool Online">
-<meta property="og:description" content="Merge two images with smooth transitions instantly. No download required.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.ebubekirbastama.com.tr/image-blend-tool.html">
-
-
-<!-- Canonical -->
 <link rel="canonical" href="https://www.ebubekirbastama.com.tr/tools/image-blend-tool.html">
 
 <style>
@@ -44,6 +36,7 @@ h1 { margin:20px 0; }
     margin:10px;
     transition:0.3s;
     cursor:pointer;
+    user-select:none;
 }
 
 .drop-area:hover {
@@ -100,10 +93,13 @@ footer {
 <div class="wrapper">
 
 <h1>🧩 Image Blend Tool</h1>
-<p>Blend two images smoothly with feather transition. Drag & drop your images below.</p>
+<p>Blend two images smoothly with feather transition. Drag & drop your images below or click to select.</p>
 
-<div id="drop1" class="drop-area">📥 Drag & Drop First Image</div>
-<div id="drop2" class="drop-area">📥 Drag & Drop Second Image</div>
+<div id="drop1" class="drop-area">📥 Drag & Drop First Image<br><small>veya tıklayıp seçin</small></div>
+<input type="file" id="file1" accept="image/*" hidden>
+
+<div id="drop2" class="drop-area">📥 Drag & Drop Second Image<br><small>veya tıklayıp seçin</small></div>
+<input type="file" id="file2" accept="image/*" hidden>
 
 <div class="controls">
 
@@ -150,7 +146,25 @@ let img2 = new Image();
 let loaded1 = false;
 let loaded2 = false;
 
-function setupDrop(element, callback) {
+function loadImageFile(file, callback) {
+    if (!file || !file.type.startsWith("image/")) return;
+
+    const reader = new FileReader();
+    reader.onload = ev => callback(ev.target.result);
+    reader.readAsDataURL(file);
+}
+
+function setupDrop(element, inputElement, callback) {
+    element.addEventListener("click", () => {
+        inputElement.click();
+    });
+
+    inputElement.addEventListener("change", e => {
+        const file = e.target.files[0];
+        loadImageFile(file, callback);
+        inputElement.value = "";
+    });
+
     element.addEventListener("dragover", e => {
         e.preventDefault();
         element.style.borderColor = "#00d4ff";
@@ -165,23 +179,27 @@ function setupDrop(element, callback) {
         element.style.borderColor = "#aaa";
 
         const file = e.dataTransfer.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = ev => callback(ev.target.result);
-        reader.readAsDataURL(file);
+        loadImageFile(file, callback);
     });
 }
 
-setupDrop(document.getElementById("drop1"), src => {
-    img1.src = src;
-    img1.onload = () => { loaded1 = true; draw(); };
-});
+setupDrop(
+    document.getElementById("drop1"),
+    document.getElementById("file1"),
+    src => {
+        img1.src = src;
+        img1.onload = () => { loaded1 = true; draw(); };
+    }
+);
 
-setupDrop(document.getElementById("drop2"), src => {
-    img2.src = src;
-    img2.onload = () => { loaded2 = true; draw(); };
-});
+setupDrop(
+    document.getElementById("drop2"),
+    document.getElementById("file2"),
+    src => {
+        img2.src = src;
+        img2.onload = () => { loaded2 = true; draw(); };
+    }
+);
 
 document.getElementById("feather").oninput = draw;
 document.getElementById("position").oninput = draw;
@@ -201,18 +219,18 @@ function draw() {
 
     if (dir === "horizontal") {
         let x = canvas.width * pos;
-        gradient = ctx.createLinearGradient(x - feather,0,x + feather,0);
+        gradient = ctx.createLinearGradient(x - feather, 0, x + feather, 0);
     } else {
         let y = canvas.height * pos;
-        gradient = ctx.createLinearGradient(0,y - feather,0,y + feather);
+        gradient = ctx.createLinearGradient(0, y - feather, 0, y + feather);
     }
 
-    gradient.addColorStop(0,"rgba(0,0,0,1)");
-    gradient.addColorStop(1,"rgba(0,0,0,0)");
+    gradient.addColorStop(0, "rgba(0,0,0,1)");
+    gradient.addColorStop(1, "rgba(0,0,0,0)");
 
     ctx.globalCompositeOperation = "destination-in";
     ctx.fillStyle = gradient;
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.globalCompositeOperation = "destination-over";
     ctx.drawImage(img2, 0, 0, canvas.width, canvas.height);
@@ -220,7 +238,7 @@ function draw() {
     ctx.globalCompositeOperation = "source-over";
 }
 
-function downloadImage(){
+function downloadImage() {
     let link = document.createElement("a");
     link.download = "image-blend.png";
     link.href = canvas.toDataURL();
