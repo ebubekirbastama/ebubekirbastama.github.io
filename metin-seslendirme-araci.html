@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma</title>
+<meta name="title" content="Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma">
+<meta name="description" content="Metin seslendirme aracı ile yazıları kadın veya erkek ses seçenekleriyle dinleyin. Yazı takip özelliği sayesinde okunan satır ve kelimeleri canlı olarak görün. Ücretsiz, modern ve tarayıcı tabanlı metin okuma aracı.">
+<meta name="keywords" content="metin seslendirme aracı, text to speech türkçe, yazıyı sesli okuma, kadın sesi metin okuma, erkek sesi metin okuma, sesli metin okuma, metni dinleme aracı, türkçe seslendirme aracı, yazı takipli seslendirme, ücretsiz text to speech, ücretsiz metin okuma aracı, tarayıcıdan metin seslendirme, canlı yazı takibi, metin okuyucu">
+<meta name="author" content="Ebubekir Bastama">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="language" content="Turkish">
+<meta name="revisit-after" content="7 days">
+<meta name="theme-color" content="#0b1020">
+
+<link rel="canonical" href="https://www.ebubekirbastama.com.tr/metin-seslendirme-araci.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ebubekir Bastama">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma">
+<meta property="og:description" content="Metinleri kadın veya erkek ses seçenekleriyle dinleyin. Okunan satır ve kelimeleri anlık takip edin. Ücretsiz ve modern tarayıcı tabanlı metin seslendirme aracı.">
+<meta property="og:url" content="https://www.ebubekirbastama.com.tr/metin-seslendirme-araci.html">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Metin Seslendirme Aracı kadın ve erkek sesle yazı takipli okuma ekranı">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma">
+<meta name="twitter:description" content="Metinleri kadın veya erkek ses seçenekleriyle dinleyin, okunan yazıyı canlı olarak takip edin. Ücretsiz tarayıcı tabanlı araç.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Metin Seslendirme Aracı",
+  "url": "https://www.ebubekirbastama.com.tr/metin-seslendirme-araci.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "browserRequirements": "JavaScript destekleyen modern tarayıcı",
+  "description": "Metinleri kadın veya erkek ses seçenekleriyle sesli okuyan ve okunan satır ile kelimeleri canlı takip etmeyi sağlayan ücretsiz web aracı.",
+  "inLanguage": "tr-TR",
+  "isAccessibleForFree": true,
+  "creator": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY"
+  }
+}
+</script>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0b1020;
+      --card:rgba(15,23,42,.86);
+      --card-soft:rgba(255,255,255,.04);
+      --border:rgba(255,255,255,.08);
+      --text:#ecf3ff;
+      --muted:#9fb0d0;
+      --primary:#4f8cff;
+      --primary2:#7c5cff;
+      --success:#19c37d;
+      --danger:#ff5d73;
+      --warning:#ffb020;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius-xl:26px;
+      --radius-lg:18px;
+      --radius-md:14px;
+      --track:#1a2741;
+      --active-line:rgba(79,140,255,.18);
+      --active-word:#ffd54a;
+      --active-word-text:#1b1600;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79,140,255,.24), transparent 28%),
+        radial-gradient(circle at top right, rgba(124,92,255,.18), transparent 22%),
+        linear-gradient(135deg, var(--bg) 0%, var(--bg2) 48%, #101826 100%);
+      min-height:100vh;
+      padding:20px;
+    }
+
+    .app{
+      width:min(1400px,100%);
+      margin:0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+      padding:16px 18px;
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:rgba(6,10,20,.6);
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+
+    .brand-badge{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      letter-spacing:.5px;
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      box-shadow:0 10px 24px rgba(79,140,255,.3);
+      flex-shrink:0;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:1.08rem;
+      line-height:1.15;
+    }
+
+    .brand p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(29,195,125,.22);
+      background:rgba(29,195,125,.1);
+      color:#93f0c7;
+      font-weight:700;
+      font-size:.86rem;
+      white-space:nowrap;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 430px 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      min-width:0;
+    }
+
+    .panel{
+      padding:22px;
+    }
+
+    .panel + .panel{
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+
+    .panel-title{
+      margin:0 0 14px;
+      font-size:1.04rem;
+    }
+
+    .muted{
+      color:var(--muted);
+      line-height:1.65;
+      font-size:.94rem;
+    }
+
+    .field{
+      margin-bottom:14px;
+    }
+
+    .field:last-child{
+      margin-bottom:0;
+    }
+
+    label{
+      display:block;
+      margin:0 0 8px;
+      font-weight:700;
+      font-size:.92rem;
+    }
+
+    textarea, select, input[type="text"]{
+      width:100%;
+      border:none;
+      outline:none;
+      color:var(--text);
+      background:#0b1322;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px 15px;
+      font:inherit;
+    }
+
+    textarea{
+      min-height:250px;
+      resize:vertical;
+      line-height:1.7;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .btns{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:16px;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:15px;
+      padding:13px 14px;
+      font-weight:800;
+      font-size:.95rem;
+      color:#fff;
+      transition:.22s ease;
+    }
+
+    button:hover{ transform:translateY(-1px); }
+    button:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    .btn-primary{ background:linear-gradient(135deg,var(--primary),var(--primary2)); }
+    .btn-soft{ background:#22304d; }
+    .btn-success{ background:var(--success); color:#042317; }
+    .btn-danger{ background:var(--danger); }
+
+    .slider-wrap{
+      margin-top:4px;
+    }
+
+    .slider-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:6px;
+    }
+
+    .slider-val{
+      color:#d8e7ff;
+      font-weight:800;
+      font-size:.88rem;
+    }
+
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--primary);
+      cursor:pointer;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .stat{
+      background:var(--card-soft);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .stat strong{
+      display:block;
+      font-size:1.1rem;
+      margin-bottom:5px;
+    }
+
+    .stat span{
+      color:var(--muted);
+      font-size:.84rem;
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(79,140,255,.12);
+      border:1px solid rgba(79,140,255,.18);
+      color:#dce8ff;
+      min-height:54px;
+      margin-top:14px;
+      line-height:1.45;
+    }
+
+    .status-dot{
+      width:11px;
+      height:11px;
+      border-radius:50%;
+      background:#8eb5ff;
+      box-shadow:0 0 0 6px rgba(142,181,255,.12);
+      flex-shrink:0;
+    }
+
+    .right-head{
+      padding:20px 22px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .right-head h2{
+      margin:0;
+      font-size:1.02rem;
+    }
+
+    .follow-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .pill{
+      padding:10px 13px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.07);
+      color:#dbe6fb;
+      font-size:.87rem;
+      font-weight:700;
+    }
+
+    .reader-wrap{
+      padding:18px;
+    }
+
+    .reader{
+      position:relative;
+      min-height:640px;
+      max-height:75vh;
+      overflow:auto;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:22px;
+      padding:24px;
+      line-height:2.05;
+      font-size:1.1rem;
+      color:#dfe9ff;
+      scroll-padding-top:120px;
+    }
+
+    .reader-empty{
+      color:var(--muted);
+    }
+
+    .line{
+      display:block;
+      padding:8px 12px;
+      margin:0 0 8px;
+      border-radius:14px;
+      transition:.18s ease;
+      border:1px solid transparent;
+    }
+
+    .line.active-line{
+      background:var(--active-line);
+      border-color:rgba(79,140,255,.18);
+      box-shadow:0 8px 22px rgba(79,140,255,.12);
+    }
+
+    .word{
+      display:inline;
+      border-radius:8px;
+      padding:2px 2px;
+      transition:.14s ease;
+    }
+
+    .word.active-word{
+      background:var(--active-word);
+      color:var(--active-word-text);
+      box-shadow:0 6px 18px rgba(255,213,74,.22);
+      padding:2px 6px;
+    }
+
+    .mini-help{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:.88rem;
+      line-height:1.6;
+    }
+
+    .progress-bar{
+      margin-top:14px;
+      height:12px;
+      border-radius:999px;
+      background:var(--track);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .progress-fill{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,var(--primary),var(--primary2));
+      transition:width .15s linear;
+    }
+
+    @media (max-width:1100px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+      .reader{
+        min-height:440px;
+      }
+    }
+
+    @media (max-width:640px){
+      body{ padding:14px; }
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .grid-2, .btns, .stats{
+        grid-template-columns:1fr;
+      }
+      .reader{
+        font-size:1rem;
+        padding:16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-badge">EBS</div>
+        <div>
+          <h1>Metin Seslendirme ve Yazı Takip Aracı</h1>
+          <p>Kadın / erkek sese yakın seçim, canlı takip, modern okuma ekranı</p>
+        </div>
+      </div>
+      <div class="tag">● Ücretsiz • Tarayıcı içi</div>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <div class="panel">
+          <h3 class="panel-title">Metin ve ses ayarları</h3>
+
+          <div class="field">
+            <label for="textInput">Metin</label>
+            <textarea id="textInput" placeholder="Buraya dinletmek istediğin metni yapıştır...">Merhaba. Bu araç, tarayıcı içindeki seslendirme motorunu kullanarak metni sesli okur. Aynı anda okunan satırı ve kelimeyi ekranda takip etmeni sağlar. Kadın veya erkek sese yakın bir ses seçebilirsin.</textarea>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="voiceType">Ses tipi</label>
+              <select id="voiceType">
+                <option value="female">Kadın sesi öncelikli</option>
+                <option value="male">Erkek sesi öncelikli</option>
+                <option value="all">Tüm sesler</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="langSelect">Dil</label>
+              <select id="langSelect">
+                <option value="tr-TR">Türkçe (tr-TR)</option>
+                <option value="en-US">English (en-US)</option>
+                <option value="de-DE">Deutsch (de-DE)</option>
+                <option value="all">Tüm diller</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="voiceSelect">Ses seç</label>
+            <select id="voiceSelect"></select>
+          </div>
+
+          <div class="grid-2">
+            <div class="field slider-wrap">
+              <div class="slider-head">
+                <label for="rate" style="margin:0;">Hız</label>
+                <span class="slider-val" id="rateVal">1.00</span>
+              </div>
+              <input type="range" id="rate" min="0.6" max="1.4" step="0.05" value="1">
+            </div>
+
+            <div class="field slider-wrap">
+              <div class="slider-head">
+                <label for="pitch" style="margin:0;">Ton</label>
+                <span class="slider-val" id="pitchVal">1.00</span>
+              </div>
+              <input type="range" id="pitch" min="0.7" max="1.3" step="0.05" value="1">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field slider-wrap">
+              <div class="slider-head">
+                <label for="volume" style="margin:0;">Ses seviyesi</label>
+                <span class="slider-val" id="volumeVal">1.00</span>
+              </div>
+              <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
+            </div>
+
+            <div class="field">
+              <label for="chunkSize">Satır başına yaklaşık karakter</label>
+              <input type="text" id="chunkSize" value="170">
+            </div>
+          </div>
+
+          <div class="btns">
+            <button class="btn-primary" id="speakBtn">▶ Oku</button>
+            <button class="btn-soft" id="pauseBtn">⏸ Duraklat</button>
+            <button class="btn-success" id="resumeBtn">⏯ Devam Et</button>
+            <button class="btn-danger" id="stopBtn">■ Durdur</button>
+          </div>
+
+          <div class="btns" style="margin-top:10px;">
+            <button class="btn-soft" id="rebuildBtn">↻ Metni Hazırla</button>
+            <button class="btn-soft" id="clearBtn">✕ Temizle</button>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <strong id="charCount">0</strong>
+              <span>Karakter</span>
+            </div>
+            <div class="stat">
+              <strong id="lineCount">0</strong>
+              <span>Satır</span>
+            </div>
+            <div class="stat">
+              <strong id="voiceCount">0</strong>
+              <span>Uygun ses</span>
+            </div>
+          </div>
+
+          <div class="status" id="statusBox">
+            <span class="status-dot"></span>
+            <span>Hazır.</span>
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <div class="mini-help">
+            Tarayıcı bazı sistemlerde kelime bazlı takibi tam destekler. Destek yoksa satır bazlı takip yine çalışır.
+            En iyi sonuç için Chrome veya Edge kullanman iyi olur.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="right-head">
+          <div>
+            <h2>Canlı okuma alanı</h2>
+            <div class="muted">Okunan satır otomatik öne çıkarılır, mümkünse anlık kelime de vurgulanır.</div>
+          </div>
+          <div class="follow-meta">
+            <div class="pill">Aktif satır: <span id="activeLineNo">0</span></div>
+            <div class="pill">Aktif kelime: <span id="activeWordNo">0</span></div>
+            <div class="pill">Durum: <span id="followMode">Beklemede</span></div>
+          </div>
+        </div>
+
+        <div class="reader-wrap">
+          <div class="reader" id="reader">
+            <div class="reader-empty">Metin girildiğinde burada modern okuma görünümü oluşur.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const synth = window.speechSynthesis;
+
+    const textInput = document.getElementById('textInput');
+    const voiceType = document.getElementById('voiceType');
+    const langSelect = document.getElementById('langSelect');
+    const voiceSelect = document.getElementById('voiceSelect');
+    const rate = document.getElementById('rate');
+    const pitch = document.getElementById('pitch');
+    const volume = document.getElementById('volume');
+    const chunkSizeInput = document.getElementById('chunkSize');
+
+    const rateVal = document.getElementById('rateVal');
+    const pitchVal = document.getElementById('pitchVal');
+    const volumeVal = document.getElementById('volumeVal');
+
+    const speakBtn = document.getElementById('speakBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resumeBtn = document.getElementById('resumeBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const rebuildBtn = document.getElementById('rebuildBtn');
+
+    const statusBox = document.getElementById('statusBox');
+    const reader = document.getElementById('reader');
+    const charCount = document.getElementById('charCount');
+    const lineCount = document.getElementById('lineCount');
+    const voiceCount = document.getElementById('voiceCount');
+    const activeLineNo = document.getElementById('activeLineNo');
+    const activeWordNo = document.getElementById('activeWordNo');
+    const followMode = document.getElementById('followMode');
+    const progressFill = document.getElementById('progressFill');
+
+    let allVoices = [];
+    let preparedLines = [];
+    let isPaused = false;
+    let isSpeaking = false;
+    let currentLineIndex = -1;
+    let currentWordIndex = -1;
+    let currentUtterance = null;
+    let fallbackTimer = null;
+    let fallbackWordIndex = 0;
+    let fallbackWords = [];
+    let readingMode = 'Beklemede';
+
+    const femaleHints = [
+      'female','woman','zira','hazel','aria','jenny','salli','samantha','serena',
+      'joanna','emma','ayla','selin','sibel','seda','melis','kadın','kadin'
+    ];
+
+    const maleHints = [
+      'male','man','david','mark','george','brian','matthew','justin','andrew',
+      'ryan','cem','ahmet','mehmet','ali','murat','erkek'
+    ];
+
+    function normalizeText(v) {
+      return (v || '')
+        .toLocaleLowerCase('tr-TR')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function detectVoiceGender(voiceName) {
+      const n = normalizeText(voiceName);
+      if (femaleHints.some(h => n.includes(normalizeText(h)))) return 'female';
+      if (maleHints.some(h => n.includes(normalizeText(h)))) return 'male';
+      return 'unknown';
+    }
+
+    function setStatus(text) {
+      statusBox.innerHTML = '<span class="status-dot"></span><span>' + text + '</span>';
+    }
+
+    function updateTopNumbers() {
+      charCount.textContent = textInput.value.length;
+      lineCount.textContent = preparedLines.length;
+      rateVal.textContent = Number(rate.value).toFixed(2);
+      pitchVal.textContent = Number(pitch.value).toFixed(2);
+      volumeVal.textContent = Number(volume.value).toFixed(2);
+      activeLineNo.textContent = currentLineIndex >= 0 ? currentLineIndex + 1 : 0;
+      activeWordNo.textContent = currentWordIndex >= 0 ? currentWordIndex + 1 : 0;
+      followMode.textContent = readingMode;
+    }
+
+    function sortVoices(voices) {
+      return [...voices].sort((a, b) => {
+        const ad = a.default ? 1 : 0;
+        const bd = b.default ? 1 : 0;
+        if (ad !== bd) return bd - ad;
+        if ((a.lang || '').startsWith('tr') && !(b.lang || '').startsWith('tr')) return -1;
+        if (!(a.lang || '').startsWith('tr') && (b.lang || '').startsWith('tr')) return 1;
+        return a.name.localeCompare(b.name, 'tr');
+      });
+    }
+
+    function getFilteredVoices() {
+      let voices = [...allVoices];
+      const lang = langSelect.value;
+      const type = voiceType.value;
+
+      if (lang !== 'all') {
+        const shortLang = lang.toLowerCase().split('-')[0];
+        voices = voices.filter(v => (v.lang || '').toLowerCase().startsWith(shortLang));
+      }
+
+      if (type !== 'all') {
+        let filtered = voices.filter(v => detectVoiceGender(v.name) === type);
+        if (filtered.length) voices = filtered;
+      }
+
+      return sortVoices(voices);
+    }
+
+    function pickBestVoice(voices) {
+      const type = voiceType.value;
+      const lang = langSelect.value;
+
+      let pool = [...voices];
+
+      if (lang !== 'all') {
+        const shortLang = lang.toLowerCase().split('-')[0];
+        const langPool = pool.filter(v => (v.lang || '').toLowerCase().startsWith(shortLang));
+        if (langPool.length) pool = langPool;
+      }
+
+      if (type !== 'all') {
+        const typePool = pool.filter(v => detectVoiceGender(v.name) === type);
+        if (typePool.length) pool = typePool;
+      }
+
+      return pool.find(v => (v.lang || '').toLowerCase() === 'tr-tr')
+          || pool.find(v => v.default)
+          || pool[0]
+          || null;
+    }
+
+    function populateVoices(keepSelected = true) {
+      allVoices = synth.getVoices();
+      const filtered = getFilteredVoices();
+      const prev = keepSelected ? voiceSelect.value : '';
+
+      voiceSelect.innerHTML = '';
+
+      if (!filtered.length) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'Ses bulunamadı';
+        voiceSelect.appendChild(opt);
+        voiceCount.textContent = 0;
+        setStatus('Uygun ses bulunamadı.');
+        return;
+      }
+
+      filtered.forEach(v => {
+        const gender = detectVoiceGender(v.name);
+        const opt = document.createElement('option');
+        opt.value = v.name;
+        opt.textContent = `${v.name} (${v.lang})${v.default ? ' • varsayılan' : ''}${gender !== 'unknown' ? ' • ' + (gender === 'female' ? 'kadın' : 'erkek') : ''}`;
+        voiceSelect.appendChild(opt);
+      });
+
+      if (prev && [...voiceSelect.options].some(o => o.value === prev)) {
+        voiceSelect.value = prev;
+      } else {
+        const best = pickBestVoice(filtered);
+        if (best) voiceSelect.value = best.name;
+      }
+
+      voiceCount.textContent = filtered.length;
+      updateTopNumbers();
+    }
+
+    function getSelectedVoice() {
+      return allVoices.find(v => v.name === voiceSelect.value) || null;
+    }
+
+    function splitTextIntoLines(text, maxLen) {
+      const clean = text.replace(/\r\n/g, '\n').replace(/\t/g, ' ').replace(/[ ]{2,}/g, ' ').trim();
+      if (!clean) return [];
+
+      const paragraphs = clean.split(/\n+/).map(p => p.trim()).filter(Boolean);
+      const lines = [];
+
+      paragraphs.forEach(paragraph => {
+        const sentences = paragraph.match(/[^.!?]+[.!?…:]*/g) || [paragraph];
+        let current = '';
+
+        sentences.forEach(sentence => {
+          const piece = sentence.trim();
+          if (!piece) return;
+
+          if ((current + ' ' + piece).trim().length <= maxLen) {
+            current = (current + ' ' + piece).trim();
+          } else {
+            if (current) lines.push(current);
+
+            if (piece.length <= maxLen) {
+              current = piece;
+            } else {
+              const words = piece.split(' ');
+              let chunk = '';
+              words.forEach(word => {
+                if ((chunk + ' ' + word).trim().length <= maxLen) {
+                  chunk = (chunk + ' ' + word).trim();
+                } else {
+                  if (chunk) lines.push(chunk);
+                  chunk = word;
+                }
+              });
+              current = chunk;
+            }
+          }
+        });
+
+        if (current) lines.push(current);
+      });
+
+      return lines;
+    }
+
+    function tokenizeWords(text) {
+      const parts = text.match(/\S+\s*/g) || [];
+      return parts.map(p => p);
+    }
+
+    function buildReader() {
+      const maxLen = Math.max(90, Math.min(300, parseInt(chunkSizeInput.value || '170', 10)));
+      chunkSizeInput.value = maxLen;
+
+      preparedLines = splitTextIntoLines(textInput.value, maxLen);
+      reader.innerHTML = '';
+
+      if (!preparedLines.length) {
+        reader.innerHTML = '<div class="reader-empty">Metin girildiğinde burada modern okuma görünümü oluşur.</div>';
+        currentLineIndex = -1;
+        currentWordIndex = -1;
+        progressFill.style.width = '0%';
+        updateTopNumbers();
+        return;
+      }
+
+      preparedLines.forEach((lineText, lineIndex) => {
+        const lineEl = document.createElement('div');
+        lineEl.className = 'line';
+        lineEl.id = 'line-' + lineIndex;
+        lineEl.dataset.lineIndex = lineIndex;
+
+        const words = tokenizeWords(lineText);
+        words.forEach((wordText, wordIndex) => {
+          const span = document.createElement('span');
+          span.className = 'word';
+          span.id = `line-${lineIndex}-word-${wordIndex}`;
+          span.textContent = wordText;
+          lineEl.appendChild(span);
+        });
+
+        reader.appendChild(lineEl);
+      });
+
+      currentLineIndex = -1;
+      currentWordIndex = -1;
+      updateProgress();
+      updateTopNumbers();
+    }
+
+    function clearHighlights() {
+      reader.querySelectorAll('.active-line').forEach(el => el.classList.remove('active-line'));
+      reader.querySelectorAll('.active-word').forEach(el => el.classList.remove('active-word'));
+    }
+
+    function scrollLineIntoView(lineIndex) {
+      const el = document.getElementById('line-' + lineIndex);
+      if (!el) return;
+
+      const readerRect = reader.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const tooHigh = elRect.top < readerRect.top + 80;
+      const tooLow = elRect.bottom > readerRect.bottom - 80;
+
+      if (tooHigh || tooLow) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function setActiveLine(lineIndex) {
+      if (lineIndex < 0) return;
+      reader.querySelectorAll('.active-line').forEach(el => el.classList.remove('active-line'));
+
+      const lineEl = document.getElementById('line-' + lineIndex);
+      if (lineEl) {
+        lineEl.classList.add('active-line');
+        scrollLineIntoView(lineIndex);
+      }
+
+      currentLineIndex = lineIndex;
+      currentWordIndex = -1;
+      activeWordNo.textContent = 0;
+      updateProgress();
+      updateTopNumbers();
+    }
+
+    function setActiveWord(lineIndex, wordIndex) {
+      const prev = reader.querySelector('.active-word');
+      if (prev) prev.classList.remove('active-word');
+
+      const wordEl = document.getElementById(`line-${lineIndex}-word-${wordIndex}`);
+      if (wordEl) {
+        wordEl.classList.add('active-word');
+      }
+
+      currentLineIndex = lineIndex;
+      currentWordIndex = wordIndex;
+      updateTopNumbers();
+    }
+
+    function updateProgress() {
+      if (!preparedLines.length || currentLineIndex < 0) {
+        progressFill.style.width = '0%';
+        return;
+      }
+      const ratio = ((currentLineIndex + 1) / preparedLines.length) * 100;
+      progressFill.style.width = ratio.toFixed(2) + '%';
+    }
+
+    function stopFallbackTimer() {
+      if (fallbackTimer) {
+        clearInterval(fallbackTimer);
+        fallbackTimer = null;
+      }
+    }
+
+    function estimateWordDuration(text, currentRate) {
+      const clean = text.replace(/\s+/g, ' ').trim();
+      const words = clean ? clean.split(' ').length : 1;
+      const baseWPM = 170;
+      const adjustedWPM = baseWPM * currentRate;
+      const totalMs = (words / adjustedWPM) * 60 * 1000;
+      return Math.max(120, totalMs / Math.max(words, 1));
+    }
+
+    function startFallbackWordTracking(lineIndex, lineText) {
+      stopFallbackTimer();
+
+      fallbackWords = tokenizeWords(lineText);
+      fallbackWordIndex = 0;
+
+      if (!fallbackWords.length) return;
+
+      readingMode = 'Satır + tahmini kelime';
+      updateTopNumbers();
+
+      setActiveWord(lineIndex, 0);
+
+      const wordMs = estimateWordDuration(lineText, Number(rate.value));
+      fallbackTimer = setInterval(() => {
+        if (!isSpeaking || isPaused) return;
+
+        fallbackWordIndex++;
+        if (fallbackWordIndex >= fallbackWords.length) {
+          stopFallbackTimer();
+          return;
+        }
+        setActiveWord(lineIndex, fallbackWordIndex);
+      }, wordMs);
+    }
+
+    function stopSpeaking(resetReader = false) {
+      stopFallbackTimer();
+      synth.cancel();
+      isSpeaking = false;
+      isPaused = false;
+      currentUtterance = null;
+      readingMode = 'Beklemede';
+
+      if (resetReader) {
+        clearHighlights();
+        currentLineIndex = -1;
+        currentWordIndex = -1;
+        progressFill.style.width = '0%';
+      }
+
+      updateTopNumbers();
+      setStatus('Durduruldu.');
+    }
+
+    function speakLine(index) {
+      if (index >= preparedLines.length) {
+        isSpeaking = false;
+        isPaused = false;
+        currentUtterance = null;
+        readingMode = 'Tamamlandı';
+        updateTopNumbers();
+        setStatus('Okuma tamamlandı.');
+        progressFill.style.width = '100%';
+        stopFallbackTimer();
+        return;
+      }
+
+      const lineText = preparedLines[index];
+      const utter = new SpeechSynthesisUtterance(lineText);
+      const selectedVoice = getSelectedVoice();
+
+      currentUtterance = utter;
+
+      if (selectedVoice) utter.voice = selectedVoice;
+      utter.lang = selectedVoice?.lang || (langSelect.value === 'all' ? 'tr-TR' : langSelect.value);
+      utter.rate = Number(rate.value);
+      utter.pitch = Number(pitch.value);
+      utter.volume = Number(volume.value);
+
+      utter.onstart = () => {
+        isSpeaking = true;
+        isPaused = false;
+        setActiveLine(index);
+        setStatus(`Okunuyor... (${index + 1}/${preparedLines.length})`);
+        readingMode = 'Satır takibi';
+        updateTopNumbers();
+        startFallbackWordTracking(index, lineText);
+      };
+
+      utter.onboundary = (event) => {
+        if (typeof event.charIndex !== 'number') return;
+
+        const lineEl = document.getElementById('line-' + index);
+        if (!lineEl) return;
+
+        const wordEls = [...lineEl.querySelectorAll('.word')];
+        let acc = 0;
+
+        for (let i = 0; i < wordEls.length; i++) {
+          const txt = wordEls[i].textContent || '';
+          acc += txt.length;
+          if (event.charIndex < acc) {
+            stopFallbackTimer();
+            readingMode = 'Satır + gerçek kelime';
+            setActiveWord(index, i);
+            updateTopNumbers();
+            break;
+          }
+        }
+      };
+
+      utter.onend = () => {
+        stopFallbackTimer();
+        setTimeout(() => {
+          if (!isPaused) speakLine(index + 1);
+        }, 120);
+      };
+
+      utter.onerror = () => {
+        stopFallbackTimer();
+        setTimeout(() => {
+          if (!isPaused) speakLine(index + 1);
+        }, 120);
+      };
+
+      synth.speak(utter);
+    }
+
+    function startSpeaking() {
+      if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+        setStatus('Bu tarayıcı seslendirme desteklemiyor.');
+        return;
+      }
+
+      buildReader();
+
+      if (!preparedLines.length) {
+        setStatus('Lütfen önce metin gir.');
+        textInput.focus();
+        return;
+      }
+
+      stopSpeaking(false);
+      clearHighlights();
+      currentLineIndex = -1;
+      currentWordIndex = -1;
+      progressFill.style.width = '0%';
+      speakLine(0);
+    }
+
+    voiceType.addEventListener('change', () => populateVoices(false));
+    langSelect.addEventListener('change', () => populateVoices(false));
+
+    textInput.addEventListener('input', () => {
+      buildReader();
+      updateTopNumbers();
+    });
+
+    rate.addEventListener('input', updateTopNumbers);
+    pitch.addEventListener('input', updateTopNumbers);
+    volume.addEventListener('input', updateTopNumbers);
+
+    speakBtn.addEventListener('click', startSpeaking);
+
+    pauseBtn.addEventListener('click', () => {
+      if (synth.speaking && !synth.paused) {
+        synth.pause();
+        isPaused = true;
+        readingMode = 'Duraklatıldı';
+        updateTopNumbers();
+        setStatus('Duraklatıldı.');
+      }
+    });
+
+    resumeBtn.addEventListener('click', () => {
+      if (synth.paused) {
+        synth.resume();
+        isPaused = false;
+        readingMode = 'Devam ediyor';
+        updateTopNumbers();
+        setStatus('Devam ediyor...');
+      }
+    });
+
+    stopBtn.addEventListener('click', () => {
+      stopSpeaking(true);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      stopSpeaking(true);
+      textInput.value = '';
+      buildReader();
+      updateTopNumbers();
+      textInput.focus();
+      setStatus('Temizlendi.');
+    });
+
+    rebuildBtn.addEventListener('click', () => {
+      buildReader();
+      setStatus('Metin takip görünümü yeniden hazırlandı.');
+    });
+
+    function initVoices() {
+      populateVoices(false);
+      setTimeout(() => populateVoices(true), 300);
+      setTimeout(() => populateVoices(true), 1000);
+    }
+
+    if ('speechSynthesis' in window) {
+      initVoices();
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = () => populateVoices(true);
+      }
+    } else {
+      setStatus('Bu tarayıcı Web Speech API desteklemiyor.');
+    }
+
+    buildReader();
+    updateTopNumbers();
+  </script>
+</body>
+</html>
