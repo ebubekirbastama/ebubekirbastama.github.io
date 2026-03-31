@@ -3,56 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma</title>
-<meta name="title" content="Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma">
-<meta name="description" content="Metin seslendirme aracı ile yazıları kadın veya erkek ses seçenekleriyle dinleyin. Yazı takip özelliği sayesinde okunan satır ve kelimeleri canlı olarak görün. Ücretsiz, modern ve tarayıcı tabanlı metin okuma aracı.">
-<meta name="keywords" content="metin seslendirme aracı, text to speech türkçe, yazıyı sesli okuma, kadın sesi metin okuma, erkek sesi metin okuma, sesli metin okuma, metni dinleme aracı, türkçe seslendirme aracı, yazı takipli seslendirme, ücretsiz text to speech, ücretsiz metin okuma aracı, tarayıcıdan metin seslendirme, canlı yazı takibi, metin okuyucu">
-<meta name="author" content="Ebubekir Bastama">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<meta name="language" content="Turkish">
-<meta name="revisit-after" content="7 days">
-<meta name="theme-color" content="#0b1020">
+  <title>Metin Seslendirme Aracı | PDF Sayfa Okuma Destekli</title>
 
-<link rel="canonical" href="https://www.ebubekirbastama.com.tr/metin-seslendirme-araci.html">
+  <meta name="title" content="Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma">
+  <meta name="description" content="Metinleri kadın veya erkek ses seçenekleriyle dinleyin. PDF seçip istediğiniz sayfayı okutun. Okunan satır ve kelimeleri canlı olarak takip edin.">
+  <meta name="keywords" content="metin seslendirme aracı, pdf sesli okuma, pdf sayfa okuma, text to speech türkçe, yazıyı sesli okuma, kadın sesi metin okuma, erkek sesi metin okuma, sesli metin okuma, canlı yazı takibi">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0b1020">
 
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Ebubekir Bastama">
-<meta property="og:locale" content="tr_TR">
-<meta property="og:title" content="Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma">
-<meta property="og:description" content="Metinleri kadın veya erkek ses seçenekleriyle dinleyin. Okunan satır ve kelimeleri anlık takip edin. Ücretsiz ve modern tarayıcı tabanlı metin seslendirme aracı.">
-<meta property="og:url" content="https://www.ebubekirbastama.com.tr/metin-seslendirme-araci.html">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Metin Seslendirme Aracı kadın ve erkek sesle yazı takipli okuma ekranı">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Metin Seslendirme Aracı | Kadın ve Erkek Sesle Yazı Takipli Okuma">
-<meta name="twitter:description" content="Metinleri kadın veya erkek ses seçenekleriyle dinleyin, okunan yazıyı canlı olarak takip edin. Ücretsiz tarayıcı tabanlı araç.">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Metin Seslendirme Aracı",
-  "url": "https://www.ebubekirbastama.com.tr/metin-seslendirme-araci.html",
-  "applicationCategory": "UtilitiesApplication",
-  "operatingSystem": "Web",
-  "browserRequirements": "JavaScript destekleyen modern tarayıcı",
-  "description": "Metinleri kadın veya erkek ses seçenekleriyle sesli okuyan ve okunan satır ile kelimeleri canlı takip etmeyi sağlayan ücretsiz web aracı.",
-  "inLanguage": "tr-TR",
-  "isAccessibleForFree": true,
-  "creator": {
-    "@type": "Person",
-    "name": "Ebubekir Bastama"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "TRY"
-  }
-}
-</script>
   <style>
     :root{
       --bg:#07111f;
@@ -69,8 +28,6 @@
       --warning:#ffb020;
       --shadow:0 18px 60px rgba(0,0,0,.35);
       --radius-xl:26px;
-      --radius-lg:18px;
-      --radius-md:14px;
       --track:#1a2741;
       --active-line:rgba(79,140,255,.18);
       --active-word:#ffd54a;
@@ -92,7 +49,7 @@
     }
 
     .app{
-      width:min(1400px,100%);
+      width:min(1450px,100%);
       margin:0 auto;
     }
 
@@ -158,7 +115,7 @@
 
     .layout{
       display:grid;
-      grid-template-columns: 430px 1fr;
+      grid-template-columns: 470px 1fr;
       gap:18px;
     }
 
@@ -205,7 +162,11 @@
       font-size:.92rem;
     }
 
-    textarea, select, input[type="text"]{
+    textarea,
+    select,
+    input[type="text"],
+    input[type="number"],
+    input[type="file"]{
       width:100%;
       border:none;
       outline:none;
@@ -217,8 +178,12 @@
       font:inherit;
     }
 
+    input[type="file"]{
+      padding:12px 15px;
+    }
+
     textarea{
-      min-height:250px;
+      min-height:230px;
       resize:vertical;
       line-height:1.7;
     }
@@ -254,6 +219,7 @@
     .btn-soft{ background:#22304d; }
     .btn-success{ background:var(--success); color:#042317; }
     .btn-danger{ background:var(--danger); }
+    .btn-warning{ background:var(--warning); color:#2b1a00; }
 
     .slider-wrap{
       margin-top:4px;
@@ -433,6 +399,18 @@
       transition:width .15s linear;
     }
 
+    .pdf-meta{
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      color:#dbe6fb;
+      font-size:.9rem;
+      line-height:1.5;
+      word-break:break-word;
+    }
+
     @media (max-width:1100px){
       .layout{
         grid-template-columns:1fr;
@@ -457,6 +435,16 @@
       }
     }
   </style>
+
+  <script type="module">
+    import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@4.3.136/legacy/build/pdf.min.mjs';
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://unpkg.com/pdfjs-dist@4.3.136/legacy/build/pdf.worker.min.mjs';
+
+    window.pdfjsLib = pdfjsLib;
+    window.dispatchEvent(new Event('pdfjs-ready'));
+  </script>
 </head>
 <body>
   <div class="app">
@@ -465,7 +453,7 @@
         <div class="brand-badge">EBS</div>
         <div>
           <h1>Metin Seslendirme ve Yazı Takip Aracı</h1>
-          <p>Kadın / erkek sese yakın seçim, canlı takip, modern okuma ekranı</p>
+          <p>Canlı takip, PDF sayfa okuma, komutla sayfa okutma</p>
         </div>
       </div>
       <div class="tag">● Ücretsiz • Tarayıcı içi</div>
@@ -478,7 +466,12 @@
 
           <div class="field">
             <label for="textInput">Metin</label>
-            <textarea id="textInput" placeholder="Buraya dinletmek istediğin metni yapıştır...">Merhaba. Bu araç, tarayıcı içindeki seslendirme motorunu kullanarak metni sesli okur. Aynı anda okunan satırı ve kelimeyi ekranda takip etmeni sağlar. Kadın veya erkek sese yakın bir ses seçebilirsin.</textarea>
+            <textarea id="textInput" placeholder="Buraya dinletmek istediğin metni yapıştır...">Merhaba. Bu araç, tarayıcı içindeki seslendirme motorunu kullanarak metni sesli okur. Aynı anda okunan satırı ve mümkün olduğunda kelimeyi takip etmeni sağlar. PDF seçip 2. sayfayı oku gibi komutlar da verebilirsin.</textarea>
+          </div>
+
+          <div class="field">
+            <label for="commandInput">Hızlı komut</label>
+            <input type="text" id="commandInput" placeholder='Örnek: 2. sayfayı oku / 5. sayfayı yükle / 3 oku'>
           </div>
 
           <div class="grid-2">
@@ -512,7 +505,7 @@
                 <label for="rate" style="margin:0;">Hız</label>
                 <span class="slider-val" id="rateVal">1.00</span>
               </div>
-              <input type="range" id="rate" min="0.6" max="1.4" step="0.05" value="1">
+              <input type="range" id="rate" min="0.6" max="1.5" step="0.05" value="1">
             </div>
 
             <div class="field slider-wrap">
@@ -576,8 +569,41 @@
           </div>
 
           <div class="mini-help">
-            Tarayıcı bazı sistemlerde kelime bazlı takibi tam destekler. Destek yoksa satır bazlı takip yine çalışır.
-            En iyi sonuç için Chrome veya Edge kullanman iyi olur.
+            Kelime takibi tarayıcı desteğine göre değişebilir. Destek yoksa satır takibi devam eder.
+            En iyi sonuç için Chrome veya Edge kullan.
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">PDF okuma</h3>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="pdfFile">PDF seç</label>
+              <input type="file" id="pdfFile" accept="application/pdf">
+            </div>
+
+            <div class="field">
+              <label for="pdfPageNumber">Sayfa numarası</label>
+              <input type="number" id="pdfPageNumber" min="1" value="1" placeholder="Örn: 2">
+            </div>
+          </div>
+
+          <div class="btns" style="margin-top:10px;">
+            <button class="btn-warning" id="loadPdfPageBtn">📄 PDF sayfasını yükle</button>
+            <button class="btn-primary" id="readPdfPageBtn">🔊 PDF sayfasını oku</button>
+          </div>
+
+          <div class="btns" style="margin-top:10px;">
+            <button class="btn-soft" id="prevPdfPageBtn">← Önceki sayfa</button>
+            <button class="btn-soft" id="nextPdfPageBtn">→ Sonraki sayfa</button>
+          </div>
+
+          <div class="pdf-meta" id="pdfMeta">Henüz PDF seçilmedi.</div>
+
+          <div class="mini-help">
+            Kullanım: PDF seç, sayfa numarasını yaz. Örneğin 2 yazıp “PDF sayfasını oku” dersen 2. sayfanın metni alınır ve seslendirilir.
+            Taranmış görsel PDF’lerde metin yoksa OCR gerekir.
           </div>
         </div>
       </div>
@@ -586,7 +612,7 @@
         <div class="right-head">
           <div>
             <h2>Canlı okuma alanı</h2>
-            <div class="muted">Okunan satır otomatik öne çıkarılır, mümkünse anlık kelime de vurgulanır.</div>
+            <div class="muted">Okunan satır otomatik öne çıkarılır, mümkün olduğunda anlık kelime de vurgulanır.</div>
           </div>
           <div class="follow-meta">
             <div class="pill">Aktif satır: <span id="activeLineNo">0</span></div>
@@ -608,6 +634,7 @@
     const synth = window.speechSynthesis;
 
     const textInput = document.getElementById('textInput');
+    const commandInput = document.getElementById('commandInput');
     const voiceType = document.getElementById('voiceType');
     const langSelect = document.getElementById('langSelect');
     const voiceSelect = document.getElementById('voiceSelect');
@@ -637,6 +664,14 @@
     const followMode = document.getElementById('followMode');
     const progressFill = document.getElementById('progressFill');
 
+    const pdfFile = document.getElementById('pdfFile');
+    const pdfPageNumber = document.getElementById('pdfPageNumber');
+    const loadPdfPageBtn = document.getElementById('loadPdfPageBtn');
+    const readPdfPageBtn = document.getElementById('readPdfPageBtn');
+    const prevPdfPageBtn = document.getElementById('prevPdfPageBtn');
+    const nextPdfPageBtn = document.getElementById('nextPdfPageBtn');
+    const pdfMeta = document.getElementById('pdfMeta');
+
     let allVoices = [];
     let preparedLines = [];
     let isPaused = false;
@@ -649,6 +684,10 @@
     let fallbackWords = [];
     let readingMode = 'Beklemede';
 
+    let currentPdfDoc = null;
+    let currentPdfName = '';
+    let currentPdfPages = 0;
+
     const femaleHints = [
       'female','woman','zira','hazel','aria','jenny','salli','samantha','serena',
       'joanna','emma','ayla','selin','sibel','seda','melis','kadın','kadin'
@@ -658,6 +697,27 @@
       'male','man','david','mark','george','brian','matthew','justin','andrew',
       'ryan','cem','ahmet','mehmet','ali','murat','erkek'
     ];
+
+    function waitForPdfJs(timeout = 10000) {
+      return new Promise((resolve, reject) => {
+        if (window.pdfjsLib) {
+          resolve(window.pdfjsLib);
+          return;
+        }
+
+        const timer = setTimeout(() => {
+          window.removeEventListener('pdfjs-ready', onReady);
+          reject(new Error('PDF.js yüklenemedi.'));
+        }, timeout);
+
+        function onReady() {
+          clearTimeout(timer);
+          resolve(window.pdfjsLib);
+        }
+
+        window.addEventListener('pdfjs-ready', onReady, { once: true });
+      });
+    }
 
     function normalizeText(v) {
       return (v || '')
@@ -675,6 +735,10 @@
 
     function setStatus(text) {
       statusBox.innerHTML = '<span class="status-dot"></span><span>' + text + '</span>';
+    }
+
+    function setPdfMeta(text) {
+      pdfMeta.textContent = text;
     }
 
     function updateTopNumbers() {
@@ -710,7 +774,7 @@
       }
 
       if (type !== 'all') {
-        let filtered = voices.filter(v => detectVoiceGender(v.name) === type);
+        const filtered = voices.filter(v => detectVoiceGender(v.name) === type);
         if (filtered.length) voices = filtered;
       }
 
@@ -954,7 +1018,6 @@
 
       readingMode = 'Satır + tahmini kelime';
       updateTopNumbers();
-
       setActiveWord(lineIndex, 0);
 
       const wordMs = estimateWordDuration(lineText, Number(rate.value));
@@ -1018,7 +1081,7 @@
         isSpeaking = true;
         isPaused = false;
         setActiveLine(index);
-        setStatus(`Okunuyor... (${index + 1}/${preparedLines.length})`);
+        setStatus(`Okunuyor. (${index + 1}/${preparedLines.length})`);
         readingMode = 'Satır takibi';
         updateTopNumbers();
         startFallbackWordTracking(index, lineText);
@@ -1085,75 +1148,270 @@
       speakLine(0);
     }
 
-    voiceType.addEventListener('change', () => populateVoices(false));
-    langSelect.addEventListener('change', () => populateVoices(false));
-
-    textInput.addEventListener('input', () => {
-      buildReader();
+    function pauseSpeaking() {
+      if (!isSpeaking) return;
+      synth.pause();
+      isPaused = true;
+      readingMode = 'Duraklatıldı';
+      stopFallbackTimer();
       updateTopNumbers();
-    });
-
-    rate.addEventListener('input', updateTopNumbers);
-    pitch.addEventListener('input', updateTopNumbers);
-    volume.addEventListener('input', updateTopNumbers);
-
-    speakBtn.addEventListener('click', startSpeaking);
-
-    pauseBtn.addEventListener('click', () => {
-      if (synth.speaking && !synth.paused) {
-        synth.pause();
-        isPaused = true;
-        readingMode = 'Duraklatıldı';
-        updateTopNumbers();
-        setStatus('Duraklatıldı.');
-      }
-    });
-
-    resumeBtn.addEventListener('click', () => {
-      if (synth.paused) {
-        synth.resume();
-        isPaused = false;
-        readingMode = 'Devam ediyor';
-        updateTopNumbers();
-        setStatus('Devam ediyor...');
-      }
-    });
-
-    stopBtn.addEventListener('click', () => {
-      stopSpeaking(true);
-    });
-
-    clearBtn.addEventListener('click', () => {
-      stopSpeaking(true);
-      textInput.value = '';
-      buildReader();
-      updateTopNumbers();
-      textInput.focus();
-      setStatus('Temizlendi.');
-    });
-
-    rebuildBtn.addEventListener('click', () => {
-      buildReader();
-      setStatus('Metin takip görünümü yeniden hazırlandı.');
-    });
-
-    function initVoices() {
-      populateVoices(false);
-      setTimeout(() => populateVoices(true), 300);
-      setTimeout(() => populateVoices(true), 1000);
+      setStatus('Okuma duraklatıldı.');
     }
 
-    if ('speechSynthesis' in window) {
-      initVoices();
+    function resumeSpeaking() {
+      if (!isSpeaking) return;
+      synth.resume();
+      isPaused = false;
+      readingMode = 'Devam ediyor';
+      updateTopNumbers();
+      setStatus('Okuma devam ediyor.');
+
+      if (currentLineIndex >= 0 && preparedLines[currentLineIndex]) {
+        startFallbackWordTracking(currentLineIndex, preparedLines[currentLineIndex]);
+      }
+    }
+
+    function clearAll() {
+      stopSpeaking(true);
+      textInput.value = '';
+      commandInput.value = '';
+      buildReader();
+      updateTopNumbers();
+      setStatus('Temizlendi.');
+    }
+
+    async function loadSelectedPdf() {
+      const file = pdfFile.files[0];
+      if (!file) {
+        throw new Error('Lütfen önce bir PDF dosyası seç.');
+      }
+
+      const pdfjsLib = await waitForPdfJs();
+
+      currentPdfName = file.name;
+      const arrayBuffer = await file.arrayBuffer();
+
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      currentPdfDoc = await loadingTask.promise;
+      currentPdfPages = currentPdfDoc.numPages;
+
+      setPdfMeta(`PDF hazır: ${currentPdfName} • Toplam sayfa: ${currentPdfPages}`);
+      return currentPdfDoc;
+    }
+
+    async function ensurePdfLoaded() {
+      if (currentPdfDoc) return currentPdfDoc;
+      return await loadSelectedPdf();
+    }
+
+    async function extractPageText(pdf, pageNumber) {
+      if (!pdf) throw new Error('PDF yüklenemedi.');
+
+      const totalPages = pdf.numPages;
+      if (pageNumber < 1 || pageNumber > totalPages) {
+        throw new Error(`Geçersiz sayfa numarası. Bu PDF toplam ${totalPages} sayfa.`);
+      }
+
+      const page = await pdf.getPage(pageNumber);
+      const textContent = await page.getTextContent();
+
+      const textItems = textContent.items
+        .map(item => item.str || '')
+        .filter(Boolean);
+
+      const pageText = textItems.join(' ').replace(/\s+/g, ' ').trim();
+
+      return {
+        text: pageText,
+        totalPages
+      };
+    }
+
+    async function loadPdfPageIntoTextbox() {
+      try {
+        setStatus('PDF sayfası yükleniyor...');
+        stopSpeaking(false);
+
+        const pdf = await ensurePdfLoaded();
+        const pageNumber = parseInt(pdfPageNumber.value || '1', 10);
+        const result = await extractPageText(pdf, pageNumber);
+
+        if (!result.text) {
+          setStatus(`Sayfa ${pageNumber} içinde okunabilir metin bulunamadı.`);
+          setPdfMeta(`PDF: ${currentPdfName} • Sayfa ${pageNumber}/${result.totalPages} • Metin bulunamadı`);
+          return false;
+        }
+
+        textInput.value = result.text;
+        buildReader();
+        updateTopNumbers();
+
+        setPdfMeta(`PDF: ${currentPdfName} • Sayfa ${pageNumber}/${result.totalPages} başarıyla alındı`);
+        setStatus(`PDF yüklendi: ${currentPdfName} | Sayfa ${pageNumber}/${result.totalPages}`);
+        return true;
+      } catch (err) {
+        setStatus(err.message || 'PDF okunurken hata oluştu.');
+        setPdfMeta('PDF yüklenemedi.');
+        console.error(err);
+        return false;
+      }
+    }
+
+    async function readPdfPageDirectly() {
+      const ok = await loadPdfPageIntoTextbox();
+      if (ok && textInput.value.trim()) {
+        startSpeaking();
+      }
+    }
+
+    function clampPdfPage() {
+      let page = parseInt(pdfPageNumber.value || '1', 10);
+      if (Number.isNaN(page) || page < 1) page = 1;
+      if (currentPdfPages > 0 && page > currentPdfPages) page = currentPdfPages;
+      pdfPageNumber.value = page;
+      return page;
+    }
+
+    async function goPrevPdfPage() {
+      let page = parseInt(pdfPageNumber.value || '1', 10);
+      page = Math.max(1, page - 1);
+      pdfPageNumber.value = page;
+      await loadPdfPageIntoTextbox();
+    }
+
+    async function goNextPdfPage() {
+      let page = parseInt(pdfPageNumber.value || '1', 10);
+      if (currentPdfPages > 0) page = Math.min(currentPdfPages, page + 1);
+      else page += 1;
+      pdfPageNumber.value = page;
+      await loadPdfPageIntoTextbox();
+    }
+
+    function parseVoiceCommand(text) {
+      const command = (text || '').trim().toLocaleLowerCase('tr-TR');
+      if (!command) return null;
+
+      let page = null;
+      const pageMatch =
+        command.match(/(\d+)\s*\.?\s*sayfa/) ||
+        command.match(/sayfa\s*(\d+)/) ||
+        command.match(/^(\d+)\s*(oku|yükle)?$/) ||
+        command.match(/(\d+)/);
+
+      if (pageMatch) {
+        page = parseInt(pageMatch[1], 10);
+      }
+
+      if (!page || page < 1) return null;
+
+      if (command.includes('yükle') || command.includes('aktar') || command.includes('getir')) {
+        return { action: 'load', page };
+      }
+
+      if (command.includes('oku') || command.includes('seslendir') || command.includes('dinlet')) {
+        return { action: 'read', page };
+      }
+
+      return { action: 'read', page };
+    }
+
+    async function runCommand() {
+      const parsed = parseVoiceCommand(commandInput.value);
+      if (!parsed) {
+        setStatus('Komut anlaşılamadı. Örnek: 2. sayfayı oku');
+        return;
+      }
+
+      pdfPageNumber.value = parsed.page;
+
+      if (parsed.action === 'load') {
+        await loadPdfPageIntoTextbox();
+      } else {
+        await readPdfPageDirectly();
+      }
+    }
+
+    function bindBasicEvents() {
+      speakBtn.addEventListener('click', startSpeaking);
+      pauseBtn.addEventListener('click', pauseSpeaking);
+      resumeBtn.addEventListener('click', resumeSpeaking);
+      stopBtn.addEventListener('click', () => stopSpeaking(true));
+      rebuildBtn.addEventListener('click', () => {
+        buildReader();
+        setStatus('Metin hazırlandı.');
+      });
+      clearBtn.addEventListener('click', clearAll);
+
+      textInput.addEventListener('input', updateTopNumbers);
+      rate.addEventListener('input', updateTopNumbers);
+      pitch.addEventListener('input', updateTopNumbers);
+      volume.addEventListener('input', updateTopNumbers);
+
+      voiceType.addEventListener('change', () => populateVoices(false));
+      langSelect.addEventListener('change', () => populateVoices(false));
+
+      chunkSizeInput.addEventListener('change', () => {
+        buildReader();
+        setStatus('Satır yapısı güncellendi.');
+      });
+
+      commandInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          await runCommand();
+        }
+      });
+    }
+
+    function bindPdfEvents() {
+      loadPdfPageBtn.addEventListener('click', loadPdfPageIntoTextbox);
+      readPdfPageBtn.addEventListener('click', readPdfPageDirectly);
+      prevPdfPageBtn.addEventListener('click', goPrevPdfPage);
+      nextPdfPageBtn.addEventListener('click', goNextPdfPage);
+
+      pdfPageNumber.addEventListener('change', clampPdfPage);
+
+      pdfFile.addEventListener('change', async () => {
+        currentPdfDoc = null;
+        currentPdfName = '';
+        currentPdfPages = 0;
+
+        try {
+          const pdf = await loadSelectedPdf();
+          setStatus(`PDF hazır: ${currentPdfName} (${pdf.numPages} sayfa)`);
+          clampPdfPage();
+        } catch (err) {
+          setStatus(err.message || 'PDF seçilemedi.');
+          setPdfMeta('PDF seçilemedi.');
+          console.error(err);
+        }
+      });
+    }
+
+    function initVoices() {
+      populateVoices();
       if (speechSynthesis.onvoiceschanged !== undefined) {
         speechSynthesis.onvoiceschanged = () => populateVoices(true);
       }
-    } else {
-      setStatus('Bu tarayıcı Web Speech API desteklemiyor.');
     }
 
-    buildReader();
-    updateTopNumbers();
+    async function init() {
+      bindBasicEvents();
+      bindPdfEvents();
+      buildReader();
+      updateTopNumbers();
+      initVoices();
+
+      try {
+        await waitForPdfJs();
+        setStatus('Hazır.');
+      } catch (err) {
+        setStatus('PDF.js yüklenemedi ama metin okuma kullanılabilir.');
+        console.error(err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
