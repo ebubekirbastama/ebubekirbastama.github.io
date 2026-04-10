@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBS Haber Görseli Oluşturucu | Profesyonel TV Alt Bant Tasarım Aracı</title>
+<meta name="description" content="EBS News Studio Pro: Haber görselleri, TV alt bantları ve sosyal medya içerikleri için hızlı ve profesyonel tasarım aracı. Ebubekir Bastama tarafından geliştirilmiştir.">
+<meta name="keywords" content="EBS görsel oluşturucu, ebubekir bastama, haber alt bant yapma, EBS news studio, online grafik aracı, haber ajansı yazılımı">
+<meta name="author" content="Ebubekir Bastama">
+
+<meta property="og:title" content="EBS News Studio Pro - Görsel Oluşturucu">
+<meta property="og:description" content="Ebubekir Bastama (EBS) güvencesiyle profesyonel haber tasarımları oluşturun.">
+<meta property="og:site_name" content="EBS - Ebubekir Bastama">
+<meta property="og:url" content="https://ebubekirbastama.com.tr/ebs-gorsel-olusturucu">
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/modern-screenshot"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Oswald:wght@700&family=Roboto+Condensed:wght@700&family=Montserrat:wght@900&family=Playfair+Display:wght@900&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@700&family=Bebas+Neue&family=Inter:wght@900&family=Kanit:wght@700&family=Libre+Baskerville:wght@700&family=Lora:wght@700&family=Merriweather:wght@700&family=Montserrat:wght@900&family=Open+Sans:wght@700&family=Oswald:wght@700&family=Playfair+Display:wght@900&family=Poppins:wght@700&family=Rajdhani:wght@700&family=Roboto+Condensed:wght@700&family=Teko:wght@700&family=Ubuntu:wght@700&display=swap" rel="stylesheet"> 
+ <style>
+    :root {
+      --bg: #0b0d0f; --sidebar: #16181c; --text: #eff3f4; 
+      --muted: #71767b; --primary: #1d9bf0; --border: #2f3336; --accent: #e81c4f;
+    }
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+
+    /* SIDEBAR */
+    .sidebar { width: 400px; background: var(--bg); border-right: 1px solid var(--border); padding: 20px; overflow-y: auto; z-index: 1000; }
+    .control-group { background: var(--sidebar); padding: 16px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--border); }
+    .section-title { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; }
+    
+    input, select, textarea { 
+      width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--bg); 
+      color: var(--text); border-radius: 8px; margin-top: 5px; font-size: 13px; outline: none;
+    }
+    .flex-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+
+    /* CANVAS AREA */
+    .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; position: relative; }
+    .canvas-container { 
+      width: 90%; max-width: 1000px; aspect-ratio: 16/9; background: #111; 
+      position: relative; overflow: hidden; border: 1px solid var(--border);
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    }
+    
+    #mainImg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; pointer-events: none; }
+    
+    /* DRAGGABLE ELEMENTS */
+    .draggable { position: absolute; cursor: move; touch-action: none; z-index: 10; border: 2px solid transparent; }
+    .selected { outline: 3px solid var(--primary) !important; box-shadow: 0 0 15px var(--primary); z-index: 100 !important; }
+
+    /* ALT BANT (TICKER) */
+    #tickerElement {
+      bottom: 0; left: 0; width: 100%; display: none; align-items: stretch;
+      height: 60px; z-index: 200; font-family: 'Oswald', sans-serif;
+    }
+    .ticker-label { 
+      background: var(--accent); color: white; padding: 0 30px; 
+      display: flex; align-items: center; font-weight: 900; text-transform: uppercase;
+      font-size: 24px; min-width: 200px; justify-content: center;
+    }
+    .ticker-text { 
+      background: rgba(0,0,0,0.85); color: white; flex: 1; 
+      display: flex; align-items: center; padding: 0 20px; font-size: 20px;
+      border-top: 3px solid var(--accent);
+    }
+
+    /* HASHTAG BOX */
+    #hashElement {
+      top: 5%; right: 5%; background: var(--primary); color: white;
+      padding: 8px 15px; font-weight: 900; border-radius: 4px; display: none; z-index: 210;
+    }
+
+    /* SHAPES / IMAGES */
+    .dynamic-shape { width: 250px; height: 180px; overflow: hidden; background: #222; z-index: 50; }
+    .dynamic-shape img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; display: block; }
+
+    /* MASKELER */
+    .mask-rect { border-radius: 0; }
+    .mask-circle { clip-path: circle(50%); }
+    .mask-skew-r-10 { clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%); }
+    .mask-star { clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+
+    /* TOOLS */
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-tool { background: #2f3336; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .btn-save { margin-top: 20px; padding: 14px 45px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 16px; }
+  </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "EBS News Studio Pro",
+  "alternateName": "EBS Haber Görsel Oluşturucu",
+  "description": "Profesyonel haber ajansı ve TV kanalları için tasarlanmış online görsel hazırlama aracı.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "All",
+  "author": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama",
+    "url": "https://ebubekirbastama.com.tr"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY"
+  }
+}
+</script>
+</head>
+<body>
+
+  <aside class="sidebar">
+<div class="section-title" style="font-size: 18px; color: white; margin-bottom: 20px;">
+    <i class="fas fa-video"></i> EBS NEWS STUDIO PRO
+</div>
+    <div class="control-group">
+      <div class="section-title">1. MEDYA VE NESNE EKLE</div>
+      <label>Arkaplanı Değiştir:</label>
+      <input type="file" id="bgIn" accept="image/*">
+      
+      <label style="margin-top:10px; display:block;">Yeni Nesne/Resim Ekle:</label>
+      <select id="shapeSelect">
+        <option value="mask-rect">Kare</option>
+        <option value="mask-circle">Daire</option>
+        <option value="mask-skew-r-10">Eğik (Skew)</option>
+        <option value="mask-star">Yıldız</option>
+      </select>
+      <input type="file" id="objIn" accept="image/*" multiple>
+    </div>
+
+    <div class="control-group">
+      <div class="section-title">2. TV REJİ (ALT BANT & HASHTAG)</div>
+      <div class="flex-row">
+        <button onclick="toggleElement('tickerElement')" class="btn-tool" style="flex:1; background: #1d9bf0;">Alt Bant</button>
+        <button onclick="toggleElement('hashElement')" class="btn-tool" style="flex:1; background: #7856ff;">Hashtag</button>
+      </div>
+      <input type="text" id="tickerLabelIn" placeholder="Etiket (Örn: SON DAKİKA)" style="margin-top:8px;">
+      <textarea id="tickerTextIn" placeholder="Haber detayını buraya yazın..." rows="2"></textarea>
+      <input type="text" id="hashIn" placeholder="#Gündem" style="margin-top:8px;">
+    </div>
+
+    <div class="control-group">
+      <div class="section-title">3. GLOBAL STİL PANELİ</div>
+<label>Yazı Fontu:</label>
+<select id="globalFont">
+  <optgroup label="Modern & Keskin (Haber)">
+    <option value="'Inter'">Inter (Modern Standart)</option>
+    <option value="'Oswald'">Oswald (Sert Haber)</option>
+    <option value="'Roboto Condensed'">Roboto Condensed (Hızlı Akış)</option>
+    <option value="'Montserrat'">Montserrat (Kurumsal)</option>
+    <option value="'Barlow Condensed'">Barlow Condensed (TV Tipi)</option>
+  </optgroup>
+  <optgroup label="Spor & Dinamik">
+    <option value="'Teko'">Teko (Büyük Skorlar)</option>
+    <option value="'Kanit'">Kanit (Modern Spor)</option>
+    <option value="'Anton'">Anton (Vurgulu Başlık)</option>
+    <option value="'Rajdhani'">Rajdhani (Teknoloji/Cyber)</option>
+  </optgroup>
+  <optgroup label="Klasik & Ciddi">
+    <option value="'Playfair Display'">Playfair (Analiz/Yorum)</option>
+    <option value="'Merriweather'">Merriweather (Gazete Tipi)</option>
+    <option value="'Libre Baskerville'">Baskerville (Geleneksel)</option>
+    <option value="'Lora'">Lora (Zarif)</option>
+  </optgroup>
+  <optgroup label="Minimal & Sosyal Medya">
+    <option value="'Ubuntu'">Ubuntu (Yumuşak/Dijital)</option>
+    <option value="'Poppins'">Poppins (Trend)</option>
+    <option value="'Open Sans'">Open Sans (Okunabilir)</option>
+    <option value="'Bebas Neue'">Bebas Neue (Sadece Büyük Harf)</option>
+  </optgroup>
+</select>
+      <div class="flex-row">
+        <div style="flex:1">
+          <label style="font-size:10px">Yazı Rengi</label>
+          <input type="color" id="globalColor" value="#ffffff">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:10px">Kutu/Bant Rengi</label>
+          <input type="color" id="globalBgColor" value="#e81c4f">
+        </div>
+      </div>
+      <label style="font-size:10px; margin-top:8px; display:block;">Yazı Boyutu</label>
+      <input type="range" id="globalSize" min="10" max="150" value="40">
+    </div>
+
+    <div class="control-group">
+      <div class="section-title">4. DÜZENLEME ARAÇLARI</div>
+      <div class="tool-grid">
+        <button onclick="alignSelected('left')" class="btn-tool">Sola Hizala</button>
+        <button onclick="alignSelected('center')" class="btn-tool">Ortala</button>
+        <button onclick="alignSelected('top')" class="btn-tool">Üste Hizala</button>
+        <button onclick="deleteSelected()" class="btn-tool" style="background:#631327">Seçileni Sil</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="canvas-container" id="poster">
+      <img id="mainImg" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000">
+      
+      <div id="shapeSpace" style="position: absolute; inset: 0; pointer-events: none;"></div>
+
+      <div id="mainTitle" class="draggable selected" style="left: 10%; top: 15%; font-size: 60px; font-weight:900; color:white; text-shadow: 2px 2px 10px rgba(0,0,0,1);">
+        HABER BAŞLIĞI
+      </div>
+
+      <div id="tickerElement" class="draggable" style="bottom: 0; left:0; width:100%;">
+        <div class="ticker-label" id="tLabel">SON DAKİKA</div>
+        <div class="ticker-text" id="tText">Haber detayları burada görüntülenecek...</div>
+      </div>
+
+      <div id="hashElement" class="draggable" style="top:20px; right:20px;">#Gündem</div>
+    </div>
+    <button class="btn-save" id="save">PNG OLARAK KAYDET</button>
+  </main>
+
+  <script>
+    let selectedElements = [];
+
+    function toggleElement(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'none' || el.style.display === '') {
+        el.style.display = (id === 'tickerElement' ? 'flex' : 'block');
+      } else {
+        el.style.display = 'none';
+      }
+    }
+
+    const toBase64 = file => new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+    });
+
+    // İNTERAKTİF MOTOR
+    function makeInteract(el) {
+      interact(el)
+        .draggable({
+          inertia: true,
+          listeners: {
+            move(event) {
+              const dx = event.dx;
+              const dy = event.dy;
+              if (selectedElements.includes(event.target)) {
+                selectedElements.forEach(target => {
+                  const x = (parseFloat(target.getAttribute('data-x')) || 0) + dx;
+                  const y = (parseFloat(target.getAttribute('data-y')) || 0) + dy;
+                  target.style.transform = `translate(${x}px, ${y}px)`;
+                  target.setAttribute('data-x', x);
+                  target.setAttribute('data-y', y);
+                });
+              }
+            }
+          }
+        })
+        .resizable({
+          edges: { left: true, right: true, bottom: true, top: true },
+          listeners: {
+            move(event) {
+              const { width, height } = event.rect;
+              const { left, top } = event.deltaRect;
+              
+              if (selectedElements.includes(event.target)) {
+                let x = (parseFloat(event.target.dataset.x) || 0) + left;
+                let y = (parseFloat(event.target.dataset.y) || 0) + top;
+
+                event.target.style.width = width + 'px';
+                event.target.style.height = height + 'px';
+                event.target.style.transform = `translate(${x}px, ${y}px)`;
+                event.target.dataset.x = x;
+                event.target.dataset.y = y;
+              }
+            }
+          }
+        });
+
+      // Mousedown Olayı: Tıklananı seçer
+      el.addEventListener('mousedown', function(e) {
+        if (!e.ctrlKey) {
+          document.querySelectorAll('.draggable').forEach(item => item.classList.remove('selected'));
+          selectedElements = [el];
+        } else {
+          if (selectedElements.includes(el)) {
+            selectedElements = selectedElements.filter(i => i !== el);
+            el.classList.remove('selected');
+            return;
+          } else {
+            selectedElements.push(el);
+          }
+        }
+        el.classList.add('selected');
+        e.stopPropagation();
+      });
+    }
+
+    // İlk elementleri hazırla
+    document.querySelectorAll('.draggable').forEach(makeInteract);
+
+    // Arkaplan
+    document.getElementById('bgIn').onchange = async (e) => {
+      if(e.target.files[0]) document.getElementById('mainImg').src = await toBase64(e.target.files[0]);
+    };
+
+    // TV Inputlar
+    document.getElementById('tickerLabelIn').oninput = (e) => document.getElementById('tLabel').innerText = e.target.value;
+    document.getElementById('tickerTextIn').oninput = (e) => document.getElementById('tText').innerText = e.target.value;
+    document.getElementById('hashIn').oninput = (e) => document.getElementById('hashElement').innerText = e.target.value;
+
+    // Stil Paneli
+    document.getElementById('globalFont').onchange = (e) => { selectedElements.forEach(el => el.style.fontFamily = e.target.value); };
+    document.getElementById('globalColor').oninput = (e) => { selectedElements.forEach(el => el.style.color = e.target.value); };
+    document.getElementById('globalBgColor').oninput = (e) => {
+      selectedElements.forEach(el => {
+        if(el.id === 'tickerElement') document.getElementById('tLabel').style.backgroundColor = e.target.value;
+        else if(el.id === 'hashElement' || el.classList.contains('dynamic-shape')) el.style.backgroundColor = e.target.value;
+      });
+    };
+    document.getElementById('globalSize').oninput = (e) => { selectedElements.forEach(el => el.style.fontSize = e.target.value + 'px'); };
+
+    // YENİ NESNE EKLEME (BURASI KRİTİK)
+    document.getElementById('objIn').onchange = async (e) => {
+      const shape = document.getElementById('shapeSelect').value;
+      for (const file of Array.from(e.target.files)) {
+        const b64 = await toBase64(file);
+        
+        // Yeni bir draggable div oluştur
+        const div = document.createElement('div');
+        div.className = `draggable dynamic-shape ${shape}`;
+        div.style.left = "30%"; 
+        div.style.top = "30%";
+        div.style.pointerEvents = "auto"; // Tıklamayı aktif et
+        
+        const img = document.createElement('img');
+        img.src = b64;
+        
+        div.appendChild(img);
+        // shapeSpace yerine doğrudan poster'e ekleyelim ki z-index ve sürükleme daha kolay olsun
+        document.getElementById('poster').appendChild(div);
+        
+        // Sürükle-bırak motoruna bu yeni elementi tanıt
+        makeInteract(div);
+      }
+    };
+
+    function alignSelected(type) {
+      if (selectedElements.length < 2) return;
+      const ref = selectedElements[0].getBoundingClientRect();
+      selectedElements.forEach((el, i) => {
+        if (i === 0) return;
+        let x = parseFloat(el.dataset.x) || 0;
+        let y = parseFloat(el.dataset.y) || 0;
+        const r = el.getBoundingClientRect();
+        if (type === 'left') x += (ref.left - r.left);
+        if (type === 'center') x += ((ref.left + ref.width/2) - (r.left + r.width/2));
+        if (type === 'top') y += (ref.top - r.top);
+        el.style.transform = `translate(${x}px, ${y}px)`;
+        el.dataset.x = x; el.dataset.y = y;
+      });
+    }
+
+    function deleteSelected() {
+      selectedElements.forEach(el => {
+        if (!['mainTitle', 'tickerElement', 'hashElement'].includes(el.id)) el.remove();
+        else el.style.display = 'none';
+      });
+      selectedElements = [];
+    }
+
+    document.getElementById('save').onclick = function() {
+      document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+      modernScreenshot.domToPng(document.getElementById('poster'), { scale: 2 }).then(dataUrl => {
+        const link = document.createElement('a');
+        link.download = `Haber_Stüdyosu_${Date.now()}.png`;
+        link.href = dataUrl;
+        link.click();
+      });
+    };
+  </script>
+</body>
+</html>
