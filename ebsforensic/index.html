@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBS Forensic v9.1 | Classified AI Face Discovery</title>
+    
+    <meta name="description" content="EBS Forensic v9.1 - Classified AI face discovery and biometric analysis system by Ebubekir Bastama. Top Secret Level.">
+    <meta name="keywords" content="Ebubekir Bastama, EBS Forensic, Face Recognition, Classified AI, OSINT, Forensic Analysis, Biometry">
+    <meta name="author" content="Ebubekir Bastama">
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+    
+    <style>
+        :root { 
+            --ebs-blue: #00f2ff; 
+            --ebs-red: #ff003c;
+            --bg-dark: #000;
+            --panel-bg: rgba(5, 10, 20, 0.98); /* Çok hafif şeffaf panel */
+        }
+
+        body { 
+            background-color: var(--bg-dark);
+            color: var(--ebs-blue);
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase; /* Tüm yazıları büyük yap */
+            overflow-x: hidden;
+            letter-spacing: 1px;
+            /* Siber Izgara Arka Planı */
+            background-image: linear-gradient(0deg, rgba(0, 242, 255, 0.04) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 255, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Image 1'deki Keskin Panel Stili */
+        .ebs-panel {
+            background: var(--panel-bg);
+            border: 2px solid var(--ebs-blue);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .panel-header {
+            text-align: center;
+            border-bottom: 2px solid var(--ebs-blue);
+            padding: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        /* --- NSA Show Overlay & Custom Confirm (İçselleştirilmiş) --- */
+        #nsaOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0); /* Tamamen Şeffaf */
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .analyzing-text {
+            color: var(--ebs-red);
+            font-size: 1.6rem;
+            text-shadow: 0 0 15px var(--ebs-red);
+            animation: blink 0.6s infinite;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 20px;
+            border: 1px solid var(--ebs-red);
+            pointer-events: none;
+        }
+
+        @keyframes blink { 50% { opacity: 0.3; } }
+
+        /* Onay Paneli - Şeffaf ve Dijital */
+        .confirm-box {
+            background: rgba(0, 10, 20, 0.98);
+            border: 2px solid var(--ebs-red);
+            padding: 20px;
+            text-align: center;
+            display: none; /* JS ile açılacak */
+            flex-direction: column;
+            align-items: center;
+            pointer-events: all;
+            box-shadow: 0 0 60px rgba(255, 0, 60, 0.3);
+            max-width: 350px;
+        }
+
+        #matchPreview {
+            width: 100%;
+            border: 2px solid var(--ebs-red);
+            margin: 15px 0;
+            background: #000;
+        }
+
+        /* --- VİDEO STAGE - Kompakt ve Tam Oturan --- */
+        .stage-container {
+            position: relative;
+            background: #000;
+            width: 100%;
+            max-width: 800px; /* Video boyutunu Image 1'deki gibi ufalttık */
+            margin: 0 auto;
+            overflow: hidden;
+            border: 2px solid var(--ebs-blue);
+            min-height: 300px;
+        }
+
+        #videoPlayer {
+            width: 100% !important;
+            height: auto !important;
+            display: block;
+        }
+
+        #biometricBoxesContainer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .biometric-box {
+            position: absolute;
+            border: 2px solid var(--ebs-red);
+            box-shadow: 0 0 15px var(--ebs-red), inset 0 0 10px var(--ebs-red);
+            z-index: 10;
+        }
+
+        /* --- SİBER BUTONLAR --- */
+        .btn-ebs {
+            background: transparent;
+            border: 2px solid var(--ebs-blue);
+            color: var(--ebs-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+        }
+
+        .btn-ebs:hover:not(:disabled) {
+            background: var(--ebs-blue);
+            color: #000;
+            box-shadow: 0 0 30px var(--ebs-blue);
+        }
+
+        /* --- TABLO VE LOGLAR --- */
+        .table-ebs { color: var(--ebs-blue); font-size: 0.85rem; }
+        .table-ebs thead { border-bottom: 2px solid var(--ebs-blue); background: rgba(0, 242, 255, 0.1); }
+        .match-row:hover { background: rgba(0, 242, 255, 0.15) !important; cursor: crosshair; }
+
+        .progress { background: #111; border-radius: 0; height: 10px; border: 1px solid #333;}
+        .progress-bar { background-color: var(--ebs-blue); box-shadow: 0 0 15px var(--ebs-blue); }
+
+    </style>
+</head>
+<body>
+
+<div id="nsaOverlay">
+    <div id="statusText" class="analyzing-text">THREAT ANALYSIS ACTIVE</div>
+    
+    <div id="customConfirm" class="confirm-box">
+        <h5 class="text-danger">TARGET IDENTIFIED</h5>
+        <img id="matchPreview" src="" alt="Captured Frame">
+        <p id="confirmDetails" class="small text-white mb-3"></p>
+        <div class="d-flex gap-3">
+            <button id="btnConfirmYes" class="btn btn-danger btn-sm px-4">VERIFY</button>
+            <button id="btnConfirmNo" class="btn btn-outline-light btn-sm px-4">IGNORE</button>
+        </div>
+    </div>
+    
+    <canvas id="captureCanvas" style="display:none;"></canvas>
+</div>
+
+<nav class="navbar py-3 border-bottom border-info bg-black CRT">
+    <div class="container text-center">
+        <span class="navbar-brand text-white mx-auto">
+            <i class="fas fa-satellite-dish text-info me-2"></i> EBS FORENSIC v9.1 [CLASSIFIED]
+        </span>
+    </div>
+</nav>
+
+<div class="container-fluid px-5 mt-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-xl-11">
+            
+            <div id="modelStatus" class="small text-center mb-3">
+                <i class="fas fa-sync fa-spin"></i> INITIALIZING ADLİ VERİ KERNEL...
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="ebs-panel p-4 h-100">
+                        <div class="panel-header mb-4">TARGET ACQUISITION</div>
+                        
+                        <div class="upload-box mb-3 p-4 text-center border border-info rounded" onclick="document.getElementById('imageUpload').click()" style="cursor:pointer; background: rgba(0,242,255,0.05);">
+                            <i class="fas fa-fingerprint fa-3x mb-2" id="imgIcon"></i>
+                            <p id="imgText" class="small m-0">BIOMETRIC SOURCE (IMG)</p>
+                            <input type="file" id="imageUpload" hidden accept="image/*">
+                        </div>
+
+                        <div class="upload-box mb-4 p-4 text-center border border-info rounded" onclick="document.getElementById('videoUpload').click()" style="cursor:pointer; background: rgba(0,242,255,0.05);">
+                            <i class="fas fa-id-card fa-3x mb-2" id="vidIcon"></i>
+                            <p id="vidText" class="small m-0">EVIDENCE SOURCE (MP4)</p>
+                            <input type="file" id="videoUpload" hidden accept="video/*">
+                        </div>
+
+                        <button id="startBtn" class="btn btn-ebs w-100 py-3 mb-3 mx-auto d-block" disabled>
+                            <i class="fas fa-search me-2"></i> EXECUTE AI SCANNER
+                        </button>
+                        
+                        <div class="small text-muted mt-3 text-center border border-secondary p-2 bg-black">
+                            [LOG] Auth: <span class="text-danger">AUTHORIZED ACCESS</span><br>
+                            [LOG] Host: ebubekirbastama.com.tr<br>
+                            [LOG] DeepFace_Vector_V4
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="ebs-panel p-2">
+                        <div class="panel-header mb-2">EVIDENCE MONITORING STAGE</div>
+                        <div class="stage-container">
+                            <video id="videoPlayer"></video>
+                            <div id="biometricBoxesContainer"></div>
+                        </div>
+                        
+                        <div class="p-3 bg-black">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>SCANNING TEMPORAL DATA</span>
+                                <span id="percentText">0%</span>
+                            </div>
+                            <div class="progress">
+                                <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="ebs-panel p-4">
+                        <div class="panel-header mb-3">CLASSIFIED DETECTION LOGS</div>
+                        <div class="table-responsive" style="max-height: 300px;">
+                            <table class="table table-dark table-ebs">
+                                <thead>
+                                    <tr>
+                                        <th>UID</th>
+                                        <th>TIMESTAMP</th>
+                                        <th>MATCH PROBABILITY</th>
+                                        <th>STATUS</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsLog">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted small">Awaiting biometric target...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer class="text-center py-4 border-top border-info mt-5 bg-black">
+    <p class="small text-muted mb-0">Developed by <a href="https://www.ebubekirbastama.com.tr" target="_blank" class="text-info text-decoration-none">Ebubekir Bastama</a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
