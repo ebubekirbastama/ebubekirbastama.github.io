@@ -73,7 +73,7 @@ startBtn.addEventListener('click', async () => {
     videoPlayer.controls = false;
     
     const duration = videoPlayer.duration;
-    const faceMatcher = new faceapi.FaceMatcher(targetDescriptor, 0.55);
+    const faceMatcher = new faceapi.FaceMatcher(targetDescriptor, 0.40);
 
     for (let t = 0; t < duration; t += 0.5) {
         videoPlayer.currentTime = t;
