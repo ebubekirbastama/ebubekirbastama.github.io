@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>EBS FORENSIC | AI Biyometrik Suçlu Tespit Sistemi | Ebubekir Bastama</title>
+    <meta name="description" content="Ebubekir Bastama tarafından geliştirilen, NSA ve FBI standartlarında yapay zeka tabanlı biyometrik yüz tanıma ve adli suçlu tespit yazılımı.">
+    <meta name="keywords" content="Ebubekir Bastama, EBS Forensic, Suçlu Tespit, Yüz Tanıma Yazılımı, Adli Bilişim, NSA Biyometri, FBI Yüz Tanıma, CIA Analiz, Siber Güvenlik">
+    <meta name="author" content="Ebubekir Bastama">
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Source+Code+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* === GLOBAL STİLLER === */
+        :root {
+            --bg-black: #000000;
+            --panel-bg: rgba(10, 15, 20, 0.9);
+            --neon-blue: #00f2ff;
+            --neon-blue-dim: rgba(0, 242, 255, 0.3);
+            --neon-red: #ff003c;
+            --neon-red-dim: rgba(255, 0, 60, 0.3);
+            --text-main: #e0e0e0;
+            --font-cyber: 'Orbitron', sans-serif;
+            --font-mono: 'Source Code Pro', monospace;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--neon-blue-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--neon-blue-dim) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center;
+        }
+
+        /* === ANA ÇERÇEVE === */
+        .cyber-container {
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue-dim);
+            background-color: var(--panel-bg);
+            margin-top: 20px;
+            padding: 10px;
+            position: relative;
+        }
+
+        /* === BAŞLIK === */
+        .system-header {
+            font-family: var(--font-cyber);
+            text-align: center;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+            margin: 15px 0 25px 0;
+            position: relative;
+        }
+        
+        .system-header::after {
+            content: 'TOP SECRET // NOFORN';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: var(--neon-red);
+            font-family: var(--font-mono);
+            letter-spacing: 2px;
+        }
+
+        /* === PANELLER === */
+        .ebs-panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--neon-blue);
+            border-radius: 0;
+            padding: 15px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .ebs-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 10px; height: 10px;
+            border-top: 2px solid var(--neon-red);
+            border-left: 2px solid var(--neon-red);
+        }
+
+        .panel-title {
+            font-family: var(--font-cyber);
+            font-size: 12px;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* === HEDEF RESİM ALANI === */
+        .target-box {
+            border: 1px solid #2c3e50;
+            height: 380px;
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0, 242, 255, 0.1);
+        }
+        
+        .target-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: grayscale(80%) contrast(120%);
+        }
+
+        /* === TARAMA EFEKTİ (NEON RED) === */
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: var(--neon-red);
+            box-shadow: 0 0 15px var(--neon-red), 0 0 25px var(--neon-red);
+            top: -10px;
+            display: none;
+            z-index: 10;
+            animation: scanLoop 2.5s ease-in-out infinite;
+        }
+
+        @keyframes scanLoop {
+            0% { top: -10px; }
+            50% { top: 100%; }
+            100% { top: -10px; }
+        }
+
+        /* === DATASET GALERİSİ === */
+        .dataset-scroll {
+            height: 380px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #1a2634;
+            padding: 10px;
+        }
+        
+        .dataset-scroll::-webkit-scrollbar { width: 4px; }
+        .dataset-scroll::-webkit-scrollbar-thumb { background: var(--neon-blue); }
+
+        .criminal-item {
+            display: inline-block;
+            width: 70px;
+            margin: 5px;
+            text-align: center;
+            font-size: 9px;
+            color: #888;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        
+        .criminal-item:hover {
+            border-color: var(--neon-red);
+            color: #fff;
+            box-shadow: 0 0 10px var(--neon-red-dim);
+        }
+
+        .criminal-item img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border: 1px solid #333;
+            margin-bottom: 3px;
+        }
+
+        /* === ANA BUTON === */
+        .btn-analyze {
+            background: transparent;
+            border: 2px solid var(--neon-red);
+            color: var(--neon-red);
+            font-family: var(--font-cyber);
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 3px;
+            padding: 15px 60px;
+            text-transform: uppercase;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-analyze:hover:not(:disabled) {
+            background: var(--neon-red);
+            color: #fff;
+            box-shadow: 0 0 20px var(--neon-red), 0 0 40px var(--neon-red);
+        }
+        
+        .btn-analyze:disabled {
+            border-color: #333;
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        /* === İŞLEM LOGU VE SONUÇ === */
+        .log-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--neon-blue-dim);
+            height: 180px;
+            color: var(--neon-blue);
+            padding: 10px;
+            font-size: 11px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.05);
+        }
+        
+        .result-panel {
+            border: 1px solid var(--neon-red);
+            box-shadow: 0 0 15px var(--neon-red-dim);
+            height: 180px;
+            padding: 15px;
+            position: relative;
+        }
+        
+        .result-status {
+            font-family: var(--font-cyber);
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-red);
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        canvas { position: absolute; top: 0; left: 0; z-index: 5; }
+        .bi-alert { color: var(--neon-red); animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+<div class="container-fluid px-4">
+    <div class="cyber-container">
+        <h1 class="system-header">EBS FORENSIC BIO-ANALYTICS</h1>
+        
+        <div class="row g-3">
+            <div class="col-md-5">
+                <div class="ebs-panel h-100">
+                    <div class="panel-title">
+                        <span>[KANIT_DOSYASI]</span>
+                        <span class="text-danger small">[STATUS: Bekleniyor]</span>
+                    </div>
+                    <div class="target-box mb-3" id="targetContainer">
+                        <div id="scanner" class="scanner-line"></div>
+                        <img id="targetPreview" src="" style="display:none;">
+                        <canvas id="overlay"></canvas>
+                        <span id="placeholder" class="text-muted small">[YÜKLEME_BEKLENİYOR]</span>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <input type="file" id="targetInput" class="form-control form-control-sm bg-dark text-white border-secondary">
+                        </div>
+                        <div class="col-4 text-end text-muted small">
+                            JPG/PNG, 8MB MAX
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-7">
+                <div class="ebs-panel h-100">
+                    <div class="panel-title">
+                        <span>[SABIKA_KAYITLARI_DB]</span>
+                        <span class="text-info small">[REGION: Global]</span>
+                    </div>
+                    <div id="datasetGallery" class="dataset-scroll d-flex flex-wrap align-content-start">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+                            <i class="bi bi-folder2-open me-2"></i> [LÜTFEN_KLASÖR_SEÇİN]
+                        </div>
+                    </div>
+                    <div class="row align-items-center mt-3">
+                        <div class="col-8">
+                            <input type="file" id="folderInput" webkitdirectory directory multiple class="form-control form-control-sm bg-dark text-white border-secondary">
+                        </div>
+                        <div class="col-4 text-end text-muted small">
+                            [DİZİN_YÜKLEME]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center my-4">
+            <button id="startBtn" class="btn-analyze" disabled>BİYOMETRİK_ANALİZİ_BAŞLAT</button>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="ebs-panel h-100">
+                    <div class="panel-title">[İŞLEM_LOGU]</div>
+                    <div class="log-box" id="logArea">
+                        > EBS Forensic v2.1.0 Initialized...<br>
+                        > Local Models Path: /models<br>
+                        > Awaiting Data Input...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="result-panel bg-black h-100">
+                    <div class="panel-title">[ANALİZ_SONUCU]</div>
+                    <div class="row h-75 align-items-center">
+                        <div class="col-4 text-center">
+                            <div style="width:70px; height:90px; border:1px solid #333; margin:0 auto; background:#000; display:flex; align-items:center; justify-content:center;">
+                                <img id="matchThumb" src="" style="max-width:100%; max-height:100%; display:none;">
+                                <i class="bi bi-person-x text-muted" style="font-size:2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div id="matchStatus" class="result-status text-muted">---</div>
+                            <div id="matchDetails" class="text-white small">
+                                [KİMLİK]: ---<br>
+                                [GÜVEN_SKORU]: %0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-4 pt-3 text-center text-muted border-top border-secondary small">
+            &copy; 2024 EBS Forensic | Ajans: <a href="https://www.ebubekirbastama.com.tr" class="text-decoration-none text-info">Bastama</a> | [CLASSIFICATION: Secret]
+        </footer>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
