@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Ebubekir Bastama Pastel Studio ile fotoğraflarınızı tarayıcı üzerinde pastel illüstrasyon ve renkli kalem efektine dönüştürün." />
+  <meta name="theme-color" content="#0b0f19" />
+  <meta property="og:title" content="Pastel Studio | Ebubekir Bastama" />
+  <meta property="og:description" content="Fotoğraf yükle, profesyonel pastel illüstrasyon efekti uygula ve PNG olarak indir." />
+  <meta property="og:type" content="website" />
+  <title>Pastel Studio | Ebubekir Bastama</title>
+  <style>
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    :root{
+      --bg:#080b12;--bg2:#101522;--panel:rgba(255,255,255,.075);--panel2:rgba(255,255,255,.105);
+      --stroke:rgba(255,255,255,.16);--text:#f8fafc;--muted:#aab4c5;--muted2:#7c8799;
+      --gold:#f4c76b;--coral:#ff7a59;--violet:#8b5cf6;--cyan:#4fd1c5;--dark:#0b0f19;
+      --paper:#fbf3e7;--shadow:0 24px 80px rgba(0,0,0,.45);--r:24px
+    }
+    body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:
+      radial-gradient(circle at 12% 8%, rgba(139,92,246,.34), transparent 34%),
+      radial-gradient(circle at 84% 16%, rgba(244,199,107,.24), transparent 28%),
+      radial-gradient(circle at 55% 95%, rgba(79,209,197,.18), transparent 34%),
+      linear-gradient(135deg,#070912 0%,#101522 48%,#080b12 100%);overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 72%)}
+    a{color:inherit;text-decoration:none}.shell{width:min(1240px,calc(100% - 32px));margin:auto}.nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0;gap:16px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em}.logo{width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--coral) 55%,var(--violet));display:grid;place-items:center;box-shadow:0 12px 34px rgba(244,199,107,.2)}.logo svg{width:23px}.navLinks{display:flex;gap:18px;color:var(--muted);font-size:14px}.navLinks a:hover{color:#fff}.pill{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--stroke);border-radius:999px;background:rgba(255,255,255,.07);color:#d9e2ef;font-size:13px;backdrop-filter:blur(14px)}
+    .hero{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:34px;padding:42px 0 26px}.eyebrow{margin-bottom:16px}.hero h1{font-size:clamp(38px,6vw,76px);line-height:.96;letter-spacing:-.07em;margin:0 0 18px}.grad{background:linear-gradient(90deg,#fff,var(--gold) 42%,#ffd7ca);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{font-size:clamp(16px,2vw,20px);line-height:1.7;color:var(--muted);margin:0 0 24px;max-width:660px}.actions{display:flex;gap:12px;flex-wrap:wrap}.btn{border:0;border-radius:16px;padding:14px 18px;font-weight:800;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:9px}.btn.primary{background:linear-gradient(135deg,var(--gold),var(--coral));color:#17120d;box-shadow:0 16px 44px rgba(255,122,89,.24)}.btn.secondary{background:rgba(255,255,255,.09);color:#fff;border:1px solid var(--stroke)}.btn:hover{transform:translateY(-1px)}.heroCard{position:relative;border:1px solid var(--stroke);border-radius:32px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));box-shadow:var(--shadow);padding:16px;backdrop-filter:blur(18px)}.mock{aspect-ratio:4/3;border-radius:24px;background:linear-gradient(135deg,#f7ead7,#e8cfae 45%,#af8f69);position:relative;overflow:hidden}.mock:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 32% 32%,#fff5 0 10%,transparent 24%),linear-gradient(120deg,transparent 0 45%,#2d201833 45% 46%,transparent 46%),repeating-linear-gradient(18deg,#0000 0 13px,#6b4a2a1f 14px 15px)}.mock:after{content:"PASTEL EFFECT";position:absolute;right:18px;bottom:18px;font-size:12px;letter-spacing:.18em;font-weight:900;color:#50351f;background:#fff9;padding:8px 11px;border-radius:999px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stat{padding:12px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11)}.stat b{display:block;font-size:18px}.stat span{font-size:12px;color:var(--muted)}
+    .studio{margin:34px 0 60px;border:1px solid var(--stroke);border-radius:32px;background:linear-gradient(180deg,rgba(255,255,255,.105),rgba(255,255,255,.055));box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(18px)}.studioHead{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px 22px;border-bottom:1px solid var(--stroke);background:rgba(255,255,255,.04)}.studioHead h2{margin:0;font-size:22px;letter-spacing:-.03em}.studioHead p{margin:4px 0 0;color:var(--muted);font-size:14px}.topTools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.upload{position:relative;overflow:hidden}.upload input{position:absolute;inset:0;opacity:0;cursor:pointer}.select{appearance:none;border:1px solid var(--stroke);background:rgba(8,11,18,.62);color:#fff;border-radius:14px;padding:13px 38px 13px 14px;font-weight:700;outline:none}.work{display:grid;grid-template-columns:350px 1fr;gap:0}.controls{padding:20px;border-right:1px solid var(--stroke);background:rgba(8,11,18,.24)}.group{padding:16px 0;border-top:1px solid rgba(255,255,255,.1)}.group:first-child{border-top:0;padding-top:0}.groupTitle{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:.11em;color:#e9eef8;margin-bottom:12px}.row{display:grid;grid-template-columns:92px 1fr 42px;gap:10px;align-items:center;margin:12px 0;color:var(--muted);font-size:14px}.val{text-align:right;color:#fff;font-variant-numeric:tabular-nums;font-size:13px}.row input[type=range]{width:100%;accent-color:var(--gold)}.note{margin-top:14px;padding:13px;border:1px solid rgba(244,199,107,.24);background:rgba(244,199,107,.08);border-radius:16px;color:#d7c8aa;font-size:13px;line-height:1.55}.canvasArea{padding:20px;background:radial-gradient(circle at center,rgba(255,255,255,.09),transparent 62%)}.canvasWrap{min-height:520px;border:1px solid rgba(255,255,255,.14);border-radius:24px;background:#0d111b;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.empty{position:absolute;text-align:center;color:var(--muted);padding:22px;max-width:360px}.emptyIcon{width:64px;height:64px;margin:0 auto 14px;border-radius:22px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid var(--stroke)}.empty b{display:block;color:#fff;margin-bottom:8px;font-size:18px}canvas{max-width:100%;height:auto;display:block}.compareLine{position:absolute;top:0;bottom:0;width:2px;background:var(--gold);box-shadow:0 0 0 1px #000;pointer-events:none;display:none}.footer{padding:28px 0 38px;color:var(--muted2);font-size:13px;text-align:center}.footer b{color:#d9e2ef}
+    @media(max-width:980px){.hero{grid-template-columns:1fr}.work{grid-template-columns:1fr}.controls{border-right:0;border-bottom:1px solid var(--stroke)}.studioHead{align-items:flex-start;flex-direction:column}.canvasWrap{min-height:420px}.navLinks{display:none}}
+    @media(max-width:560px){.shell{width:min(100% - 22px,1240px)}.hero{padding-top:20px}.stats{grid-template-columns:1fr}.row{grid-template-columns:82px 1fr 36px}.topTools{width:100%}.btn,.select{width:100%;justify-content:center}.studio{border-radius:22px}.canvasWrap{min-height:330px}}
+  </style>
+</head>
+<body>
+  <header class="shell nav">
+    <a class="brand" href="#"><span class="logo"><svg viewBox="0 0 24 24" fill="none"><path d="M4 16.5 14.8 5.7a2.5 2.5 0 0 1 3.5 3.5L7.5 20H4v-3.5Z" stroke="#17120d" stroke-width="2" stroke-linejoin="round"/><path d="M13 7.5 16.5 11" stroke="#17120d" stroke-width="2"/></svg></span><span>Ebubekir Bastama<br><small style="color:var(--muted);font-weight:600;letter-spacing:0">Creative Web Tools</small></span></a>
+    <nav class="navLinks"><a href="#studio">Studio</a><a href="#features">Özellikler</a><a href="https://ebubekirbastama.com.tr">ebubekirbastama.com.tr</a></nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="pill eyebrow">✨ Tarayıcıda çalışan profesyonel fotoğraf efekti</div>
+        <h1>Fotoğrafını <span class="grad">pastel illüstrasyona</span> dönüştür.</h1>
+        <p>Resmini yükle, renkli kalem / pastel / kağıt dokusu hissini ayarla, sonucu PNG olarak indir. Görseller cihazında işlenir; sunucuya yüklenmez.</p>
+        <div class="actions"><a class="btn primary" href="#studio">Hemen Dene</a><button class="btn secondary" id="sampleBtn" type="button">Demo Tuval Hazırla</button></div>
+      </div>
+      <aside class="heroCard">
+        <div class="mock"></div>
+        <div class="stats"><div class="stat"><b>Local</b><span>Sunucusuz işlem</span></div><div class="stat"><b>PNG</b><span>Tek tık indirme</span></div><div class="stat"><b>Pro</b><span>Detaylı ayar</span></div></div>
+      </aside>
+    </section>
+
+    <section id="studio" class="studio">
+      <div class="studioHead">
+        <div><h2>Pastel Studio</h2><p>Yükle, efekti uygula, önce/sonra karşılaştır.</p></div>
+        <div class="topTools">
+          <label class="btn secondary upload">Resim Yükle<input type="file" id="upload" accept="image/*"></label>
+          <select id="preset" class="select"><option value="reference" selected>Örneğe yakın</option><option value="soft">Yumuşak pastel</option><option value="strong">Belirgin çizim</option><option value="watercolor">Suluboya pastel</option><option value="premium">Premium soft poster</option></select>
+          <button id="apply" class="btn primary" type="button">Efekti Uygula</button>
+          <button id="download" class="btn secondary" type="button">PNG İndir</button>
+        </div>
+      </div>
+      <div class="work">
+        <aside class="controls">
+          <div class="group"><div class="groupTitle">Renk</div>
+            <label class="row">Pastel <input id="pastel" type="range" min="0" max="100" value="42"><span class="val" id="pastelV">42</span></label>
+            <label class="row">Poster <input id="poster" type="range" min="6" max="64" value="22"><span class="val" id="posterV">22</span></label>
+            <label class="row">Doygunluk <input id="sat" type="range" min="40" max="180" value="120"><span class="val" id="satV">120</span></label>
+            <label class="row">Işık <input id="bright" type="range" min="70" max="145" value="108"><span class="val" id="brightV">108</span></label>
+          </div>
+          <div class="group"><div class="groupTitle">Çizgi</div>
+            <label class="row">Kenar <input id="edge" type="range" min="0" max="100" value="74"><span class="val" id="edgeV">74</span></label>
+            <label class="row">İncelik <input id="thin" type="range" min="30" max="220" value="118"><span class="val" id="thinV">118</span></label>
+            <label class="row">Yumuşak <input id="smooth" type="range" min="0" max="4" value="1"><span class="val" id="smoothV">1</span></label>
+          </div>
+          <div class="group"><div class="groupTitle">Doku</div>
+            <label class="row">Kağıt <input id="texture" type="range" min="0" max="100" value="20"><span class="val" id="textureV">20</span></label>
+            <label class="row">Gren <input id="grain" type="range" min="0" max="80" value="12"><span class="val" id="grainV">12</span></label>
+            <label class="row">Tarama <input id="hatch" type="range" min="0" max="100" value="0"><span class="val" id="hatchV">0</span></label>
+          </div>
+          <div class="group"><div class="groupTitle">Önce / Sonra</div>
+            <label class="row">Oran <input id="compare" type="range" min="0" max="100" value="100"><span class="val" id="compareV">100</span></label>
+            <button id="reset" class="btn secondary" style="width:100%;justify-content:center" type="button">Orijinale Dön</button>
+          </div>
+          <div class="note">Yayın için ideal başlangıç: <b>Örneğe yakın</b> preset, Tarama 0, Kenar 70 civarı, Pastel 40–55.</div>
+        </aside>
+        <div class="canvasArea">
+          <div class="canvasWrap" id="wrap"><div class="empty" id="empty"><div class="emptyIcon">🖼️</div><b>Bir fotoğraf yükle</b>Efekt tamamen tarayıcıda uygulanır. JPG, PNG ve WEBP desteklenir.</div><canvas id="canvas"></canvas><div class="compareLine" id="compareLine"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="footer"><b>Ebubekir Bastama</b> için hazırlanmış tek dosyalık HTML/CSS/JavaScript uygulaması. Hosting’e doğrudan yüklenebilir.</section>
+  </main>
+<script>
+const $=id=>document.getElementById(id), canvas=$('canvas'), ctx=canvas.getContext('2d',{willReadFrequently:true});let original=null,effected=null;
+const ids=['pastel','poster','sat','bright','edge','thin','smooth','texture','grain','hatch','compare'];
+ids.forEach(id=>$(id).addEventListener('input',()=>{$(id+'V').textContent=$(id).value;if(original&&id!=='compare')applyEffect(false);if(id==='compare')renderCompare()}));
+const presets={soft:{pastel:58,poster:30,sat:105,bright:113,edge:46,thin:150,smooth:2,texture:16,grain:8,hatch:0},reference:{pastel:42,poster:22,sat:120,bright:108,edge:74,thin:118,smooth:1,texture:20,grain:12,hatch:0},strong:{pastel:34,poster:18,sat:132,bright:103,edge:92,thin:95,smooth:0,texture:28,grain:16,hatch:6},watercolor:{pastel:70,poster:36,sat:112,bright:118,edge:38,thin:165,smooth:3,texture:34,grain:6,hatch:0},premium:{pastel:50,poster:26,sat:116,bright:110,edge:62,thin:132,smooth:2,texture:22,grain:9,hatch:0}};
+$('preset').addEventListener('change',()=>{const p=presets[$('preset').value];Object.keys(p).forEach(k=>{$(k).value=p[k];$(k+'V').textContent=p[k]});if(original)applyEffect(false)});
+$('upload').addEventListener('change',e=>loadFile(e.target.files[0]));$('apply').addEventListener('click',()=>applyEffect(true));$('reset').addEventListener('click',()=>{if(!original)return;effected=null;ctx.putImageData(original,0,0);$('compareLine').style.display='none';$('compare').value=0;$('compareV').textContent='0'});
+$('download').addEventListener('click',()=>{if(!original){alert('Önce bir resim yükle.');return}const a=document.createElement('a');a.download='ebubekir-bastama-pastel-studio.png';a.href=canvas.toDataURL('image/png');a.click()});
+$('sampleBtn').addEventListener('click',()=>{canvas.width=1200;canvas.height=850;const g=ctx.createLinearGradient(0,0,1200,850);g.addColorStop(0,'#f7e7d0');g.addColorStop(.45,'#d2a875');g.addColorStop(1,'#5c7692');ctx.fillStyle=g;ctx.fillRect(0,0,1200,850);ctx.fillStyle='#2c221d';ctx.beginPath();ctx.arc(585,360,155,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f1c190';ctx.beginPath();ctx.arc(600,410,135,0,Math.PI*2);ctx.fill();ctx.fillStyle='#172033';ctx.fillRect(430,560,360,210);ctx.fillStyle='#fff8';for(let i=0;i<120;i++){ctx.fillRect(Math.random()*1200,Math.random()*850,Math.random()*70,1)}original=ctx.getImageData(0,0,canvas.width,canvas.height);$('empty').style.display='none';applyEffect(false);location.hash='studio'});
+function loadFile(file){if(!file)return;const img=new Image();img.onload=()=>{const max=1800,sc=Math.min(max/img.width,max/img.height,1);canvas.width=Math.round(img.width*sc);canvas.height=Math.round(img.height*sc);ctx.drawImage(img,0,0,canvas.width,canvas.height);original=ctx.getImageData(0,0,canvas.width,canvas.height);effected=null;$('empty').style.display='none';$('compare').value=100;$('compareV').textContent='100';URL.revokeObjectURL(img.src);applyEffect(false)};img.src=URL.createObjectURL(file)}
+function val(id){return Number($(id).value)}function clamp(v){return Math.max(0,Math.min(255,v))}function nse(x,y){const n=Math.sin(x*12.9898+y*78.233)*43758.5453;return n-Math.floor(n)}
+function applyEffect(show){if(!original){if(show)alert('Önce bir resim yükle.');return}const w=canvas.width,h=canvas.height,src=new Uint8ClampedArray(original.data),px=w*h,gray=new Float32Array(px),blur=new Float32Array(px),edges=new Float32Array(px),out=new Uint8ClampedArray(src.length);for(let i=0,p=0;i<src.length;i+=4,p++)gray[p]=.299*src[i]+.587*src[i+1]+.114*src[i+2];boxBlur(gray,blur,w,h,val('smooth'));sobel(blur,edges,w,h);const pastel=val('pastel')/100,poster=val('poster'),sat=val('sat')/100,bright=val('bright')/100,edgeAmt=val('edge')/100,thin=val('thin'),tex=val('texture')/100,grain=val('grain'),hatch=val('hatch')/100;for(let y=0;y<h;y++){for(let x=0;x<w;x++){const p=y*w+x,i=p*4;let r=src[i],g=src[i+1],b=src[i+2];[r,g,b]=saturate(r,g,b,sat);r*=bright;g*=bright;b*=bright;r=Math.round(r/poster)*poster;g=Math.round(g/poster)*poster;b=Math.round(b/poster)*poster;r=r*(1-pastel)+(255)*pastel;g=g*(1-pastel)+(246)*pastel;b=b*(1-pastel)+(228)*pastel;let e=Math.max(0,(edges[p]-thin)/(255-thin));e=Math.min(1,e*edgeAmt*1.85);r*=1-e*.82;g*=1-e*.78;b*=1-e*.70;const paper=(nse(x*.075,y*.075)-.5)*34*tex+(Math.sin((x+y)*.045))*10*tex;const gr=(nse(x*1.7,y*1.7)-.5)*grain;if(hatch>0&&((x+y*2)%13)<1.1){r-=34*hatch;g-=29*hatch;b-=24*hatch}out[i]=clamp(r+paper+gr);out[i+1]=clamp(g+paper+gr);out[i+2]=clamp(b+paper+gr);out[i+3]=255}}effected=new ImageData(out,w,h);renderCompare()}
+function renderCompare(){if(!original)return;if(!effected){ctx.putImageData(original,0,0);return}const w=canvas.width,h=canvas.height,cut=Math.round(w*val('compare')/100);ctx.putImageData(original,0,0);const tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;tmp.getContext('2d').putImageData(effected,0,0);ctx.drawImage(tmp,0,0,cut,h,0,0,cut,h);const line=$('compareLine');line.style.display=cut>0&&cut<w?'block':'none';line.style.left=cut+'px'}
+function saturate(r,g,b,s){const l=.299*r+.587*g+.114*b;return[l+(r-l)*s,l+(g-l)*s,l+(b-l)*s]}function boxBlur(src,dst,w,h,r){if(r<=0){dst.set(src);return}for(let y=0;y<h;y++)for(let x=0;x<w;x++){let sum=0,c=0;for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const xx=Math.min(w-1,Math.max(0,x+dx)),yy=Math.min(h-1,Math.max(0,y+dy));sum+=src[yy*w+xx];c++}dst[y*w+x]=sum/c}}
+function sobel(src,dst,w,h){for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const p=y*w+x;const gx=-src[p-w-1]-2*src[p-1]-src[p+w-1]+src[p-w+1]+2*src[p+1]+src[p+w+1];const gy=-src[p-w-1]-2*src[p-w]-src[p-w+1]+src[p+w-1]+2*src[p+w]+src[p+w+1];dst[p]=Math.min(255,Math.sqrt(gx*gx+gy*gy))}}
+</script>
+</body>
+</html>
