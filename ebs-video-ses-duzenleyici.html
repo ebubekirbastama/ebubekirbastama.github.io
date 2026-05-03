@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EBS Video & Audio Editor Pro - Ebubekir Bastama</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -19,12 +19,12 @@
             --accent-purple: #7c3aed;
             --accent-purple-hover: #6d28d9;
             --border-color: #334155;
-            --text-muted: #94a3b8;
+            --text-muted: #ffffff;
         }
 
         body {
             background-color: var(--bg-main);
-            color: #f8fafc;
+            color: #ffffff;
             font-family: 'Inter', sans-serif;
             user-select: none;
             margin: 0;
@@ -75,36 +75,36 @@
         .btn-pro-primary {
             background: linear-gradient(135deg, var(--accent-purple), #4f46e5);
             border: none;
-            color: #fff;
+            color: #ffffff;
             font-weight: 600;
             transition: opacity 0.2s ease;
         }
         .btn-pro-primary:hover {
             opacity: 0.92;
-            color: #fff;
+            color: #ffffff;
         }
         .btn-pro-outline {
             border: 1px solid var(--border-color);
-            color: #cbd5e1;
+            color: #ffffff;
             background: transparent;
             font-weight: 500;
         }
         .btn-pro-outline:hover {
             background: #1e293b;
-            color: #fff;
+            color: #ffffff;
         }
 
         .form-control-pro {
             background: #0f172a;
             border: 1px solid var(--border-color);
-            color: #f8fafc;
+            color: #ffffff;
             border-radius: 10px;
         }
         .form-control-pro:focus {
             background: #131b2e;
             border-color: var(--accent-purple);
             box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.25);
-            color: #fff;
+            color: #ffffff;
         }
 
         /* TIMELINE PANEL */
@@ -149,10 +149,10 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow-x: auto;
-            overflow-y: auto;
+            overflow-y: hidden;
             flex-grow: 1;
-            min-height: 180px;
-            max-height: 240px;
+            min-height: 200px;
+            max-height: 260px;
         }
         
         .time-ticks {
@@ -162,6 +162,8 @@
             top: 0;
             background: #0d1321;
             z-index: 101;
+            width: max-content;
+            min-width: 100%;
         }
         .tick {
             position: absolute;
@@ -171,41 +173,28 @@
             background: #475569;
             font-size: 11px;
             font-family: 'JetBrains Mono', monospace;
-            color: var(--text-muted);
+            color: #ffffff;
             padding-left: 6px;
         }
         
         .track-video {
             position: relative;
-            height: 48px;
+            height: 58px;
             background: var(--bg-track-video);
             margin-top: 10px;
             border-radius: 8px;
-            border: 1px solid #475569;
-            display: flex;
-            align-items: center;
-            padding-left: 16px;
-            color: #cbd5e1;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .track-audio {
-            position: relative;
-            height: 58px;
-            background: var(--bg-track-audio);
-            margin-top: 10px;
-            border-radius: 8px;
             border: 1px dashed #475569;
+            width: max-content;
+            min-width: 100%;
         }
-        
-        .audio-clip {
+
+        .video-clip {
             position: absolute;
             top: 5px;
             height: 46px;
-            background: linear-gradient(135deg, var(--accent-purple), #581c87);
-            color: #fff;
-            border: 1px solid #a855f7;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            border: 1px solid #38bdf8;
             border-radius: 8px;
             cursor: grab;
             display: flex;
@@ -216,16 +205,71 @@
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+            z-index: 2;
+        }
+        .video-clip:active { cursor: grabbing; }
+        
+        .track-audio {
+            position: relative;
+            height: 58px;
+            background: var(--bg-track-audio);
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px dashed #475569;
+            width: max-content;
+            min-width: 100%;
+        }
+        
+        .audio-clip {
+            position: absolute;
+            top: 5px;
+            height: 46px;
+            background: #181d2b;
+            color: #ffffff;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+            z-index: 2;
         }
         .audio-clip:active { cursor: grabbing; }
 
-        .ripple-delete-btn {
+        .waveform-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        .audio-clip .clip-title {
+            position: relative;
+            z-index: 2;
+            background: rgba(13, 19, 33, 0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .ripple-delete-btn, .video-ripple-delete-btn {
             position: absolute;
             top: 12px;
             height: 32px;
             background: #dc2626;
-            color: white;
+            color: #ffffff;
             border: none;
             border-radius: 6px;
             font-size: 11px;
@@ -235,12 +279,12 @@
             justify-content: center;
             cursor: pointer;
             z-index: 110;
-            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+            box-shadow: 0 2px 8px rgba(220, 38, 220, 0.4);
             white-space: nowrap;
             padding: 0 8px;
             transition: background 0.2s;
         }
-        .ripple-delete-btn:hover {
+        .ripple-delete-btn:hover, .video-ripple-delete-btn:hover {
             background: #b91c1c;
         }
 
@@ -258,7 +302,7 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(9, 13, 22, 0.94);
-            color: #fff;
+            color: #ffffff;
             display: none;
             flex-direction: column;
             align-items: center;
@@ -266,6 +310,10 @@
             z-index: 1000;
             border-radius: 16px;
             backdrop-filter: blur(8px);
+        }
+
+        .text-muted {
+            color: #ffffff !important;
         }
     </style>
 </head>
@@ -276,7 +324,7 @@
         <span class="navbar-brand mb-0 h1 navbar-brand-pro fs-4">
             <i class="bi bi-cpu-fill me-2"></i>EBS PRO EDITOR
         </span>
-        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 fw-semibold">
+        <span class="badge bg-danger bg-opacity-10 text-white border border-danger border-opacity-25 px-3 py-2 fw-semibold">
             <i class="bi bi-hd-fill me-1"></i> ebubekirbastama.com.tr
         </span>
     </div>
@@ -287,28 +335,32 @@
         <div class="col-xl-4 col-lg-5">
             <div class="pro-card p-4 mb-3 d-flex flex-column justify-content-between" style="min-height: 440px;">
                 <div>
-                    <h5 class="fw-bold mb-3 d-flex align-items-center">
+                    <h5 class="fw-bold mb-3 d-flex align-items-center text-white">
                         <i class="bi bi-folder-symlink text-info me-2"></i> Medya Dosyaları
                     </h5>
                     
                     <div class="mb-3">
-                        <label class="form-label text-muted fw-medium small">1. Orijinal Video</label>
+                        <label class="form-label text-white fw-medium small">1. Orijinal Video</label>
                         <input type="file" id="videoInput" class="form-control form-control-pro" accept="video/*">
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label text-muted fw-medium small">2. Yeni Ses / Dublaj</label>
+                        <label class="form-label text-white fw-medium small">2. Yeni Ses / Dublaj</label>
                         <input type="file" id="audioInput" class="form-control form-control-pro" accept="audio/*">
                     </div>
                 </div>
 
                 <div>
                     <hr class="border-secondary border-opacity-20">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted small">Başlangıç Zamanı (Offset):</span>
-                        <strong id="startTimeDisplay" class="text-info fs-5 font-monospace">0.00s</strong>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-white small">Ses Gecikmesi (Audio Offset):</span>
+                        <strong id="startTimeDisplay" class="text-info fs-6 font-monospace">0.00s</strong>
                     </div>
-                    <button type="button" id="exportBtn" class="btn btn-pro-primary btn-lg w-100 py-3 d-flex align-items-center justify-content-center" disabled>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-white small">Video Gecikmesi (Video Offset):</span>
+                        <strong id="videoTimeDisplay" class="text-warning fs-6 font-monospace">0.00s</strong>
+                    </div>
+                    <button type="button" id="exportBtn" class="btn btn-pro-primary btn-lg w-100 py-3 d-flex align-items-center justify-content-center" disabled="">
                         <i class="bi bi-box-arrow-down me-2 fs-5"></i> Videoyu Kaydet / İndir
                     </button>
                 </div>
@@ -318,15 +370,15 @@
         <div class="col-xl-8 col-lg-7">
             <div class="preview-box">
                 <video id="videoPlayer" preload="auto"></video>
-                <div id="videoPlaceholder" class="text-muted text-center p-3">
-                    <i class="bi bi-film fs-1 d-block mb-2 text-secondary"></i>
-                    <p class="mb-0 small fw-medium">Lütfen düzenlemek istediğiniz videoyu seçin</p>
+                <div id="videoPlaceholder" class="text-white text-center p-3">
+                    <i class="bi bi-film fs-1 d-block mb-2 text-white"></i>
+                    <p class="mb-0 small fw-medium text-white">Lütfen düzenlemek istediğiniz videoyu seçin</p>
                 </div>
 
                 <div id="renderOverlay" class="render-overlay">
                     <div class="spinner-border text-info mb-3" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.25em;"></div>
                     <h5 class="fw-bold mb-2 text-white" id="renderProgressHeader">Yeni Video Hazırlanıyor</h5>
-                    <p class="mb-3 text-muted fs-6" id="renderProgress">Video ve ses birleştiriliyor...</p>
+                    <p class="mb-3 text-white fs-6" id="renderProgress">Video ve ses birleştiriliyor...</p>
                     <button type="button" id="cancelRenderBtn" class="btn btn-danger px-4 py-2 fw-semibold">
                         <i class="bi bi-x-circle me-1"></i> İşlemi İptal Et
                     </button>
@@ -340,23 +392,23 @@
             <div class="editor-timeline" id="editorTimeline">
                 <div class="timeline-header">
                     <div class="btn-group">
-                        <button type="button" id="playBtn" class="btn btn-pro-primary px-4" disabled>
+                        <button type="button" id="playBtn" class="btn btn-pro-primary px-4" disabled="">
                             <i class="bi bi-play-fill me-1"></i> Oynat
                         </button>
-                        <button type="button" id="pauseBtn" class="btn btn-pro-outline px-4" disabled>
+                        <button type="button" id="pauseBtn" class="btn btn-pro-outline px-4" disabled="">
                             <i class="bi bi-pause-fill me-1"></i> Duraklat
                         </button>
                     </div>
 
                     <div>
-                        <button type="button" id="togglePosBtn" class="btn btn-pro-outline fw-semibold d-flex align-items-center">
-                            <i id="toggleIcon" class="bi bi-arrow-down-square me-2"></i> <span id="toggleText">Aşağı İndir</span>
+                        <button type="button" id="togglePosBtn" class="btn btn-pro-outline fw-semibold d-flex align-items-center text-white">
+                            <i id="toggleIcon" class="bi bi-arrow-down-square me-2 text-white"></i> <span id="toggleText" class="text-white">Aşağı İndir</span>
                         </button>
                     </div>
 
                     <div class="d-flex align-items-center bg-black bg-opacity-50 text-white px-3 py-2 rounded-3 border border-secondary border-opacity-25 shadow-sm">
                         <i class="bi bi-clock-history me-2 text-info"></i>
-                        <span id="timeDisplay" class="fs-6 fw-bold font-monospace">00:00.00 / 00:00.00</span>
+                        <span id="timeDisplay" class="fs-6 fw-bold font-monospace text-white">00:00.00 / 00:00.00</span>
                     </div>
                 </div>
 
@@ -364,18 +416,26 @@
                     <div id="playhead" class="playhead" style="left: 0%;"></div>
                     <div id="timeTicks" class="time-ticks"></div>
 
-                    <div class="track-video">
-                        <i class="bi bi-film me-2 text-info"></i> Orijinal Video Kanalı
+                    <div class="track-video" id="videoTrack">
+                        <button type="button" id="videoRippleDeleteBtn" class="video-ripple-delete-btn">
+                            <i class="bi bi-cut me-1"></i> Boşluğu &amp; Sesi Kes
+                        </button>
+
+                        <div id="videoClip" class="video-clip" style="display: none; left: 0px;">
+                            <span class="text-white"><i class="bi bi-film me-2"></i> Orijinal Video Kanalı</span>
+                            <i class="bi bi-arrows-expand fs-6 text-white" style="transform: rotate(90deg);"></i>
+                        </div>
                     </div>
 
                     <div class="track-audio" id="audioTrack">
                         <button type="button" id="rippleDeleteBtn" class="ripple-delete-btn">
-                            <i class="bi bi-cut me-1"></i> Boşluğu & Videoyu Kes
+                            <i class="bi bi-cut me-1"></i> Boşluğu &amp; Videoyu Kes
                         </button>
 
                         <div id="audioClip" class="audio-clip" style="display: none; left: 0px;">
-                            <span><i class="bi bi-waveform me-2"></i> Yeni Ses Klibi</span>
-                            <i class="bi bi-arrows-expand fs-6" style="transform: rotate(90deg);"></i>
+                            <canvas id="waveformCanvas" class="waveform-canvas"></canvas>
+                            <span class="clip-title text-white"><i class="bi bi-waveform me-2"></i> Yeni Ses Klibi</span>
+                            <i class="bi bi-arrows-expand fs-6 text-white" style="transform: rotate(90deg); z-index: 2;"></i>
                         </div>
                     </div>
                 </div>
@@ -400,6 +460,7 @@
     const exportBtn = document.getElementById('exportBtn');
     const timeDisplay = document.getElementById('timeDisplay');
     const startTimeDisplay = document.getElementById('startTimeDisplay');
+    const videoTimeDisplay = document.getElementById('videoTimeDisplay');
     
     const togglePosBtn = document.getElementById('togglePosBtn');
     const toggleIcon = document.getElementById('toggleIcon');
@@ -410,7 +471,12 @@
     const timelineRuler = document.getElementById('timelineRuler');
     const playhead = document.getElementById('playhead');
     const timeTicks = document.getElementById('timeTicks');
+    
+    const videoClip = document.getElementById('videoClip');
+    const videoRippleDeleteBtn = document.getElementById('videoRippleDeleteBtn');
+    
     const audioClip = document.getElementById('audioClip');
+    const waveformCanvas = document.getElementById('waveformCanvas');
     const rippleDeleteBtn = document.getElementById('rippleDeleteBtn');
 
     const renderOverlay = document.getElementById('renderOverlay');
@@ -423,12 +489,13 @@
     let isAudioLoaded = false;
     
     let audioOffset = 0; 
+    let videoOffset = 0; 
     let videoStartTime = 0; 
+    let audioStartTime = 0; 
     
     let pixelsPerSecond = 32;
     let isFixedBottom = false;
 
-    // Kilitlenmeyi tamamen çözen global referanslar
     let mediaRecorder = null;
     let audioCtx = null;
     let audioSource = null;
@@ -440,13 +507,13 @@
             document.body.classList.add('is-fixed');
             editorTimeline.classList.add('fixed-bottom-mode');
             document.body.appendChild(editorTimeline);
-            toggleIcon.className = "bi bi-arrow-up-square me-2";
+            toggleIcon.className = "bi bi-arrow-up-square me-2 text-white";
             toggleText.innerText = "Yukarı Kaldır";
         } else {
             document.body.classList.remove('is-fixed');
             editorTimeline.classList.remove('fixed-bottom-mode');
             inlineTimelineWrapper.appendChild(editorTimeline);
-            toggleIcon.className = "bi bi-arrow-down-square me-2";
+            toggleIcon.className = "bi bi-arrow-down-square me-2 text-white";
             toggleText.innerText = "Aşağı İndir";
         }
     });
@@ -460,9 +527,13 @@
             videoPlaceholder.style.display = 'none';
             videoPlayer.volume = 0;
             videoStartTime = 0;
+            videoOffset = 0;
 
             videoPlayer.onloadedmetadata = function() {
                 isVideoLoaded = true;
+                videoClip.style.display = 'flex';
+                videoClip.style.width = `${videoPlayer.duration * pixelsPerSecond}px`;
+                videoClip.style.left = '0px';
                 playBtn.disabled = false;
                 pauseBtn.disabled = false;
                 setupTimeline();
@@ -477,16 +548,63 @@
         if (file) {
             const fileURL = URL.createObjectURL(file);
             audioPlayer.src = fileURL;
+            audioStartTime = 0;
+            audioOffset = 0;
             
             audioPlayer.onloadedmetadata = function() {
                 isAudioLoaded = true;
+                const clipWidth = audioPlayer.duration * pixelsPerSecond;
                 audioClip.style.display = 'flex';
-                audioClip.style.width = `${audioPlayer.duration * pixelsPerSecond}px`;
+                audioClip.style.width = `${clipWidth}px`;
+                audioClip.style.left = '0px';
+
+                drawWaveform(file, clipWidth);
+                setupTimeline();
                 syncAudioPosition();
                 checkReady();
             };
         }
     });
+
+    function drawWaveform(file, width) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const actx = new (window.AudioContext || window.webkitAudioContext)();
+            actx.decodeAudioData(e.target.result, function(buffer) {
+                const data = buffer.getChannelData(0);
+                const step = Math.ceil(data.length / width);
+                const amp = 46 / 2;
+                
+                waveformCanvas.width = width;
+                waveformCanvas.height = 46;
+                const ctx = waveformCanvas.getContext('2d');
+                ctx.clearRect(0, 0, width, 46);
+                
+                ctx.fillStyle = '#4f46e5'; 
+                ctx.strokeStyle = '#6366f1';
+                ctx.lineWidth = 1;
+
+                ctx.beginPath();
+                ctx.moveTo(0, amp);
+
+                for (let i = 0; i < width; i++) {
+                    let min = 1.0;
+                    let max = -1.0;
+                    for (let j = 0; j < step; j++) {
+                        const datum = data[(i * step) + j];
+                        if (datum < min) min = datum;
+                        if (datum > max) max = datum;
+                    }
+                    ctx.lineTo(i, (1 + min) * amp);
+                    ctx.lineTo(i, (1 + max) * amp);
+                }
+                ctx.lineTo(width, amp);
+                ctx.stroke();
+                actx.close();
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
 
     function checkReady() {
         if (isVideoLoaded && isAudioLoaded) {
@@ -495,88 +613,101 @@
     }
 
     function setupTimeline() {
-        const duration = videoPlayer.duration - videoStartTime;
+        const vDur = isVideoLoaded ? (videoPlayer.duration - videoStartTime) : 0;
+        const aDur = isAudioLoaded ? (audioPlayer.duration - audioStartTime) : 0;
+        const maxDuration = Math.max(vDur + videoOffset, aDur + audioOffset);
+        
         timeTicks.innerHTML = '';
-        for (let i = 0; i <= duration; i += 5) { 
+        for (let i = 0; i <= maxDuration + 5; i += 5) { 
             const tick = document.createElement('div');
             tick.className = 'tick';
             tick.style.left = `${i * pixelsPerSecond}px`;
             tick.innerHTML = `<span>${i}s</span>`;
             timeTicks.appendChild(tick);
         }
+
+        // İzlerin genişliğini maksimum süreye göre genişletiyoruz
+        const trackWidth = `${(maxDuration + 5) * pixelsPerSecond}px`;
+        document.getElementById('timeTicks').style.width = trackWidth;
+        document.getElementById('videoTrack').style.width = trackWidth;
+        document.getElementById('audioTrack').style.width = trackWidth;
     }
 
     videoPlayer.addEventListener('timeupdate', function() {
-        const adjustedCurrentTime = videoPlayer.currentTime - videoStartTime;
+        const adjustedCurrentTime = videoPlayer.currentTime - videoStartTime + videoOffset;
         updateTimeDisplay();
         
         const currentPos = adjustedCurrentTime * pixelsPerSecond;
         playhead.style.left = `${currentPos}px`;
 
         if (isAudioLoaded && !isRendering) {
-            if (adjustedCurrentTime >= audioOffset) {
-                const targetAudioTime = adjustedCurrentTime - audioOffset;
-                if (targetAudioTime <= audioPlayer.duration) {
-                    if (Math.abs(audioPlayer.currentTime - targetAudioTime) > 0.15) {
-                        audioPlayer.currentTime = targetAudioTime;
-                    }
-                    if (audioPlayer.paused && !videoPlayer.paused) {
-                        audioPlayer.play().catch(e => console.log(e));
-                    }
-                } else {
-                    audioPlayer.pause();
+            const currentAudioTime = adjustedCurrentTime - audioOffset + audioStartTime;
+            if (adjustedCurrentTime >= audioOffset && currentAudioTime <= audioPlayer.duration) {
+                if (Math.abs(audioPlayer.currentTime - currentAudioTime) > 0.15) {
+                    audioPlayer.currentTime = currentAudioTime;
+                }
+                if (audioPlayer.paused && !videoPlayer.paused) {
+                    audioPlayer.play().catch(e => console.log(e));
                 }
             } else {
                 audioPlayer.pause();
-                audioPlayer.currentTime = 0;
             }
         }
     });
 
-    // Sürükle ve Bırak
     let isDragging = false;
+    let activeElement = null;
     let startX = 0;
     let initialLeft = 0;
 
-    audioClip.addEventListener('mousedown', function(e) {
+    function startDrag(e, element) {
         isDragging = true;
+        activeElement = element;
         startX = e.clientX;
-        initialLeft = parseInt(audioClip.style.left) || 0;
-        audioClip.style.cursor = 'grabbing';
-    });
+        initialLeft = parseInt(element.style.left) || 0;
+        element.style.cursor = 'grabbing';
+    }
+
+    audioClip.addEventListener('mousedown', (e) => startDrag(e, audioClip));
+    videoClip.addEventListener('mousedown', (e) => startDrag(e, videoClip));
 
     window.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
+        if (!isDragging || !activeElement) return;
 
         const deltaX = e.clientX - startX;
         let newLeft = initialLeft + deltaX;
-
         if (newLeft < 0) newLeft = 0;
-        const absoluteMax = (videoPlayer.duration - videoStartTime) * pixelsPerSecond;
-        if (newLeft > absoluteMax) newLeft = absoluteMax;
 
-        audioClip.style.left = `${newLeft}px`;
-        audioOffset = newLeft / pixelsPerSecond;
-        startTimeDisplay.innerText = `${audioOffset.toFixed(2)}s`;
+        activeElement.style.left = `${newLeft}px`;
 
-        updateRippleButton(newLeft);
+        if (activeElement === audioClip) {
+            audioOffset = newLeft / pixelsPerSecond;
+            startTimeDisplay.innerText = `${audioOffset.toFixed(2)}s`;
+            updateRippleButton(newLeft, rippleDeleteBtn);
+        } else if (activeElement === videoClip) {
+            videoOffset = newLeft / pixelsPerSecond;
+            videoTimeDisplay.innerText = `${videoOffset.toFixed(2)}s`;
+            updateRippleButton(newLeft, videoRippleDeleteBtn);
+        }
+        setupTimeline();
     });
 
     window.addEventListener('mouseup', function() {
         if (isDragging) {
             isDragging = false;
-            audioClip.style.cursor = 'grab';
+            if (activeElement) activeElement.style.cursor = 'grab';
+            activeElement = null;
             syncAudioPosition();
         }
     });
 
-    function updateRippleButton(leftPos) {
+    function updateRippleButton(leftPos, btn) {
         if (leftPos > 15) { 
-            rippleDeleteBtn.style.left = `0px`;
-            rippleDeleteBtn.style.width = `${leftPos - 4}px`;
-            rippleDeleteBtn.style.display = 'flex';
+            btn.style.left = `0px`;
+            btn.style.width = `${leftPos - 4}px`;
+            btn.style.display = 'flex';
         } else {
-            rippleDeleteBtn.style.display = 'none';
+            btn.style.display = 'none';
         }
     }
 
@@ -592,7 +723,25 @@
         rippleDeleteBtn.style.display = 'none';
 
         videoPlayer.currentTime = videoStartTime;
-        audioPlayer.currentTime = 0;
+        audioPlayer.currentTime = audioStartTime;
+
+        setupTimeline();
+        updateTimeDisplay();
+    });
+
+    videoRippleDeleteBtn.addEventListener('click', function() {
+        if (!isVideoLoaded || !isAudioLoaded) return;
+        const gapDuration = videoOffset;
+        if (gapDuration <= 0) return;
+
+        audioStartTime += gapDuration;
+        videoOffset = 0;
+        videoClip.style.left = '0px';
+        videoTimeDisplay.innerText = `0.00s`;
+        videoRippleDeleteBtn.style.display = 'none';
+
+        videoPlayer.currentTime = videoStartTime;
+        audioPlayer.currentTime = audioStartTime;
 
         setupTimeline();
         updateTimeDisplay();
@@ -600,28 +749,28 @@
 
     function syncAudioPosition() {
         if (!isAudioLoaded || isRendering) return;
-        const adjustedTime = videoPlayer.currentTime - videoStartTime;
-        const targetAudioTime = adjustedTime - audioOffset;
+        const adjustedTime = videoPlayer.currentTime - videoStartTime + videoOffset;
+        const targetAudioTime = adjustedTime - audioOffset + audioStartTime;
         
-        if (targetAudioTime >= 0 && targetAudioTime <= audioPlayer.duration) {
+        if (adjustedTime >= audioOffset && targetAudioTime <= audioPlayer.duration) {
             audioPlayer.currentTime = targetAudioTime;
             if (!videoPlayer.paused) audioPlayer.play();
         } else {
             audioPlayer.pause();
-            audioPlayer.currentTime = 0;
+            audioPlayer.currentTime = audioStartTime;
         }
     }
 
     timelineRuler.addEventListener('click', function(e) {
         if (!isVideoLoaded || isDragging) return;
-        if (e.target.closest('#audioClip') || e.target.closest('#rippleDeleteBtn')) return;
+        if (e.target.closest('#audioClip') || e.target.closest('#videoClip') || e.target.closest('.ripple-delete-btn') || e.target.closest('.video-ripple-delete-btn')) return;
 
         const rect = timelineRuler.getBoundingClientRect();
         const clickX = e.clientX - rect.left + timelineRuler.scrollLeft;
         const targetAdjustedTime = clickX / pixelsPerSecond;
         
-        if (targetAdjustedTime <= (videoPlayer.duration - videoStartTime)) {
-            videoPlayer.currentTime = videoStartTime + targetAdjustedTime;
+        if (targetAdjustedTime <= (videoPlayer.duration - videoStartTime + videoOffset)) {
+            videoPlayer.currentTime = videoStartTime + Math.max(0, targetAdjustedTime - videoOffset);
         }
     });
 
@@ -635,9 +784,6 @@
         if (isAudioLoaded) audioPlayer.pause();
     });
 
-    // ==========================================
-    // BUG-FREE EXPORT & CLEANUP MOTORU
-    // ==========================================
     function stopRenderAndCleanup() {
         isRendering = false;
         renderOverlay.style.display = 'none';
@@ -656,7 +802,7 @@
         audioSource = null;
 
         videoPlayer.currentTime = videoStartTime;
-        audioPlayer.currentTime = 0;
+        audioPlayer.currentTime = audioStartTime;
     }
 
     cancelRenderBtn.addEventListener('click', stopRenderAndCleanup);
@@ -673,13 +819,12 @@
         renderProgress.innerText = "Kırpılmış MP4 dosyası en yüksek kalitede kaydediliyor...";
 
         videoPlayer.currentTime = videoStartTime;
-        audioPlayer.currentTime = 0;
+        audioPlayer.currentTime = audioStartTime;
 
         renderCanvas.width = videoPlayer.videoWidth || 1920;
         renderCanvas.height = videoPlayer.videoHeight || 1080;
         const ctx = renderCanvas.getContext('2d');
 
-        // Her defasında sıfırdan oluşturulur
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const dest = audioCtx.createMediaStreamDestination();
         audioSource = audioCtx.createMediaElementSource(audioPlayer);
@@ -722,16 +867,25 @@
 
         function renderFrame() {
             if (!isRendering || videoPlayer.paused || videoPlayer.ended) return;
-            ctx.drawImage(videoPlayer, 0, 0, renderCanvas.width, renderCanvas.height);
             
-            const adjustedTime = videoPlayer.currentTime - videoStartTime;
-            if (adjustedTime >= audioOffset) {
-                if (audioPlayer.paused && (adjustedTime - audioOffset < audioPlayer.duration)) {
+            const adjustedTime = videoPlayer.currentTime - videoStartTime + videoOffset;
+            if (adjustedTime >= videoOffset) {
+                ctx.drawImage(videoPlayer, 0, 0, renderCanvas.width, renderCanvas.height);
+            } else {
+                ctx.fillStyle = "#000000";
+                ctx.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
+            }
+            
+            const currentAudioTime = adjustedTime - audioOffset + audioStartTime;
+            if (adjustedTime >= audioOffset && currentAudioTime <= audioPlayer.duration) {
+                if (audioPlayer.paused) {
                     audioPlayer.play().catch(e => console.log(e));
                 }
+            } else {
+                audioPlayer.pause();
             }
 
-            const totalDuration = videoPlayer.duration - videoStartTime;
+            const totalDuration = Math.max(videoPlayer.duration - videoStartTime, audioPlayer.duration - audioStartTime) + Math.max(videoOffset, audioOffset);
             const progress = (adjustedTime / totalDuration) * 100;
             renderProgressHeader.innerText = `İşlem: %${Math.min(100, Math.floor(progress))} Tamamlandı`;
             requestAnimationFrame(renderFrame);
@@ -755,10 +909,11 @@
     }
 
     function updateTimeDisplay() {
-        const adjustedCurrentTime = Math.max(0, videoPlayer.currentTime - videoStartTime);
-        const adjustedTotalTime = Math.max(0, videoPlayer.duration - videoStartTime);
+        const adjustedCurrentTime = Math.max(0, videoPlayer.currentTime - videoStartTime + videoOffset);
+        const adjustedTotalTime = Math.max(0, videoPlayer.duration - videoStartTime + videoOffset);
         timeDisplay.innerText = `${formatTime(adjustedCurrentTime)} / ${formatTime(adjustedTotalTime)}`;
     }
 </script>
+
 </body>
 </html>
