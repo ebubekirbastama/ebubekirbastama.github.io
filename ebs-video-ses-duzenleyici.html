@@ -107,7 +107,6 @@
             color: #ffffff;
         }
 
-        /* TIMELINE PANEL */
         .editor-timeline {
             background: var(--bg-card);
             border-radius: 16px;
@@ -254,16 +253,6 @@
             opacity: 0.85;
         }
 
-        .audio-clip .clip-title {
-            position: relative;
-            z-index: 2;
-            background: rgba(13, 19, 33, 0.7);
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-flex;
-            align-items: center;
-        }
-
         .ripple-delete-btn, .video-ripple-delete-btn {
             position: absolute;
             top: 12px;
@@ -391,13 +380,29 @@
         <div class="col-12" id="inlineTimelineWrapper">
             <div class="editor-timeline" id="editorTimeline">
                 <div class="timeline-header">
-                    <div class="btn-group">
-                        <button type="button" id="playBtn" class="btn btn-pro-primary px-4" disabled="">
-                            <i class="bi bi-play-fill me-1"></i> Oynat
-                        </button>
-                        <button type="button" id="pauseBtn" class="btn btn-pro-outline px-4" disabled="">
-                            <i class="bi bi-pause-fill me-1"></i> Duraklat
-                        </button>
+                    <div class="d-flex gap-2 flex-wrap align-items-center">
+                        <div class="btn-group">
+                            <button type="button" id="restartBtn" class="btn btn-pro-outline px-3" disabled="" title="Başa Dön">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                            <button type="button" id="seekPrevBtn" class="btn btn-pro-outline px-3" disabled="" title="Geri Sar">
+                                <i class="bi bi-skip-backward-fill"></i>
+                            </button>
+                            <button type="button" id="playBtn" class="btn btn-pro-primary px-4" disabled="">
+                                <i class="bi bi-play-fill me-1"></i> Oynat
+                            </button>
+                            <button type="button" id="pauseBtn" class="btn btn-pro-outline px-4" disabled="">
+                                <i class="bi bi-pause-fill me-1"></i> Duraklat
+                            </button>
+                            <button type="button" id="seekNextBtn" class="btn btn-pro-outline px-3" disabled="" title="İleri Sar">
+                                <i class="bi bi-skip-forward-fill"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex align-items-center bg-black bg-opacity-30 rounded-3 px-2 border border-secondary border-opacity-25" style="height: 42px;">
+                            <span class="small text-white me-2 ps-1" style="white-space: nowrap;">Atlama (sn):</span>
+                            <input type="number" id="seekStepInput" class="form-control form-control-pro text-center bg-transparent border-0 text-white fw-bold p-0" style="width: 45px; height: 32px; font-size: 15px;" value="5" min="1" max="60">
+                        </div>
                     </div>
 
                     <div>
@@ -457,6 +462,10 @@
     const videoPlaceholder = document.getElementById('videoPlaceholder');
     const playBtn = document.getElementById('playBtn');
     const pauseBtn = document.getElementById('pauseBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const seekPrevBtn = document.getElementById('seekPrevBtn');
+    const seekNextBtn = document.getElementById('seekNextBtn');
+    const seekStepInput = document.getElementById('seekStepInput');
     const exportBtn = document.getElementById('exportBtn');
     const timeDisplay = document.getElementById('timeDisplay');
     const startTimeDisplay = document.getElementById('startTimeDisplay');
@@ -501,6 +510,12 @@
     let audioSource = null;
     let isRendering = false;
 
+    function getSeekStep() {
+        let val = parseFloat(seekStepInput.value);
+        if (isNaN(val) || val <= 0) val = 5;
+        return val;
+    }
+
     togglePosBtn.addEventListener('click', function() {
         isFixedBottom = !isFixedBottom;
         if (isFixedBottom) {
@@ -536,6 +551,9 @@
                 videoClip.style.left = '0px';
                 playBtn.disabled = false;
                 pauseBtn.disabled = false;
+                restartBtn.disabled = false;
+                seekPrevBtn.disabled = false;
+                seekNextBtn.disabled = false;
                 setupTimeline();
                 updateTimeDisplay();
                 checkReady();
@@ -560,7 +578,7 @@
 
                 drawWaveform(file, clipWidth);
                 setupTimeline();
-                syncAudioPosition();
+                syncAudioPosition(true);
                 checkReady();
             };
         }
@@ -626,7 +644,6 @@
             timeTicks.appendChild(tick);
         }
 
-        // İzlerin genişliğini maksimum süreye göre genişletiyoruz
         const trackWidth = `${(maxDuration + 5) * pixelsPerSecond}px`;
         document.getElementById('timeTicks').style.width = trackWidth;
         document.getElementById('videoTrack').style.width = trackWidth;
@@ -643,8 +660,8 @@
         if (isAudioLoaded && !isRendering) {
             const currentAudioTime = adjustedCurrentTime - audioOffset + audioStartTime;
             if (adjustedCurrentTime >= audioOffset && currentAudioTime <= audioPlayer.duration) {
-                if (Math.abs(audioPlayer.currentTime - currentAudioTime) > 0.15) {
-                    audioPlayer.currentTime = currentAudioTime;
+                if (Math.abs(audioPlayer.currentTime - currentAudioTime) > 0.05) {
+                    audioPlayer.currentTime = Math.max(audioStartTime, currentAudioTime);
                 }
                 if (audioPlayer.paused && !videoPlayer.paused) {
                     audioPlayer.play().catch(e => console.log(e));
@@ -697,7 +714,7 @@
             isDragging = false;
             if (activeElement) activeElement.style.cursor = 'grab';
             activeElement = null;
-            syncAudioPosition();
+            syncAudioPosition(true);
         }
     });
 
@@ -747,14 +764,18 @@
         updateTimeDisplay();
     });
 
-    function syncAudioPosition() {
+    function syncAudioPosition(forceExact = false) {
         if (!isAudioLoaded || isRendering) return;
         const adjustedTime = videoPlayer.currentTime - videoStartTime + videoOffset;
         const targetAudioTime = adjustedTime - audioOffset + audioStartTime;
         
         if (adjustedTime >= audioOffset && targetAudioTime <= audioPlayer.duration) {
-            audioPlayer.currentTime = targetAudioTime;
-            if (!videoPlayer.paused) audioPlayer.play();
+            if (forceExact || Math.abs(audioPlayer.currentTime - targetAudioTime) > 0.05) {
+                audioPlayer.currentTime = Math.max(audioStartTime, targetAudioTime);
+            }
+            if (!videoPlayer.paused && audioPlayer.paused) {
+                audioPlayer.play().catch(e => console.log(e));
+            }
         } else {
             audioPlayer.pause();
             audioPlayer.currentTime = audioStartTime;
@@ -771,17 +792,78 @@
         
         if (targetAdjustedTime <= (videoPlayer.duration - videoStartTime + videoOffset)) {
             videoPlayer.currentTime = videoStartTime + Math.max(0, targetAdjustedTime - videoOffset);
+            syncAudioPosition(true);
         }
     });
 
     playBtn.addEventListener('click', () => {
-        videoPlayer.play();
-        syncAudioPosition();
+        if (isVideoLoaded) {
+            syncAudioPosition(true);
+            videoPlayer.play();
+        }
     });
 
     pauseBtn.addEventListener('click', () => {
-        videoPlayer.pause();
-        if (isAudioLoaded) audioPlayer.pause();
+        if (isVideoLoaded) {
+            videoPlayer.pause();
+            if (isAudioLoaded) audioPlayer.pause();
+        }
+    });
+
+    restartBtn.addEventListener('click', () => {
+        if (isVideoLoaded) {
+            videoPlayer.currentTime = videoStartTime;
+            if (isAudioLoaded) {
+                audioPlayer.currentTime = audioStartTime;
+            }
+            updateTimeDisplay();
+            syncAudioPosition(true);
+        }
+    });
+
+    seekPrevBtn.addEventListener('click', () => {
+        if (isVideoLoaded) {
+            const step = getSeekStep();
+            videoPlayer.currentTime = Math.max(videoStartTime, videoPlayer.currentTime - step);
+            syncAudioPosition(true);
+        }
+    });
+
+    seekNextBtn.addEventListener('click', () => {
+        if (isVideoLoaded) {
+            const step = getSeekStep();
+            videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + step);
+            syncAudioPosition(true);
+        }
+    });
+
+    window.addEventListener('keydown', function(e) {
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+            return;
+        }
+
+        if (isVideoLoaded) {
+            if (e.code === 'Space') {
+                e.preventDefault(); 
+                if (videoPlayer.paused) {
+                    syncAudioPosition(true);
+                    videoPlayer.play();
+                } else {
+                    videoPlayer.pause();
+                    if (isAudioLoaded) audioPlayer.pause();
+                }
+            } else if (e.code === 'ArrowRight') {
+                e.preventDefault();
+                const step = getSeekStep();
+                videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + step);
+                syncAudioPosition(true);
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                const step = getSeekStep();
+                videoPlayer.currentTime = Math.max(videoStartTime, videoPlayer.currentTime - step);
+                syncAudioPosition(true);
+            }
+        }
     });
 
     function stopRenderAndCleanup() {
