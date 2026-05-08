@@ -1,541 +1,281 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Filigran Ekleme Aracı | Ultimate Sürüm | Ebubekir Bastama</title>
-  <meta name="description" content="Online Filigran Aracı: Metin veya görsel filigran ekle, sürükle-bırak ile hizala, gölge ve çerçeve ekle, arka plan kaldır. Geliştirici: Ebubekir Bastama - www.ebubekirbastama.com.tr">
-  <meta name="keywords" content="filigran, watermark, resim, logo, metin, arka plan kaldırma, gölge efekti, çerçeve, toplu indirme, Ebubekir Bastama, www.ebubekirbastama.com.tr">
-  <meta name="author" content="Ebubekir Bastama">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <style>
-body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0d47a1 0%, #1976d2 40%, #1da1f2 100%);
-  background-attachment: fixed;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  color: #ffffff;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>EBS Elite Watermark Pro | Toplu Resim Logo Ekleme Aracı</title>
+    <meta name="description" content="Ebubekir Bastama tarafından geliştirilen ücretsiz ve online toplu resim logo ekleme (watermark) aracı. Fotoğraflarınıza anında logo yerleştirin, sürükleyerek konumlandırın ve toplu indirin.">
+    <meta name="keywords" content="ebubekir bastama, watermark ekleme, toplu resim logo ekleme, resim üzerine yazı yazma, fotoğraf damgalama, online watermark, ebs tools">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="robots" content="index, follow">
 
-/* Kart ve panel alanları */
-.card-bg {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  color: #fff;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
-}
+    <meta property="og:title" content="EBS Elite Watermark Pro | Ücretsiz Toplu Logo Ekleme">
+    <meta property="og:description" content="Tarayıcı üzerinden hızlı ve güvenli toplu fotoğraf imzalama aracı.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ebubekirbastama.com.tr/">
+    <meta property="og:image" content="https://ebubekirbastama.com.tr/img/og-image.jpg"> <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "EBS Elite Watermark Pro",
+      "description": "Ücretsiz ve online toplu resim logo ekleme aracı.",
+      "url": "https://ebubekirbastama.com.tr/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Windows, Linux, macOS, Android, iOS",
+      "author": {
+        "@type": "Person",
+        "name": "Ebubekir Bastama"
+      }
+    }
+    </script>
 
-/* Resim önizleme alanı */
-.preview-area {
-  position: relative;
-  display: inline-block;
-  margin: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
-  max-width: 100%;
-  transition: transform 0.2s ease-in-out;
-}
-.preview-area:hover {
-  transform: scale(1.02);
-  border-color: #1da1f2;
-}
-
-/* Filigran metin */
-.watermark {
-  position: absolute;
-  cursor: move;
-  top: 12px;
-  left: 12px;
-  opacity: 0.9;
-  user-select: none;
-  color: #ffffff;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
-}
-.wm-text {
-  white-space: nowrap;
-}
-
-/* Butonlar */
-.btn,
-button {
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: all 0.2s ease-in-out;
-}
-.btn:hover,
-button:hover {
-  transform: translateY(-2px);
-}
-.text-muted {
-    --bs-text-opacity: 1;
-    color: rgb(243 243 243 / 75%) !important;
-}
-/* Birincil renk (Twitter mavisi) */
-.btn-primary {
-  background-color: #1da1f2;
-  color: #fff;
-}
-.btn-primary:hover {
-  background-color: #0d8ae5;
-}
-
-/* Başarı rengi (daha koyu mavi ton) */
-.btn-success {
-  background-color: #0b78d0;
-  color: #fff;
-}
-.btn-success:hover {
-  background-color: #0865b5;
-}
-
-/* Nötr butonlar */
-.btn-outline-secondary {
-  border: 1px solid #1da1f2;
-  color: #1da1f2;
-  background-color: transparent;
-}
-.btn-outline-secondary:hover {
-  background-color: #1da1f2;
-  color: #fff;
-}
-
-/* Form alanları */
-.form-control,
-.form-select {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-.form-control:focus,
-.form-select:focus {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: #1da1f2;
-  box-shadow: 0 0 0 0.2rem rgba(29, 161, 242, 0.25);
-}
-
-/* Slider ve renk seçici */
-input[type="range"] {
-  accent-color: #1da1f2;
-}
-input[type="color"] {
-  background: #fff;
-  border-radius: 6px;
-  border: 1px solid #1da1f2;
-}
-
-/* Footer */
-footer {
-  background: #0a2a57;
-  color: #d0e7ff;
-  text-align: center;
-  padding: 20px;
-  border-top: 4px solid #1da1f2;
-  margin-top: 50px;
-}
-footer a {
-  color: #1da1f2;
-  text-decoration: none;
-  font-weight: 500;
-}
-footer a:hover {
-  text-decoration: underline;
-}
-
-  </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        *{box-sizing:border-box} 
+        html{scroll-behavior:smooth}
+        :root{
+            --bg:#080b12; --bg2:#101522; --panel:rgba(255,255,255,.075);
+            --panel2:rgba(255,255,255,.105); --stroke:rgba(255,255,255,.16);
+            --text:#f8fafc; --muted:#aab4c5; --muted2:#7c8799;
+            --gold:#f4c76b; --coral:#ff7a59; --violet:#8b5cf6;
+            --primary-grad: linear-gradient(135deg, var(--gold), var(--coral));
+            --shadow:0 24px 80px rgba(0,0,0,.45);
+            --font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+        }
+        body{
+            margin:0; min-height:100vh; font-family: var(--font-family); color: var(--text);
+            background: radial-gradient(circle at 12% 8%, rgba(139,92,246,.34), transparent 34%),
+                        radial-gradient(circle at 84% 16%, rgba(244,199,107,.24), transparent 28%),
+                        linear-gradient(135deg,#070912 0%,#101522 48%,#080b12 100%);
+            overflow-x:hidden;
+        }
+        body:before{
+            content:""; position:fixed; inset:0; pointer-events:none;
+            background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+            background-size:48px 48px; mask-image:linear-gradient(to bottom,black,transparent 72%);
+        }
+        .shell{width:min(1340px,calc(100% - 32px));margin:auto}
+        .nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0;gap:16px}
+        .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em}
+        .logo-icon{width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--coral) 55%,var(--violet));display:grid;place-items:center;box-shadow:0 12px 34px rgba(244,199,107,.2)}
+        .logo-icon i { font-size: 22px; color: #17120d; }
+        .brand small { color:var(--muted); font-weight:600; }
+        .btn{border:0;border-radius:14px;padding:12px 18px;font-weight:700;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px;justify-content:center;font-size:14px;}
+        .btn.primary{background:var(--primary-grad);color:#17120d;box-shadow:0 16px 44px rgba(255,122,89,.24)}
+        .btn.secondary{background:rgba(255,255,255,.09);color:#fff;border:1px solid var(--stroke)}
+        .studio{margin:20px 0 60px;border:1px solid var(--stroke);border-radius:32px;background:linear-gradient(180deg,rgba(255,255,255,.105),rgba(255,255,255,.055));box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(18px)}
+        .studioHead{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px 22px;border-bottom:1px solid var(--stroke);background:rgba(255,255,255,.04)}
+        .studioHead h1{margin:0;font-size:22px;background:linear-gradient(90deg,#fff,var(--gold)); -webkit-background-clip:text; color:transparent;}
+        .work{display:grid;grid-template-columns:350px 1fr;gap:0}
+        .controls{padding:20px;border-right:1px solid var(--stroke);background:rgba(8,11,18,.24)}
+        .group{padding:16px 0;border-top:1px solid rgba(255,255,255,.1)}
+        .groupTitle{font-weight:900;font-size:12px;text-transform:uppercase;color:#e9eef8;margin-bottom:12px}
+        .row-ctrl{display:grid;grid-template-columns:92px 1fr 45px;gap:10px;align-items:center;margin:12px 0;color:var(--muted);font-size:14px}
+        .val-display{text-align:right;color:#fff;font-weight: bold;}
+        input[type=range]{width:100%;accent-color:var(--gold); cursor: pointer;}
+        .file-input-wrapper{position:relative;overflow:hidden; display: inline-block; width: 100%;}
+        .file-input-wrapper input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+        .select-ctrl{appearance:none; border:1px solid var(--stroke); background:rgba(8,11,18,.62); color:#fff; border-radius:12px; padding:10px 12px; width: 100%; cursor: pointer;}
+        .canvasArea{padding:20px; background:rgba(0,0,0,0.2);}
+        .canvasWrap{min-height:550px; border:1px solid rgba(255,255,255,0.1); border-radius:24px; background:#0b0e15; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative;}
+        .empty{position:absolute;text-align:center;color:var(--muted);}
+        canvas#previewCanvas{max-width:100%; max-height: 75vh; display:block; cursor: default;}
+        #mainCanvas { display: none; }
+        .footer{padding:28px 0;color:var(--muted2);font-size:13px;text-align:center;}
+        
+        /* Makale Bölümü SEO için */
+        .seo-content { padding: 40px 0; color: var(--muted); line-height: 1.6; }
+        .seo-content h2 { color: var(--gold); }
+    </style>
 </head>
 <body>
-  <div class="container py-4">
-    <header class="mb-3 text-center">
-      <h1 class="mb-2">📸 Filigran Ekleme Aracı — Ultimate</h1>
-      <p class="text-muted mb-0">Metin veya görsel filigran ekle, sürükle-bırak ve köşe hizalama ile konumlandır, gölge/çerçeve uygula, arka planı kaldır ve hepsini ZIP olarak indir.</p>
+
+<div class="shell">
+    <header class="nav">
+        <div class="brand">
+            <span class="logo-icon"><i class="bi bi-shield-check"></i></span>
+            <span>EBS Elite Watermark<br><small>Creative Web Tools</small></span>
+        </div>
     </header>
 
-    <!-- Kontrol Paneli -->
-    <div class="panel-sticky py-3">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label section-title">📥 Resimleri Yükle (çoklu)</label>
-          <input type="file" id="imageUpload" class="form-control" multiple accept="image/*">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label section-title">🧾 İsimlendirme</label>
-          <select id="namingSelect" class="form-select">
-            <option value="original">Orijinal isim</option>
-            <option value="random">Rastgele isim</option>
-          </select>
-        </div>
-        <div class="col-md-3 d-grid">
-          <label class="form-label section-title invisible">.</label>
-          <button id="downloadZip" class="btn btn-success">📦 Tümünü ZIP Olarak İndir</button>
-        </div>
-      </div>
+    <main>
+        <section class="studio">
+            <div class="studioHead">
+                <div><h1>Toplu Resim Logo Ekleme & Watermark Aracı</h1><p>Logoyu sürükle-bırak yöntemiyle yerleştirin ve anında indirin.</p></div>
+                <button id="downloadBtn" class="btn primary"><i class="bi bi-cloud-download"></i>TOPLU İNDİR (.ZIP)</button>
+            </div>
+            <article class="work">
+                <aside class="controls">
+                    <div class="group">
+                        <div class="groupTitle">Kaynak Dosyalar</div>
+                        <div class="file-input-wrapper mb-2">
+                            <button class="btn secondary w-100">Resimleri Seç</button>
+                            <input type="file" id="bgInputs" multiple accept="image/*">
+                        </div>
+                        <div class="file-input-wrapper">
+                            <button class="btn secondary w-100">Logo Seç</button>
+                            <input type="file" id="logoInput" accept="image/*">
+                        </div>
+                        <div id="fileCount" style="font-size:12px; color:var(--muted2); margin-top:5px;"></div>
+                    </div>
+                    <div class="group">
+                        <div class="groupTitle">Görünüm Ayarları</div>
+                        <label class="row-ctrl">Boyut <input type="range" id="logoSize" min="1" max="100" value="20"><span class="val-display">%<span id="sizeVal">20</span></span></label>
+                        <label class="row-ctrl">Saydamlık <input type="range" id="logoAlpha" min="0.1" max="1.0" step="0.1" value="1.0"><span class="val-display"><span id="alphaVal">1.0</span></span></label>
+                        <div class="mt-3">
+                            <label style="font-size:12px; color:var(--muted2);">Hızlı Konumlandırma</label>
+                            <select id="position" class="select-ctrl">
+                                <option value="bottom-right">Sağ Alt</option>
+                                <option value="bottom-left">Sol Alt</option>
+                                <option value="top-right">Sağ Üst</option>
+                                <option value="top-left">Sol Üst</option>
+                                <option value="center">Ortala</option>
+                                <option value="manual">Serbest Yerleşim (Sürükle)</option>
+                            </select>
+                        </div>
+                        <div class="mt-3" style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--muted);">
+                            <input type="checkbox" id="removeBg" style="accent-color:var(--gold);"> <span>Logodan Beyaz Arkaplanı Sil</span>
+                        </div>
+                    </div>
+                </aside>
+                <div class="canvasArea">
+                    <div class="canvasWrap">
+                        <div id="noData" class="empty"><b>Resim ve Logo Yükleyin</b><br>Tüm işlemler güvenli bir şekilde tarayıcınızda yapılır.</div>
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
+                </div>
+            </article>
+        </section>
 
-      <hr class="my-3">
+        <section class="seo-content">
+            <h2>Neden EBS Elite Watermark Pro?</h2>
+            <p><strong>Toplu resim logo ekleme</strong> ihtiyacınızı en hızlı şekilde karşılamak için tasarlandı. Yazılım uzmanı <strong>Ebubekir Bastama</strong> tarafından hazırlanan bu araç, fotoğraflarınızı sunucuya yüklemeden tamamen kendi bilgisayarınızda işler. Bu da gizliliğinizi korurken hız kazanmanızı sağlar.</p>
+            <ul>
+                <li><strong>Hızlı İşlem:</strong> Yüzlerce fotoğrafı saniyeler içinde damgalayın.</li>
+                <li><strong>Sürükle Bırak:</strong> Logoyu mouse ile istediğiniz yere sürükleyin.</li>
+                <li><strong>Ücretsiz:</strong> Tamamen ücretsiz ve sınırsız kullanım.</li>
+            </ul>
+        </section>
+    </main>
 
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label section-title">🎯 Filigran Türü</label>
-          <select id="watermarkType" class="form-select">
-            <option value="image">Görsel Filigran</option>
-            <option value="text">Metin Filigran</option>
-          </select>
-        </div>
+    <footer class="footer">
+        &copy; 2026 <b>Ebubekir Bastama</b> | Tüm Hakları Saklıdır.
+    </footer>
+</div>
 
-        <!-- Görsel Filigran Alanları -->
-        <div class="col-md-3 wm-image-only">
-          <label class="form-label">Filigran Görseli</label>
-          <input type="file" id="watermarkUpload" class="form-control" accept="image/*">
-        </div>
-        <div class="col-md-3 wm-image-only">
-          <label class="form-label">Görsel Filigran Boyutu (%)</label>
-          <input type="range" id="imgWmSize" class="form-range" min="10" max="60" step="2" value="25">
-        </div>
-        <div class="col-md-3 wm-image-only">
-          <label class="form-label">Görsel Filigran Saydamlığı</label>
-          <input type="range" id="imgWmOpacity" class="form-range" min="0.1" max="1" step="0.05" value="0.85">
-        </div>
+<canvas id="mainCanvas"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-        <!-- Metin Filigran Alanları -->
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Metin</label>
-          <input type="text" id="watermarkText" class="form-control" placeholder="Filigran metni">
-        </div>
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Renk</label>
-          <input type="color" id="textColor" class="form-control" value="#ffffff">
-        </div>
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Font</label>
-          <select id="textFont" class="form-select">
-            <option>Arial</option><option>Verdana</option><option>Times New Roman</option>
-            <option>Courier New</option><option>Georgia</option><option>Tahoma</option>
-          </select>
-        </div>
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Yazı Boyutu (px)</label>
-          <input type="number" id="textSize" class="form-control" value="42" min="10" max="180">
-        </div>
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Metin Saydamlığı</label>
-          <input type="range" id="textOpacity" class="form-range" min="0.1" max="1" step="0.05" value="0.85">
-        </div>
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Gölge Rengi</label>
-          <input type="color" id="shadowColor" class="form-control" value="#000000">
-        </div>
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Gölge Yumuşatma (px)</label>
-          <input type="range" id="shadowBlur" class="form-range" min="0" max="30" step="1" value="6">
-        </div>
-        <div class="col-md-3 wm-text-only d-none">
-          <label class="form-label">Çerçeve (Stroke px)</label>
-          <input type="range" id="textStroke" class="form-range" min="0" max="10" step="1" value="0">
-        </div>
+<script>
+// Orijinal sürükleme ve işleme fonksiyonları buraya gelecek
+const bgInputs = document.getElementById('bgInputs'), logoInput = document.getElementById('logoInput');
+const previewCanvas = document.getElementById('previewCanvas'), mainCanvas = document.getElementById('mainCanvas');
+const noDataHint = document.getElementById('noData');
+let bgImages = [], logoImage = null, isDragging = false, manualPos = { x: 0, y: 0 }, logoRect = { x: 0, y: 0, w: 0, h: 0 };
+const settings = { size: 0.2, alpha: 1.0, position: 'bottom-right', removeBg: false };
 
-        <!-- Arka Plan Kaldırma (Görsel Filigran) -->
-        <div class="col-md-3 wm-image-only">
-          <label class="form-label section-title">🧹 Arka Plan Kaldır (Beta)</label>
-          <div class="d-flex align-items-center gap-2">
-            <input class="form-check-input" type="checkbox" id="removeBg">
-            <span class="text-muted">Düz arka planlı logolarda en iyi sonuç</span>
-          </div>
-          <div class="mt-2">
-            <label class="form-label mb-1">Tolerans</label>
-            <input type="range" id="bgTolerance" class="form-range" min="5" max="120" step="1" value="40">
-          </div>
-          <button id="applyRemoveBg" class="btn btn-outline-secondary btn-sm mt-1">Arka Planı Uygula</button>
-        </div>
-      </div>
+bgInputs.addEventListener('change', async (e) => {
+    bgImages = [];
+    for (let file of e.target.files) bgImages.push(await loadImage(URL.createObjectURL(file)));
+    if(bgImages.length > 0) noDataHint.style.display = 'none';
+    document.getElementById('fileCount').innerText = `${bgImages.length} resim hazır.`;
+    updatePreview();
+});
 
-      <!-- Köşe Hizalama -->
-      <div class="mt-3 text-center">
-        <label class="form-label d-block section-title">🧭 Köşe Hizalama</label>
-        <div>
-          <button class="btn btn-outline-secondary corner-btn" data-pos="top-left">Sol Üst</button>
-          <button class="btn btn-outline-secondary corner-btn" data-pos="top-right">Sağ Üst</button>
-          <button class="btn btn-outline-secondary corner-btn" data-pos="bottom-left">Sol Alt</button>
-          <button class="btn btn-outline-secondary corner-btn" data-pos="bottom-right">Sağ Alt</button>
-          <button class="btn btn-outline-secondary corner-btn" data-pos="center">Orta</button>
-        </div>
-      </div>
-    </div>
-
-    <hr class="my-4">
-    <div id="previewContainer" class="d-flex flex-wrap justify-content-center"></div>
-  </div>
-
-  <script>
-    // --- DOM Referansları ---
-    const imageUpload = document.getElementById('imageUpload');
-    const previewContainer = document.getElementById('previewContainer');
-    const watermarkType = document.getElementById('watermarkType');
-    const namingSelect = document.getElementById('namingSelect');
-    const downloadZip = document.getElementById('downloadZip');
-
-    // Görsel WM
-    const watermarkUpload = document.getElementById('watermarkUpload');
-    const imgWmSize = document.getElementById('imgWmSize');
-    const imgWmOpacity = document.getElementById('imgWmOpacity');
-    const removeBg = document.getElementById('removeBg');
-    const bgTolerance = document.getElementById('bgTolerance');
-    const applyRemoveBg = document.getElementById('applyRemoveBg');
-
-    // Metin WM
-    const watermarkText = document.getElementById('watermarkText');
-    const textColor = document.getElementById('textColor');
-    const textFont = document.getElementById('textFont');
-    const textSize = document.getElementById('textSize');
-    const textOpacity = document.getElementById('textOpacity');
-    const shadowColor = document.getElementById('shadowColor');
-    const shadowBlur = document.getElementById('shadowBlur');
-    const textStroke = document.getElementById('textStroke');
-
-    // Durum
-    let watermarkImageDataURL = null; // işlenmiş WM görseli (arka plan kaldırılmış olabilir)
-
-    // --- Yardımcılar ---
-    function showOnly(classNameToShow){ // wm-image-only / wm-text-only
-      document.querySelectorAll('.wm-image-only').forEach(el => el.classList.toggle('d-none', classNameToShow!=='wm-image-only'));
-      document.querySelectorAll('.wm-text-only').forEach(el => el.classList.toggle('d-none', classNameToShow!=='wm-text-only'));
+logoInput.addEventListener('change', async (e) => {
+    if (e.target.files[0]) {
+        logoImage = await loadImage(URL.createObjectURL(e.target.files[0]));
+        updatePreview();
     }
+});
 
-    function loadImage(src){
-      return new Promise(res => { const i=new Image(); i.onload=()=>res(i); i.src=src; });
-    }
-
-    function randomName(){ return Math.random().toString(36).slice(2,10)+'.jpg'; }
-
-    function enableDrag(el){
-      let dragging=false, offX=0, offY=0;
-      el.addEventListener('mousedown',e=>{dragging=true;offX=e.offsetX;offY=e.offsetY;});
-      document.addEventListener('mouseup',()=>dragging=false);
-      document.addEventListener('mousemove',e=>{
-        if(!dragging) return;
-        const rect = el.parentElement.getBoundingClientRect();
-        let x = e.clientX-rect.left-offX;
-        let y = e.clientY-rect.top-offY;
-        el.style.left = Math.max(0, Math.min(x, rect.width - el.offsetWidth)) + 'px';
-        el.style.top  = Math.max(0, Math.min(y, rect.height - el.offsetHeight)) + 'px';
-      });
-    }
-
-    function applyCorner(pos){
-      document.querySelectorAll('.watermark').forEach(wm=>{
-        const parent=wm.parentElement, pw=parent.offsetWidth, ph=parent.offsetHeight, ww=wm.offsetWidth, wh=wm.offsetHeight, m=12;
-        const map={
-          "top-left":   {left:m, top:m},
-          "top-right":  {left:pw-ww-m, top:m},
-          "bottom-left":{left:m, top:ph-wh-m},
-          "bottom-right":{left:pw-ww-m, top:ph-wh-m},
-          "center":     {left:(pw-ww)/2, top:(ph-wh)/2}
-        }[pos];
-        wm.style.left = map.left+'px';
-        wm.style.top  = map.top +'px';
-      });
-    }
-
-    function clearExistingWM(container){
-      const ex = container.querySelector('.watermark');
-      if(ex) ex.remove();
-    }
-
-    function refreshPreviewTextWM(container){
-      clearExistingWM(container);
-      const text = watermarkText.value.trim();
-      if(!text) return;
-      const div = document.createElement('div');
-      div.className = 'watermark wm-text';
-      div.textContent = text;
-      div.style.fontFamily = textFont.value;
-      div.style.fontSize = textSize.value + 'px';
-      div.style.color = textColor.value;
-      div.style.opacity = textOpacity.value;
-      // CSS önizleme için gölge ve stroke
-      const blur = parseInt(shadowBlur.value,10);
-      div.style.textShadow = `2px 2px ${blur}px ${shadowColor.value}`;
-      const strokePx = parseInt(textStroke.value,10);
-      div.style.webkitTextStroke = strokePx>0 ? `${strokePx}px ${shadowColor.value}` : '0';
-      container.appendChild(div);
-      enableDrag(div);
-    }
-
-    function refreshPreviewImageWM(container){
-      clearExistingWM(container);
-      if(!watermarkImageDataURL) return;
-      const img = document.createElement('img');
-      img.className='watermark wm-image';
-      img.src = watermarkImageDataURL;
-      img.style.width = imgWmSize.value + '%';
-      img.style.opacity = imgWmOpacity.value;
-      container.appendChild(img);
-      enableDrag(img);
-    }
-
-    function refreshAllPreviews(){
-      const previews = document.querySelectorAll('.preview-area');
-      previews.forEach(p=>{
-        if(watermarkType.value==='text'){ refreshPreviewTextWM(p); }
-        else{ refreshPreviewImageWM(p); }
-      });
-    }
-
-    // --- Etkinlikler: Yüklemeler ---
-    imageUpload.addEventListener('change', e=>{
-      previewContainer.innerHTML='';
-      [...e.target.files].forEach(file=>{
-        const reader = new FileReader();
-        reader.onload = ()=>{
-          const div = document.createElement('div');
-          div.className='preview-area';
-          div.innerHTML = `<img src="${reader.result}" data-filename="${file.name}">`;
-          previewContainer.appendChild(div);
-          // yeni resim geldiğinde aktif WM varsa uygula
-          if(watermarkType.value==='text') refreshPreviewTextWM(div);
-          else if(watermarkImageDataURL) refreshPreviewImageWM(div);
-        };
-        reader.readAsDataURL(file);
-      });
+document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', () => {
+        if (el.id === 'logoSize') settings.size = el.value / 100;
+        if (el.id === 'logoAlpha') settings.alpha = el.value;
+        if (el.id === 'position') settings.position = el.value;
+        if (el.id === 'removeBg') settings.removeBg = el.checked;
+        document.getElementById('sizeVal').innerText = Math.round(settings.size * 100);
+        document.getElementById('alphaVal').innerText = settings.alpha;
+        updatePreview();
     });
+});
 
-    watermarkUpload.addEventListener('change', e=>{
-      const file = e.target.files[0];
-      if(!file) return;
-      const reader=new FileReader();
-      reader.onload=()=>{ watermarkImageDataURL = reader.result; refreshAllPreviews(); };
-      reader.readAsDataURL(file);
-    });
+function loadImage(url) { return new Promise(res => { const img = new Image(); img.onload = () => res(img); img.src = url; }); }
+function updatePreview() { if (bgImages.length > 0) draw(previewCanvas, bgImages[0]); }
 
-    // --- Tür Vites ---
-    watermarkType.addEventListener('change', ()=>{
-      if(watermarkType.value==='text'){ showOnly('wm-text-only'); }
-      else{ showOnly('wm-image-only'); }
-      refreshAllPreviews();
-    });
-
-    // --- Metin Ayarları (canlı) ---
-    [watermarkText,textColor,textFont,textSize,textOpacity,shadowColor,shadowBlur,textStroke].forEach(el=>{
-      el.addEventListener('input', refreshAllPreviews);
-    });
-
-    // --- Görsel WM Ayarları ---
-    [imgWmSize,imgWmOpacity].forEach(el=>el.addEventListener('input', ()=>{
-      document.querySelectorAll('.wm-image').forEach(w=>{
-        if(el===imgWmSize) w.style.width = imgWmSize.value + '%';
-        if(el===imgWmOpacity) w.style.opacity = imgWmOpacity.value;
-      });
-    }));
-
-    // --- Köşe Hizalama ---
-    document.querySelectorAll('.corner-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=>applyCorner(btn.dataset.pos));
-    });
-
-    // --- Arka Plan Kaldır (Beta) ---
-    applyRemoveBg.addEventListener('click', async ()=>{
-      if(!removeBg.checked || !watermarkImageDataURL){ alert('Önce görsel filigranı yükleyin ve "Arka Plan Kaldır" kutusunu işaretleyin.'); return; }
-      const cleaned = await removeBackgroundDataURL(watermarkImageDataURL, parseInt(bgTolerance.value,10));
-      watermarkImageDataURL = cleaned;
-      refreshAllPreviews();
-    });
-
-    async function removeBackgroundDataURL(dataURL, tolerance=40){
-      const img = await loadImage(dataURL);
-      const c = document.createElement('canvas'); const ctx = c.getContext('2d');
-      c.width = img.width; c.height = img.height;
-      ctx.drawImage(img,0,0);
-      const imgData = ctx.getImageData(0,0,c.width,c.height);
-      const d = imgData.data;
-      // Köşe ortalaması ile arka plan rengi tahmini
-      function pick(px,py){ const i=(py*c.width+px)*4; return [d[i],d[i+1],d[i+2]]; }
-      const samples=[pick(0,0),pick(c.width-1,0),pick(0,c.height-1),pick(c.width-1,c.height-1)];
-      const bg=[0,1,2].map(k=> Math.round(samples.reduce((s,v)=>s+v[k],0)/samples.length));
-      for(let i=0;i<d.length;i+=4){
-        const dr = Math.abs(d[i]-bg[0])+Math.abs(d[i+1]-bg[1])+Math.abs(d[i+2]-bg[2]);
-        if(dr<tolerance) d[i+3]=0;
-      }
-      ctx.putImageData(imgData,0,0);
-      return c.toDataURL('image/png');
-    }
-
-    // --- ZIP İndirme ---
-    downloadZip.addEventListener('click', async ()=>{
-      const imgs = document.querySelectorAll('.preview-area img');
-      if(imgs.length===0){ alert('Önce resim yükleyin.'); return; }
-      const zip=new JSZip();
-
-      for(const baseImg of imgs){
-        const base = await loadImage(baseImg.src);
-        const container = baseImg.parentElement;
-        const wm = container.querySelector('.watermark');
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width=base.width; canvas.height=base.height;
-        ctx.drawImage(base,0,0);
-
-        if(wm){
-          const rectPreview = baseImg.getBoundingClientRect();
-          const scaleX = base.width / rectPreview.width;
-          const scaleY = base.height / rectPreview.height;
-          const left = parseFloat(wm.style.left)||12;
-          const top  = parseFloat(wm.style.top)||12;
-
-          if(wm.classList.contains('wm-image')){
-            // Görsel filigran
-            const mark = await loadImage(wm.src);
-            const wmDispW = wm.offsetWidth; // piksel (önizleme)
-            const wmRealW = wmDispW * scaleX;
-            const wmRealH = mark.height * (wmRealW / mark.width);
-            ctx.globalAlpha = parseFloat(wm.style.opacity||imgWmOpacity.value);
-            ctx.drawImage(mark, left*scaleX, top*scaleY, wmRealW, wmRealH);
-            ctx.globalAlpha = 1.0;
-          } else {
-            // Metin filigran
-            const fontPx = parseInt(wm.style.fontSize||textSize.value,10);
-            ctx.globalAlpha = parseFloat(wm.style.opacity||textOpacity.value);
-            ctx.font = `${fontPx*scaleY}px ${wm.style.fontFamily||textFont.value}`;
-            ctx.fillStyle = wm.style.color||textColor.value;
-
-            // Gölge & Stroke (Canvas)
-            ctx.shadowColor = shadowColor.value;
-            ctx.shadowBlur  = parseInt(shadowBlur.value,10)*scaleY;
-
-            const strokeW = parseInt(textStroke.value,10);
-            if(strokeW>0){
-              ctx.lineWidth = strokeW*scaleY;
-              ctx.strokeStyle = shadowColor.value;
-              ctx.strokeText(wm.textContent, left*scaleX, top*scaleY + fontPx*scaleY);
-            }
-            ctx.fillText(wm.textContent, left*scaleX, top*scaleY + fontPx*scaleY);
-            // Reset
-            ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.globalAlpha=1.0;
-          }
+function getProcessedLogo(logoImg) {
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = logoImg.width; tempCanvas.height = logoImg.height;
+    tempCtx.drawImage(logoImg, 0, 0);
+    if (settings.removeBg) {
+        const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+            if (imgData.data[i] > 220 && imgData.data[i+1] > 220 && imgData.data[i+2] > 220) imgData.data[i+3] = 0;
         }
+        tempCtx.putImageData(imgData, 0, 0);
+    }
+    return tempCanvas;
+}
 
-        const blob = await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.95));
-        const fileName = namingSelect.value==='random' ? randomName() : baseImg.dataset.filename;
-        zip.file(fileName, blob);
-      }
+function draw(targetCanvas, bgImg) {
+    const ctx = targetCanvas.getContext('2d');
+    targetCanvas.width = bgImg.width; targetCanvas.height = bgImg.height;
+    ctx.drawImage(bgImg, 0, 0);
+    if (logoImage) {
+        const pLogo = getProcessedLogo(logoImage);
+        const lW = targetCanvas.width * settings.size;
+        const lH = (logoImage.height / logoImage.width) * lW;
+        const margin = targetCanvas.width * 0.02;
+        if (settings.position !== 'manual') {
+            switch(settings.position) {
+                case 'bottom-right': manualPos.x = targetCanvas.width - lW - margin; manualPos.y = targetCanvas.height - lH - margin; break;
+                case 'bottom-left': manualPos.x = margin; manualPos.y = targetCanvas.height - lH - margin; break;
+                case 'top-right': manualPos.x = targetCanvas.width - lW - margin; manualPos.y = margin; break;
+                case 'top-left': manualPos.x = margin; manualPos.y = margin; break;
+                case 'center': manualPos.x = (targetCanvas.width - lW) / 2; manualPos.y = (targetCanvas.height - lH) / 2; break;
+            }
+        }
+        logoRect = { x: manualPos.x, y: manualPos.y, w: lW, h: lH };
+        ctx.save();
+        ctx.globalAlpha = settings.alpha;
+        ctx.drawImage(pLogo, manualPos.x, manualPos.y, lW, lH);
+        ctx.restore();
+    }
+}
 
-      const content = await zip.generateAsync({type:'blob'});
-      saveAs(content,'filigranli_resimler.zip');
-    });
+previewCanvas.onmousedown = (e) => {
+    const rect = previewCanvas.getBoundingClientRect(), sX = previewCanvas.width / rect.width, sY = previewCanvas.height / rect.height;
+    const mx = (e.clientX - rect.left) * sX, my = (e.clientY - rect.top) * sY;
+    if (mx >= logoRect.x && mx <= logoRect.x + logoRect.w && my >= logoRect.y && my <= logoRect.y + logoRect.h) {
+        isDragging = true; settings.position = 'manual'; document.getElementById('position').value = 'manual';
+    }
+};
 
-    // Başlangıç görünümü
-    showOnly('wm-image-only');
-  </script>
-    <footer>
-    <p>© <span id="yil"></span> | Geliştirici: <strong>Ebubekir Bastama</strong> |
-      <a href="https://www.ebubekirbastama.com.tr" target="_blank">www.ebubekirbastama.com.tr</a><br>
-      Modern arka plan tasarımı & tüm hakları saklıdır.
-    </p>
-  </footer>
-  <script>document.getElementById("yil").textContent = new Date().getFullYear();</script>
+window.onmousemove = (e) => {
+    const rect = previewCanvas.getBoundingClientRect(), sX = previewCanvas.width / rect.width, sY = previewCanvas.height / rect.height;
+    const mx = (e.clientX - rect.left) * sX, my = (e.clientY - rect.top) * sY;
+    previewCanvas.style.cursor = (mx >= logoRect.x && mx <= logoRect.x + logoRect.w && my >= logoRect.y && my <= logoRect.y + logoRect.h) ? 'move' : 'default';
+    if (isDragging) { manualPos.x = mx - logoRect.w / 2; manualPos.y = my - logoRect.h / 2; updatePreview(); }
+};
+
+window.onmouseup = () => isDragging = false;
+
+document.getElementById('downloadBtn').onclick = async () => {
+    if (bgImages.length === 0 || !logoImage) return alert("Dosyaları seçin!");
+    const zip = new JSZip(), btn = document.getElementById('downloadBtn');
+    btn.disabled = true; btn.innerText = "İşleniyor...";
+    for (let i = 0; i < bgImages.length; i++) {
+        draw(mainCanvas, bgImages[i]);
+        zip.file(`ebs_watermark_${i+1}.jpg`, mainCanvas.toDataURL('image/jpeg', 0.9).split(',')[1], {base64: true});
+    }
+    const content = await zip.generateAsync({type: "blob"});
+    const link = document.createElement('a'); link.href = URL.createObjectURL(content); link.download = "EBS_Toplu_Resimler.zip"; link.click();
+    btn.disabled = false; btn.innerHTML = '<i class="bi bi-cloud-download"></i>TOPLU İNDİR (.ZIP)';
+};
+</script>
+
 </body>
 </html>
