@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Resimden Eskiz Çıkarma Aracı | Online Karakalem Efekti</title>
+  <meta name="description" content="Fotoğraflarınızı saniyeler içinde profesyonel karakalem eskiz efektine dönüştürün. Online, hızlı, ücretsiz ve tarayıcı tabanlı resimden eskiz çıkarma sistemi.">
+  <meta name="keywords" content="resimden eskiz çıkarma, fotoğrafı eskize çevirme, karakalem efekti, online sketch maker, fotoğraf çizim efekti, Ebubekir Bastama">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="Turkish">
+  <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Resimden Eskiz Çıkarma Aracı | Online Karakalem Efekti">
+  <meta property="og:description" content="Fotoğrafınızı yükleyin, saniyeler içinde elit karakalem eskiz efektine dönüştürün ve PNG olarak indirin.">
+  <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+  <meta property="og:site_name" content="Ebubekir Bastama">
+  <meta property="og:locale" content="tr_TR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Resimden Eskiz Çıkarma Aracı">
+  <meta name="twitter:description" content="Modern, hızlı ve premium online karakalem eskiz oluşturma sistemi.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Resimden Eskiz Çıkarma Aracı",
+    "url": "https://www.ebubekirbastama.com.tr/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web Browser",
+    "description": "Fotoğrafları online karakalem eskiz efektine dönüştüren tarayıcı tabanlı web aracı.",
+    "creator": {
+      "@type": "Person",
+      "name": "Ebubekir Bastama"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg-main: #070b16;
+      --bg-card: rgba(255, 255, 255, .078);
+      --line: rgba(255, 255, 255, .14);
+      --text-main: #f6f8ff;
+      --text-soft: rgba(246, 248, 255, .68);
+      --blue: #4d8dff;
+      --cyan: #28d7ff;
+      --gold: #f6c96d;
+      --purple: #8e6cff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(77,141,255,.34), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(142,108,255,.22), transparent 28%),
+        radial-gradient(circle at 50% 92%, rgba(40,215,255,.13), transparent 30%),
+        linear-gradient(135deg, #060914 0%, #09101f 50%, #03050c 100%);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 80%);
+      z-index: -2;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .05;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: -1;
+    }
+
+    .navbar-glass {
+      background: rgba(7, 11, 22, .72);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 12px 34px rgba(77,141,255,.35);
+    }
+
+    .hero {
+      padding: 115px 0 55px;
+      position: relative;
+    }
+
+    .hero-title {
+      font-size: clamp(2.3rem, 5vw, 5.1rem);
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      line-height: .95;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #fff, #bcd4ff, var(--cyan), var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-desc {
+      color: var(--text-soft);
+      max-width: 720px;
+      font-size: 1.12rem;
+    }
+
+    .premium-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      color: #dbe8ff;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      box-shadow: 0 28px 90px rgba(0,0,0,.38);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, rgba(255,255,255,.22), transparent 26%, transparent 70%, rgba(77,141,255,.22));
+      opacity: .45;
+      pointer-events: none;
+    }
+
+    .glass-card > * { position: relative; z-index: 1; }
+
+    .upload-box {
+      border: 2px dashed rgba(255,255,255,.28);
+      border-radius: 26px;
+      min-height: 245px;
+      cursor: pointer;
+      transition: .3s ease;
+      background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-box::after {
+      content: '';
+      position: absolute;
+      inset: auto -30% -55% -30%;
+      height: 90px;
+      background: linear-gradient(90deg, transparent, rgba(40,215,255,.35), transparent);
+      transform: rotate(-5deg);
+      opacity: .45;
+    }
+
+    .upload-box:hover,
+    .upload-box.dragover {
+      border-color: var(--cyan);
+      background: rgba(77,141,255,.13);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 18px 50px rgba(40,215,255,.13);
+    }
+
+    .icon-orb {
+      width: 78px;
+      height: 78px;
+      border-radius: 26px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(77,141,255,.28), rgba(40,215,255,.16));
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 18px 38px rgba(77,141,255,.18);
+    }
+
+    canvas {
+      width: 100%;
+      min-height: 430px;
+      max-height: 680px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08), 0 20px 70px rgba(0,0,0,.28);
+    }
+
+    .mini-label {
+      color: rgba(238,243,255,.76);
+      font-size: .92rem;
+      font-weight: 600;
+    }
+
+    .form-range::-webkit-slider-runnable-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+    }
+
+    .form-range::-webkit-slider-thumb {
+      margin-top: -5px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow: 0 0 0 6px rgba(40,215,255,.12), 0 8px 22px rgba(40,215,255,.28);
+    }
+
+    .btn-premium {
+      position: relative;
+      overflow: hidden;
+      border: 0;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 15px 36px rgba(77,141,255,.34);
+      transition: .25s ease;
+    }
+
+    .btn-premium::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.36) 45%, transparent 70%);
+      transform: translateX(-120%);
+      transition: .55s ease;
+    }
+
+    .btn-premium:hover {
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 22px 50px rgba(77,141,255,.45);
+    }
+
+    .btn-premium:hover::before { transform: translateX(120%); }
+
+    .btn-ghost {
+      color: #fff;
+      font-weight: 700;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      transition: .25s ease;
+    }
+
+    .btn-ghost:hover {
+      color: #fff;
+      border-color: rgba(40,215,255,.45);
+      background: rgba(40,215,255,.12);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(40,215,255,.13);
+    }
+
+    .btn-gold {
+      color: #111827;
+      font-weight: 800;
+      border-radius: 18px;
+      border: 0;
+      background: linear-gradient(135deg, #ffe6a0, var(--gold));
+      box-shadow: 0 14px 35px rgba(246,201,109,.25);
+      transition: .25s ease;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      color: #111827;
+      box-shadow: 0 20px 46px rgba(246,201,109,.35);
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      padding: 9px 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: #dfe8ff;
+      font-weight: 700;
+    }
+
+    .feature-card {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.065);
+      border: 1px solid rgba(255,255,255,.12);
+      height: 100%;
+      transition: .25s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,.09);
+      box-shadow: 0 18px 45px rgba(0,0,0,.25);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: rgba(77,141,255,.16);
+      color: #b9d3ff;
+      margin-bottom: 14px;
+    }
+
+    .footer-line {
+      border-top: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.55);
+    }
+
+    .fade-up {
+      animation: fadeUp .75s ease both;
+    }
+
+    .delay-1 { animation-delay: .08s; }
+    .delay-2 { animation-delay: .16s; }
+    .delay-3 { animation-delay: .24s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 991px) {
+      .hero { padding-top: 95px; }
+      canvas { min-height: 300px; }
+    }
+  </style>
+</head>
+<body>
+<div class="noise"></div>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-glass">
+  <div class="container py-2">
+    <a class="navbar-brand d-flex align-items-center gap-3 fw-bold" href="https://www.ebubekirbastama.com.tr/" aria-label="Ebubekir Bastama Anasayfa">
+      <span class="brand-mark"><i class="bi bi-pencil-fill"></i></span>
+      <span>Ebubekir Bastama</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Menüyü Aç">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+        <li class="nav-item"><a class="nav-link" href="#arac">Araç</a></li>
+        <li class="nav-item"><a class="nav-link" href="#ozellikler">Özellikler</a></li>
+        <li class="nav-item ms-lg-2"><a class="btn btn-gold px-4" href="#arac"><i class="bi bi-stars me-1"></i> Hemen Dene</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-xl-10">
+        <div class="premium-badge mb-4 fade-up">
+          <i class="bi bi-gem text-warning"></i>
+          Premium Online Sketch Studio
+        </div>
+        <h1 class="hero-title fade-up delay-1">
+          Fotoğrafını <span class="gradient-text">Karakalem Eskize</span> Dönüştür
+        </h1>
+        <p class="hero-desc mx-auto mt-4 mb-5 fade-up delay-2">
+          Modern, hızlı ve elit görünümlü web tabanlı sistem. Resmini yükle, eskiz yoğunluğunu ayarla, profesyonel çizim efektini anında oluştur ve PNG olarak indir.
+        </p>
+        <div class="d-flex flex-wrap justify-content-center gap-3 fade-up delay-3">
+          <a href="#arac" class="btn btn-premium btn-lg px-5 py-3">
+            <i class="bi bi-magic me-2"></i>Eskiz Oluştur
+          </a>
+          <a href="#ozellikler" class="btn btn-ghost btn-lg px-5 py-3">
+            <i class="bi bi-lightning-charge me-2"></i>Özellikleri Gör
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="arac" class="container pb-5">
+    <div class="row g-4 align-items-stretch">
+      <div class="col-lg-4">
+        <div class="glass-card p-4 h-100 fade-up">
+          <h2 class="h4 fw-black fw-bold mb-2">Resim Yükle</h2>
+          <p class="text-white-50 small mb-4">JPG, PNG veya WEBP dosyanı seç. İşlem doğrudan tarayıcında yapılır.</p>
+
+          <div id="uploadBox" class="upload-box d-flex align-items-center justify-content-center text-center p-4 mb-4">
+            <div>
+              <div class="icon-orb mb-3">
+                <i class="bi bi-cloud-arrow-up display-6 text-info"></i>
+              </div>
+              <p class="fw-bold mb-1">Resmi buraya sürükle veya seç</p>
+              <p class="text-white-50 small mb-0">Yüksek kaliteli görseller desteklenir</p>
+            </div>
+          </div>
+
+          <input type="file" id="imageInput" class="d-none" accept="image/*">
+
+          <div class="mb-3">
+            <label class="form-label mini-label d-flex justify-content-between">
+              <span>Eskiz Yoğunluğu</span><span id="intensityValue">45</span>
+            </label>
+            <input type="range" id="intensity" class="form-range" min="5" max="100" value="45">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label mini-label d-flex justify-content-between">
+              <span>Kontrast</span><span id="contrastValue">30</span>
+            </label>
+            <input type="range" id="contrast" class="form-range" min="0" max="100" value="30">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label mini-label d-flex justify-content-between">
+              <span>Parlaklık</span><span id="brightnessValue">0</span>
+            </label>
+            <input type="range" id="brightness" class="form-range" min="-80" max="80" value="0">
+          </div>
+
+          <div class="d-grid gap-3">
+            <button id="sketchBtn" class="btn btn-premium btn-lg py-3" disabled>
+              <i class="bi bi-pencil-square me-2"></i>Eskize Çevir
+            </button>
+            <button id="downloadBtn" class="btn btn-gold py-3" disabled>
+              <i class="bi bi-download me-2"></i>PNG Olarak İndir
+            </button>
+            <button id="resetBtn" class="btn btn-ghost py-3" disabled>
+              <i class="bi bi-arrow-counterclockwise me-2"></i>Orijinale Dön
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="glass-card p-4 h-100 fade-up delay-1">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+              <h2 class="h4 fw-bold mb-1">Canlı Önizleme</h2>
+              <p class="text-white-50 small mb-0">Sonucu anında gör, ayarlarla çizim kalitesini güçlendir.</p>
+            </div>
+            <span id="statusText" class="status-pill">Resim bekleniyor</span>
+          </div>
+
+          <canvas id="canvas" aria-label="Eskiz önizleme alanı"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ozellikler" class="container py-5">
+    <div class="row text-center justify-content-center mb-4">
+      <div class="col-lg-8">
+        <span class="premium-badge mb-3"><i class="bi bi-award text-warning"></i> Profesyonel Özellikler</span>
+        <h2 class="display-6 fw-bold">Satışa Uygun Elit Web Aracı</h2>
+        <p class="text-white-50">SEO uyumlu, mobil uyumlu, hızlı çalışan ve modern efektlerle güçlendirilmiş premium tasarım.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-shield-check fs-4"></i></div>
+          <h3 class="h6 fw-bold">Gizli İşleme</h3>
+          <p class="small text-white-50 mb-0">Resimler sunucuya gönderilmez, işlem kullanıcının tarayıcısında yapılır.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-phone fs-4"></i></div>
+          <h3 class="h6 fw-bold">Mobil Uyumlu</h3>
+          <p class="small text-white-50 mb-0">Bootstrap 5 altyapısı ile telefon, tablet ve masaüstünde şık görünür.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-graph-up-arrow fs-4"></i></div>
+          <h3 class="h6 fw-bold">SEO Hazır</h3>
+          <p class="small text-white-50 mb-0">Meta açıklama, canonical, Open Graph, Twitter Card ve Schema.org eklendi.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-stars fs-4"></i></div>
+          <h3 class="h6 fw-bold">Premium Efektler</h3>
+          <p class="small text-white-50 mb-0">Cam efekti, parlayan butonlar, gradient başlıklar ve yumuşak animasyonlar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="container py-4 footer-line">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <p class="mb-0 small">© <span id="year"></span> Ebubekir Bastama. Tüm hakları saklıdır.</p>
+    <p class="mb-0 small">Online Resimden Eskiz Çıkarma Aracı</p>
+  </div>
+</footer>
+
+<script>
+  const uploadBox = document.getElementById('uploadBox');
+  const imageInput = document.getElementById('imageInput');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+  const sketchBtn = document.getElementById('sketchBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const statusText = document.getElementById('statusText');
+
+  const intensity = document.getElementById('intensity');
+  const contrast = document.getElementById('contrast');
+  const brightness = document.getElementById('brightness');
+
+  const intensityValue = document.getElementById('intensityValue');
+  const contrastValue = document.getElementById('contrastValue');
+  const brightnessValue = document.getElementById('brightnessValue');
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  let originalImage = null;
+  let originalFileName = 'eskiz';
+
+  uploadBox.addEventListener('click', () => imageInput.click());
+
+  uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+  });
+
+  uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('dragover'));
+
+  uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) loadImage(file);
+  });
+
+  imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) loadImage(file);
+  });
+
+  [intensity, contrast, brightness].forEach(input => {
+    input.addEventListener('input', () => {
+      intensityValue.textContent = intensity.value;
+      contrastValue.textContent = contrast.value;
+      brightnessValue.textContent = brightness.value;
+      if (originalImage) makeSketch();
+    });
+  });
+
+  sketchBtn.addEventListener('click', makeSketch);
+  resetBtn.addEventListener('click', drawOriginal);
+
+  downloadBtn.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = `${originalFileName}-eskiz.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+
+  function setStatus(text, type = 'default') {
+    statusText.textContent = text;
+    statusText.className = 'status-pill';
+    if (type === 'success') statusText.style.borderColor = 'rgba(25, 220, 143, .45)';
+    else if (type === 'active') statusText.style.borderColor = 'rgba(40, 215, 255, .48)';
+    else statusText.style.borderColor = 'rgba(255,255,255,.14)';
+  }
+
+  function loadImage(file) {
+    if (!file.type.startsWith('image/')) {
+      alert('Lütfen geçerli bir resim dosyası seçin.');
+      return;
+    }
+
+    originalFileName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-z0-9-_]/gi, '-').toLowerCase();
+    setStatus('Resim yükleniyor...', 'active');
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = new Image();
+      img.onload = function() {
+        originalImage = img;
+        drawOriginal();
+        sketchBtn.disabled = false;
+        resetBtn.disabled = false;
+        downloadBtn.disabled = false;
+        setStatus('Resim yüklendi', 'success');
+        setTimeout(makeSketch, 250);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resizeCanvasToImage(img) {
+    const maxWidth = 1700;
+    const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+    canvas.width = Math.round(img.width * scale);
+    canvas.height = Math.round(img.height * scale);
+  }
+
+  function drawOriginal() {
+    if (!originalImage) return;
+    resizeCanvasToImage(originalImage);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+    setStatus('Orijinal önizleme');
+  }
+
+  function makeSketch() {
+    if (!originalImage) return;
+
+    setStatus('Eskiz oluşturuldu', 'active');
+
+    resizeCanvasToImage(originalImage);
+    ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
+
+    const gray = new Uint8ClampedArray(width * height);
+    const inverted = new Uint8ClampedArray(width * height);
+    const blurred = new Uint8ClampedArray(width * height);
+
+    const bright = Number(brightness.value);
+    const contrastAmount = Number(contrast.value);
+    const factor = (259 * (contrastAmount + 255)) / (255 * (259 - contrastAmount));
+
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+      let g = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      g = factor * (g - 128) + 128 + bright;
+      g = Math.max(0, Math.min(255, g));
+      gray[j] = g;
+      inverted[j] = 255 - g;
+    }
+
+    boxBlur(inverted, blurred, width, height, Number(intensity.value));
+
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+      const base = gray[j];
+      const blend = blurred[j];
+      let sketch = colorDodge(base, blend);
+
+      sketch = sketch < 245 ? sketch * 0.86 : sketch;
+      sketch = Math.max(0, Math.min(255, sketch));
+
+      data[i] = sketch;
+      data[i + 1] = sketch;
+      data[i + 2] = sketch;
+      data[i + 3] = 255;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  function colorDodge(base, blend) {
+    if (blend >= 255) return 255;
+    return Math.min(255, (base * 255) / (255 - blend));
+  }
+
+  function boxBlur(src, dst, width, height, radius) {
+    const temp = new Uint8ClampedArray(width * height);
+    const r = Math.max(1, Math.floor(radius));
+
+    for (let y = 0; y < height; y++) {
+      let sum = 0;
+      for (let x = -r; x <= r; x++) {
+        const px = Math.min(width - 1, Math.max(0, x));
+        sum += src[y * width + px];
+      }
+      for (let x = 0; x < width; x++) {
+        temp[y * width + x] = sum / (r * 2 + 1);
+        const x1 = Math.max(0, x - r);
+        const x2 = Math.min(width - 1, x + r + 1);
+        sum += src[y * width + x2] - src[y * width + x1];
+      }
+    }
+
+    for (let x = 0; x < width; x++) {
+      let sum = 0;
+      for (let y = -r; y <= r; y++) {
+        const py = Math.min(height - 1, Math.max(0, y));
+        sum += temp[py * width + x];
+      }
+      for (let y = 0; y < height; y++) {
+        dst[y * width + x] = sum / (r * 2 + 1);
+        const y1 = Math.max(0, y - r);
+        const y2 = Math.min(height - 1, y + r + 1);
+        sum += temp[y2 * width + x] - temp[y1 * width + x];
+      }
+    }
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
