@@ -21,7 +21,7 @@
     <meta property="og:description" content="Programsız ve tamamen güvenli şekilde tarayıcıda video sıkıştırma, GIF yapma, ses ayıklama ve logo ekleme işlemleri. Verileriniz sunucuya yüklenmez!">
     <meta property="og:image" content="https://www.ebubekirbastama.com.tr/assets/og-studio-image.jpg">
 
-    <!-- Google Teknik Şema Kodu (SoftwareApplication & FAQ) -->
+    <!-- Google Teknik Şema Kodu -->
     <script type="application/ld+json">
     [
       {
@@ -54,8 +54,49 @@
     </script>
     <!-- ================================================================= -->
 
-    <!-- GİTHUB PAGES UYUMLULUK SCRİPTİ -->
-    <script src="coi-serviceworker.js"></script>
+    <!-- SEAMLESS SELF-SYNTHESIZING SERVICE WORKER -->
+    <script>
+        const isWorkerQuery = new URLSearchParams(window.location.search).has('sw');
+        
+        if (isWorkerQuery) {
+            const swScript = `
+                self.addEventListener("install", () => self.skipWaiting());
+                self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
+                self.addEventListener("fetch", event => {
+                    if (event.request.cache === "only-if-cached" && event.request.mode !== "same-origin") return;
+                    event.respondWith(
+                        fetch(event.request).then(response => {
+                            if (response.status === 0) return response;
+                            const newHeaders = new Headers(response.headers);
+                            newHeaders.set("Cross-Origin-Opener-Policy", "same-origin");
+                            newHeaders.set("Cross-Origin-Embedder-Policy", "require-corp");
+                            return new Response(response.body, {
+                                status: response.status,
+                                statusText: response.statusText,
+                                headers: newHeaders
+                            });
+                        }).catch(() => fetch(event.request))
+                    );
+                });
+            `;
+            document.open();
+            document.write(swScript);
+            document.close();
+        } else if ('serviceWorker' in navigator) {
+            const currentScriptPath = window.location.pathname + '?sw';
+            navigator.serviceWorker.register(currentScriptPath, { scope: "./" }).then(reg => {
+                reg.addEventListener("updatefound", () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener("statechange", () => {
+                        if (newWorker.state === "activated") window.location.reload();
+                    });
+                });
+                if (!navigator.serviceWorker.controller) {
+                    window.location.reload();
+                }
+            }).catch(err => console.error("SW Mimari Hatası:", err));
+        }
+    </script>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -81,7 +122,6 @@
             overflow-x: hidden;
         }
 
-        /* Masaüstü Program Penceresi Efekti */
         .app-window {
             background: var(--panel-dark);
             border: 1px solid var(--border-color);
@@ -112,7 +152,6 @@
 
         .app-body { padding: 25px; }
 
-        /* Sol Menü Navigasyonu */
         .tool-nav .nav-link {
             color: var(--text-muted);
             border: 1px solid transparent;
@@ -135,7 +174,6 @@
             box-shadow: 0 4px 15px var(--accent-glow);
         }
 
-        /* Form Elemanları */
         .form-label {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -161,7 +199,6 @@
             color: #ffffff;
         }
 
-        /* Dosya Drag & Drop Alanı */
         .file-upload-wrapper {
             position: relative;
             border: 2px dashed var(--border-color);
@@ -187,7 +224,7 @@
             z-index: 10;
         }
 
-        /* Önizleme Paneli */
+        /* CANLI LOGO ÖNİZLEME İÇİN MONITOR YAPISI */
         .preview-box {
             background: #07080c;
             border: 1px solid var(--border-color);
@@ -198,10 +235,37 @@
             overflow: hidden;
             min-height: 200px;
             width: 100%;
+            position: relative; /* İçerideki mutlak logoyu sınırlamak için */
         }
-        video { width: 100%; max-height: 240px; object-fit: contain; }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-height: 240px;
+            display: inline-block;
+        }
+        
+        video { width: 100%; max-height: 240px; object-fit: contain; display: block; }
 
-        /* Butonlar */
+        /* Dinamik Canlı Filigran Katmanı */
+        .live-preview-watermark {
+            position: absolute;
+            max-width: 15%; /* Video ölçeğine göre dinamik boyut */
+            max-height: 15%;
+            object-fit: contain;
+            pointer-events: none; /* Video kontrollerine tıklamayı engellemesin */
+            opacity: 0.85;
+            display: none; /* Logo yüklenene kadar gizli */
+            z-index: 5;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Konumlandırma CSS Sınıfları */
+        .pos-left-top { top: 12px; left: 12px; bottom: auto; right: auto; transform: none; }
+        .pos-right-top { top: 12px; right: 12px; bottom: auto; left: auto; transform: none; }
+        .pos-right-bottom { bottom: 12px; right: 12px; top: auto; left: auto; transform: none; }
+        .pos-center { top: 50%; left: 50%; transform: translate(-50%, -50%); bottom: auto; right: auto; }
+
         .btn-accent {
             background: var(--accent-green);
             color: #000;
@@ -229,11 +293,9 @@
         }
         .btn-outline-custom:hover { border-color: var(--accent-green); color: #fff; }
 
-        /* Progress */
         .progress { background-color: #07080c; height: 8px; border-radius: 4px; }
         .progress-bar { background: linear-gradient(90deg, #00ff88, #00b3ff); }
 
-        /* SEO Bilgi Alanı Alt Kartlar */
         .seo-info-card {
             background: var(--panel-card);
             border: 1px solid var(--border-color);
@@ -258,10 +320,7 @@
     <div class="row justify-content-center">
         <div class="col-12">
             
-            <!-- Masaüstü Program Penceresi Mimarisi -->
             <div class="app-window">
-                
-                <!-- Üst Pencere Kontrolleri -->
                 <div class="app-header">
                     <div class="window-dots">
                         <span class="dot-red"></span>
@@ -277,7 +336,7 @@
                 <div class="app-body">
                     <div class="row g-4">
                         
-                        <!-- SOL MENÜ: ARAÇ SEÇENEKLERİ -->
+                        <!-- SOL MENÜ -->
                         <div class="col-lg-3 border-end" style="border-color: var(--border-color) !important;">
                             <span class="form-label d-block mb-3">MEDYA ARAÇLARI</span>
                             <div class="nav flex-column tool-nav" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -289,10 +348,8 @@
                             </div>
                         </div>
 
-                        <!-- SAĞ PANEL: DİNAMİK KONTROLLER VE İŞLEM ALANI -->
+                        <!-- SAĞ PANEL -->
                         <div class="col-lg-9">
-                            
-                            <!-- ORTAK DOSYA YÜKLEME ALANI -->
                             <div class="mb-4">
                                 <label class="form-label">İŞLENECEK KAYNAK VİDEO DOSYASI</label>
                                 <div class="file-upload-wrapper">
@@ -302,10 +359,8 @@
                                 </div>
                             </div>
 
-                            <!-- SEKME İÇERİKLERİ (PARAMETRELER) -->
                             <div class="tab-content" id="v-pills-tabContent">
-                                
-                                <!-- 1. ARAÇ: VİDEO SIKIŞTIRMA -->
+                                <!-- 1. SIKIŞTIRMA -->
                                 <div class="tab-pane fade show active" id="panel-compress" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -329,7 +384,7 @@
                                     </div>
                                 </div>
 
-                                <!-- 2. ARAÇ: VİDEODAN GİF YAPMA -->
+                                <!-- 2. GIF -->
                                 <div class="tab-pane fade" id="panel-gif" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -347,14 +402,14 @@
                                     </div>
                                 </div>
 
-                                <!-- 3. ARAÇ: SES AYRIŞTIRMA -->
+                                <!-- 3. SES -->
                                 <div class="tab-pane fade" id="panel-audio" role="tabpanel">
                                     <div class="p-3 bg-dark rounded border border-secondary small text-white">
                                         <i class="fa-solid fa-circle-info text-info me-1"></i> Bu işlem videonun içerisindeki tüm ses dalgasını tarayıcıda ayrıştırarak doğrudan kayıpsız <strong>MP3 / AAC</strong> formatına çevirir. Video akışı işlenmeyeceği için inanılmaz hızlı tamamlanır.
                                     </div>
                                 </div>
 
-                                <!-- 4. ARAÇ: FİLİGRAN / LOGO EKLE -->
+                                <!-- 4. LOGO (Geliştirildi) -->
                                 <div class="tab-pane fade" id="panel-watermark" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -373,7 +428,7 @@
                                     </div>
                                 </div>
 
-                                <!-- 5. ARAÇ: VİDEO HIZ KONTROLÜ -->
+                                <!-- 5. HIZ -->
                                 <div class="tab-pane fade" id="panel-speed" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-12">
@@ -388,20 +443,22 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
-                            <!-- CANLI ÖNİZLEME & MONITOR ALANI -->
+                            <!-- MONITOR ALANI (Görsel Önizleme Katmanıyla Güncellendi) -->
                             <div class="row mt-4 align-items-center">
                                 <div class="col-md-5">
                                     <span class="form-label d-block mb-2">MONITOR (ÖNİZLEME)</span>
                                     <div class="preview-box">
-                                        <video id="studioVideoPlayer" controls style="display: none;"></video>
+                                        <div class="video-container" id="videoContainer">
+                                            <!-- Canlı Logo Önizleme Katmanı -->
+                                            <img id="livePreviewLogo" class="live-preview-watermark pos-right-bottom" src="" alt="Watermark Preview">
+                                            <video id="studioVideoPlayer" controls style="display: none;"></video>
+                                        </div>
                                         <span id="noVideoText" class="small text-white p-3 text-center">Video yüklendiğinde önizleme burada belirecektir.</span>
                                     </div>
                                 </div>
                                 <div class="col-md-7 d-flex flex-column justify-content-end">
-                                    <!-- Durum Bilgisi ve Progress Bar -->
                                     <div class="mb-3">
                                         <div class="d-flex justify-content-between small fw-bold mb-1">
                                             <span id="engineStatusText" class="text-terminal"><i class="fa-solid fa-terminal text-success"></i> Mod Değiştirildi: Araç Tetiklenmeye Hazır.</span>
@@ -411,8 +468,6 @@
                                             <div id="engineProgressBar" class="progress-bar" style="width: 0%"></div>
                                         </div>
                                     </div>
-                                    
-                                    <!-- Tetikleme ve İndirme Butonları -->
                                     <div class="d-flex gap-2">
                                         <button type="button" id="startProcessBtn" class="btn btn-accent flex-grow-1"><i class="fa-solid fa-bolt me-1"></i> SEÇİLİ ARACI ÇALIŞTIR</button>
                                         <button type="button" id="downloadOutputBtn" class="btn btn-outline-custom d-none text-success border-success"><i class="fa-solid fa-download me-1"></i> ÇIKTIYI İNDİR</button>
@@ -423,48 +478,34 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- SEO MAKALELERİ VE BİLGİLENDİRME ALANI (HİT ÇEKMEK İÇİN KRİTİK) -->
+            <!-- SEO ALANI -->
             <div class="seo-info-card">
                 <h2 class="h5 text-success mb-3"><i class="fa-solid fa-shield-halved me-2"></i>Neden EBS Media Studio Pro'yu Tercih Etmelisiniz?</h2>
                 <p class="small text-readable">
-                    Geleneksel online video dönüştürme araçları, videolarınızı kendi sunucularına yüklerler. Bu durum hem saatler süren yükleme (upload) sürelerine neden olur hem de kişisel verilerinizin güvenliğini riske atar. <strong>EBS Media Studio Pro</strong>, devrimsel <strong>WebAssembly</strong> teknolojisi sayesinde dünya standartlarındaki video kütüphanesi <strong>FFmpeg</strong>'i doğrudan tarayıcınızın içinde çalıştırır. Verileriniz bilgisayarınızdan dışarı çıkmaz, internet paketiniz tükenmez ve render işlemleri milisaniyeler içinde tamamlanır.
+                    Geleneksel online video dönüştürme araçları, videolarınızı kendi sunucularına yüklerler. Bu durum hem saatler süren yükleme (upload) sürelerine neden olur hem de kişisel verilerinizin güvenliğini riske atar. <strong>EBS Media Studio Pro</strong>, devrimsel <strong>WebAssembly</strong> teknolojisi sayesinde dünya standartlarındaki video kütüphanesi <strong>FFmpeg</strong>'i doğrudan tarayıcınızın içinde çalıştırır. Verileriniz bilgisayarınızdan dışarı çıkmaz, internet paketiniz tükenmez...
                 </p>
-                <hr style="border-color: var(--border-color);">
-                <div class="row g-3 small text-readable">
-                    <div class="col-md-4">
-                        <h6 class="text-white"><i class="fa-solid fa-bolt text-warning me-1"></i> Sıfır Upload Bekleme</h6>
-                        <p>Dosyalar sunucuya gönderilmediği için yükleme hızıyla zaman kaybetmezsiniz.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h6 class="text-white"><i class="fa-solid fa-eye-slash text-info me-1"></i> %100 Gizlilik Güvencesi</h6>
-                        <p>Videolar, sesler and logolar tamamen yerel hafızada işlenir, sunucu loglarına kaydedilmez.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h6 class="text-white"><i class="fa-solid fa-infinity text-danger me-1"></i> Tamamen Sınırsız & Ücretsiz</h6>
-                        <p>Herhangi bir dosya boyutu sınırı veya günlük işlem limiti olmadan özgürce kullanabilirsiniz.</p>
-                    </div>
-                </div>
             </div>
 
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- FFmpeg.js Core (V0.11.0 Kararlı Sürüm) -->
 <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 
 <script>
+if (!new URLSearchParams(window.location.search).has('sw')) {
+
 const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ log: true });
 
-// UI DOM Bağlantıları
+// DOM Elemanları
 const mainVideoInput = document.getElementById('mainVideoInput');
 const logoFileInput = document.getElementById('logoFileInput');
+const logoPosition = document.getElementById('logoPosition');
+const livePreviewLogo = document.getElementById('livePreviewLogo');
 const fileNameDisplay = document.getElementById('fileNameDisplay');
 const studioVideoPlayer = document.getElementById('studioVideoPlayer');
 const noVideoText = document.getElementById('noVideoText');
@@ -476,9 +517,25 @@ const percentText = document.getElementById('percentText');
 
 let activeFile = null;
 let activeLogoFile = null;
-let activeTab = 'compress'; // Varsayılan araç
+let activeTab = 'compress';
 
-// Aktif Sekme Takibi
+// Canlı Logo Katmanı Güncelleyici Fonksiyon
+function updateLiveLogoPreview() {
+    // Sadece Logo modundaysak ve hem video hem logo yüklenmişse göster
+    if (activeTab === 'watermark' && activeFile && activeLogoFile) {
+        livePreviewLogo.style.display = 'block';
+    } else {
+        livePreviewLogo.style.display = 'none';
+        return;
+    }
+
+    // Seçilen konuma göre CSS sınıflarını temizle ve yenisini ata
+    livePreviewLogo.className = 'live-preview-watermark'; // reset
+    const positionValue = logoPosition.value;
+    livePreviewLogo.classList.add('pos-' + positionValue);
+}
+
+// Sekme geçişlerinde önizlemeyi aç/kapat
 document.querySelectorAll('.tool-nav .nav-link').forEach(button => {
     button.addEventListener('click', (e) => {
         const id = e.target.id;
@@ -488,7 +545,9 @@ document.querySelectorAll('.tool-nav .nav-link').forEach(button => {
         if(id.includes('watermark')) activeTab = 'watermark';
         if(id.includes('speed')) activeTab = 'speed';
         
-        // Temizleme adımı
+        // Logo önizlemesini kontrol et
+        updateLiveLogoPreview();
+
         downloadOutputBtn.classList.add('d-none');
         engineStatusText.innerHTML = `<i class="fa-solid fa-terminal text-success"></i> Mod Değiştirildi: Araç Tetiklenmeye Hazır.`;
         engineProgressBar.style.width = "0%";
@@ -496,7 +555,7 @@ document.querySelectorAll('.tool-nav .nav-link').forEach(button => {
     });
 });
 
-// Video Dosyası Seçimi ve Önizleme Yüklemesi
+// Video Dosyası Yükleme tetikleyicisi
 mainVideoInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -507,15 +566,29 @@ mainVideoInput.addEventListener('change', (e) => {
         const videoUrl = URL.createObjectURL(file);
         studioVideoPlayer.src = videoUrl;
         studioVideoPlayer.style.display = 'block';
+        
+        updateLiveLogoPreview();
     }
 });
 
-// Logo Dosyası Seçimi Takibi
+// Kullanıcı Logo Görseli Seçtiğinde
 logoFileInput.addEventListener('change', (e) => {
-    activeLogoFile = e.target.files[0];
+    const file = e.target.files[0];
+    if(file) {
+        activeLogoFile = file;
+        // Görseli tarayıcı belleğine alıp canlı önizleme src'sine basıyoruz
+        const imgUrl = URL.createObjectURL(file);
+        livePreviewLogo.src = imgUrl;
+        updateLiveLogoPreview();
+    }
 });
 
-// MERKEZİ RENDER MOTORU TEPKİME MANTIĞI
+// Kullanıcı Logo Konumunu Değiştirdiğinde
+logoPosition.addEventListener('change', () => {
+    updateLiveLogoPreview();
+});
+
+// MERKEZİ RENDER TETİKLEYİCİSİ
 startProcessBtn.addEventListener('click', async () => {
     if (!activeFile) {
         alert('Lütfen öncelikle işlem yapmak istediğiniz bir kaynak video dosyası seçin!');
@@ -528,87 +601,83 @@ startProcessBtn.addEventListener('click', async () => {
     engineProgressBar.style.width = "10%";
     percentText.innerText = "10%";
 
-    if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load();
-    }
-
-    engineStatusText.innerHTML = `<i class="fa-solid fa-terminal text-success"></i> ⚙️ Dosya sanal ortama yazılıyor...`;
-    engineProgressBar.style.width = "25%";
-    percentText.innerText = "25%";
-    
-    // Dosyayı FFmpeg sanal diskine yaz
-    ffmpeg.FS('writeFile', 'input_raw.mp4', await fetchFile(activeFile));
-
-    let ffmpegArgs = [];
-    let outputName = `EBS_Studio_Out_${Date.now()}`;
-
-    // SEÇİLİ ARACA GÖRE PARAMETRE GENERATOR KATI
-    if (activeTab === 'compress') {
-        const crf = document.getElementById('compressCrf').value;
-        const scaleOpt = document.getElementById('compressScale').value;
-        outputName += '.mp4';
-
-        if (scaleOpt === 'no-change') {
-            ffmpegArgs = ['-i', 'input_raw.mp4', '-vcodec', 'libx264', '-crf', crf, '-acodec', 'copy', outputName];
-        } else {
-            const [w, h] = scaleOpt.split(':');
-            ffmpegArgs = ['-i', 'input_raw.mp4', '-vf', `scale=${w}:${h}`, '-vcodec', 'libx264', '-crf', crf, '-acodec', 'copy', outputName];
-        }
-    } 
-    else if (activeTab === 'gif') {
-        const width = document.getElementById('gifWidth').value;
-        const fps = document.getElementById('gifFps').value;
-        outputName += '.gif';
-        
-        // Kaliteli palet tabanlı GIF filtresi
-        ffmpegArgs = ['-i', 'input_raw.mp4', '-vf', `fps=${fps},scale=${width}:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`, outputName];
-    } 
-    else if (activeTab === 'audio') {
-        outputName += '.mp3';
-        ffmpegArgs = ['-i', 'input_raw.mp4', '-vn', '-acodec', 'libmp3lame', '-q:a', '2', outputName];
-    } 
-    else if (activeTab === 'watermark') {
-        outputName += '.mp4';
-        if (!activeLogoFile) {
-            alert('Lütfen eklemek istediğiniz şeffaf logo görselini seçin!');
-            startProcessBtn.disabled = false;
-            return;
-        }
-        
-        ffmpeg.FS('writeFile', 'logo_raw.png', await fetchFile(activeLogoFile));
-        const pos = document.getElementById('logoPosition').value;
-        
-        let overlayFilter = 'overlay=W-w-10:H-h-10'; // Sağ alt varsayılan
-        if (pos === 'left-top') overlayFilter = 'overlay=10:10';
-        if (pos === 'right-top') overlayFilter = 'overlay=W-w-10:10';
-        if (pos === 'center') overlayFilter = 'overlay=(W-w)/2:(H-h)/2';
-
-        ffmpegArgs = ['-i', 'input_raw.mp4', '-i', 'logo_raw.png', '-filter_complex', overlayFilter, '-codec:a', 'copy', outputName];
-    } 
-    else if (activeTab === 'speed') {
-        const speed = document.getElementById('videoSpeedSelect').value;
-        outputName += '.mp4';
-        
-        let videoPts = '1.0*PTS';
-        let audioFilter = [];
-
-        if (speed === '0.5') { videoPts = '2.0*PTS'; audioFilter = ['-filter:a', 'atempo=0.5']; }
-        if (speed === '1.5') { videoPts = '0.66*PTS'; audioFilter = ['-filter:a', 'atempo=1.5']; }
-        if (speed === '2.0') { videoPts = '0.5*PTS'; audioFilter = ['-filter:a', 'atempo=2.0']; }
-        if (speed === '4.0') { videoPts = '0.25*PTS'; audioFilter = ['-filter:a', 'atempo=2.0,atempo=2.0']; }
-
-        if (speed === '1.0') {
-            ffmpegArgs = ['-i', 'input_raw.mp4', '-c:v', 'copy', '-c:a', 'copy', outputName];
-        } else {
-            ffmpegArgs = ['-i', 'input_raw.mp4', '-filter:v', `setpts=${videoPts}`, ...audioFilter, '-c:v', 'libx264', outputName];
-        }
-    }
-
-    engineStatusText.innerHTML = `<i class="fa-solid fa-terminal text-success"></i> 🚀 Düzenleme motoru çalışıyor, işlemci gücü devrede...`;
-    engineProgressBar.style.width = "60%";
-    percentText.innerText = "60%";
-
     try {
+        if (!ffmpeg.isLoaded()) {
+            await ffmpeg.load();
+        }
+
+        engineStatusText.innerHTML = `<i class="fa-solid fa-terminal text-success"></i> ⚙️ Dosya sanal ortama yazılıyor...`;
+        engineProgressBar.style.width = "25%";
+        percentText.innerText = "25%";
+        
+        ffmpeg.FS('writeFile', 'input_raw.mp4', await fetchFile(activeFile));
+
+        let ffmpegArgs = [];
+        let outputName = `EBS_Studio_Out_${Date.now()}`;
+
+        if (activeTab === 'compress') {
+            const crf = document.getElementById('compressCrf').value;
+            const scaleOpt = document.getElementById('compressScale').value;
+            outputName += '.mp4';
+
+            if (scaleOpt === 'no-change') {
+                ffmpegArgs = ['-i', 'input_raw.mp4', '-vcodec', 'libx264', '-crf', crf, '-acodec', 'copy', outputName];
+            } else {
+                const [w, h] = scaleOpt.split(':');
+                ffmpegArgs = ['-i', 'input_raw.mp4', '-vf', `scale=${w}:${h}`, '-vcodec', 'libx264', '-crf', crf, '-acodec', 'copy', outputName];
+            }
+        } 
+        else if (activeTab === 'gif') {
+            const width = document.getElementById('gifWidth').value;
+            const fps = document.getElementById('gifFps').value;
+            outputName += '.gif';
+            ffmpegArgs = ['-i', 'input_raw.mp4', '-vf', `fps=${fps},scale=${width}:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`, outputName];
+        } 
+        else if (activeTab === 'audio') {
+            outputName += '.mp3';
+            ffmpegArgs = ['-i', 'input_raw.mp4', '-vn', '-acodec', 'libmp3lame', '-q:a', '2', outputName];
+        } 
+        else if (activeTab === 'watermark') {
+            outputName += '.mp4';
+            if (!activeLogoFile) {
+                alert('Lütfen eklemek istediğiniz şeffaf logo görselini seçin!');
+                startProcessBtn.disabled = false;
+                return;
+            }
+            ffmpeg.FS('writeFile', 'logo_raw.png', await fetchFile(activeLogoFile));
+            const pos = logoPosition.value;
+            
+            // FFmpeg Katı bindirme filtreleri (Canlı önizleme koordinatlarıyla birebir eş)
+            let overlayFilter = 'overlay=W-w-10:H-h-10'; 
+            if (pos === 'left-top') overlayFilter = 'overlay=10:10';
+            if (pos === 'right-top') overlayFilter = 'overlay=W-w-10:10';
+            if (pos === 'center') overlayFilter = 'overlay=(W-w)/2:(H-h)/2';
+
+            ffmpegArgs = ['-i', 'input_raw.mp4', '-i', 'logo_raw.png', '-filter_complex', overlayFilter, '-codec:a', 'copy', outputName];
+        } 
+        else if (activeTab === 'speed') {
+            const speed = document.getElementById('videoSpeedSelect').value;
+            outputName += '.mp4';
+            
+            let videoPts = '1.0*PTS';
+            let audioFilter = [];
+
+            if (speed === '0.5') { videoPts = '2.0*PTS'; audioFilter = ['-filter:a', 'atempo=0.5']; }
+            if (speed === '1.5') { videoPts = '0.66*PTS'; audioFilter = ['-filter:a', 'atempo=1.5']; }
+            if (speed === '2.0') { videoPts = '0.5*PTS'; audioFilter = ['-filter:a', 'atempo=2.0']; }
+            if (speed === '4.0') { videoPts = '0.25*PTS'; audioFilter = ['-filter:a', 'atempo=2.0,atempo=2.0']; }
+
+            if (speed === '1.0') {
+                ffmpegArgs = ['-i', 'input_raw.mp4', '-c:v', 'copy', '-c:a', 'copy', outputName];
+            } else {
+                ffmpegArgs = ['-i', 'input_raw.mp4', '-filter:v', `setpts=${videoPts}`, ...audioFilter, '-c:v', 'libx264', outputName];
+            }
+        }
+
+        engineStatusText.innerHTML = `<i class="fa-solid fa-terminal text-success"></i> 🚀 Düzenleme motoru çalışıyor, işlemci gücü devrede...`;
+        engineProgressBar.style.width = "60%";
+        percentText.innerText = "60%";
+
         await ffmpeg.run(...ffmpegArgs);
 
         engineProgressBar.style.width = "100%";
@@ -639,6 +708,7 @@ startProcessBtn.addEventListener('click', async () => {
         startProcessBtn.disabled = false;
     }
 });
+}
 </script>
 </body>
 </html>
