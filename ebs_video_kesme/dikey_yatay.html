@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ================================================================= -->
+    <!-- SOSYAL MEDYA & GOOGLE SEO OPTİMİZASYONU (META TAGS)               -->
+    <!-- ================================================================= -->
+    <title>Ücretsiz Çevrimiçi Arka Plan Blur Video İşleyici | EBS Blur Studio Pro</title>
+    <meta name="description" content="Videolarınızı dikey (9:16) veya yatay (16:9) formatlara otomatik arka plan blur efekti ile dönüştürün. Tarayıcı tabanlı, hızlı ve güvenli render motoru.">
+    <meta name="keywords" content="video blur yapma, dikey video dönüştürücü, arka plan bulanıklaştırma, online video blur, ffmpeg video blur, ebs blur studio, ebubekir bastama">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+
+    <!-- Open Graph / Sosyal Medya Kartları -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+    <meta property="og:title" content="Ücretsiz Çevrimiçi Arka Plan Blur Video İşleyici | EBS Blur Studio Pro">
+    <meta property="og:description" content="Videolarınızı programsız ve tamamen güvenli şekilde tarayıcıda dikey/yatay formatlara dönüştürün, arka planı otomatik bulanıklaştırın.">
+    <meta property="og:image" content="https://www.ebubekirbastama.com.tr/assets/og-blur-image.jpg">
+
+    <!-- Google Teknik Şema Kodu (SoftwareApplication) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "EBS Blur Studio Pro",
+      "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+      "applicationCategory": "MultimediaApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Tarayıcı tabanlı, sunucusuz otomatik video arka plan bulanıklaştırma ve ölçeklendirme stüdyosu.",
+      "browserRequirements": "Requires HTML5, WebAssembly"
+    }
+    </script>
+    <!-- ================================================================= -->
+
+    <!-- GİTHUB PAGES UYUMLULUK SCRİPTİ -->
+    <script src="coi-serviceworker.js"></script>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome İkon Seti -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0b0c10;
+            --panel-dark: #12131c;
+            --panel-card: #1c1d27;
+            --accent-green: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.25);
+            --text-main: #e0e0e0;
+            --text-muted: #85868f;
+            --border-color: #262833;
+        }
+
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Sekme Sistemi Tasarımı */
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-tabs .nav-link {
+            color: var(--text-muted);
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            background: transparent;
+        }
+        .nav-tabs .nav-link.active {
+            color: var(--accent-green);
+            background-color: var(--panel-dark);
+            border-bottom: 2px solid var(--accent-green);
+        }
+
+        /* Masaüstü Program Penceresi Efekti */
+        .app-window {
+            background: var(--panel-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: #07080c;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-dots span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .app-body { padding: 25px; }
+
+        /* Form Elemanları */
+        .form-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .form-control, .form-select {
+            background-color: #171923;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #171923;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-glow);
+            color: var(--text-main);
+        }
+
+        /* Dosya Drag & Drop Alanı */
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            background: #0e0f15;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload-wrapper:hover {
+            border-color: var(--accent-green);
+            background: #13151f;
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute; left: 0; top: 0; opacity: 0;
+            width: 100%; height: 100%; cursor: pointer;
+        }
+
+        /* Video İş Listesi Kartları */
+        .video-card {
+            background: var(--panel-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        /* Video Önizleme Alanı */
+        .preview-box {
+            background: #07080c;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        video { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Premium Butonlar */
+        .btn-accent {
+            background: var(--accent-green);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: all 0.2s ease;
+        }
+        .btn-accent:hover:not(:disabled) {
+            background: #00e676;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .btn-outline-custom:hover {
+            border-color: var(--text-muted);
+            color: #fff;
+        }
+
+        .btn-danger-custom {
+            background: rgba(255, 95, 86, 0.1);
+            border: 1px solid #ff5f56;
+            color: #ff5f56;
+            font-size: 0.85rem;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .btn-danger-custom:hover { background: #ff5f56; color: #000; }
+
+        /* Progress Bar */
+        .progress { background-color: #07080c; height: 10px; border-radius: 5px; }
+        .progress-bar { background: linear-gradient(90deg, #00ff88, #00b3ff); }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            
+            <!-- Masaüstü Program Penceresi -->
+            <div class="app-window">
+                
+                <!-- Pencere Üst Barı -->
+                <div class="app-header">
+                    <div class="window-dots">
+                        <span class="dot-red"></span>
+                        <span class="dot-yellow"></span>
+                        <span class="dot-green"></span>
+                    </div>
+                    <div class="app-title fw-bold text-uppercase tracking-wider" style="font-size: 0.75rem; color: var(--text-muted);">
+                        <i class="fa-solid fa-film text-success me-1"></i> EBS Blur Studio Pro v2.1.0
+                    </div>
+                    <div></div>
+                </div>
+
+                <!-- Program Sekme Başlıkları -->
+                <ul class="nav nav-tabs px-3 pt-2" id="studioTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#mainPanel" type="button" role="tab"><i class="fa-solid fa-clapperboard me-1"></i> ANA EKRAN</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settingsPanel" type="button" role="tab"><i class="fa-solid fa-sliders me-1"></i> RENDER AYARLARI</button>
+                    </li>
+                </ul>
+
+                <!-- Program İçeriği -->
+                <div class="tab-content app-body" id="studioTabsContent">
+                    
+                    <!-- 1. SEKME: ANA PANEL -->
+                    <div class="tab-pane fade show active" id="mainPanel" role="tabpanel">
+                        <div class="row g-4">
+                            
+                            <!-- Sol Kontrol Grubu -->
+                            <div class="col-lg-7 border-end pr-lg-4" style="border-color: var(--border-color) !important;">
+                                
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">KADRAJ MODU (ASPECT)</label>
+                                        <select id="modeSelector" class="form-select">
+                                            <option value="vertical">📱 Dikey (9:16)</option>
+                                            <option value="horizontal">🖥️ Yatay (16:9)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <div class="file-upload-wrapper w-100 p-2 text-center" style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                                            <span class="small fw-bold text-success"><i class="fa-solid fa-folder-open me-1"></i> VİDEO DOSYALARI EKLE</span>
+                                            <input type="file" id="videoInput" multiple accept="video/*">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Video Listesi (Scroll Alanı) -->
+                                <div id="videoQueueContainer" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                                    <!-- Dinamik yüklenen videolar buraya kart mimarisinde gelecek -->
+                                    <div class="text-center py-5 text-muted small" id="emptyState">
+                                        <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i> İşlem sırasına eklenmiş medya dosyası bulunmuyor.
+                                    </div>
+                                </div>
+
+                                <!-- Alt Kontrol Tetikleyicileri -->
+                                <div class="d-flex gap-2 mt-4">
+                                    <button type="button" id="renderAllBtn" class="btn btn-accent flex-grow-1"><i class="fa-solid fa-play me-1"></i> TÜMÜNÜ RENDER AL</button>
+                                    <button type="button" id="renderSelBtn" class="btn btn-outline-custom"><i class="fa-solid fa-check-double me-1"></i> SEÇİLENLERİ İŞLE</button>
+                                    <button type="button" id="stopBtn" class="btn btn-danger-custom"><i class="fa-solid fa-stop me-1"></i> DURDUR</button>
+                                </div>
+
+                            </div>
+
+                            <!-- Sağ Kontrol Grubu: Monitor (Önizleme) -->
+                            <div class="col-lg-5 d-flex flex-column align-items-center justify-content-start">
+                                <div class="w-100 d-flex justify-content-between align-items-center mb-2 px-1">
+                                    <span class="form-label m-0">MONITOR (ÖNİZLEME)</span>
+                                    <div class="btn-group">
+                                        <button id="audioToggleBtn" class="btn btn-sm btn-outline-custom py-1 px-2"><i class="fa-solid fa-volume-high"></i></button>
+                                        <button id="stopPreviewBtn" class="btn btn-sm btn-outline-custom py-1 px-2"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <div class="preview-box w-100" id="previewContainer" style="width: 320px; height: 430px;">
+                                    <video id="mainVideoPlayer" controls></video>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 2. SEKME: AYARLAR PANELİ -->
+                    <div class="tab-pane fade" id="settingsPanel" role="tabpanel">
+                        <div class="row g-4 max-w-md mx-auto" style="max-width: 500px;">
+                            <div class="col-12">
+                                <label class="form-label">🎚️ CRF KALİTE ORANI (Düşük değer daha yüksek kalitedir)</label>
+                                <input type="number" id="crfValue" class="form-control" min="10" max="40" value="23">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">🚀 FFMEG PRESET (İşlem Hızı)</label>
+                                <select id="presetSelect" class="form-select">
+                                    <option value="ultrafast">Ultrafast (En Hızlı / Büyük Boyut)</option>
+                                    <option value="superfast">Superfast</option>
+                                    <option value="veryfast" selected>Veryfast (Önerilen)</option>
+                                    <option value="faster">Faster</option>
+                                    <option value="fast">Fast</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="slow">Slow (En Yavaş / Optimum Boyut)</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">📺 HEDEF ÇÖZÜNÜRLÜK (RESOLUTION)</label>
+                                <select id="resSelect" class="form-select">
+                                    <option value="720p">720p HD</option>
+                                    <option value="1080p" selected>1080p Full HD</option>
+                                    <option value="4K">4K Ultra HD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FFmpeg.js Core -->
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+
+<script>
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
+
+// UI Element Tanımlamaları
+const modeSelector = document.getElementById('modeSelector');
+const previewContainer = document.getElementById('previewContainer');
+const videoInput = document.getElementById('videoInput');
+const videoQueueContainer = document.getElementById('videoQueueContainer');
+const emptyState = document.getElementById('emptyState');
+const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+const stopPreviewBtn = document.getElementById('stopPreviewBtn');
+const audioToggleBtn = document.getElementById('audioToggleBtn');
+const renderAllBtn = document.getElementById('renderAllBtn');
+const renderSelBtn = document.getElementById('renderSelBtn');
+const stopBtn = document.getElementById('stopBtn');
+
+let selectedFilesList = [];
+let isMuted = false;
+
+// Önizleme Ekranı En/Boy Oranı Değişimi
+modeSelector.addEventListener('change', (e) => {
+    if(e.target.value === 'vertical') {
+        previewContainer.style.width = "320px";
+        previewContainer.style.height = "430px";
+    } else {
+        previewContainer.style.width = "100%";
+        previewContainer.style.height = "260px";
+    }
+});
+
+// Video Dosyaları Seçildiğinde Listeye Ekleme
+videoInput.addEventListener('change', (e) => {
+    const files = e.target.files;
+    if(files.length > 0) {
+        emptyState.classList.add('d-none');
+    }
+    
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        selectedFilesList.push(file);
+        const index = selectedFilesList.length - 1;
+
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.id = `video-card-${index}`;
+        card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold small text-truncate cursor-pointer text-success" style="max-width:70%; cursor:pointer;" onclick="playInPreview(${index})">
+                    <i class="fa-solid fa-video me-1"></i> ${file.name}
+                </span>
+                <input type="checkbox" class="form-check-input render-checksum" data-index="${index}" checked>
+            </div>
+            <div class="row g-2 small text-muted mb-2">
+                <div class="col-6" id="status-${index}"><i class="fa-solid fa-clock"></i> Sıraya Alındı</div>
+                <div class="col-6 text-end" id="eta-${index}">Bitiş: --:--:--</div>
+            </div>
+            <div class="progress mb-2">
+                <div id="progress-bar-${index}" class="progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+            <div class="d-flex gap-2 justify-content-end mt-2">
+                <button class="btn btn-sm btn-outline-custom py-1 d-none" id="folder-btn-${index}"><i class="fa-solid fa-download"></i> İndir</button>
+                <button class="btn btn-sm btn-outline-custom py-1 d-none" id="retry-btn-${index}" onclick="reRenderTrack(${index})"><i class="fa-solid fa-rotate-right"></i> Tekrar İşle</button>
+            </div>
+        `;
+        videoQueueContainer.appendChild(card);
+    }
+});
+
+// Önizleme Oynatıcı Fonksiyonları
+function playInPreview(index) {
+    const file = selectedFilesList[index];
+    const url = URL.createObjectURL(file);
+    mainVideoPlayer.src = url;
+    mainVideoPlayer.play();
+}
+
+stopPreviewBtn.addEventListener('click', () => {
+    mainVideoPlayer.pause();
+    mainVideoPlayer.src = "";
+});
+
+audioToggleBtn.addEventListener('click', () => {
+    isMuted = !isMuted;
+    mainVideoPlayer.muted = isMuted;
+    audioToggleBtn.innerHTML = isMuted ? `<i class="fa-solid fa-volume-xmark text-danger"></i>` : `<i class="fa-solid fa-volume-high"></i>`;
+});
+
+// Render Motoru (FFmpeg Çalıştırma Mantığı)
+async function runRenderEngine(targetIndices) {
+    if(targetIndices.length === 0) { alert('İşlem yapılacak dosya seçilmedi!'); return; }
+    
+    renderAllBtn.disabled = true;
+    renderSelBtn.disabled = true;
+
+    if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+    }
+
+    const mode = modeSelector.value;
+    const crf = document.getElementById('crfValue').value;
+    const preset = document.getElementById('presetSelect').value;
+    const resolution = document.getElementById('resSelect').value;
+
+    let width = "1920", height = "1080";
+    if (resolution === "720p") { width = "1280"; height = "720"; }
+    if (resolution === "4K") { width = "3840"; height = "2160"; }
+    if (mode === "vertical") { [width, height] = [height, width]; }
+
+    for (const index of targetIndices) {
+        const file = selectedFilesList[index];
+        const statusLabel = document.getElementById(`status-${index}`);
+        const progressBar = document.getElementById(`progress-bar-${index}`);
+        const downloadBtn = document.getElementById(`folder-btn-${index}`);
+        const retryBtn = document.getElementById(`retry-btn-${index}`);
+
+        statusLabel.innerHTML = `⏳ İşleniyor...`;
+        progressBar.style.width = "20%";
+
+        // Sanal Dosya Sistemine Yazma
+        ffmpeg.FS('writeFile', 'input_track', await fetchFile(file));
+
+        const outputName = `EBS_Blurred_${Date.now()}_${file.name}`;
+
+        // PyQt5 Mimarisindeki Blur Filtre Complex'inin JS Karşılığı
+        const filterStr = `[0:v]scale=${width}:${height}:force_original_aspect_ratio=increase,boxblur=40:1,scale='trunc(iw/2)*2':'trunc(ih/2)*2'[blurred];[0:v]scale=w=${width}:h=${height}:force_original_aspect_ratio=decrease,scale='trunc(iw/2)*2':'trunc(ih/2)*2'[scaled];color=white:s=${width}x${height}[c];[c][blurred]overlay[bg];[bg][scaled]overlay=(W-w)/2:(H-h)/2:shortest=1`;
+
+        try {
+            await ffmpeg.run(
+                '-y', '-i', 'input_track',
+                '-filter_complex', filterStr,
+                '-c:v', 'libx264', '-preset', preset, '-crf', crf.toString(),
+                '-c:a', 'copy', outputName
+            );
+
+            progressBar.style.width = "100%";
+            statusLabel.innerHTML = `✅ Tamamlandı!`;
+            
+            // Çıktı Dosyasını İndirme Linkine Dönüştürme
+            const data = ffmpeg.FS('readFile', outputName);
+            const blob = new Blob([data.buffer], { type: 'video/mp4' });
+            const downloadUrl = URL.createObjectURL(blob);
+
+            downloadBtn.classList.remove('d-none');
+            retryBtn.classList.remove('d-none');
+            downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = outputName;
+                a.click();
+            };
+
+            ffmpeg.FS('unlink', 'input_track');
+            ffmpeg.FS('unlink', outputName);
+
+        } catch (error) {
+            statusLabel.innerHTML = `❌ Başarısız!`;
+            retryBtn.classList.remove('d-none');
+        }
+    }
+
+    renderAllBtn.disabled = false;
+    renderSelBtn.disabled = false;
+}
+
+// Tetikleyiciler
+renderAllBtn.addEventListener('click', () => {
+    const allIndices = selectedFilesList.map((_, i) => i);
+    runRenderEngine(allIndices);
+});
+
+renderSelBtn.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.render-checksum');
+    const targetIndices = [];
+    checkboxes.forEach(cb => {
+        if(cb.checked) targetIndices.push(parseInt(cb.getAttribute('data-index')));
+    });
+    runRenderEngine(targetIndices);
+});
+
+stopBtn.addEventListener('click', () => {
+    location.reload(); // WebAssembly worker katmanını güvenli resetleme yöntemi
+});
+
+function reRenderTrack(index) {
+    runRenderEngine([index]);
+}
+</script>
+</body>
+</html>
