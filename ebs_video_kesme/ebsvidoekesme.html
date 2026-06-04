@@ -3,94 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EBS Video Bölücü & Dönüştürücü</title>
     
-    <!-- GİTHUB PAGES UYUMLULUK SCRİPTİ (En başta olmalı) -->
+    <!-- ================================================================= -->
+    <!-- SOSYAL MEDYA & GOOGLE SEO OPTİMİZASYONU (META TAGS)               -->
+    <!-- ================================================================= -->
+    <title>Ücretsiz Çevrimiçi Video Bölücü & Dönüştürücü | EBS Video Studio Pro</title>
+    <meta name="description" content="Videolarınızı tarayıcı üzerinden ücretsiz, programsız ve güvenle bölün. MP4, MP3, MKV formatlarında çoklu kesim yapın ve ZIP olarak indirin. Sunucusuz ve hızlı!">
+    <meta name="keywords" content="video bölücü, video kesici, online video splitter, programsız video kesme, mp4 bölme, mp3 dönüştürücü, ebs video studio, ebubekir bastama">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+    <meta property="og:title" content="Ücretsiz Çevrimiçi Video Bölücü & Dönüştürücü | EBS Video Studio Pro">
+    <meta property="og:description" content="Videolarınızı programsız ve tamamen güvenli şekilde tarayıcıda bölün, dönüştürün ve indirin. Verileriniz sunucuya yüklenmez!">
+    <meta property="og:image" content="https://www.ebubekirbastama.com.tr/assets/og-image.jpg"> <!-- Varsa program logonu koyabilirsin -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.ebubekirbastama.com.tr/">
+    <meta property="twitter:title" content="Ücretsiz Çevrimiçi Video Bölücü & Dönüştürücü | EBS Video Studio Pro">
+    <meta property="twitter:description" content="Kurulumsuz, reklamsız ve limitsiz online video bölme stüdyosu.">
+    <meta property="twitter:image" content="https://www.ebubekirbastama.com.tr/assets/og-image.jpg">
+
+    <!-- Google Zengin Sonuçlar Şema Kodu (Structured Data - SoftwareApplication) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "EBS Video Studio Pro",
+      "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+      "applicationCategory": "MultimediaApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Tarayıcı tabanlı, sunucusuz ve tamamen ücretsiz video bölme, kesme ve dönüştürme aracı.",
+      "browserRequirements": "Requires HTML5, WebAssembly"
+    }
+    </script>
+    <!-- ================================================================= -->
+
+    <!-- GİTHUB PAGES UYUMLULUK SCRİPTİ -->
     <script src="coi-serviceworker.js"></script>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome İkonları -->
+    <!-- FontAwesome Pro İkonları -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { background-color: #f8f9fa; }
-        .card { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .time-row { background: #fff; border: 1px solid #dee2e6; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        :root {
+            --bg-dark: #0f111a;
+            --panel-dark: #161925;
+            --accent-color: #007bff;
+            --accent-glow: rgba(0, 123, 255, 0.35);
+            --text-main: #f1f3f9;
+            --text-muted: #8b949e;
+            --border-color: #2d3142;
+        }
+
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .app-window {
+            background: var(--panel-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: #0b0c13;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-dots span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .app-body { padding: 30px; }
+
+        .form-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            background-color: #1c2030;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #1c2030;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow);
+            color: var(--text-main);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background: #121420;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .file-upload-wrapper:hover {
+            background: #181b2b;
+            border-color: var(--accent-color);
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            left: 0; top: 0; opacity: 0;
+            width: 100%; height: 100%; cursor: pointer;
+        }
+
+        .time-row { 
+            background: #121420; 
+            border: 1px solid var(--border-color); 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 12px; 
+            transition: all 0.2s ease;
+        }
+        .time-row:hover { border-color: #3e445e; }
+
+        .input-group-text {
+            background-color: #1c2030;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border: none;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
+        }
+
+        .btn-secondary-custom {
+            background: #1c2030;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+        .btn-secondary-custom:hover { background: #252a3f; color: #fff; }
+
+        .progress { background-color: #121420; height: 12px; border-radius: 6px; }
+        .progress-bar { background: linear-gradient(90deg, #007bff, #00d2ff); }
+
+        .status-box {
+            background: #121420;
+            border-left: 4px solid var(--accent-color);
+            color: var(--text-main);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card p-4">
-                <h2 class="text-center mb-4 text-primary"><i class="fa-solid fa-scissors"></i> EBS Çevrimiçi Video Bölücü</h2>
-                <p class="text-muted text-center">Videolarınızı tarayıcı üzerinden güvenle bölün ve dönüştürün. Verileriniz asla bir sunucuya yüklenmez, tamamen bilgisayarınızda işlenir!</p>
-                <hr>
-
-                <!-- 1. Video Seçimi -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">1. Video Dosyanızı Seçin</label>
-                    <input type="file" id="videoInput" class="form-control" accept="video/*">
+        <div class="col-xl-9 col-lg-10">
+            
+            <div class="app-window">
+                
+                <div class="app-header">
+                    <div class="window-dots">
+                        <span class="dot-red"></span>
+                        <span class="dot-yellow"></span>
+                        <span class="dot-green"></span>
+                    </div>
+                    <div class="app-title fw-bold text-uppercase tracking-wider" style="font-size: 0.8rem; color: var(--text-muted);">
+                        <i class="fa-solid fa-sliders text-primary me-1"></i> EBS Video Studio Pro v1.0.4
+                    </div>
+                    <div></div>
                 </div>
 
-                <!-- 2. Format Seçimi -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">2. Çıktı Formatı</label>
-                    <select id="formatSelect" class="form-select">
-                        <option value="mp4">MP4 (Video)</option>
-                        <option value="mp3">MP3 (Ses)</option>
-                        <option value="mkv">MKV (Video)</option>
-                        <option value="avi">AVI (Video)</option>
-                    </select>
-                </div>
+                <div class="app-body">
+                    <div class="row g-4">
+                        
+                        <div class="col-md-5 border-end pr-md-4" style="border-color: var(--border-color) !important;">
+                            
+                            <div class="mb-4">
+                                <label class="form-label">MEDYA DOSYASI</label>
+                                <div class="file-upload-wrapper">
+                                    <i class="fa-solid fa-cloud-arrow-up fa-2x text-primary mb-2"></i>
+                                    <p class="m-0 small text-white fw-semibold" id="fileNameDisplay">Video Dosyasını Sürükleyin veya Seçin</p>
+                                    <input type="file" id="videoInput" accept="video/*">
+                                </div>
+                            </div>
 
-                <!-- 3. Zaman Aralıkları -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold d-flex justify-content-between align-items-center">
-                        3. Kesilecek Zaman Aralıkları
-                        <button type="button" id="addRangeBtn" class="btn btn-sm btn-success"><i class="fa-solid fa-plus"></i> Aralık Ekle</button>
-                    </label>
-                    
-                    <div id="rangesContainer">
-                        <div class="row g-2 time-row align-items-center">
-                            <div class="col-5">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text">Başlangıç</span>
-                                    <input type="text" class="form-control start-time" placeholder="00:41" value="00:41">
+                            <div class="mb-4">
+                                <label class="form-label">ÇIKTI FORMATI</label>
+                                <select id="formatSelect" class="form-select">
+                                    <option value="mp4">MP4 (H.264 Lossless Video)</option>
+                                    <option value="mp3">MP3 (High Quality Audio)</option>
+                                    <option value="mkv">MKV (Matroska Video)</option>
+                                    <option value="avi">AVI (Audio Video Interleave)</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid mt-5">
+                                <button type="button" id="processBtn" class="btn btn-primary btn-lg">
+                                    <i class="fa-solid fa-bolt me-2"></i> RENDER & EXPORT
+                                </button>
+                            </div>
+
+                            <div id="statusContainer" class="mt-4 d-none">
+                                <div class="p-3 status-box small mb-2" id="statusText">İşlem bekleniyor...</div>
+                                <div class="progress">
+                                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
                                 </div>
                             </div>
-                            <div class="col-5">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text">Bitiş</span>
-                                    <input type="text" class="form-control end-time" placeholder="00:54" value="00:54">
-                                </div>
+
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="form-label m-0">ZAMAN ÇİZELGESİ (TIMELINE)</label>
+                                <button type="button" id="addRangeBtn" class="btn btn-secondary-custom">
+                                    <i class="fa-solid fa-plus me-1"></i> ARALIK EKLE
+                                </button>
                             </div>
-                            <div class="col-2 text-end">
-                                <button type="button" class="btn btn-sm btn-danger remove-btn" disabled><i class="fa-solid fa-trash"></i></button>
+                            
+                            <div id="rangesContainer" style="max-height: 380px; overflow-y: auto; padding-right: 5px;">
+                                
+                                <div class="row g-2 time-row align-items-center">
+                                    <div class="col-5">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="fa-solid fa-play text-success"></i></span>
+                                            <input type="text" class="form-control start-time text-center" placeholder="00:41" value="00:41">
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="fa-solid fa-stop text-danger"></i></span>
+                                            <input type="text" class="form-control end-time text-center" placeholder="00:54" value="00:54">
+                                        </div>
+                                    </div>
+                                    <div class="col-2 text-end">
+                                        <button type="button" class="btn btn-sm btn-link text-muted remove-btn" disabled><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- 4. İşlem Butonu ve Progress -->
-                <div class="d-grid gap-2">
-                    <button type="button" id="processBtn" class="btn btn-primary btn-lg"><i class="fa-solid fa-gear"></i> Videoyu Böl ve İndir</button>
-                </div>
-
-                <div id="statusContainer" class="mt-4 d-none">
-                    <div class="alert alert-info" id="statusText">İşlem hazırlanıyor...</div>
-                    <div class="progress">
-                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
                     </div>
                 </div>
 
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Harici Kütüphaneler -->
+<!-- Çekirdek Kütüphaneler -->
 <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -106,6 +315,15 @@ const formatSelect = document.getElementById('formatSelect');
 const statusContainer = document.getElementById('statusContainer');
 const statusText = document.getElementById('statusText');
 const progressBar = document.getElementById('progressBar');
+const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+videoInput.addEventListener('change', (e) => {
+    if(e.target.files[0]) {
+        fileNameDisplay.innerText = e.target.files[0].name;
+        fileNameDisplay.classList.remove('text-white');
+        fileNameDisplay.classList.add('text-success');
+    }
+});
 
 addRangeBtn.addEventListener('click', () => {
     const newRow = document.createElement('div');
@@ -113,18 +331,18 @@ addRangeBtn.addEventListener('click', () => {
     newRow.innerHTML = `
         <div class="col-5">
             <div class="input-group input-group-sm">
-                <span class="input-group-text">Başlangıç</span>
-                <input type="text" class="form-control start-time" placeholder="00:00" value="00:00">
+                <span class="input-group-text"><i class="fa-solid fa-play text-success"></i></span>
+                <input type="text" class="form-control start-time text-center" placeholder="00:00" value="00:00">
             </div>
         </div>
         <div class="col-5">
             <div class="input-group input-group-sm">
-                <span class="input-group-text">Bitiş</span>
-                <input type="text" class="form-control end-time" placeholder="00:10" value="00:10">
+                <span class="input-group-text"><i class="fa-solid fa-stop text-danger"></i></span>
+                <input type="text" class="form-control end-time text-center" placeholder="00:10" value="00:10">
             </div>
         </div>
         <div class="col-2 text-end">
-            <button type="button" class="btn btn-sm btn-danger remove-btn"><i class="fa-solid fa-trash"></i></button>
+            <button type="button" class="btn btn-sm btn-link text-danger remove-btn"><i class="fa-solid fa-trash-can"></i></button>
         </div>
     `;
     rangesContainer.appendChild(newRow);
@@ -140,7 +358,7 @@ function timeToSeconds(timeStr) {
 
 processBtn.addEventListener('click', async () => {
     const file = videoInput.files[0];
-    if (!file) { alert('Lütfen önce bir video dosyası seçin!'); return; }
+    if (!file) { alert('Lütfen işlenecek medya dosyasını yükleyin!'); return; }
 
     const startInputs = document.querySelectorAll('.start-time');
     const endInputs = document.querySelectorAll('.end-time');
@@ -150,7 +368,7 @@ processBtn.addEventListener('click', async () => {
         const startSec = timeToSeconds(startInputs[i].value);
         const endSec = timeToSeconds(endInputs[i].value);
         if (endSec <= startSec) {
-            alert(`${i+1}. aralıkta bitiş süresi başlangıçtan büyük olmalıdır!`);
+            alert(`Hata: Satır ${i+1} için geçersiz zaman aralığı!`);
             return;
         }
         ranges.push({ start: startSec, duration: (endSec - startSec), rawStart: startInputs[i].value, rawEnd: endInputs[i].value });
@@ -160,22 +378,21 @@ processBtn.addEventListener('click', async () => {
     processBtn.disabled = true;
     
     if (!ffmpeg.isLoaded()) {
-        statusText.innerText = "FFmpeg modülleri tarayıcıya yükleniyor...";
+        statusText.innerText = "[CORE] Bağımlılıklar yükleniyor...";
         await ffmpeg.load();
     }
 
-    statusText.innerText = "Video işleme hazırlanıyor...";
+    statusText.innerText = "[CORE] Medya hafızaya haritalanıyor...";
     ffmpeg.FS('writeFile', 'input_video', await fetchFile(file));
 
     const targetFormat = formatSelect.value;
     const generatedFiles = [];
 
     for (let i = 0; i < ranges.length; i++) {
-        statusText.innerText = `${i + 1}/${ranges.length} parça kesiliyor (${ranges[i].rawStart} - ${ranges[i].rawEnd})...`;
+        statusText.innerText = `[RENDER] Parça ${i + 1}/${ranges.length} işleniyor (${ranges[i].rawStart} -> ${ranges[i].rawEnd})`;
         progressBar.style.width = `${Math.round((i / ranges.length) * 100)}%`;
-        progressBar.innerText = `${Math.round((i / ranges.length) * 100)}%`;
 
-        const outputName = `parca_${i + 1}.${targetFormat}`;
+        const outputName = `EBS_Track_${i + 1}.${targetFormat}`;
         
         if (targetFormat === 'mp3') {
             await ffmpeg.run('-ss', ranges[i].start.toString(), '-to', (ranges[i].start + ranges[i].duration).toString(), '-i', 'input_video', '-q:a', '0', '-map', 'a', outputName);
@@ -188,7 +405,6 @@ processBtn.addEventListener('click', async () => {
     }
 
     progressBar.style.width = '100%';
-    progressBar.innerText = '100%';
 
     if (generatedFiles.length === 1) {
         const blob = new Blob([generatedFiles[0].data.buffer], { type: targetFormat === 'mp3' ? 'audio/mp3' : 'video/mp4' });
@@ -198,22 +414,21 @@ processBtn.addEventListener('click', async () => {
         a.download = generatedFiles[0].name;
         a.click();
     } else {
-        statusText.innerText = "Dosyalar ZIP paketine dönüştürülüyor...";
+        statusText.innerText = "[COMPRESS] Dosyalar ZIP paketine arşivleniyor...";
         const zip = new JSZip();
         generatedFiles.forEach(file => { zip.file(file.name, file.data.buffer); });
         const zipContent = await zip.generateAsync({ type: "blob" });
         const url = URL.createObjectURL(zipContent);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `EBS_Video_Parcalari_${Date.now()}.zip`;
+        a.download = `EBS_Studio_Export_${Date.now()}.zip`;
         a.click();
     }
 
     ffmpeg.FS('unlink', 'input_video');
     generatedFiles.forEach(f => ffmpeg.FS('unlink', f.name));
 
-    statusText.className = "alert alert-success";
-    statusText.innerText = "Harika! İşlem başarıyla tamamlandı.";
+    statusText.innerText = "[SUCCESS] Dışarı aktarma tamamlandı.";
     processBtn.disabled = false;
 });
 </script>
