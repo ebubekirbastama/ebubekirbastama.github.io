@@ -16,10 +16,10 @@
 
     <!-- Open Graph / Sosyal Medya Kartları -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/media-studio/media_studio.html
+    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/media-studio">
     <meta property="og:title" content="Ücretsiz Çevrimiçi Video & Ses İşleme Stüdyosu | EBS Media Studio Pro">
     <meta property="og:description" content="Programsız ve tamamen güvenli şekilde tarayıcıda video sıkıştırma, GIF yapma, ses ayıklama ve logo ekleme işlemleri. Verileriniz sunucuya yüklenmez!">
-
+    <meta property="og:image" content="https://www.ebubekirbastama.com.tr/assets/og-studio-image.jpg">
 
     <!-- Google Teknik Şema Kodu (SoftwareApplication & FAQ) -->
     <script type="application/ld+json">
@@ -69,8 +69,8 @@
             --panel-card: #1c1d27;
             --accent-green: #00ff88;
             --accent-glow: rgba(0, 255, 136, 0.25);
-            --text-main: #ffffff; /* Ana metinleri tam beyaz yaptık */
-            --text-muted: #b0b2c2; /* Sönük metinleri okunabilir açık griye çektik */
+            --text-main: #ffffff;
+            --text-muted: #b0b2c2;
             --border-color: #262833;
         }
 
@@ -112,7 +112,7 @@
 
         .app-body { padding: 25px; }
 
-        /* Sol Menü (Araç Seçici) Navigasyonu */
+        /* Sol Menü Navigasyonu */
         .tool-nav .nav-link {
             color: var(--text-muted);
             border: 1px solid transparent;
@@ -122,6 +122,7 @@
             font-weight: 600;
             transition: all 0.2s ease;
             text-align: left;
+            width: 100%;
         }
         .tool-nav .nav-link:hover {
             color: #fff;
@@ -139,7 +140,7 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: var(--accent-green); /* Başlıkları fütüristik yeşil yaptık */
+            color: var(--accent-green);
             margin-bottom: 8px;
             font-weight: 700;
         }
@@ -176,8 +177,14 @@
             background: #13151f;
         }
         .file-upload-wrapper input[type="file"] {
-            position: absolute; left: 0; top: 0; opacity: 0;
-            width: 100%; height: 100%; cursor: pointer;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 10;
         }
 
         /* Önizleme Paneli */
@@ -190,6 +197,7 @@
             justify-content: center;
             overflow: hidden;
             min-height: 200px;
+            width: 100%;
         }
         video { width: 100%; max-height: 240px; object-fit: contain; }
 
@@ -234,7 +242,6 @@
             margin-top: 25px;
         }
         
-        /* Özel Beyaz ve Terminal Yazı Sınıfları */
         .text-terminal {
             color: #ffffff !important;
             font-family: 'Courier New', Courier, monospace;
@@ -291,6 +298,7 @@
                                 <div class="file-upload-wrapper">
                                     <i class="fa-solid fa-cloud-arrow-up fa-2x text-success mb-2"></i>
                                     <p class="m-0 small fw-bold text-white" id="fileNameDisplay">Videoyu buraya sürükleyin veya tıklayarak seçin</p>
+                                    <input type="file" id="mainVideoInput" accept="video/*">
                                 </div>
                             </div>
 
@@ -388,7 +396,7 @@
                                 <div class="col-md-5">
                                     <span class="form-label d-block mb-2">MONITOR (ÖNİZLEME)</span>
                                     <div class="preview-box">
-                                        <video id="studioVideoPlayer" controls class="d-none"></video>
+                                        <video id="studioVideoPlayer" controls style="display: none;"></video>
                                         <span id="noVideoText" class="small text-white p-3 text-center">Video yüklendiğinde önizleme burada belirecektir.</span>
                                     </div>
                                 </div>
@@ -494,11 +502,11 @@ mainVideoInput.addEventListener('change', (e) => {
     if (file) {
         activeFile = file;
         fileNameDisplay.innerText = `${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
-        noVideoText.classList.add('d-none');
+        noVideoText.style.display = 'none';
         
         const videoUrl = URL.createObjectURL(file);
         studioVideoPlayer.src = videoUrl;
-        studioVideoPlayer.classList.remove('d-none');
+        studioVideoPlayer.style.display = 'block';
     }
 });
 
