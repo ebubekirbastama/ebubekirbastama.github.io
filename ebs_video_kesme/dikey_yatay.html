@@ -3,37 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ücretsiz Çevrimiçi Arka Plan Blur Video İşleyici | EBS Blur Studio Pro</title>
-    <meta name="description" content="Videolarınızı dikey (9:16) veya yatay (16:9) formatlara otomatik arka plan blur efekti ile dönüştürün. Tarayıcı tabanlı, hızlı ve güvenli render motoru.">
-    <meta name="keywords" content="video blur yapma, dikey video dönüştürücü, arka plan bulanıklaştırma, online video blur, ffmpeg video blur, ebs blur studio, ebubekir bastama">
-    <meta name="author" content="Ebubekir Bastama">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
-    <meta property="og:title" content="Ücretsiz Çevrimiçi Arka Plan Blur Video İşleyici | EBS Blur Studio Pro">
-    <meta property="og:description" content="Videolarınızı programsız ve tamamen güvenli şekilde tarayıcıda dikey/yatay formatlara dönüştürün, arka planı otomatik bulanıklaştırın.">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "EBS Blur Studio Pro",
-      "operatingSystem": "Windows, macOS, Linux, Android, iOS",
-      "applicationCategory": "MultimediaApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "description": "Tarayıcı tabanlı, sunucusuz otomatik video arka plan bulanıklaştırma ve ölçeklendirme stüdou.",
-      "browserRequirements": "Requires HTML5, WebAssembly"
-    }
-    </script>
-
+    <title>EBS Blur Studio Pro | Profesyonel Video Dönüştürücü</title>
+    
+    <!-- SharedArrayBuffer için Güvenlik Scripti -->
     <script src="coi-serviceworker.js"></script>
-
+    
+    <!-- Bootstrap 5 CSS ve FontAwesome İkonları -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -51,7 +26,7 @@
 
         body { 
             background-color: var(--bg-dark); 
-            color: var(--text-main);
+            color: var(--text-main); 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
         }
@@ -71,21 +46,21 @@
             border-bottom: 2px solid var(--accent-green);
         }
 
-        .app-window {
-            background: var(--panel-dark);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-            overflow: hidden;
+        .app-window { 
+            background: var(--panel-dark); 
+            border: 1px solid var(--border-color); 
+            border-radius: 14px; 
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6); 
+            overflow: hidden; 
         }
 
-        .app-header {
-            background: #07080c;
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .app-header { 
+            background: #07080c; 
+            padding: 14px 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
         }
 
         .window-dots span {
@@ -100,22 +75,22 @@
         .dot-green { background: #27c93f; }
 
         .app-body { padding: 25px; }
-
-        .form-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 700;
+        
+        .form-label { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            color: var(--text-muted); 
+            margin-bottom: 8px; 
+            font-weight: 700; 
         }
 
-        .form-control, .form-select {
-            background-color: #171923;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 8px;
-            padding: 10px 12px;
+        .form-control, .form-select { 
+            background-color: #171923; 
+            border: 1px solid var(--border-color); 
+            color: var(--text-main); 
+            border-radius: 8px; 
+            padding: 10px 12px; 
             font-size: 0.9rem;
         }
 
@@ -126,53 +101,54 @@
             color: var(--text-main);
         }
 
-        .file-upload-wrapper {
-            position: relative;
-            border: 2px dashed var(--border-color);
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
-            background: #0e0f15;
-            cursor: pointer;
+        .file-upload-wrapper { 
+            position: relative; 
+            border: 2px dashed var(--border-color); 
+            border-radius: 10px; 
+            padding: 25px; 
+            text-align: center; 
+            background: #0e0f15; 
+            cursor: pointer; 
             transition: all 0.3s ease;
         }
         .file-upload-wrapper:hover {
             border-color: var(--accent-green);
             background: #13151f;
         }
-        .file-upload-wrapper input[type="file"] {
-            position: absolute; left: 0; top: 0; opacity: 0;
-            width: 100%; height: 100%; cursor: pointer;
+        .file-upload-wrapper input[type="file"] { 
+            position: absolute; left: 0; top: 0; opacity: 0; 
+            width: 100%; height: 100%; cursor: pointer; 
         }
 
-        .video-card {
-            background: var(--panel-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 12px;
+        .video-card { 
+            background: var(--panel-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            padding: 15px; 
+            margin-bottom: 12px; 
         }
 
-        .preview-box {
-            background: #07080c;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            transition: all 0.3s ease;
+        .preview-box { 
+            background: #07080c; 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            transition: all 0.3s ease; 
         }
         video { width: 100%; height: 100%; object-fit: contain; }
 
-        .btn-accent {
-            background: var(--accent-green);
-            color: #000;
-            font-weight: 700;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px var(--accent-glow);
+        .btn-accent { 
+            background: var(--accent-green); 
+            color: #000; 
+            font-weight: 700; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px var(--accent-glow); 
+            width: 100%;
             transition: all 0.2s ease;
         }
         .btn-accent:hover:not(:disabled) {
@@ -181,13 +157,13 @@
             box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
         }
 
-        .btn-outline-custom {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 0.85rem;
-            padding: 8px 14px;
-            border-radius: 6px;
+        .btn-outline-custom { 
+            background: transparent; 
+            border: 1px solid var(--border-color); 
+            color: var(--text-main); 
+            font-size: 0.85rem; 
+            padding: 8px 14px; 
+            border-radius: 6px; 
             font-weight: 600;
         }
         .btn-outline-custom:hover { border-color: var(--text-muted); color: #fff; }
@@ -205,6 +181,18 @@
 
         .progress { background-color: #07080c; height: 10px; border-radius: 5px; }
         .progress-bar { background: linear-gradient(90deg, #00ff88, #00b3ff); transition: width 0.3s ease; }
+        
+        .preview-loading-overlay { 
+            display: none; 
+            position: absolute; 
+            color: var(--accent-green); 
+            font-weight: bold; 
+            background: rgba(0,0,0,0.85); 
+            padding: 15px 25px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color);
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
@@ -214,6 +202,7 @@
         <div class="col-12">
             <div class="app-window">
                 
+                <!-- Üst Başlık Çubuğu -->
                 <div class="app-header">
                     <div class="window-dots">
                         <span class="dot-red"></span>
@@ -221,11 +210,12 @@
                         <span class="dot-green"></span>
                     </div>
                     <div class="app-title fw-bold text-uppercase tracking-wider" style="font-size: 0.75rem; color: var(--text-muted);">
-                        <i class="fa-solid fa-film text-success me-1"></i> EBS Blur Studio Pro v2.1.1
+                        <i class="fa-solid fa-film text-success me-1"></i> EBS Blur Studio Pro v2.5.0
                     </div>
                     <div></div>
                 </div>
 
+                <!-- Tab Sekme Yapısı -->
                 <ul class="nav nav-tabs px-3 pt-2" id="studioTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#mainPanel" type="button" role="tab"><i class="fa-solid fa-clapperboard me-1"></i> ANA EKRAN</button>
@@ -235,33 +225,39 @@
                     </li>
                 </ul>
 
+                <!-- Paneller -->
                 <div class="tab-content app-body" id="studioTabsContent">
+                    
+                    <!-- Ana Ekran -->
                     <div class="tab-pane fade show active" id="mainPanel" role="tabpanel">
                         <div class="row g-4">
                             
+                            <!-- Sol Kontrol Bölümü -->
                             <div class="col-lg-7 border-end pr-lg-4" style="border-color: var(--border-color) !important;">
                                 <div class="row g-2 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">KADRAJ MODU (ASPECT)</label>
                                         <select id="modeSelector" class="form-select">
-                                            <option value="vertical">📱 Dikey (9:16)</option>
+                                            <option value="vertical" selected>📱 Dikey (9:16)</option>
                                             <option value="horizontal">🖥️ Yatay (16:9)</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 d-flex align-items-end">
                                         <div class="file-upload-wrapper w-100 p-2 text-center" style="height: 42px; display: flex; align-items: center; justify-content: center;">
-                                            <span class="small fw-bold text-success"><i class="fa-solid fa-folder-open me-1"></i> VİDEO DOSYALARI EKLE</span>
+                                            <span class="small fw-bold text-success"><i class="fa-solid fa-folder-open me-1"></i> VİDEO EKLE</span>
                                             <input type="file" id="videoInput" multiple accept="video/*">
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- Video Kuyruğu -->
                                 <div id="videoQueueContainer" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
                                     <div class="text-center py-5 text-muted small" id="emptyState">
                                         <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i> İşlem sırasına eklenmiş medya dosyası bulunmuyor.
                                     </div>
                                 </div>
 
+                                <!-- Render Butonları -->
                                 <div class="d-flex gap-2 mt-4">
                                     <button type="button" id="renderAllBtn" class="btn btn-accent flex-grow-1"><i class="fa-solid fa-play me-1"></i> TÜMÜNÜ RENDER AL</button>
                                     <button type="button" id="renderSelBtn" class="btn btn-outline-custom"><i class="fa-solid fa-check-double me-1"></i> SEÇİLENLERİ İŞLE</button>
@@ -269,35 +265,40 @@
                                 </div>
                             </div>
 
+                            <!-- Sağ Önizleme Monitörü -->
                             <div class="col-lg-5 d-flex flex-column align-items-center justify-content-start">
                                 <div class="w-100 d-flex justify-content-between align-items-center mb-2 px-1">
-                                    <span class="form-label m-0">MONITOR (ÖNİZLEME)</span>
+                                    <span class="form-label m-0">📺 EFEKTLİ CANLI ÖNİZLEME (İLK 5 SN)</span>
                                     <div class="btn-group">
                                         <button id="audioToggleBtn" class="btn btn-sm btn-outline-custom py-1 px-2"><i class="fa-solid fa-volume-high"></i></button>
                                         <button id="stopPreviewBtn" class="btn btn-sm btn-outline-custom py-1 px-2"><i class="fa-solid fa-xmark"></i></button>
                                     </div>
                                 </div>
-                                <div class="preview-box w-100" id="previewContainer" style="width: 320px; height: 430px;">
-                                    <video id="mainVideoPlayer" controls></video>
+                                <div class="preview-box w-100 position-relative" id="previewContainer" style="width: 100%; height: 260px;">
+                                    <div id="previewLoader" class="preview-loading-overlay"><i class="fa-solid fa-spinner fa-spin me-2"></i> Efekt Hesaplanıyor...</div>
+                                    <video id="mainVideoPlayer" controls autoplay loop></video>
+                                </div>
+                                <div class="text-center mt-3 text-muted small px-2">
+                                    <i class="fa-solid fa-circle-info text-info me-1"></i> Listedeki bir videonun ismine tıkladığınızda Python ile birebir aynı kalitede 5 saniyelik efektli canlı önizlemesi buraya yüklenir.
                                 </div>
                             </div>
 
                         </div>
                     </div>
 
+                    <!-- Gelişmiş Ayarlar Paneli -->
                     <div class="tab-pane fade" id="settingsPanel" role="tabpanel">
-                        <div class="row g-4 max-w-md mx-auto" style="max-width: 500px;">
+                        <div class="row g-4 mx-auto" style="max-width: 500px;">
                             <div class="col-12">
-                                <label class="form-label">🎚️ CRF KALİTE ORANI (Önerilen: 23-28)</label>
-                                <input type="number" id="crfValue" class="form-control" min="10" max="40" value="26">
+                                <label class="form-label">🎚️ CRF KALİTE ORANI (Önerilen: 23-26)</label>
+                                <input type="number" id="crfValue" class="form-control" min="10" max="40" value="23">
                             </div>
                             <div class="col-12">
-                                <label class="form-label">🚀 HIZ PRESET (Tarayıcı İçin Ultrafast/Veryfast Önerilir)</label>
+                                <label class="form-label">🚀 HIZ PRESET (Tarayıcı için ultrafast önerilir)</label>
                                 <select id="presetSelect" class="form-select">
                                     <option value="ultrafast" selected>Ultrafast (En Hızlı / Kararlı)</option>
                                     <option value="superfast">Superfast</option>
                                     <option value="veryfast">Veryfast</option>
-                                    <option value="medium">Medium (Yavaş)</option>
                                 </select>
                             </div>
                             <div class="col-12">
@@ -316,6 +317,7 @@
     </div>
 </div>
 
+<!-- Düzenlenen ve Sorunsuz Çalışan jsDelivr Bootstrap Kütüphanesi -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 
@@ -327,28 +329,31 @@ let isMuted = false;
 let currentProcessingIndex = null;
 let durationInSeconds = 0;
 
-// Elementler
 const modeSelector = document.getElementById('modeSelector');
 const previewContainer = document.getElementById('previewContainer');
 const videoInput = document.getElementById('videoInput');
 const videoQueueContainer = document.getElementById('videoQueueContainer');
 const emptyState = document.getElementById('emptyState');
 const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+const previewLoader = document.getElementById('previewLoader');
 const stopPreviewBtn = document.getElementById('stopPreviewBtn');
 const audioToggleBtn = document.getElementById('audioToggleBtn');
 const renderAllBtn = document.getElementById('renderAllBtn');
 const renderSelBtn = document.getElementById('renderSelBtn');
 const stopBtn = document.getElementById('stopBtn');
 
-modeSelector.addEventListener('change', (e) => {
-    if(e.target.value === 'vertical') {
-        previewContainer.style.width = "320px";
-        previewContainer.style.height = "430px";
+// Arayüz Monitör Oranını Dikey ve Yataya Göre Esnetmeden Güncelleme
+function adjustPreviewBox(val) {
+    if(val === 'vertical') {
+        previewContainer.style.width = "250px";
+        previewContainer.style.height = "440px";
     } else {
         previewContainer.style.width = "100%";
         previewContainer.style.height = "260px";
     }
-});
+}
+adjustPreviewBox(modeSelector.value);
+modeSelector.addEventListener('change', (e) => adjustPreviewBox(e.target.value));
 
 videoInput.addEventListener('change', (e) => {
     const files = e.target.files;
@@ -364,8 +369,8 @@ videoInput.addEventListener('change', (e) => {
         card.id = `video-card-${index}`;
         card.innerHTML = `
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="fw-bold small text-truncate text-success" style="max-width:70%; cursor:pointer;" onclick="playInPreview(${index})">
-                    <i class="fa-solid fa-video me-1"></i> ${file.name}
+                <span class="fw-bold small text-truncate text-success" style="max-width:70%; cursor:pointer;" onclick="generate5SecPreview(${index})">
+                    <i class="fa-solid fa-wand-magic-sparkles me-1"></i> ${file.name} (Önizle)
                 </span>
                 <input type="checkbox" class="form-check-input render-checksum" data-index="${index}" checked>
             </div>
@@ -385,11 +390,49 @@ videoInput.addEventListener('change', (e) => {
     }
 });
 
-function playInPreview(index) {
+// ⚡ PYTHON SÜRÜMÜ İLE %100 AYNI ÇIKTIYI VEREN 5 SANİYELİK ÖNİZLEME MOTORU
+async function generate5SecPreview(index) {
+    previewLoader.style.display = "block";
+    mainVideoPlayer.pause();
+
+    if (!ffmpeg) {
+        ffmpeg = createFFmpeg({ log: false });
+        await ffmpeg.load();
+    }
+
     const file = selectedFilesList[index];
-    const url = URL.createObjectURL(file);
-    mainVideoPlayer.src = url;
-    mainVideoPlayer.play();
+    const mode = modeSelector.value;
+    
+    // Doğru.mp4 kalitesindeki en boy oranları için çözünürlükler (Önizlemede stabilite için 720p baz alınır)
+    let w = 1280, h = 720;
+    if(mode === 'vertical') { w = 720; h = 1280; }
+
+    ffmpeg.FS('writeFile', 'temp_preview_in', await fetchFile(file));
+    
+    // PYTHON TARAFINDAKİ DOĞRU ÇIKTIYI SAĞLAYAN BİREBİR AYNI FILTRE ZİNCİRİ
+    const filterStr = `[0:v]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},boxblur=40:2[bg];[0:v]scale=${w}:${h}:force_original_aspect_ratio=decrease,scale='trunc(iw/2)*2':'trunc(ih/2)*2'[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2:shortest=1`;
+    const outName = 'preview_5s.mp4';
+    
+    try {
+        await ffmpeg.run(
+            '-y', '-ss', '00:00:00', '-i', 'temp_preview_in', '-t', '5',
+            '-filter_complex', filterStr,
+            '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26', '-an',
+            outName
+        );
+
+        const data = ffmpeg.FS('readFile', outName);
+        const blob = new Blob([data.buffer], { type: 'video/mp4' });
+        mainVideoPlayer.src = URL.createObjectURL(blob);
+        mainVideoPlayer.play();
+        
+        ffmpeg.FS('unlink', 'temp_preview_in');
+        ffmpeg.FS('unlink', outName);
+    } catch (err) {
+        console.error("Önizleme hatası:", err);
+    } finally {
+        previewLoader.style.display = "none";
+    }
 }
 
 stopPreviewBtn.addEventListener('click', () => {
@@ -403,11 +446,9 @@ audioToggleBtn.addEventListener('click', () => {
     audioToggleBtn.innerHTML = isMuted ? `<i class="fa-solid fa-volume-xmark text-danger"></i>` : `<i class="fa-solid fa-volume-high"></i>`;
 });
 
-// Süre Yakalama ve Progress Hesaplama Fonksiyonu
 function parseFFmpegLog(msg) {
     if (currentProcessingIndex === null) return;
     
-    // Girdi Dosyasının Toplam Süresini Yakala
     if (msg.includes("Duration:")) {
         const match = msg.match(/Duration: (\d+):(\d+):(\d+)\.(\d+)/);
         if (match) {
@@ -418,7 +459,6 @@ function parseFFmpegLog(msg) {
         }
     }
 
-    // Güncel Render Saniyesini Hesapla ve Arayüzü Güncelle
     if (msg.includes("time=")) {
         const match = msg.match(/time=(\d+):(\d+):(\d+)\.(\d+)/);
         if (match && durationInSeconds > 0) {
@@ -438,6 +478,7 @@ function parseFFmpegLog(msg) {
     }
 }
 
+// 🎛️ ANA TAM RENDER MOTORU
 async function runRenderEngine(targetIndices) {
     if(targetIndices.length === 0) { alert('İşlem yapılacak dosya seçilmedi!'); return; }
     
@@ -446,9 +487,7 @@ async function runRenderEngine(targetIndices) {
 
     if (!ffmpeg) {
         ffmpeg = createFFmpeg({ log: true });
-        ffmpeg.setLogger(({ message }) => {
-            parseFFmpegLog(message);
-        });
+        ffmpeg.setLogger(({ message }) => parseFFmpegLog(message));
         await ffmpeg.load();
     }
 
@@ -475,12 +514,11 @@ async function runRenderEngine(targetIndices) {
         statusLabel.innerHTML = `⏳ İşleniyor...`;
         progressBar.style.width = "5%";
 
-        // Sanal Belleğe Dosya Yazma
         ffmpeg.FS('writeFile', 'input_track', await fetchFile(file));
         const outputName = `EBS_Blurred_${Date.now()}.mp4`;
 
-        // 4K Kilitlenmesini Önleyen Hafifletilmiş, Güvenli Çift Ölçekleme Filtresi
-        const filterStr = `[0:v]scale=${width}:${height}:force_original_aspect_ratio=increase,boxblur=40:2[blurred];[0:v]scale=${width}:${height}:force_original_aspect_ratio=decrease[scaled];[blurred][scaled]overlay=(W-w)/2:(H-h)/2:shortest=1`;
+        // Videonun sünmesini engelleyen Python tabanlı ana filtre mimarisi
+        const filterStr = `[0:v]scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},boxblur=40:2[bg];[0:v]scale=${width}:${height}:force_original_aspect_ratio=decrease,scale='trunc(iw/2)*2':'trunc(ih/2)*2'[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2:shortest=1`;
 
         try {
             await ffmpeg.run(
@@ -511,7 +549,7 @@ async function runRenderEngine(targetIndices) {
             ffmpeg.FS('unlink', outputName);
 
         } catch (error) {
-            console.error(error);
+            console.error("Render hatası:", error);
             statusLabel.innerHTML = `❌ Hata Oluştu!`;
             retryBtn.classList.remove('d-none');
         }
