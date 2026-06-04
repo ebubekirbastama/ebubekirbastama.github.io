@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- ================================================================= -->
-    <!-- SOSYAL MEDYA & GOOGLE SEO OPTİMİZASYONU (META TAGS)               -->
-    <!-- ================================================================= -->
     <title>Ücretsiz Çevrimiçi Video & Ses İşleme Stüdyosu | EBS Media Studio Pro</title>
     <meta name="description" content="Videolarınızı tarayıcıda ücretsiz sıkıştırın, kırpın, GIF'e dönüştürün, sesini ayırın veya logo ekleyin. Sunucusuz, hızlı, güvenli ve %100 gizlilik odaklı render motoru.">
     <meta name="keywords" content="video sıkıştırma, videoyu gife dönüştürme, videodan ses ayırma, video filigran ekleme, video hızlandırma, online video araçları, ffmpeg wasm, ebs studio, ebubekir bastama">
@@ -14,14 +11,12 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.ebubekirbastama.com.tr/media-studio">
 
-    <!-- Open Graph / Sosyal Medya Kartları -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.ebubekirbastama.com.tr/media-studio">
     <meta property="og:title" content="Ücretsiz Çevrimiçi Video & Ses İşleme Stüdyosu | EBS Media Studio Pro">
     <meta property="og:description" content="Programsız ve tamamen güvenli şekilde tarayıcıda video sıkıştırma, GIF yapma, ses ayıklama ve logo ekleme işlemleri. Verileriniz sunucuya yüklenmez!">
     <meta property="og:image" content="https://www.ebubekirbastama.com.tr/assets/og-studio-image.jpg">
 
-    <!-- Google Teknik Şema Kodu (SoftwareApplication & FAQ) -->
     <script type="application/ld+json">
     [
       {
@@ -52,14 +47,46 @@
       }
     ]
     </script>
-    <!-- ================================================================= -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener("install", () => self.skipWaiting());
+                self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
+                self.addEventListener("fetch", event => {
+                    if (event.request.cache === "only-if-cached" && event.request.mode !== "same-origin") return;
+                    event.respondWith(
+                        fetch(event.request).then(response => {
+                            if (response.status === 0) return response;
+                            const newHeaders = new Headers(response.headers);
+                            newHeaders.set("Cross-Origin-Opener-Policy", "same-origin");
+                            newHeaders.set("Cross-Origin-Embedder-Policy", "require-corp");
+                            return new Response(response.body, {
+                                status: response.status,
+                                statusText: response.statusText,
+                                headers: newHeaders
+                            });
+                        }).catch(e => fetch(event.request))
+                    );
+                });
+            `;
+            const blob = new Blob([swCode], { type: "text/javascript" });
+            const swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl, { scope: "./" }).then(reg => {
+                if (!reg.active) {
+                    // İlk yüklemede korumayı devreye sokmak için sayfayı bir kez yeniler
+                    reg.addEventListener("updatefound", () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener("statechange", () => {
+                            if (newWorker.state === "activated") window.location.reload();
+                        });
+                    });
+                }
+            }).catch(err => console.error("SW Kayıt Hatası:", err));
+        }
+    </script>
 
-    <!-- GİTHUB PAGES UYUMLULUK SCRİPTİ -->
-    <script src="coi-serviceworker.js"></script>
-
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome İkon Seti -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -258,10 +285,8 @@
     <div class="row justify-content-center">
         <div class="col-12">
             
-            <!-- Masaüstü Program Penceresi Mimarisi -->
             <div class="app-window">
                 
-                <!-- Üst Pencere Kontrolleri -->
                 <div class="app-header">
                     <div class="window-dots">
                         <span class="dot-red"></span>
@@ -277,7 +302,6 @@
                 <div class="app-body">
                     <div class="row g-4">
                         
-                        <!-- SOL MENÜ: ARAÇ SEÇENEKLERİ -->
                         <div class="col-lg-3 border-end" style="border-color: var(--border-color) !important;">
                             <span class="form-label d-block mb-3">MEDYA ARAÇLARI</span>
                             <div class="nav flex-column tool-nav" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -289,10 +313,8 @@
                             </div>
                         </div>
 
-                        <!-- SAĞ PANEL: DİNAMİK KONTROLLER VE İŞLEM ALANI -->
                         <div class="col-lg-9">
                             
-                            <!-- ORTAK DOSYA YÜKLEME ALANI -->
                             <div class="mb-4">
                                 <label class="form-label">İŞLENECEK KAYNAK VİDEO DOSYASI</label>
                                 <div class="file-upload-wrapper">
@@ -302,10 +324,8 @@
                                 </div>
                             </div>
 
-                            <!-- SEKME İÇERİKLERİ (PARAMETRELER) -->
                             <div class="tab-content" id="v-pills-tabContent">
                                 
-                                <!-- 1. ARAÇ: VİDEO SIKIŞTIRMA -->
                                 <div class="tab-pane fade show active" id="panel-compress" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -329,7 +349,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 2. ARAÇ: VİDEODAN GİF YAPMA -->
                                 <div class="tab-pane fade" id="panel-gif" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -347,14 +366,12 @@
                                     </div>
                                 </div>
 
-                                <!-- 3. ARAÇ: SES AYRIŞTIRMA -->
                                 <div class="tab-pane fade" id="panel-audio" role="tabpanel">
                                     <div class="p-3 bg-dark rounded border border-secondary small text-white">
                                         <i class="fa-solid fa-circle-info text-info me-1"></i> Bu işlem videonun içerisindeki tüm ses dalgasını tarayıcıda ayrıştırarak doğrudan kayıpsız <strong>MP3 / AAC</strong> formatına çevirir. Video akışı işlenmeyeceği için inanılmaz hızlı tamamlanır.
                                     </div>
                                 </div>
 
-                                <!-- 4. ARAÇ: FİLİGRAN / LOGO EKLE -->
                                 <div class="tab-pane fade" id="panel-watermark" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -373,7 +390,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 5. ARAÇ: VİDEO HIZ KONTROLÜ -->
                                 <div class="tab-pane fade" id="panel-speed" role="tabpanel">
                                     <div class="row g-3">
                                         <div class="col-md-12">
@@ -391,7 +407,6 @@
 
                             </div>
 
-                            <!-- CANLI ÖNİZLEME & MONITOR ALANI -->
                             <div class="row mt-4 align-items-center">
                                 <div class="col-md-5">
                                     <span class="form-label d-block mb-2">MONITOR (ÖNİZLEME)</span>
@@ -401,7 +416,6 @@
                                     </div>
                                 </div>
                                 <div class="col-md-7 d-flex flex-column justify-content-end">
-                                    <!-- Durum Bilgisi ve Progress Bar -->
                                     <div class="mb-3">
                                         <div class="d-flex justify-content-between small fw-bold mb-1">
                                             <span id="engineStatusText" class="text-terminal"><i class="fa-solid fa-terminal text-success"></i> Mod Değiştirildi: Araç Tetiklenmeye Hazır.</span>
@@ -412,7 +426,6 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Tetikleme ve İndirme Butonları -->
                                     <div class="d-flex gap-2">
                                         <button type="button" id="startProcessBtn" class="btn btn-accent flex-grow-1"><i class="fa-solid fa-bolt me-1"></i> SEÇİLİ ARACI ÇALIŞTIR</button>
                                         <button type="button" id="downloadOutputBtn" class="btn btn-outline-custom d-none text-success border-success"><i class="fa-solid fa-download me-1"></i> ÇIKTIYI İNDİR</button>
@@ -426,7 +439,6 @@
 
             </div>
 
-            <!-- SEO MAKALELERİ VE BİLGİLENDİRME ALANI (HİT ÇEKMEK İÇİN KRİTİK) -->
             <div class="seo-info-card">
                 <h2 class="h5 text-success mb-3"><i class="fa-solid fa-shield-halved me-2"></i>Neden EBS Media Studio Pro'yu Tercih Etmelisiniz?</h2>
                 <p class="small text-readable">
@@ -453,9 +465,7 @@
     </div>
 </div>
 
-<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- FFmpeg.js Core (V0.11.0 Kararlı Sürüm) -->
 <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 
 <script>
@@ -560,7 +570,6 @@ startProcessBtn.addEventListener('click', async () => {
         const fps = document.getElementById('gifFps').value;
         outputName += '.gif';
         
-        // Kaliteli palet tabanlı GIF filtresi
         ffmpegArgs = ['-i', 'input_raw.mp4', '-vf', `fps=${fps},scale=${width}:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`, outputName];
     } 
     else if (activeTab === 'audio') {
@@ -578,7 +587,7 @@ startProcessBtn.addEventListener('click', async () => {
         ffmpeg.FS('writeFile', 'logo_raw.png', await fetchFile(activeLogoFile));
         const pos = document.getElementById('logoPosition').value;
         
-        let overlayFilter = 'overlay=W-w-10:H-h-10'; // Sağ alt varsayılan
+        let overlayFilter = 'overlay=W-w-10:H-h-10'; 
         if (pos === 'left-top') overlayFilter = 'overlay=10:10';
         if (pos === 'right-top') overlayFilter = 'overlay=W-w-10:10';
         if (pos === 'center') overlayFilter = 'overlay=(W-w)/2:(H-h)/2';
