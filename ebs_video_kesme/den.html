@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBS Blur Studio Pro | Profesyonel Video Dönüştürücü</title>
+    
+    <script src="coi-serviceworker.js"></script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0b0c10;
+            --panel-dark: #12131c;
+            --panel-card: #1c1d27;
+            --accent-green: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.25);
+            --text-main: #e0e0e0;
+            --text-muted: #85868f;
+            --border-color: #262833;
+        }
+
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .nav-tabs { border-bottom: 1px solid var(--border-color); }
+        .nav-tabs .nav-link {
+            color: var(--text-muted);
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            background: transparent;
+        }
+        .nav-tabs .nav-link.active {
+            color: var(--accent-green);
+            background-color: var(--panel-dark);
+            border-bottom: 2px solid var(--accent-green);
+        }
+
+        .app-window { 
+            background: var(--panel-dark); 
+            border: 1px solid var(--border-color); 
+            border-radius: 14px; 
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6); 
+            overflow: hidden; 
+        }
+
+        .app-header { 
+            background: #07080c; 
+            padding: 14px 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .window-dots span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .app-body { padding: 25px; }
+        
+        .form-label { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            color: var(--text-muted); 
+            margin-bottom: 8px; 
+            font-weight: 700; 
+        }
+
+        .form-control, .form-select { 
+            background-color: #171923; 
+            border: 1px solid var(--border-color); 
+            color: var(--text-main); 
+            border-radius: 8px; 
+            padding: 10px 12px; 
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #171923;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-glow);
+            color: var(--text-main);
+        }
+
+        .file-upload-wrapper { 
+            position: relative; 
+            border: 2px dashed var(--border-color); 
+            border-radius: 10px; 
+            padding: 25px; 
+            text-align: center; 
+            background: #0e0f15; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        .file-upload-wrapper:hover {
+            border-color: var(--accent-green);
+            background: #13151f;
+        }
+        .file-upload-wrapper input[type="file"] { 
+            position: absolute; left: 0; top: 0; opacity: 0; 
+            width: 100%; height: 100%; cursor: pointer; 
+        }
+
+        .video-card { 
+            background: var(--panel-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            padding: 15px; 
+            margin-bottom: 12px; 
+        }
+
+        .preview-box { 
+            background: #07080c; 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            transition: all 0.3s ease; 
+        }
+        video { width: 100%; height: 100%; object-fit: contain; }
+
+        .btn-accent { 
+            background: var(--accent-green); 
+            color: #000; 
+            font-weight: 700; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px var(--accent-glow); 
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        .btn-accent:hover:not(:disabled) {
+            background: #00e676;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-outline-custom { 
+            background: transparent; 
+            border: 1px solid var(--border-color); 
+            color: var(--text-main); 
+            font-size: 0.85rem; 
+            padding: 8px 14px; 
+            border-radius: 6px; 
+            font-weight: 600;
+        }
+        .btn-outline-custom:hover { border-color: var(--text-muted); color: #fff; }
+
+        .btn-danger-custom {
+            background: rgba(255, 95, 86, 0.1);
+            border: 1px solid #ff5f56;
+            color: #ff5f56;
+            font-size: 0.85rem;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .btn-danger-custom:hover { background: #ff5f56; color: #000; }
+
+        .progress { background-color: #07080c; height: 10px; border-radius: 5px; }
+        .progress-bar { background: linear-gradient(90deg, #00ff88, #00b3ff); transition: width 0.3s ease; }
+        
+        .preview-loading-overlay { 
+            display: none; 
+            position: absolute; 
+            color: var(--accent-green); 
+            font-weight: bold; 
+            background: rgba(0,0,0,0.85); 
+            padding: 15px 25px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="app-window">
+                
+                <div class="app-header">
+                    <div class="window-dots">
+                        <span class="dot-red"></span>
+                        <span class="dot-yellow"></span>
+                        <span class="dot-green"></span>
+                    </div>
+                    <div class="app-title fw-bold text-uppercase tracking-wider" style="font-size: 0.75rem; color: var(--text-muted);">
+                        <i class="fa-solid fa-film text-success me-1"></i> EBS Blur Studio Pro v2.5.0
+                    </div>
+                    <div></div>
+                </div>
+
+                <ul class="nav nav-tabs px-3 pt-2" id="studioTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#mainPanel" type="button" role="tab"><i class="fa-solid fa-clapperboard me-1"></i> ANA EKRAN</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settingsPanel" type="button" role="tab"><i class="fa-solid fa-sliders me-1"></i> RENDER AYARLARI</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content app-body" id="studioTabsContent">
+                    
+                    <div class="tab-pane fade show active" id="mainPanel" role="tabpanel">
+                        <div class="row g-4">
+                            
+                            <div class="col-lg-7 border-end pr-lg-4" style="border-color: var(--border-color) !important;">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">KADRAJ MODU (ASPECT)</label>
+                                        <select id="modeSelector" class="form-select">
+                                            <option value="vertical" selected>📱 Dikey (9:16)</option>
+                                            <option value="horizontal">🖥️ Yatay (16:9)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <div class="file-upload-wrapper w-100 p-2 text-center" style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                                            <span class="small fw-bold text-success"><i class="fa-solid fa-folder-open me-1"></i> VİDEO EKLE</span>
+                                            <input type="file" id="videoInput" multiple accept="video/*">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="videoQueueContainer" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                                    <div class="text-center py-5 text-muted small" id="emptyState">
+                                        <i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i> İşlem sırasına eklenmiş medya dosyası bulunmuyor.
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-wrap gap-2 mt-4">
+                                    <button type="button" id="renderAllBtn" class="btn btn-accent flex-grow-1"><i class="fa-solid fa-play me-1"></i> TÜMÜNÜ RENDER AL</button>
+                                    <button type="button" id="renderSelBtn" class="btn btn-outline-custom"><i class="fa-solid fa-check-double me-1"></i> SEÇİLENLERİ İŞLE</button>
+                                    <button type="button" id="previewSelBtn" class="btn btn-outline-custom text-success border-success-subtle"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> MODERN ÖNİZLEME YAP</button>
+                                    <button type="button" id="stopBtn" class="btn btn-danger-custom"><i class="fa-solid fa-stop me-1"></i> DURDUR</button>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5 d-flex flex-column align-items-center justify-content-start">
+                                <div class="w-100 d-flex justify-content-between align-items-center mb-2 px-1">
+                                    <span class="form-label m-0">📺 EFEKTLİ CANLI ÖNİZLEME (İLK 5 SN)</span>
+                                    <div class="btn-group">
+                                        <button id="audioToggleBtn" class="btn btn-sm btn-outline-custom py-1 px-2"><i class="fa-solid fa-volume-high"></i></button>
+                                        <button id="stopPreviewBtn" class="btn btn-sm btn-outline-custom py-1 px-2"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                <div class="preview-box w-100 position-relative" id="previewContainer" style="width: 100%; height: 260px;">
+                                    <div id="previewLoader" class="preview-loading-overlay"><i class="fa-solid fa-spinner fa-spin me-2"></i> Efekt Hesaplanıyor...</div>
+                                    <video id="mainVideoPlayer" controls autoplay loop></video>
+                                </div>
+                                <div class="text-center mt-3 text-muted small px-2">
+                                    <i class="fa-solid fa-circle-info text-info me-1"></i> Listeden önizlemek istediğiniz videonun kutucuğunu işaretleyip <strong>"MODERN ÖNİZLEME YAP"</strong> butonuna basmanız yeterlidir.
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="settingsPanel" role="tabpanel">
+                        <div class="row g-4 mx-auto" style="max-width: 500px;">
+                            <div class="col-12">
+                                <label class="form-label">🎚️ CRF KALİTE ORANI (Önerilen: 23-26)</label>
+                                <input type="number" id="crfValue" class="form-control" min="10" max="40" value="23">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">🚀 HIZ PRESET (Tarayıcı için ultrafast önerilir)</label>
+                                <select id="presetSelect" class="form-select">
+                                    <option value="ultrafast" selected>Ultrafast (En Hızlı / Kararlı)</option>
+                                    <option value="superfast">Superfast</option>
+                                    <option value="veryfast">Veryfast</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">📺 HEDEF ÇÖZÜNÜRLÜK (RESOLUTION)</label>
+                                <select id="resSelect" class="form-select">
+                                    <option value="720p" selected>720p HD (Hızlı ve Güvenli)</option>
+                                    <option value="1080p">1080p Full HD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+
+<script>
+const { createFFmpeg, fetchFile } = FFmpeg;
+let ffmpeg = null;
+let selectedFilesList = [];
+let isMuted = false;
+let currentProcessingIndex = null;
+let durationInSeconds = 0;
+
+const modeSelector = document.getElementById('modeSelector');
+const previewContainer = document.getElementById('previewContainer');
+const videoInput = document.getElementById('videoInput');
+const videoQueueContainer = document.getElementById('videoQueueContainer');
+const emptyState = document.getElementById('emptyState');
+const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+const previewLoader = document.getElementById('previewLoader');
+const stopPreviewBtn = document.getElementById('stopPreviewBtn');
+const audioToggleBtn = document.getElementById('audioToggleBtn');
+const renderAllBtn = document.getElementById('renderAllBtn');
+const renderSelBtn = document.getElementById('renderSelBtn');
+const previewSelBtn = document.getElementById('previewSelBtn');
+const stopBtn = document.getElementById('stopBtn');
+
+// Arayüz Monitör Oranını Dikey ve Yataya Göre Esnetmeden Güncelleme
+function adjustPreviewBox(val) {
+    if(val === 'vertical') {
+        previewContainer.style.width = "250px";
+        previewContainer.style.height = "440px";
+    } else {
+        previewContainer.style.width = "100%";
+        previewContainer.style.height = "260px";
+    }
+}
+adjustPreviewBox(modeSelector.value);
+modeSelector.addEventListener('change', (e) => adjustPreviewBox(e.target.value));
+
+// FFmpeg Instance'ını Tek Bir Noktadan Güvenli Başlatma Fonksiyonu
+async function initFFmpeg(enableLogger = false) {
+    if (!ffmpeg) {
+        ffmpeg = createFFmpeg({ log: true });
+        if (enableLogger) {
+            ffmpeg.setLogger(({ message }) => parseFFmpegLog(message));
+        }
+        await ffmpeg.load();
+    } else if (enableLogger) {
+        ffmpeg.setLogger(({ message }) => parseFFmpegLog(message));
+    } else {
+        ffmpeg.setLogger(() => {});
+    }
+    return ffmpeg;
+}
+
+videoInput.addEventListener('change', (e) => {
+    const files = e.target.files;
+    if(files.length > 0) emptyState.classList.add('d-none');
+    
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        selectedFilesList.push(file);
+        const index = selectedFilesList.length - 1;
+
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.id = `video-card-${index}`;
+        card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold small text-truncate text-secondary" style="max-width:70%;">
+                    <i class="fa-solid fa-file-video me-1"></i> ${file.name}
+                </span>
+                <input type="checkbox" class="form-check-input render-checksum" data-index="${index}" checked>
+            </div>
+            <div class="row g-2 small text-muted mb-2">
+                <div class="col-6" id="status-${index}"><i class="fa-solid fa-clock"></i> Sıraya Alındı</div>
+                <div class="col-6 text-end" id="eta-${index}">İlerleme: %0</div>
+            </div>
+            <div class="progress mb-2">
+                <div id="progress-bar-${index}" class="progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+            <div class="d-flex gap-2 justify-content-end mt-2">
+                <a class="btn btn-sm btn-outline-custom py-1 d-none" id="folder-btn-${index}"><i class="fa-solid fa-download"></i> İndir</a>
+                <button class="btn btn-sm btn-outline-custom py-1 d-none" id="retry-btn-${index}" onclick="reRenderTrack(${index})"><i class="fa-solid fa-rotate-right"></i> Tekrar İşle</button>
+            </div>
+        `;
+        videoQueueContainer.appendChild(card);
+    }
+});
+
+// ⚡ PYTHON SÜRÜMÜ İLE %100 AYNI ÇIKTIYI VEREN 5 SANİYELİK ÖNİZLEME MOTORU
+async function generate5SecPreview(index) {
+    if (index === undefined || index === null) {
+        alert('Lütfen listeden önizlemesini görmek istediğiniz videonun yanındaki kutucuğu işaretleyin!');
+        return;
+    }
+
+    previewLoader.style.display = "block";
+    mainVideoPlayer.pause();
+
+    try {
+        await initFFmpeg(false);
+
+        const file = selectedFilesList[index];
+        const mode = modeSelector.value;
+        
+        let w = 1280, h = 720;
+        if(mode === 'vertical') { w = 720; h = 1280; }
+
+        ffmpeg.FS('writeFile', 'temp_preview_in', await fetchFile(file));
+        
+        const filterStr = `[0:v]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},boxblur=40:2[bg];[0:v]scale=${w}:${h}:force_original_aspect_ratio=decrease,scale='trunc(iw/2)*2':'trunc(ih/2)*2'[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2:shortest=1`;
+        const outName = 'preview_5s.mp4';
+        
+        await ffmpeg.run(
+            '-y', '-ss', '00:00:00', '-i', 'temp_preview_in', '-t', '5',
+            '-filter_complex', filterStr,
+            '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26', '-an',
+            outName
+        );
+
+        const data = ffmpeg.FS('readFile', outName);
+        const blob = new Blob([data.buffer], { type: 'video/mp4' });
+        
+        mainVideoPlayer.muted = isMuted; 
+        mainVideoPlayer.src = URL.createObjectURL(blob);
+        
+        mainVideoPlayer.load();
+        await mainVideoPlayer.play();
+        
+        ffmpeg.FS('unlink', 'temp_preview_in');
+        ffmpeg.FS('unlink', outName);
+    } catch (err) {
+        console.error("Önizleme hatası:", err);
+    } finally {
+        previewLoader.style.display = "none";
+    }
+}
+
+// "MODERN ÖNİZLEME YAP" Butonunun Tıklama Olayı
+previewSelBtn.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.render-checksum');
+    let targetIndex = null;
+
+    for (const cb of checkboxes) {
+        if (cb.checked) {
+            targetIndex = parseInt(cb.getAttribute('data-index'));
+            break; 
+        }
+    }
+
+    if (targetIndex !== null) {
+        generate5SecPreview(targetIndex);
+    } else {
+        alert('Önizleme yapabilmek için listeden en az bir videoyu işaretlemelisiniz.');
+    }
+});
+
+stopPreviewBtn.addEventListener('click', () => {
+    mainVideoPlayer.pause();
+    mainVideoPlayer.src = "";
+});
+
+audioToggleBtn.addEventListener('click', () => {
+    isMuted = !isMuted;
+    mainVideoPlayer.muted = isMuted;
+    audioToggleBtn.innerHTML = isMuted ? `<i class="fa-solid fa-volume-xmark text-danger"></i>` : `<i class="fa-solid fa-volume-high"></i>`;
+});
+
+function parseFFmpegLog(msg) {
+    if (currentProcessingIndex === null) return;
+    
+    if (msg.includes("Duration:")) {
+        const match = msg.match(/Duration: (\d+):(\d+):(\d+)\.(\d+)/);
+        if (match) {
+            const hours = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const seconds = parseInt(match[3]);
+            durationInSeconds = (hours * 3600) + (minutes * 60) + seconds;
+        }
+    }
+
+    if (msg.includes("time=")) {
+        const match = msg.match(/time=(\d+):(\d+):(\d+)\.(\d+)/);
+        if (match && durationInSeconds > 0) {
+            const hours = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const seconds = parseInt(match[3]);
+            const currentTime = (hours * 3600) + (minutes * 60) + seconds;
+            
+            let percent = Math.round((currentTime / durationInSeconds) * 100);
+            if (percent > 99) percent = 99;
+
+            const progressBar = document.getElementById(`progress-bar-${currentProcessingIndex}`);
+            const etaLabel = document.getElementById(`eta-${currentProcessingIndex}`);
+            if (progressBar) progressBar.style.width = `${percent}%`;
+            if (etaLabel) etaLabel.innerText = `İlerleme: %${percent}`;
+        }
+    }
+}
+
+// 🎛️ ANA TAM RENDER MOTORU
+async function runRenderEngine(targetIndices) {
+    if(targetIndices.length === 0) { alert('İşlem yapılacak dosya seçilmedi!'); return; }
+    
+    renderAllBtn.disabled = true;
+    renderSelBtn.disabled = true;
+
+    await initFFmpeg(true);
+
+    const mode = modeSelector.value;
+    const crf = document.getElementById('crfValue').value;
+    const preset = document.getElementById('presetSelect').value;
+    const resolution = document.getElementById('resSelect').value;
+
+    let width = 1920, height = 1080;
+    if (resolution === "720p") { width = 1280; height = 720; }
+    if (mode === "vertical") { [width, height] = [height, width]; }
+
+    for (const index of targetIndices) {
+        currentProcessingIndex = index;
+        durationInSeconds = 0;
+
+        const file = selectedFilesList[index];
+        const statusLabel = document.getElementById(`status-${index}`);
+        const progressBar = document.getElementById(`progress-bar-${index}`);
+        const downloadBtn = document.getElementById('folder-btn-' + index);
+        const retryBtn = document.getElementById('retry-btn-' + index);
+        const etaLabel = document.getElementById(`eta-${index}`);
+
+        statusLabel.innerHTML = `⏳ İşleniyor...`;
+        progressBar.style.width = "5%";
+
+        ffmpeg.FS('writeFile', 'input_track', await fetchFile(file));
+        const outputName = `EBS_Blurred_${Date.now()}.mp4`;
+
+        const filterStr = `[0:v]scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},boxblur=40:2[bg];[0:v]scale=${width}:${height}:force_original_aspect_ratio=decrease,scale='trunc(iw/2)*2':'trunc(ih/2)*2'[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2:shortest=1`;
+
+        try {
+            await ffmpeg.run(
+                '-y', 
+                '-i', 'input_track',
+                '-filter_complex', filterStr,
+                '-c:v', 'libx264', 
+                '-preset', preset, 
+                '-crf', crf.toString(),
+                '-c:a', 'copy', 
+                outputName
+            );
+
+            progressBar.style.width = "100%";
+            statusLabel.innerHTML = `✅ Tamamlandı!`;
+            etaLabel.innerText = `İlerleme: %100`;
+            
+            const data = ffmpeg.FS('readFile', outputName);
+            const blob = new Blob([data.buffer], { type: 'video/mp4' });
+            const downloadUrl = URL.createObjectURL(blob);
+
+            downloadBtn.classList.remove('d-none');
+            retryBtn.classList.remove('d-none');
+            downloadBtn.href = downloadUrl;
+            downloadBtn.download = `EBS_Blurred_${file.name}`;
+
+            ffmpeg.FS('unlink', 'input_track');
+            ffmpeg.FS('unlink', outputName);
+
+        } catch (error) {
+            console.error("Render hatası:", error);
+            statusLabel.innerHTML = `❌ Hata Oluştu!`;
+            retryBtn.classList.remove('d-none');
+        }
+    }
+
+    currentProcessingIndex = null;
+    renderAllBtn.disabled = false;
+    renderSelBtn.disabled = false;
+}
+
+renderAllBtn.addEventListener('click', () => {
+    const allIndices = selectedFilesList.map((_, i) => i);
+    runRenderEngine(allIndices);
+});
+
+renderSelBtn.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.render-checksum');
+    const targetIndices = [];
+    checkboxes.forEach(cb => {
+        if(cb.checked) targetIndices.push(parseInt(cb.getAttribute('data-index')));
+    });
+    runRenderEngine(targetIndices);
+});
+
+stopBtn.addEventListener('click', () => {
+    location.reload();
+});
+
+function reRenderTrack(index) {
+    runRenderEngine([index]);
+}
+</script>
+</body>
+</html>
