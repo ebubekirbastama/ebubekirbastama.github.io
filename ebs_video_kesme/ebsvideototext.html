@@ -548,13 +548,13 @@ async function loadFFmpeg(){
     return ffmpegLoadingPromise;
 }
 
-async function createWhisperPipeline(modelName, deviceType, dtype){
+async function createWhisperPipeline(modelName){
     return await pipeline(
         "automatic-speech-recognition",
         modelName,
         {
-            device: deviceType,
-            dtype: dtype,
+            device: "wasm",
+            dtype: "fp32",
             progress_callback:function(data){
                 if(data.status) addLog("Model: " + data.status);
                 if(typeof data.progress === "number") setProgress(data.progress);
@@ -595,7 +595,7 @@ async function loadWhisper(force=false){
             addLog("Model kaynağı: HuggingFace / Remote");
 
             try{
-                transcriber = await createWhisperPipeline(modelName, deviceType, dtype);
+                transcriber = await createWhisperPipeline(modelName);
             }catch(firstError){
                 if(deviceType === "webgpu"){
                     addLog("GPU ile açılamadı. CPU/WASM moduna geçiliyor: " + firstError.message);
