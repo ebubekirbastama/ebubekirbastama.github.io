@@ -677,7 +677,17 @@ async function decodeWavToFloat32Array(audioBlob){
 
     return audioBuffer.getChannelData(0);
 }
+function splitAudioIntoChunks(audioData, sampleRate = 16000, chunkSeconds = 30){
+    const chunkSize = sampleRate * chunkSeconds;
+    const chunks = [];
 
+    for(let start = 0; start < audioData.length; start += chunkSize){
+        const end = Math.min(start + chunkSize, audioData.length);
+        chunks.push(audioData.slice(start, end));
+    }
+
+    return chunks;
+}
 async function transcribeAudio(audioData){
     await loadWhisper();
 
@@ -685,20 +695,80 @@ async function transcribeAudio(audioData){
         throw new Error("Model yüklenmedi.");
     }
 
-    setStatus("Ses metne dönüştürülüyor...");
-    setProgress(0);
+    const sampleRate = 16000;
+    const chunkSeconds = 30;
 
-    const output = await transcriber(audioData,{
-        language:"turkish",
-        task:"transcribe",
-        chunk_length_s:30,
-        stride_length_s:5
-    });
+    const totalSeconds = Math.round(audioData.length / sampleRate);
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const remainSeconds = totalSeconds % 60;
+
+    setStatus("Ses parçalara bölünüyor...");
+    addLog("Toplam ses süresi: " + totalMinutes + " dakika " + remainSeconds + " saniye");
+
+    const chunks = splitAudioIntoChunks(audioData, sampleRate, chunkSeconds);
+
+    addLog("Ses " + chunks.length + " parçaya bölündü.");
+    addLog("Her parça yaklaşık " + chunkSeconds + " saniye olarak işlenecek.");
+
+    let finalText = "";
+
+    for(let i = 0; i < chunks.length; i++){
+
+        const partNumber = i + 1;
+        const percent = Math.round((i / chunks.length) * 100);
+
+        setProgress(percent);
+
+        setStatus(
+            partNumber + " / " + chunks.length +
+            " parça transkript ediliyor..."
+        );
+
+        addLog(
+            "Parça " + partNumber + "/" + chunks.length +
+            " işleniyor. Süre: yaklaşık " +
+            Math.round(chunks[i].length / sampleRate) +
+            " saniye"
+        );
+
+        try{
+            const output = await transcriber(chunks[i], {
+                language:"turkish",
+                task:"transcribe"
+            });
+
+            const text = output.text || "";
+
+            finalText += text.trim() + "\n\n";
+
+            resultEl.value = finalText.trim();
+
+            addLog(
+                "Parça " + partNumber + "/" + chunks.length +
+                " tamamlandı. Karakter: " + text.length
+            );
+
+        }catch(error){
+
+            addLog(
+                "Parça " + partNumber + "/" + chunks.length +
+                " hata verdi: " + error.message
+            );
+
+            finalText += "\n[Parça " + partNumber + " işlenemedi]\n\n";
+            resultEl.value = finalText.trim();
+        }
+
+        const donePercent = Math.round((partNumber / chunks.length) * 100);
+        setProgress(donePercent);
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
 
     setProgress(100);
-    setStatus("Ses metne dönüştürüldü.");
+    setStatus("Tüm parçalar başarıyla işlendi.");
 
-    return output.text || "";
+    return finalText.trim();
 }
 
 modelSelect.addEventListener("change",()=>{
