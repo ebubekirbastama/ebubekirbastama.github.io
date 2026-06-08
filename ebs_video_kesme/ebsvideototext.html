@@ -4,22 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EBS Video Transkript Studio</title>
+<title>EBS Premium Video Transkript Studio</title>
 
-<script src="https://ebubekirbastama.com.tr/ebs_video_kesme/coi-serviceworker.js"></script>
+<script src="coi-serviceworker.js"></script>
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
     min-height:100vh;
-    font-family:Inter, Arial, sans-serif;
+    font-family:Arial, sans-serif;
     background:
         radial-gradient(circle at top left, rgba(212,175,55,.22), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(255,215,0,.13), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255,215,0,.12), transparent 35%),
         linear-gradient(135deg,#050505,#111,#050505);
     color:#f7f2df;
     display:flex;
@@ -28,23 +26,17 @@ body{
     padding:30px;
 }
 
-.elite-wrap{
+.wrapper{
     width:100%;
     max-width:1100px;
-    background:rgba(10,10,10,.86);
+    background:rgba(10,10,10,.9);
     border:1px solid rgba(212,175,55,.35);
     border-radius:28px;
     padding:34px;
-    box-shadow:
-        0 0 40px rgba(212,175,55,.18),
-        inset 0 0 40px rgba(255,255,255,.03);
-    backdrop-filter:blur(18px);
+    box-shadow:0 0 45px rgba(212,175,55,.18);
 }
 
-.header{
-    text-align:center;
-    margin-bottom:30px;
-}
+.header{text-align:center;margin-bottom:28px}
 
 .badge{
     display:inline-block;
@@ -71,6 +63,12 @@ h1{
     font-size:15px;
 }
 
+.gold-line{
+    height:1px;
+    margin:24px 0;
+    background:linear-gradient(90deg,transparent,#d4af37,transparent);
+}
+
 .panel{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -89,9 +87,11 @@ label{
     color:#d4af37;
     font-size:13px;
     margin-bottom:8px;
+    font-weight:bold;
 }
 
-input[type=file], select{
+input[type=file],
+select{
     width:100%;
     background:#090909;
     color:#f7f2df;
@@ -99,10 +99,6 @@ input[type=file], select{
     border-radius:14px;
     padding:14px;
     outline:none;
-}
-
-select{
-    cursor:pointer;
 }
 
 .actions{
@@ -121,12 +117,6 @@ button{
     color:#111;
     background:linear-gradient(135deg,#fff1a8,#d4af37,#9f7928);
     box-shadow:0 8px 24px rgba(212,175,55,.23);
-    transition:.25s;
-}
-
-button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 12px 34px rgba(212,175,55,.35);
 }
 
 button.secondary{
@@ -138,7 +128,6 @@ button.secondary{
 button:disabled{
     opacity:.5;
     cursor:not-allowed;
-    transform:none;
 }
 
 #status{
@@ -164,7 +153,6 @@ button:disabled{
     width:0%;
     height:100%;
     background:linear-gradient(90deg,#8a6a1f,#d4af37,#fff2a8);
-    box-shadow:0 0 18px rgba(212,175,55,.8);
     transition:.3s;
 }
 
@@ -182,54 +170,30 @@ textarea{
     font-size:15px;
 }
 
-textarea:focus,
-select:focus,
-input:focus{
-    border-color:#d4af37;
-    box-shadow:0 0 0 3px rgba(212,175,55,.12);
-}
-
 .info{
     color:#bcb28d;
     font-size:13px;
     line-height:1.7;
 }
 
-.gold-line{
-    height:1px;
-    margin:24px 0;
-    background:linear-gradient(90deg,transparent,#d4af37,transparent);
-}
-
 @media(max-width:850px){
-    .panel{
-        grid-template-columns:1fr;
-    }
-
-    h1{
-        font-size:28px;
-    }
-
-    body{
-        padding:15px;
-    }
-
-    .elite-wrap{
-        padding:22px;
-    }
+    .panel{grid-template-columns:1fr}
+    h1{font-size:28px}
+    body{padding:15px}
+    .wrapper{padding:22px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="elite-wrap">
+<div class="wrapper">
 
     <div class="header">
         <div class="badge">EBS PREMIUM AI STUDIO</div>
         <h1>Video Sesi Yazıya Çevir</h1>
         <div class="subtitle">
-            API kullanmadan, tamamen tarayıcı içinde çalışan elit transkript paneli.
+            API kullanmadan, ücretsiz, tarayıcı içinde video transkript sistemi.
         </div>
     </div>
 
@@ -266,24 +230,22 @@ input:focus{
             <div class="gold-line"></div>
 
             <div class="info">
-                <strong style="color:#d4af37;">Sistem:</strong><br>
-                Video önce FFmpeg.wasm ile WAV sese dönüştürülür. Ardından Whisper modeliyle Türkçe yazıya çevrilir.
-                API anahtarı gerekmez, işlem kullanıcının bilgisayarında gerçekleşir.
+                <strong style="color:#d4af37;">Çalışma Mantığı:</strong><br>
+                Video dosyasından ses FFmpeg 0.11.0 ile WAV olarak çıkarılır.
+                Sonra Whisper modeliyle Türkçe metne çevrilir.
+                API anahtarı gerekmez.
             </div>
 
         </div>
 
         <div class="card">
-
             <label>Çıkan Metin</label>
             <textarea id="result" placeholder="Transkript metni burada görünecek..."></textarea>
-
         </div>
 
     </div>
 
 </div>
-
 
 <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 
@@ -299,6 +261,8 @@ const resultEl = document.getElementById("result");
 const bar = document.getElementById("bar");
 const modelSelect = document.getElementById("modelSelect");
 
+const { createFFmpeg, fetchFile } = FFmpeg;
+
 let ffmpeg = null;
 let transcriber = null;
 let loadedModelName = null;
@@ -308,6 +272,8 @@ function setStatus(text){
 }
 
 function setProgress(percent){
+    if(percent < 0) percent = 0;
+    if(percent > 100) percent = 100;
     bar.style.width = percent + "%";
 }
 
@@ -315,19 +281,17 @@ async function loadFFmpeg(){
     if(ffmpeg) return ffmpeg;
 
     setStatus("FFmpeg motoru hazırlanıyor...");
+    setProgress(0);
 
-    const { FFmpeg } = FFmpegWASM;
-    ffmpeg = new FFmpeg();
-
-    ffmpeg.on("progress", ({ progress }) => {
-        setProgress(Math.round(progress * 100));
-    });
-
-    ffmpeg.on("log", ({ message }) => {
-        console.log(message);
+    ffmpeg = createFFmpeg({
+        log:true,
+        progress:({ ratio })=>{
+            setProgress(Math.round(ratio * 100));
+        }
     });
 
     await ffmpeg.load();
+
     return ffmpeg;
 }
 
@@ -338,7 +302,7 @@ async function loadWhisper(){
         return transcriber;
     }
 
-    setStatus("Whisper modeli yükleniyor. İlk açılışta biraz bekletebilir...");
+    setStatus("Whisper modeli yükleniyor. İlk kullanımda uzun sürebilir...");
     setProgress(0);
 
     transcriber = await pipeline(
@@ -347,41 +311,45 @@ async function loadWhisper(){
     );
 
     loadedModelName = modelName;
+
     return transcriber;
 }
 
 async function extractAudioFromVideo(file){
     await loadFFmpeg();
 
-    setStatus("Video dosyası işleniyor...");
+    setStatus("Video dosyası FFmpeg içine aktarılıyor...");
     setProgress(0);
 
     const inputName = "input_video";
     const outputName = "audio.wav";
 
-    const fileData = new Uint8Array(await file.arrayBuffer());
-
-    await ffmpeg.writeFile(inputName, fileData);
+    ffmpeg.FS("writeFile", inputName, await fetchFile(file));
 
     setStatus("Videodan ses ayrıştırılıyor...");
 
-    await ffmpeg.exec([
+    await ffmpeg.run(
+        "-y",
         "-i", inputName,
         "-vn",
         "-acodec", "pcm_s16le",
         "-ar", "16000",
         "-ac", "1",
         outputName
-    ]);
+    );
 
-    const audioData = await ffmpeg.readFile(outputName);
+    setStatus("Ses dosyası hazırlanıyor...");
+
+    const data = ffmpeg.FS("readFile", outputName);
 
     try{
-        await ffmpeg.deleteFile(inputName);
-        await ffmpeg.deleteFile(outputName);
+        ffmpeg.FS("unlink", inputName);
+        ffmpeg.FS("unlink", outputName);
     }catch(e){}
 
-    return new Blob([audioData.buffer], { type:"audio/wav" });
+    return new Blob([data.buffer], {
+        type:"audio/wav"
+    });
 }
 
 async function decodeWavToFloat32Array(audioBlob){
@@ -413,6 +381,7 @@ async function transcribeAudio(audioData){
 }
 
 startBtn.addEventListener("click", async ()=>{
+
     const file = videoInput.files[0];
 
     if(!file){
@@ -425,10 +394,13 @@ startBtn.addEventListener("click", async ()=>{
     setProgress(0);
 
     try{
+
         setStatus("İşlem başlatıldı...");
 
         const audioBlob = await extractAudioFromVideo(file);
+
         const audioData = await decodeWavToFloat32Array(audioBlob);
+
         const text = await transcribeAudio(audioData);
 
         resultEl.value = text;
@@ -437,14 +409,20 @@ startBtn.addEventListener("click", async ()=>{
         setStatus("Transkript başarıyla tamamlandı.");
 
     }catch(error){
+
         console.error(error);
         setStatus("Hata oluştu: " + error.message);
+
     }finally{
+
         startBtn.disabled = false;
+
     }
+
 });
 
 copyBtn.addEventListener("click", async ()=>{
+
     if(!resultEl.value.trim()){
         alert("Kopyalanacak metin yok.");
         return;
@@ -452,9 +430,11 @@ copyBtn.addEventListener("click", async ()=>{
 
     await navigator.clipboard.writeText(resultEl.value);
     alert("Metin kopyalandı.");
+
 });
 
 downloadBtn.addEventListener("click", ()=>{
+
     if(!resultEl.value.trim()){
         alert("İndirilecek metin yok.");
         return;
@@ -472,6 +452,7 @@ downloadBtn.addEventListener("click", ()=>{
     a.click();
 
     URL.revokeObjectURL(url);
+
 });
 </script>
 
