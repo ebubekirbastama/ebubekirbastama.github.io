@@ -10,59 +10,243 @@
 <style>
 *{box-sizing:border-box}
 body{
-    margin:0;min-height:100vh;font-family:Arial,sans-serif;
-    background:radial-gradient(circle at top left,rgba(212,175,55,.22),transparent 35%),
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    background:
+    radial-gradient(circle at top left,rgba(212,175,55,.22),transparent 35%),
     radial-gradient(circle at bottom right,rgba(255,215,0,.12),transparent 35%),
     linear-gradient(135deg,#050505,#111,#050505);
-    color:#f7f2df;display:flex;align-items:center;justify-content:center;padding:30px;
+    color:#f7f2df;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
 }
-.wrapper{width:100%;max-width:1180px;background:rgba(10,10,10,.92);border:1px solid rgba(212,175,55,.35);border-radius:28px;padding:34px;box-shadow:0 0 45px rgba(212,175,55,.18)}
+.wrapper{
+    width:100%;
+    max-width:1220px;
+    background:rgba(10,10,10,.92);
+    border:1px solid rgba(212,175,55,.35);
+    border-radius:28px;
+    padding:34px;
+    box-shadow:0 0 45px rgba(212,175,55,.18)
+}
 .header{text-align:center;margin-bottom:25px}
-.badge{display:inline-block;padding:8px 18px;border:1px solid rgba(212,175,55,.5);border-radius:999px;color:#d4af37;letter-spacing:2px;font-size:12px;margin-bottom:14px}
-h1{margin:0;font-size:38px;background:linear-gradient(90deg,#fff6c7,#d4af37,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.badge{
+    display:inline-block;
+    padding:8px 18px;
+    border:1px solid rgba(212,175,55,.5);
+    border-radius:999px;
+    color:#d4af37;
+    letter-spacing:2px;
+    font-size:12px;
+    margin-bottom:14px
+}
+h1{
+    margin:0;
+    font-size:38px;
+    background:linear-gradient(90deg,#fff6c7,#d4af37,#fff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent
+}
 .subtitle{color:#cfc7a8;margin-top:12px;font-size:15px}
-.gold-line{height:1px;margin:22px 0;background:linear-gradient(90deg,transparent,#d4af37,transparent)}
-.panel{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-.card{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid rgba(212,175,55,.22);border-radius:22px;padding:24px}
-label{display:block;color:#d4af37;font-size:13px;margin-bottom:8px;font-weight:bold}
-input[type=file],select{width:100%;background:#090909;color:#f7f2df;border:1px solid rgba(212,175,55,.35);border-radius:14px;padding:14px;outline:none}
-.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
-button{border:none;cursor:pointer;border-radius:14px;padding:14px 22px;font-weight:700;color:#111;background:linear-gradient(135deg,#fff1a8,#d4af37,#9f7928);box-shadow:0 8px 24px rgba(212,175,55,.23)}
-button.secondary{color:#f7f2df;background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.28)}
+.gold-line{
+    height:1px;
+    margin:22px 0;
+    background:linear-gradient(90deg,transparent,#d4af37,transparent)
+}
+.panel{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px
+}
+.card{
+    background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+    border:1px solid rgba(212,175,55,.22);
+    border-radius:22px;
+    padding:24px
+}
+label{
+    display:block;
+    color:#d4af37;
+    font-size:13px;
+    margin-bottom:8px;
+    font-weight:bold
+}
+input[type=file],select{
+    width:100%;
+    background:#090909;
+    color:#f7f2df;
+    border:1px solid rgba(212,175,55,.35);
+    border-radius:14px;
+    padding:14px;
+    outline:none
+}
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:18px
+}
+button{
+    border:none;
+    cursor:pointer;
+    border-radius:14px;
+    padding:14px 22px;
+    font-weight:700;
+    color:#111;
+    background:linear-gradient(135deg,#fff1a8,#d4af37,#9f7928);
+    box-shadow:0 8px 24px rgba(212,175,55,.23)
+}
+button.secondary{
+    color:#f7f2df;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(212,175,55,.28)
+}
 button:disabled{opacity:.5;cursor:not-allowed}
-.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
-.ready-box{padding:12px;border-radius:14px;background:#060606;border:1px solid rgba(212,175,55,.25);font-size:13px;color:#cfc7a8}
-.ready-box strong{display:block;color:#d4af37;margin-bottom:4px}
+.status-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:18px
+}
+.ready-box{
+    padding:12px;
+    border-radius:14px;
+    background:#060606;
+    border:1px solid rgba(212,175,55,.25);
+    font-size:13px;
+    color:#cfc7a8
+}
+.ready-box strong{
+    display:block;
+    color:#d4af37;
+    margin-bottom:4px
+}
 .ready-ok{border-color:#00ff88;color:#dfffe9}
 .ready-wait{border-color:#d4af37}
 .ready-error{border-color:#ff5f56;color:#ffd0cc}
-#status{margin-top:18px;padding:14px;border-radius:14px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);color:#fff4bd;font-weight:600}
-.progress{margin-top:14px;height:14px;background:#070707;border-radius:999px;overflow:hidden;border:1px solid rgba(212,175,55,.25)}
-#bar{width:0%;height:100%;background:linear-gradient(90deg,#8a6a1f,#d4af37,#fff2a8);transition:.3s}
-.progress-text{margin-top:8px;color:#d4af37;font-weight:bold;font-size:13px}
-.log-box{margin-top:18px;background:#050505;border:1px solid rgba(212,175,55,.25);border-radius:14px;padding:12px;height:210px;overflow-y:auto}
-.log-title{color:#d4af37;font-size:13px;font-weight:bold;margin-bottom:8px}
-#logPanel{font-family:Consolas,monospace;font-size:12px;color:#d8cfaa;line-height:1.5}
-.log-line{border-bottom:1px solid rgba(255,255,255,.05);padding:3px 0}
-textarea{width:100%;height:560px;resize:vertical;background:#070707;color:#fff8d7;border:1px solid rgba(212,175,55,.3);border-radius:20px;padding:18px;line-height:1.6;outline:none;font-size:15px}
-.info{color:#bcb28d;font-size:13px;line-height:1.7}
-code{color:#fff;background:#111;padding:2px 5px;border-radius:5px}
-@media(max-width:850px){.panel{grid-template-columns:1fr}.status-grid{grid-template-columns:1fr}h1{font-size:28px}body{padding:15px}.wrapper{padding:22px}}
+#modelInfo{
+    margin-top:14px;
+    padding:14px;
+    border-radius:14px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(212,175,55,.25);
+    color:#e7ddb8;
+    font-size:13px;
+    line-height:1.6
+}
+.model-warning{
+    color:#ffd36b;
+    font-weight:bold
+}
+.model-danger{
+    color:#ff9b92;
+    font-weight:bold
+}
+#status{
+    margin-top:18px;
+    padding:14px;
+    border-radius:14px;
+    background:rgba(212,175,55,.08);
+    border:1px solid rgba(212,175,55,.2);
+    color:#fff4bd;
+    font-weight:600
+}
+.progress{
+    margin-top:14px;
+    height:14px;
+    background:#070707;
+    border-radius:999px;
+    overflow:hidden;
+    border:1px solid rgba(212,175,55,.25)
+}
+#bar{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#8a6a1f,#d4af37,#fff2a8);
+    transition:.3s
+}
+.progress-text{
+    margin-top:8px;
+    color:#d4af37;
+    font-weight:bold;
+    font-size:13px
+}
+.log-box{
+    margin-top:18px;
+    background:#050505;
+    border:1px solid rgba(212,175,55,.25);
+    border-radius:14px;
+    padding:12px;
+    height:220px;
+    overflow-y:auto
+}
+.log-title{
+    color:#d4af37;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:8px
+}
+#logPanel{
+    font-family:Consolas,monospace;
+    font-size:12px;
+    color:#d8cfaa;
+    line-height:1.5
+}
+.log-line{
+    border-bottom:1px solid rgba(255,255,255,.05);
+    padding:3px 0
+}
+textarea{
+    width:100%;
+    height:620px;
+    resize:vertical;
+    background:#070707;
+    color:#fff8d7;
+    border:1px solid rgba(212,175,55,.3);
+    border-radius:20px;
+    padding:18px;
+    line-height:1.6;
+    outline:none;
+    font-size:15px
+}
+.info{
+    color:#bcb28d;
+    font-size:13px;
+    line-height:1.7
+}
+code{
+    color:#fff;
+    background:#111;
+    padding:2px 5px;
+    border-radius:5px
+}
+@media(max-width:850px){
+    .panel{grid-template-columns:1fr}
+    .status-grid{grid-template-columns:1fr}
+    h1{font-size:28px}
+    body{padding:15px}
+    .wrapper{padding:22px}
+}
 </style>
 </head>
 
 <body>
 
 <div class="wrapper">
+
     <div class="header">
         <div class="badge">EBS PREMIUM AI STUDIO</div>
         <h1>Video Sesi Yazıya Çevir</h1>
-        <div class="subtitle">GPU varsa GPU, yoksa CPU/WASM ile ücretsiz transkript sistemi.</div>
+        <div class="subtitle">GPU varsa GPU, yoksa CPU/WASM ile çalışan ücretsiz transkript sistemi.</div>
     </div>
 
     <div class="gold-line"></div>
 
     <div class="panel">
+
         <div class="card">
 
             <label>Video Dosyası Seç</label>
@@ -72,10 +256,13 @@ code{color:#fff;background:#111;padding:2px 5px;border-radius:5px}
 
             <label>Whisper Model Kalitesi</label>
             <select id="modelSelect">
-                <option value="Xenova/whisper-tiny">Hızlı - Düşük Kalite</option>
-                <option value="Xenova/whisper-base" selected>Dengeli - Orta Kalite</option>
-                <option value="Xenova/whisper-small">Premium - Yüksek Kalite</option>
+                <option value="Xenova/whisper-tiny">⚡ Tiny - Çok Hızlı / Düşük Kalite</option>
+                <option value="Xenova/whisper-base">🚀 Base - Hızlı / İyi Kalite</option>
+                <option value="Xenova/whisper-small" selected>⭐ Small - Önerilen / Çok İyi Kalite</option>
+                <option value="Xenova/whisper-medium">👑 Medium - Profesyonel / En Kaliteli</option>
             </select>
+
+            <div id="modelInfo"></div>
 
             <div class="status-grid">
                 <div id="ffmpegReady" class="ready-box ready-wait">
@@ -116,9 +303,9 @@ code{color:#fff;background:#111;padding:2px 5px;border-radius:5px}
             <div class="gold-line"></div>
 
             <div class="info">
-                <strong style="color:#d4af37;">Not:</strong><br>
-                GitHub Pages üzerinde model Hugging Face üzerinden yüklenir. İlk yükleme uzun sürebilir.
-                Sonrasında tarayıcı cache/IndexedDB üzerinden daha hızlı açılır.
+                <strong style="color:#d4af37;">Öneri:</strong><br>
+                Normal kullanım için <code>Small</code> modeli önerilir.  
+                En kaliteli sonuç için <code>Medium</code> seçilebilir ancak güçlü bilgisayar gerekir.
             </div>
 
         </div>
@@ -127,7 +314,9 @@ code{color:#fff;background:#111;padding:2px 5px;border-radius:5px}
             <label>Çıkan Metin</label>
             <textarea id="result" placeholder="Transkript metni burada görünecek..."></textarea>
         </div>
+
     </div>
+
 </div>
 
 <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
@@ -155,6 +344,7 @@ const bar = document.getElementById("bar");
 const progressText = document.getElementById("progressText");
 const logPanel = document.getElementById("logPanel");
 const modelSelect = document.getElementById("modelSelect");
+const modelInfo = document.getElementById("modelInfo");
 
 const ffmpegReady = document.getElementById("ffmpegReady");
 const modelReady = document.getElementById("modelReady");
@@ -164,11 +354,65 @@ const { createFFmpeg, fetchFile } = FFmpeg;
 
 let ffmpeg = null;
 let ffmpegLoadingPromise = null;
-
 let transcriber = null;
 let whisperLoadingPromise = null;
 let loadedModelName = null;
 let currentDeviceType = null;
+
+const MODEL_INFO = {
+    "Xenova/whisper-tiny": {
+        name:"Tiny",
+        size:"Yaklaşık 75 MB",
+        ram:"Minimum 2 GB RAM",
+        gpu:"GPU şart değil",
+        speed:"Çok hızlı",
+        quality:"Düşük-Orta kalite",
+        warning:"Kısa ve net seslerde uygundur. Gürültülü kayıtlar için önerilmez."
+    },
+    "Xenova/whisper-base": {
+        name:"Base",
+        size:"Yaklaşık 140 MB",
+        ram:"Minimum 4 GB RAM",
+        gpu:"GPU şart değil, CPU ile çalışır",
+        speed:"Hızlı",
+        quality:"İyi kalite",
+        warning:"Hız ve kalite dengesi isteyenler için uygundur."
+    },
+    "Xenova/whisper-small": {
+        name:"Small",
+        size:"Yaklaşık 450-500 MB",
+        ram:"Minimum 8 GB RAM önerilir",
+        gpu:"WebGPU destekli ekran kartı varsa daha iyi",
+        speed:"Orta hız",
+        quality:"Çok iyi kalite",
+        warning:"Türkçe haber, röportaj ve video transkript için önerilen modeldir."
+    },
+    "Xenova/whisper-medium": {
+        name:"Medium",
+        size:"Yaklaşık 1.5 GB+",
+        ram:"Minimum 16 GB RAM önerilir",
+        gpu:"RTX 2060 / RX 6600 / Apple M1-M2-M3 veya üzeri önerilir",
+        speed:"Yavaş",
+        quality:"En yüksek kalite",
+        warning:"Profesyonel kullanım içindir. Zayıf bilgisayarlarda tarayıcı donabilir veya çökebilir."
+    }
+};
+
+function updateModelInfo(){
+    const info = MODEL_INFO[modelSelect.value];
+
+    modelInfo.innerHTML = `
+        <strong style="color:#d4af37;">${info.name} Model Bilgisi</strong><br>
+        Model Boyutu: <b>${info.size}</b><br>
+        RAM Gereksinimi: <b>${info.ram}</b><br>
+        GPU Gereksinimi: <b>${info.gpu}</b><br>
+        Hız: <b>${info.speed}</b><br>
+        Kalite: <b>${info.quality}</b><br>
+        <span class="${modelSelect.value.includes("medium") ? "model-danger" : "model-warning"}">
+            Uyarı: ${info.warning}
+        </span>
+    `;
+}
 
 function addLog(message){
     const time = new Date().toLocaleTimeString("tr-TR");
@@ -197,11 +441,10 @@ function setProgress(percent){
     progressText.innerText = "%" + percent;
 }
 
-function setBox(el, state, text){
-    el.classList.remove("ready-ok", "ready-wait", "ready-error");
-
-    if(state === "ok") el.classList.add("ready-ok");
-    else if(state === "error") el.classList.add("ready-error");
+function setBox(el,state,text){
+    el.classList.remove("ready-ok","ready-wait","ready-error");
+    if(state==="ok") el.classList.add("ready-ok");
+    else if(state==="error") el.classList.add("ready-error");
     else el.classList.add("ready-wait");
 
     const strong = el.querySelector("strong").outerHTML;
@@ -221,25 +464,12 @@ async function checkCacheStatus(){
             const dbs = await indexedDB.databases();
             const names = dbs.map(db => db.name).filter(Boolean);
             cacheInfo.push("IndexedDB: " + names.length + " veritabanı");
-
-            const related = names.filter(n =>
-                n.toLowerCase().includes("transformers") ||
-                n.toLowerCase().includes("huggingface") ||
-                n.toLowerCase().includes("onnx") ||
-                n.toLowerCase().includes("model")
-            );
-
-            if(related.length){
-                addLog("Model cache veritabanları: " + related.join(", "));
-            }
         }
 
-        localStorage.setItem("ebs_cache_checked", "1");
-
-        setBox(cacheReady, "ok", "Aktif");
+        setBox(cacheReady,"ok","Aktif");
         addLog("Cache kontrolü tamamlandı. " + cacheInfo.join(" | "));
     }catch(e){
-        setBox(cacheReady, "wait", "Sınırlı");
+        setBox(cacheReady,"wait","Sınırlı");
         addLog("Cache kontrol uyarısı: " + e.message);
     }
 }
@@ -263,24 +493,60 @@ async function detectBestDevice(){
     return "wasm";
 }
 
+function getDtypeForModel(modelName,deviceType){
+    if(deviceType === "webgpu"){
+        if(modelName.includes("medium")) return "fp16";
+        if(modelName.includes("small")) return "fp16";
+        return "q8";
+    }
+
+    return "q8";
+}
+
+async function confirmHeavyModel(modelName){
+    if(modelName.includes("medium")){
+        return confirm(
+            "Whisper Medium modeli yaklaşık 1.5 GB üzerindedir.\n\n" +
+            "Önerilen sistem:\n" +
+            "- En az 16 GB RAM\n" +
+            "- WebGPU destekli güçlü ekran kartı\n" +
+            "- Chrome / Edge güncel sürüm\n\n" +
+            "Zayıf bilgisayarlarda tarayıcı donabilir veya kapanabilir.\n\n" +
+            "Yine de Medium modeli yüklemek istiyor musunuz?"
+        );
+    }
+
+    if(modelName.includes("small")){
+        return confirm(
+            "Whisper Small modeli yaklaşık 450-500 MB boyutundadır.\n\n" +
+            "Önerilen sistem:\n" +
+            "- En az 8 GB RAM\n" +
+            "- Güncel Chrome / Edge\n\n" +
+            "Devam etmek istiyor musunuz?"
+        );
+    }
+
+    return true;
+}
+
 async function loadFFmpeg(){
     if(ffmpeg) return ffmpeg;
     if(ffmpegLoadingPromise) return ffmpegLoadingPromise;
 
-    ffmpegLoadingPromise = new Promise(async (resolve, reject)=>{
+    ffmpegLoadingPromise = new Promise(async (resolve,reject)=>{
         try{
-            setBox(ffmpegReady, "wait", "Yükleniyor");
+            setBox(ffmpegReady,"wait","Yükleniyor");
             setStatus("FFmpeg motoru hazırlanıyor...");
             setProgress(0);
 
             ffmpeg = createFFmpeg({
                 log:true,
-                progress:({ ratio })=>{
+                progress:({ratio})=>{
                     setProgress(ratio * 100);
                 }
             });
 
-            ffmpeg.setLogger(({ message })=>{
+            ffmpeg.setLogger(({message})=>{
                 if(message && message.trim() !== ""){
                     addLog("FFmpeg: " + message);
                 }
@@ -288,11 +554,11 @@ async function loadFFmpeg(){
 
             await ffmpeg.load();
 
-            setBox(ffmpegReady, "ok", "Hazır");
+            setBox(ffmpegReady,"ok","Hazır");
             setStatus("FFmpeg motoru hazır. RAM içinde tutuluyor.");
             resolve(ffmpeg);
         }catch(error){
-            setBox(ffmpegReady, "error", "Hata");
+            setBox(ffmpegReady,"error","Hata");
             addLog("FFmpeg yükleme hatası: " + error.message);
             reject(error);
         }
@@ -305,9 +571,17 @@ async function loadWhisper(force=false){
     const modelName = modelSelect.value;
 
     if(!force && transcriber && loadedModelName === modelName){
-        setBox(modelReady, "ok", currentDeviceType === "webgpu" ? "GPU Hazır" : "CPU Hazır");
+        setBox(modelReady,"ok",currentDeviceType === "webgpu" ? "GPU Hazır" : "CPU Hazır");
         setStatus("Whisper modeli zaten RAM içinde hazır.");
         return transcriber;
+    }
+
+    if(force){
+        const allowed = await confirmHeavyModel(modelName);
+        if(!allowed){
+            setStatus("Model yükleme kullanıcı tarafından iptal edildi.");
+            return null;
+        }
     }
 
     if(!force && whisperLoadingPromise && loadedModelName === modelName){
@@ -316,22 +590,19 @@ async function loadWhisper(force=false){
 
     loadedModelName = modelName;
 
-    whisperLoadingPromise = new Promise(async (resolve, reject)=>{
+    whisperLoadingPromise = new Promise(async (resolve,reject)=>{
         try{
-            setBox(modelReady, "wait", "Yükleniyor");
+            setBox(modelReady,"wait","Yükleniyor");
             setStatus("Whisper modeli yükleniyor: " + modelName);
-            addLog("Yerel model yolu: " + LOCAL_MODEL_PATH);
-            addLog("Remote fallback: " + (ALLOW_REMOTE_FALLBACK ? "Açık" : "Kapalı"));
             setProgress(0);
 
             const deviceType = await detectBestDevice();
             currentDeviceType = deviceType;
 
-            addLog(
-                deviceType === "webgpu"
-                ? "🚀 GPU hızlandırma aktif."
-                : "🖥 CPU/WASM modu aktif."
-            );
+            const dtype = getDtypeForModel(modelName,deviceType);
+
+            addLog("Cihaz modu: " + deviceType);
+            addLog("Model dtype: " + dtype);
 
             try{
                 transcriber = await pipeline(
@@ -339,7 +610,7 @@ async function loadWhisper(force=false){
                     modelName,
                     {
                         device: deviceType,
-                        dtype: deviceType === "webgpu" ? "fp16" : "q8",
+                        dtype: dtype,
                         progress_callback:function(data){
                             if(data.status) addLog("Model: " + data.status);
                             if(typeof data.progress === "number") setProgress(data.progress);
@@ -349,15 +620,15 @@ async function loadWhisper(force=false){
                 );
             }catch(gpuError){
                 if(deviceType === "webgpu"){
-                    addLog("GPU ile model açılamadı. CPU/WASM moduna düşülüyor: " + gpuError.message);
+                    addLog("GPU ile açılamadı. CPU/WASM moduna geçiliyor: " + gpuError.message);
                     currentDeviceType = "wasm";
 
                     transcriber = await pipeline(
                         "automatic-speech-recognition",
                         modelName,
                         {
-                            device: "wasm",
-                            dtype: "q8",
+                            device:"wasm",
+                            dtype:"q8",
                             progress_callback:function(data){
                                 if(data.status) addLog("Model: " + data.status);
                                 if(typeof data.progress === "number") setProgress(data.progress);
@@ -370,15 +641,14 @@ async function loadWhisper(force=false){
                 }
             }
 
-            localStorage.setItem("ebs_last_model", modelName);
-            localStorage.setItem("ebs_model_ready", "1");
+            localStorage.setItem("ebs_last_model",modelName);
 
-            setBox(modelReady, "ok", currentDeviceType === "webgpu" ? "GPU Hazır" : "CPU Hazır");
+            setBox(modelReady,"ok",currentDeviceType === "webgpu" ? "GPU Hazır" : "CPU Hazır");
             setProgress(100);
             setStatus("Whisper modeli hazır.");
             resolve(transcriber);
         }catch(error){
-            setBox(modelReady, "error", "Hata");
+            setBox(modelReady,"error","Hata");
             addLog("Whisper yükleme hatası: " + error.message);
             reject(error);
         }
@@ -391,12 +661,8 @@ async function preloadSystem(){
     addLog("Arka plan preload başlatıldı.");
     checkCacheStatus();
 
-    loadFFmpeg().catch(e => {
+    loadFFmpeg().catch(e=>{
         addLog("FFmpeg preload başarısız: " + e.message);
-    });
-
-    loadWhisper().catch(e => {
-        addLog("Whisper preload başarısız: " + e.message);
     });
 }
 
@@ -409,36 +675,34 @@ async function extractAudioFromVideo(file){
     const inputName = "input_video";
     const outputName = "audio.wav";
 
-    ffmpeg.FS("writeFile", inputName, await fetchFile(file));
+    ffmpeg.FS("writeFile",inputName,await fetchFile(file));
 
     setStatus("Videodan ses ayrıştırılıyor...");
 
     await ffmpeg.run(
         "-y",
-        "-i", inputName,
+        "-i",inputName,
         "-vn",
-        "-acodec", "pcm_s16le",
-        "-ar", "16000",
-        "-ac", "1",
+        "-acodec","pcm_s16le",
+        "-ar","16000",
+        "-ac","1",
         outputName
     );
 
     setStatus("Ses dosyası hazırlanıyor...");
 
-    const data = ffmpeg.FS("readFile", outputName);
+    const data = ffmpeg.FS("readFile",outputName);
 
     try{
-        ffmpeg.FS("unlink", inputName);
-        ffmpeg.FS("unlink", outputName);
+        ffmpeg.FS("unlink",inputName);
+        ffmpeg.FS("unlink",outputName);
     }catch(e){
         addLog("Geçici dosya temizleme uyarısı: " + e.message);
     }
 
     setStatus("Ses dosyası hazır.");
 
-    return new Blob([data.buffer], {
-        type:"audio/wav"
-    });
+    return new Blob([data.buffer],{type:"audio/wav"});
 }
 
 async function decodeWavToFloat32Array(audioBlob){
@@ -446,9 +710,7 @@ async function decodeWavToFloat32Array(audioBlob){
 
     const arrayBuffer = await audioBlob.arrayBuffer();
 
-    const audioContext = new AudioContext({
-        sampleRate:16000
-    });
+    const audioContext = new AudioContext({sampleRate:16000});
 
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
@@ -460,10 +722,14 @@ async function decodeWavToFloat32Array(audioBlob){
 async function transcribeAudio(audioData){
     await loadWhisper();
 
+    if(!transcriber){
+        throw new Error("Model yüklenmedi.");
+    }
+
     setStatus("Ses metne dönüştürülüyor...");
     setProgress(0);
 
-    const output = await transcriber(audioData, {
+    const output = await transcriber(audioData,{
         language:"turkish",
         task:"transcribe",
         chunk_length_s:30,
@@ -476,17 +742,21 @@ async function transcribeAudio(audioData){
     return output.text || "";
 }
 
-modelSelect.addEventListener("change", ()=>{
+modelSelect.addEventListener("change",()=>{
+    updateModelInfo();
     addLog("Model değiştirildi: " + modelSelect.value);
+
     transcriber = null;
     whisperLoadingPromise = null;
     loadedModelName = null;
     currentDeviceType = null;
-    setBox(modelReady, "wait", "Yeni model bekliyor");
+
+    setBox(modelReady,"wait","Yeni model bekliyor");
 });
 
-preloadBtn.addEventListener("click", async ()=>{
+preloadBtn.addEventListener("click",async()=>{
     preloadBtn.disabled = true;
+
     try{
         await loadWhisper(true);
     }finally{
@@ -494,11 +764,18 @@ preloadBtn.addEventListener("click", async ()=>{
     }
 });
 
-startBtn.addEventListener("click", async ()=>{
+startBtn.addEventListener("click",async()=>{
     const file = videoInput.files[0];
 
     if(!file){
         alert("Lütfen bir video seçin.");
+        return;
+    }
+
+    const allowed = await confirmHeavyModel(modelSelect.value);
+
+    if(!allowed){
+        setStatus("İşlem kullanıcı tarafından iptal edildi.");
         return;
     }
 
@@ -531,7 +808,7 @@ startBtn.addEventListener("click", async ()=>{
     }
 });
 
-copyBtn.addEventListener("click", async ()=>{
+copyBtn.addEventListener("click",async()=>{
     if(!resultEl.value.trim()){
         alert("Kopyalanacak metin yok.");
         return;
@@ -542,13 +819,13 @@ copyBtn.addEventListener("click", async ()=>{
     alert("Metin kopyalandı.");
 });
 
-downloadBtn.addEventListener("click", ()=>{
+downloadBtn.addEventListener("click",()=>{
     if(!resultEl.value.trim()){
         alert("İndirilecek metin yok.");
         return;
     }
 
-    const blob = new Blob([resultEl.value], {
+    const blob = new Blob([resultEl.value],{
         type:"text/plain;charset=utf-8"
     });
 
@@ -564,19 +841,20 @@ downloadBtn.addEventListener("click", ()=>{
     addLog("TXT dosyası indirildi.");
 });
 
-clearLogBtn.addEventListener("click", ()=>{
+clearLogBtn.addEventListener("click",()=>{
     clearLogs();
     addLog("Log paneli temizlendi.");
 });
 
-window.addEventListener("load", ()=>{
+window.addEventListener("load",()=>{
     const lastModel = localStorage.getItem("ebs_last_model");
 
-    if(lastModel){
+    if(lastModel && MODEL_INFO[lastModel]){
         modelSelect.value = lastModel;
         addLog("Son kullanılan model seçildi: " + lastModel);
     }
 
+    updateModelInfo();
     preloadSystem();
 });
 </script>
