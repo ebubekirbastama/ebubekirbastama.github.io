@@ -28,7 +28,7 @@ body{
 
 .wrapper{
     width:100%;
-    max-width:1100px;
+    max-width:1150px;
     background:rgba(10,10,10,.9);
     border:1px solid rgba(212,175,55,.35);
     border-radius:28px;
@@ -156,9 +156,45 @@ button:disabled{
     transition:.3s;
 }
 
+.progress-text{
+    margin-top:8px;
+    color:#d4af37;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.log-box{
+    margin-top:18px;
+    background:#050505;
+    border:1px solid rgba(212,175,55,.25);
+    border-radius:14px;
+    padding:12px;
+    height:190px;
+    overflow-y:auto;
+}
+
+.log-title{
+    color:#d4af37;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+#logPanel{
+    font-family:Consolas, monospace;
+    font-size:12px;
+    color:#d8cfaa;
+    line-height:1.5;
+}
+
+.log-line{
+    border-bottom:1px solid rgba(255,255,255,.05);
+    padding:3px 0;
+}
+
 textarea{
     width:100%;
-    height:430px;
+    height:520px;
     resize:vertical;
     background:#070707;
     color:#fff8d7;
@@ -219,12 +255,20 @@ textarea{
                 <button id="startBtn">Transkripti Başlat</button>
                 <button id="copyBtn" class="secondary">Metni Kopyala</button>
                 <button id="downloadBtn" class="secondary">TXT İndir</button>
+                <button id="clearLogBtn" class="secondary">Logları Temizle</button>
             </div>
 
             <div id="status">Hazır. Video dosyasını seçerek başlayın.</div>
 
             <div class="progress">
                 <div id="bar"></div>
+            </div>
+
+            <div class="progress-text" id="progressText">%0</div>
+
+            <div class="log-box">
+                <div class="log-title">Canlı Sistem Logları</div>
+                <div id="logPanel"></div>
             </div>
 
             <div class="gold-line"></div>
@@ -256,9 +300,12 @@ const videoInput = document.getElementById("videoInput");
 const startBtn = document.getElementById("startBtn");
 const copyBtn = document.getElementById("copyBtn");
 const downloadBtn = document.getElementById("downloadBtn");
+const clearLogBtn = document.getElementById("clearLogBtn");
 const statusEl = document.getElementById("status");
 const resultEl = document.getElementById("result");
 const bar = document.getElementById("bar");
+const progressText = document.getElementById("progressText");
+const logPanel = document.getElementById("logPanel");
 const modelSelect = document.getElementById("modelSelect");
 
 const { createFFmpeg, fetchFile } = FFmpeg;
@@ -267,14 +314,34 @@ let ffmpeg = null;
 let transcriber = null;
 let loadedModelName = null;
 
+function addLog(message){
+    const time = new Date().toLocaleTimeString("tr-TR");
+
+    const div = document.createElement("div");
+    div.className = "log-line";
+    div.innerText = "[" + time + "] " + message;
+
+    logPanel.appendChild(div);
+    logPanel.scrollTop = logPanel.scrollHeight;
+}
+
+function clearLogs(){
+    logPanel.innerHTML = "";
+}
+
 function setStatus(text){
     statusEl.innerText = text;
+    addLog(text);
 }
 
 function setProgress(percent){
     if(percent < 0) percent = 0;
     if(percent > 100) percent = 100;
+
+    percent = Math.round(percent);
+
     bar.style.width = percent + "%";
+    progressText.innerText = "%" + percent;
 }
 
 async function loadFFmpeg(){
@@ -286,11 +353,19 @@ async function loadFFmpeg(){
     ffmpeg = createFFmpeg({
         log:true,
         progress:({ ratio })=>{
-            setProgress(Math.round(ratio * 100));
+            setProgress(ratio * 100);
+        }
+    });
+
+    ffmpeg.setLogger(({ type, message })=>{
+        if(message && message.trim() !== ""){
+            addLog("FFmpeg: " + message);
         }
     });
 
     await ffmpeg.load();
+
+    setStatus("FFmpeg motoru hazır.");
 
     return ffmpeg;
 }
@@ -299,6 +374,7 @@ async function loadWhisper(){
     const modelName = modelSelect.value;
 
     if(transcriber && loadedModelName === modelName){
+        setStatus("Whisper modeli önceden yüklü.");
         return transcriber;
     }
 
@@ -307,10 +383,27 @@ async function loadWhisper(){
 
     transcriber = await pipeline(
         "automatic-speech-recognition",
-        modelName
+        modelName,
+        {
+            progress_callback: function(data){
+                if(data.status){
+                    addLog("Model: " + data.status);
+                }
+
+                if(data.progress){
+                    setProgress(data.progress);
+                }
+
+                if(data.file){
+                    addLog("Model dosyası: " + data.file);
+                }
+            }
+        }
     );
 
     loadedModelName = modelName;
+
+    setStatus("Whisper modeli hazır.");
 
     return transcriber;
 }
@@ -345,7 +438,11 @@ async function extractAudioFromVideo(file){
     try{
         ffmpeg.FS("unlink", inputName);
         ffmpeg.FS("unlink", outputName);
-    }catch(e){}
+    }catch(e){
+        addLog("Geçici dosya temizleme uyarısı: " + e.message);
+    }
+
+    setStatus("Ses dosyası hazır.");
 
     return new Blob([data.buffer], {
         type:"audio/wav"
@@ -353,6 +450,8 @@ async function extractAudioFromVideo(file){
 }
 
 async function decodeWavToFloat32Array(audioBlob){
+    setStatus("WAV dosyası tarayıcı ses formatına çevriliyor...");
+
     const arrayBuffer = await audioBlob.arrayBuffer();
 
     const audioContext = new AudioContext({
@@ -360,6 +459,8 @@ async function decodeWavToFloat32Array(audioBlob){
     });
 
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    setStatus("Ses verisi analiz için hazır.");
 
     return audioBuffer.getChannelData(0);
 }
@@ -377,6 +478,9 @@ async function transcribeAudio(audioData){
         stride_length_s:5
     });
 
+    setProgress(100);
+    setStatus("Ses metne dönüştürüldü.");
+
     return output.text || "";
 }
 
@@ -392,6 +496,12 @@ startBtn.addEventListener("click", async ()=>{
     startBtn.disabled = true;
     resultEl.value = "";
     setProgress(0);
+    clearLogs();
+
+    addLog("Yeni işlem başlatıldı.");
+    addLog("Seçilen dosya: " + file.name);
+    addLog("Dosya boyutu: " + (file.size / 1024 / 1024).toFixed(2) + " MB");
+    addLog("Seçilen model: " + modelSelect.value);
 
     try{
 
@@ -411,6 +521,7 @@ startBtn.addEventListener("click", async ()=>{
     }catch(error){
 
         console.error(error);
+        addLog("HATA: " + error.message);
         setStatus("Hata oluştu: " + error.message);
 
     }finally{
@@ -429,6 +540,7 @@ copyBtn.addEventListener("click", async ()=>{
     }
 
     await navigator.clipboard.writeText(resultEl.value);
+    addLog("Metin panoya kopyalandı.");
     alert("Metin kopyalandı.");
 
 });
@@ -453,6 +565,13 @@ downloadBtn.addEventListener("click", ()=>{
 
     URL.revokeObjectURL(url);
 
+    addLog("TXT dosyası indirildi.");
+
+});
+
+clearLogBtn.addEventListener("click", ()=>{
+    clearLogs();
+    addLog("Log paneli temizlendi.");
 });
 </script>
 
