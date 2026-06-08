@@ -46,6 +46,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .log-line{border-bottom:1px solid rgba(255,255,255,.05);padding:3px 0}
 textarea{width:100%;height:560px;resize:vertical;background:#070707;color:#fff8d7;border:1px solid rgba(212,175,55,.3);border-radius:20px;padding:18px;line-height:1.6;outline:none;font-size:15px}
 .info{color:#bcb28d;font-size:13px;line-height:1.7}
+code{color:#fff;background:#111;padding:2px 5px;border-radius:5px}
 @media(max-width:850px){.panel{grid-template-columns:1fr}.status-grid{grid-template-columns:1fr}h1{font-size:28px}body{padding:15px}.wrapper{padding:22px}}
 </style>
 </head>
@@ -56,7 +57,7 @@ textarea{width:100%;height:560px;resize:vertical;background:#070707;color:#fff8d
     <div class="header">
         <div class="badge">EBS PREMIUM AI STUDIO</div>
         <h1>Video Sesi Yazıya Çevir</h1>
-        <div class="subtitle">API yok. Ücretsiz. FFmpeg + Whisper modeli tarayıcı içinde çalışır.</div>
+        <div class="subtitle">GPU varsa GPU, yoksa CPU/WASM ile ücretsiz transkript sistemi.</div>
     </div>
 
     <div class="gold-line"></div>
@@ -72,8 +73,8 @@ textarea{width:100%;height:560px;resize:vertical;background:#070707;color:#fff8d
             <label>Whisper Model Kalitesi</label>
             <select id="modelSelect">
                 <option value="Xenova/whisper-tiny">Hızlı - Düşük Kalite</option>
-                <option value="Xenova/whisper-base">Dengeli - Orta Kalite</option>
-                <option value="Xenova/whisper-small" selected>Premium - Yüksek Kalite</option>
+                <option value="Xenova/whisper-base" selected>Dengeli - Orta Kalite</option>
+                <option value="Xenova/whisper-small">Premium - Yüksek Kalite</option>
             </select>
 
             <div class="status-grid">
@@ -115,10 +116,9 @@ textarea{width:100%;height:560px;resize:vertical;background:#070707;color:#fff8d
             <div class="gold-line"></div>
 
             <div class="info">
-                <strong style="color:#d4af37;">Yerel Model Klasörü:</strong><br>
-                Model dosyalarını kendi sunucuna almak için şu yapıyı kullan:<br>
-                <code style="color:#fff">/ebs_video_kesme/models/Xenova/whisper-small/</code><br><br>
-                İlk kullanımda model indirilebilir. Sonraki kullanımlarda tarayıcı cache/IndexedDB üzerinden daha hızlı açılır.
+                <strong style="color:#d4af37;">Not:</strong><br>
+                GitHub Pages üzerinde model Hugging Face üzerinden yüklenir. İlk yükleme uzun sürebilir.
+                Sonrasında tarayıcı cache/IndexedDB üzerinden daha hızlı açılır.
             </div>
 
         </div>
@@ -168,6 +168,7 @@ let ffmpegLoadingPromise = null;
 let transcriber = null;
 let whisperLoadingPromise = null;
 let loadedModelName = null;
+let currentDeviceType = null;
 
 function addLog(message){
     const time = new Date().toLocaleTimeString("tr-TR");
@@ -243,6 +244,25 @@ async function checkCacheStatus(){
     }
 }
 
+async function detectBestDevice(){
+    try{
+        if(typeof navigator !== "undefined" && navigator.gpu){
+            addLog("WebGPU kontrol ediliyor...");
+            const adapter = await navigator.gpu.requestAdapter();
+
+            if(adapter){
+                addLog("GPU bulundu. WebGPU kullanılacak.");
+                return "webgpu";
+            }
+        }
+    }catch(e){
+        addLog("WebGPU kullanılamıyor: " + e.message);
+    }
+
+    addLog("GPU bulunamadı. CPU/WASM kullanılacak.");
+    return "wasm";
+}
+
 async function loadFFmpeg(){
     if(ffmpeg) return ffmpeg;
     if(ffmpegLoadingPromise) return ffmpegLoadingPromise;
@@ -285,7 +305,7 @@ async function loadWhisper(force=false){
     const modelName = modelSelect.value;
 
     if(!force && transcriber && loadedModelName === modelName){
-        setBox(modelReady, "ok", "Hazır");
+        setBox(modelReady, "ok", currentDeviceType === "webgpu" ? "GPU Hazır" : "CPU Hazır");
         setStatus("Whisper modeli zaten RAM içinde hazır.");
         return transcriber;
     }
@@ -304,32 +324,58 @@ async function loadWhisper(force=false){
             addLog("Remote fallback: " + (ALLOW_REMOTE_FALLBACK ? "Açık" : "Kapalı"));
             setProgress(0);
 
-            transcriber = await pipeline(
-                "automatic-speech-recognition",
-                modelName,
-                {
-                    progress_callback:function(data){
-                        if(data.status){
-                            addLog("Model: " + data.status);
-                        }
+            const deviceType = await detectBestDevice();
+            currentDeviceType = deviceType;
 
-                        if(typeof data.progress === "number"){
-                            setProgress(data.progress);
-                        }
+            addLog(
+                deviceType === "webgpu"
+                ? "🚀 GPU hızlandırma aktif."
+                : "🖥 CPU/WASM modu aktif."
+            );
 
-                        if(data.file){
-                            addLog("Model dosyası: " + data.file);
+            try{
+                transcriber = await pipeline(
+                    "automatic-speech-recognition",
+                    modelName,
+                    {
+                        device: deviceType,
+                        dtype: deviceType === "webgpu" ? "fp16" : "q8",
+                        progress_callback:function(data){
+                            if(data.status) addLog("Model: " + data.status);
+                            if(typeof data.progress === "number") setProgress(data.progress);
+                            if(data.file) addLog("Model dosyası: " + data.file);
                         }
                     }
+                );
+            }catch(gpuError){
+                if(deviceType === "webgpu"){
+                    addLog("GPU ile model açılamadı. CPU/WASM moduna düşülüyor: " + gpuError.message);
+                    currentDeviceType = "wasm";
+
+                    transcriber = await pipeline(
+                        "automatic-speech-recognition",
+                        modelName,
+                        {
+                            device: "wasm",
+                            dtype: "q8",
+                            progress_callback:function(data){
+                                if(data.status) addLog("Model: " + data.status);
+                                if(typeof data.progress === "number") setProgress(data.progress);
+                                if(data.file) addLog("Model dosyası: " + data.file);
+                            }
+                        }
+                    );
+                }else{
+                    throw gpuError;
                 }
-            );
+            }
 
             localStorage.setItem("ebs_last_model", modelName);
             localStorage.setItem("ebs_model_ready", "1");
 
-            setBox(modelReady, "ok", "Hazır");
+            setBox(modelReady, "ok", currentDeviceType === "webgpu" ? "GPU Hazır" : "CPU Hazır");
             setProgress(100);
-            setStatus("Whisper modeli hazır. Sonraki kullanımda cache/RAM üzerinden daha hızlı açılır.");
+            setStatus("Whisper modeli hazır.");
             resolve(transcriber);
         }catch(error){
             setBox(modelReady, "error", "Hata");
@@ -435,6 +481,7 @@ modelSelect.addEventListener("change", ()=>{
     transcriber = null;
     whisperLoadingPromise = null;
     loadedModelName = null;
+    currentDeviceType = null;
     setBox(modelReady, "wait", "Yeni model bekliyor");
 });
 
