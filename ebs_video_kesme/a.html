@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ücretsiz Video Ses Gürültü Temizleme | EBS Audio Cleaner</title>
+<title>EBS Audio Cleaner Pro | Video Ses Gürültü Temizleme</title>
 
 <script src="coi-serviceworker.js"></script>
 
@@ -53,7 +53,7 @@ body {
 .dot-green{background:#27c93f}
 .app-body{padding:30px}
 .form-label {
-    font-size:.85rem;
+    font-size:.82rem;
     text-transform:uppercase;
     letter-spacing:1px;
     color:var(--text-muted);
@@ -115,7 +115,7 @@ body {
     border-left:4px solid var(--accent-color);
     border-radius:4px;
 }
-video {
+video,audio {
     width:100%;
     border-radius:12px;
     background:#000;
@@ -127,6 +127,15 @@ video {
     border-radius:12px;
     padding:15px;
 }
+.small-note {
+    color:var(--text-muted);
+    font-size:.82rem;
+}
+.badge-soft {
+    background:#1c2030;
+    border:1px solid var(--border-color);
+    color:#cdd6f4;
+}
 </style>
 </head>
 
@@ -134,7 +143,7 @@ video {
 
 <div class="container py-5">
 <div class="row justify-content-center">
-<div class="col-xl-10 col-lg-11">
+<div class="col-xl-11 col-lg-12">
 
 <div class="app-window">
 
@@ -146,7 +155,7 @@ video {
     </div>
     <div class="fw-bold text-uppercase" style="font-size:.8rem;color:var(--text-muted);">
         <i class="fa-solid fa-wand-magic-sparkles text-primary me-1"></i>
-        EBS Audio Cleaner Pro
+        EBS Audio Cleaner Pro v2.0
     </div>
     <div></div>
 </div>
@@ -157,58 +166,88 @@ video {
 <div class="col-md-5 border-end" style="border-color:var(--border-color)!important;">
 
     <div class="mb-4">
-        <label class="form-label">Video Dosyası</label>
+        <label class="form-label">Video / Ses Dosyası</label>
         <div class="file-upload-wrapper">
             <i class="fa-solid fa-cloud-arrow-up fa-2x text-primary mb-2"></i>
             <p class="m-0 small text-white fw-semibold" id="fileNameDisplay">
-                Video seçin veya sürükleyin
+                MP4, MOV, M4A, MP3 veya WAV seçin
             </p>
-            <input type="file" id="videoInput" accept="video/*">
+            <input type="file" id="videoInput" accept="video/*,audio/*">
+        </div>
+        <div class="small-note mt-2">
+            Sistem önce sesi WAV formatına çevirir, sonra temizlik uygular.
         </div>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Gürültü Temizleme Gücü</label>
-        <select id="noiseLevel" class="form-select">
-            <option value="8">Hafif</option>
-            <option value="15" selected>Orta</option>
-            <option value="25">Güçlü</option>
-            <option value="35">Çok Güçlü</option>
+        <label class="form-label">Temizleme Profili</label>
+        <select id="profileSelect" class="form-select">
+            <option value="news" selected>Haber Röportajı Temizleme</option>
+            <option value="wind">Rüzgar Gürültüsü Temizleme</option>
+            <option value="car">Araç İçi Gürültü Temizleme</option>
+            <option value="crowd">Kalabalık Ortam Temizleme</option>
+            <option value="ai">Yapay Zeka Ses Netleştirme</option>
+            <option value="manual">Manuel Ayar</option>
         </select>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Dip Uğultu Kesme</label>
-        <select id="highpass" class="form-select">
-            <option value="80">80 Hz</option>
-            <option value="120" selected>120 Hz</option>
-            <option value="180">180 Hz</option>
-        </select>
+    <div id="manualSettings">
+
+        <div class="mb-3">
+            <label class="form-label">Gürültü Temizleme Gücü</label>
+            <select id="noiseLevel" class="form-select">
+                <option value="8">Hafif</option>
+                <option value="15" selected>Orta</option>
+                <option value="25">Güçlü</option>
+                <option value="35">Çok Güçlü</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Dip Uğultu Kesme</label>
+            <select id="highpass" class="form-select">
+                <option value="80">80 Hz</option>
+                <option value="120" selected>120 Hz</option>
+                <option value="180">180 Hz</option>
+                <option value="220">220 Hz</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tiz Parazit Kesme</label>
+            <select id="lowpass" class="form-select">
+                <option value="7000">7000 Hz</option>
+                <option value="8500" selected>8500 Hz</option>
+                <option value="9000">9000 Hz</option>
+                <option value="12000">12000 Hz</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Ses Yükseltme</label>
+            <select id="volumeLevel" class="form-select">
+                <option value="1.0">Normal</option>
+                <option value="1.3" selected>+30%</option>
+                <option value="1.6">+60%</option>
+                <option value="2.0">2 Kat</option>
+            </select>
+        </div>
+
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Tiz Parazit Kesme</label>
-        <select id="lowpass" class="form-select">
-            <option value="7000">7000 Hz</option>
-            <option value="9000" selected>9000 Hz</option>
-            <option value="12000">12000 Hz</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Ses Yükseltme</label>
-        <select id="volumeLevel" class="form-select">
-            <option value="1.0">Normal</option>
-            <option value="1.3" selected>+30%</option>
-            <option value="1.6">+60%</option>
-            <option value="2.0">2 Kat</option>
+        <label class="form-label">Çıktı Tipi</label>
+        <select id="outputMode" class="form-select">
+            <option value="mp4" selected>Video varsa MP4 olarak indir</option>
+            <option value="wav">Sadece temiz WAV indir</option>
+            <option value="m4a">Sadece temiz M4A/AAC indir</option>
         </select>
     </div>
 
     <div class="d-grid mt-4">
         <button id="processBtn" class="btn btn-primary btn-lg">
             <i class="fa-solid fa-broom me-2"></i>
-            GÜRÜLTÜYÜ TEMİZLE
+            SESİ TEMİZLE
         </button>
     </div>
 
@@ -224,18 +263,34 @@ video {
 <div class="col-md-7">
 
     <div class="preview-box mb-4">
-        <label class="form-label">Orijinal Video</label>
-        <video id="originalVideo" controls></video>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label m-0">Orijinal Dosya</label>
+            <span class="badge badge-soft" id="inputInfo">Bekleniyor</span>
+        </div>
+        <video id="originalVideo" controls class="d-none"></video>
+        <audio id="originalAudio" controls class="d-none"></audio>
     </div>
 
     <div class="preview-box">
-        <label class="form-label">Temizlenmiş Video</label>
-        <video id="cleanVideo" controls></video>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label m-0">Temizlenmiş Çıktı</label>
+            <span class="badge badge-soft" id="outputInfo">Hazır değil</span>
+        </div>
 
-        <a id="downloadBtn" class="btn btn-success w-100 mt-3 d-none" download="EBS_Gurultu_Temizlenmis_Video.mp4">
+        <video id="cleanVideo" controls class="d-none"></video>
+        <audio id="cleanAudio" controls class="d-none"></audio>
+
+        <a id="downloadBtn" class="btn btn-success w-100 mt-3 d-none">
             <i class="fa-solid fa-download me-2"></i>
-            Temizlenmiş Videoyu İndir
+            Temizlenmiş Dosyayı İndir
         </a>
+    </div>
+
+    <div class="preview-box mt-4">
+        <label class="form-label">Profil Açıklaması</label>
+        <div id="profileDescription" class="small-note">
+            Haber röportajı profili konuşmayı öne çıkarır, dip uğultu ve ortam parazitini azaltır.
+        </div>
     </div>
 
 </div>
@@ -261,15 +316,44 @@ const ffmpeg = createFFmpeg({
 
 const videoInput = document.getElementById("videoInput");
 const fileNameDisplay = document.getElementById("fileNameDisplay");
+
 const originalVideo = document.getElementById("originalVideo");
+const originalAudio = document.getElementById("originalAudio");
 const cleanVideo = document.getElementById("cleanVideo");
+const cleanAudio = document.getElementById("cleanAudio");
+
 const processBtn = document.getElementById("processBtn");
 const statusContainer = document.getElementById("statusContainer");
 const statusText = document.getElementById("statusText");
 const progressBar = document.getElementById("progressBar");
 const downloadBtn = document.getElementById("downloadBtn");
 
+const profileSelect = document.getElementById("profileSelect");
+const manualSettings = document.getElementById("manualSettings");
+const profileDescription = document.getElementById("profileDescription");
+
+const inputInfo = document.getElementById("inputInfo");
+const outputInfo = document.getElementById("outputInfo");
+
 let selectedFile = null;
+let hasVideoStream = false;
+
+const profileDescriptions = {
+    news: "Haber röportajı profili konuşmayı öne çıkarır, dip uğultu ve ortam parazitini azaltır.",
+    wind: "Rüzgar profili düşük frekanslı patlama, uğultu ve dış ortam rüzgar sesini azaltmaya odaklanır.",
+    car: "Araç içi profili motor, yol ve klima uğultusunu azaltır; konuşma netliğini artırır.",
+    crowd: "Kalabalık ortam profili insan uğultusu ve geniş ortam sesini azaltmaya çalışır.",
+    ai: "Yapay zeka ses netleştirme profili daha agresif temizlik yapar; konuşma belirginleşir ama ses biraz yapaylaşabilir.",
+    manual: "Manuel ayarda filtre gücünü kendiniz seçebilirsiniz."
+};
+
+profileSelect.addEventListener("change", () => {
+    const val = profileSelect.value;
+    profileDescription.innerText = profileDescriptions[val] || "";
+    manualSettings.style.display = val === "manual" ? "block" : "none";
+});
+
+manualSettings.style.display = "none";
 
 videoInput.addEventListener("change", function(e) {
     selectedFile = e.target.files[0];
@@ -280,10 +364,28 @@ videoInput.addEventListener("change", function(e) {
     fileNameDisplay.classList.remove("text-white");
     fileNameDisplay.classList.add("text-success");
 
-    originalVideo.src = URL.createObjectURL(selectedFile);
+    const url = URL.createObjectURL(selectedFile);
 
-    cleanVideo.removeAttribute("src");
+    cleanVideo.classList.add("d-none");
+    cleanAudio.classList.add("d-none");
     downloadBtn.classList.add("d-none");
+    outputInfo.innerText = "Hazır değil";
+
+    if (selectedFile.type.startsWith("audio/")) {
+        originalVideo.classList.add("d-none");
+        originalAudio.classList.remove("d-none");
+        originalAudio.src = url;
+        inputInfo.innerText = "Ses dosyası";
+    } else {
+        originalAudio.classList.add("d-none");
+        originalVideo.classList.remove("d-none");
+        originalVideo.src = url;
+        inputInfo.innerText = "Video / MP4";
+    }
+});
+
+ffmpeg.setLogger(({ type, message }) => {
+    console.log(type, message);
 });
 
 ffmpeg.setProgress(({ ratio }) => {
@@ -291,9 +393,68 @@ ffmpeg.setProgress(({ ratio }) => {
     progressBar.style.width = percent + "%";
 });
 
+function setStatus(text, percent = null) {
+    statusText.innerText = text;
+    if (percent !== null) {
+        progressBar.style.width = percent + "%";
+    }
+}
+
+function getProfileFilter(profile) {
+    if (profile === "news") {
+        return "highpass=f=110,lowpass=f=9000,afftdn=nr=18:nf=-28,equalizer=f=2500:t=q:w=1:g=3,volume=1.35";
+    }
+
+    if (profile === "wind") {
+        return "highpass=f=180,lowpass=f=7500,afftdn=nr=28:nf=-32,equalizer=f=120:t=q:w=1:g=-5,volume=1.45";
+    }
+
+    if (profile === "car") {
+        return "highpass=f=140,lowpass=f=8500,afftdn=nr=24:nf=-30,equalizer=f=180:t=q:w=1:g=-4,equalizer=f=3000:t=q:w=1:g=2,volume=1.4";
+    }
+
+    if (profile === "crowd") {
+        return "highpass=f=130,lowpass=f=8000,afftdn=nr=25:nf=-30,equalizer=f=1000:t=q:w=1:g=-2,equalizer=f=2800:t=q:w=1:g=3,volume=1.35";
+    }
+
+    if (profile === "ai") {
+        return "highpass=f=120,lowpass=f=8500,afftdn=nr=35:nf=-35,equalizer=f=2500:t=q:w=1:g=4,equalizer=f=4000:t=q:w=1:g=2,volume=1.5";
+    }
+
+    const noiseLevel = document.getElementById("noiseLevel").value;
+    const highpass = document.getElementById("highpass").value;
+    const lowpass = document.getElementById("lowpass").value;
+    const volumeLevel = document.getElementById("volumeLevel").value;
+
+    return `highpass=f=${highpass},lowpass=f=${lowpass},afftdn=nr=${noiseLevel}:nf=-25,volume=${volumeLevel}`;
+}
+
+async function checkVideoStream(inputName) {
+    try {
+        await ffmpeg.run(
+            "-i", inputName,
+            "-map", "0:v:0",
+            "-frames:v", "1",
+            "-f", "null",
+            "-"
+        );
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function cleanupFiles(files) {
+    files.forEach(file => {
+        try {
+            ffmpeg.FS("unlink", file);
+        } catch(e) {}
+    });
+}
+
 processBtn.addEventListener("click", async () => {
     if (!selectedFile) {
-        alert("Lütfen önce video dosyası seçin.");
+        alert("Lütfen önce dosya seçin.");
         return;
     }
 
@@ -301,67 +462,137 @@ processBtn.addEventListener("click", async () => {
     statusContainer.classList.remove("d-none");
     progressBar.style.width = "0%";
     downloadBtn.classList.add("d-none");
+    cleanVideo.classList.add("d-none");
+    cleanAudio.classList.add("d-none");
+
+    const inputName = "input_file";
+    const tempWav = "temp_audio.wav";
+    const cleanWav = "clean_audio.wav";
+    const cleanM4a = "clean_audio.m4a";
+    const outputMp4 = "clean_output.mp4";
+
+    cleanupFiles([inputName, tempWav, cleanWav, cleanM4a, outputMp4]);
 
     try {
         if (!ffmpeg.isLoaded()) {
-            statusText.innerText = "[CORE] FFmpeg yükleniyor...";
+            setStatus("[CORE] FFmpeg yükleniyor...", 5);
             await ffmpeg.load();
         }
 
-        statusText.innerText = "[MEDIA] Video hafızaya alınıyor...";
-
-        const inputName = "input_video.mp4";
-        const outputName = "clean_output.mp4";
-
-        try { ffmpeg.FS("unlink", inputName); } catch(e) {}
-        try { ffmpeg.FS("unlink", outputName); } catch(e) {}
-
+        setStatus("[1/5] Dosya hafızaya alınıyor...", 10);
         ffmpeg.FS("writeFile", inputName, await fetchFile(selectedFile));
 
-        const noiseLevel = document.getElementById("noiseLevel").value;
-        const highpass = document.getElementById("highpass").value;
-        const lowpass = document.getElementById("lowpass").value;
-        const volumeLevel = document.getElementById("volumeLevel").value;
+        setStatus("[2/5] Video stream kontrol ediliyor...", 18);
+        hasVideoStream = await checkVideoStream(inputName);
 
-        const audioFilter =
-            `afftdn=nr=${noiseLevel}:nf=-25,` +
-            `highpass=f=${highpass},` +
-            `lowpass=f=${lowpass},` +
-            `volume=${volumeLevel}`;
+        if (hasVideoStream) {
+            inputInfo.innerText = "Video + Ses";
+        } else {
+            inputInfo.innerText = "Sadece Ses";
+        }
 
-        statusText.innerText = "[CLEAN] Arka plan gürültüsü temizleniyor...";
+        setStatus("[3/5] MP4/MOV içindeki ses WAV formatına çevriliyor...", 30);
 
         await ffmpeg.run(
             "-i", inputName,
-            "-map", "0:v:0",
-            "-map", "0:a:0?",
-            "-c:v", "copy",
-            "-af", audioFilter,
-            "-c:a", "aac",
-            "-b:a", "192k",
-            "-movflags", "+faststart",
-            outputName
+            "-vn",
+            "-acodec", "pcm_s16le",
+            "-ar", "48000",
+            "-ac", "1",
+            tempWav
         );
 
-        statusText.innerText = "[EXPORT] Dosya hazırlanıyor...";
+        const profile = profileSelect.value;
+        const filter = getProfileFilter(profile);
 
-        const data = ffmpeg.FS("readFile", outputName);
-        const blob = new Blob([data.buffer], { type: "video/mp4" });
-        const url = URL.createObjectURL(blob);
+        setStatus("[4/5] WAV ses üzerinde gürültü temizleme uygulanıyor...", 55);
 
-        cleanVideo.src = url;
-        downloadBtn.href = url;
-        downloadBtn.classList.remove("d-none");
+        await ffmpeg.run(
+            "-i", tempWav,
+            "-af", filter,
+            cleanWav
+        );
 
-        progressBar.style.width = "100%";
-        statusText.innerText = "[SUCCESS] Gürültü temizleme tamamlandı.";
+        const outputMode = document.getElementById("outputMode").value;
 
-        try { ffmpeg.FS("unlink", inputName); } catch(e) {}
-        try { ffmpeg.FS("unlink", outputName); } catch(e) {}
+        if (outputMode === "wav") {
+            setStatus("[5/5] Temiz WAV dosyası hazırlanıyor...", 85);
+
+            const data = ffmpeg.FS("readFile", cleanWav);
+            const blob = new Blob([data.buffer], { type: "audio/wav" });
+            const url = URL.createObjectURL(blob);
+
+            cleanAudio.src = url;
+            cleanAudio.classList.remove("d-none");
+
+            downloadBtn.href = url;
+            downloadBtn.download = "EBS_Temizlenmis_Ses.wav";
+            downloadBtn.classList.remove("d-none");
+
+            outputInfo.innerText = "WAV";
+        }
+
+        else if (outputMode === "m4a" || !hasVideoStream) {
+            setStatus("[5/5] Temiz ses M4A/AAC formatına çevriliyor...", 85);
+
+            await ffmpeg.run(
+                "-i", cleanWav,
+                "-c:a", "aac",
+                "-b:a", "192k",
+                cleanM4a
+            );
+
+            const data = ffmpeg.FS("readFile", cleanM4a);
+            const blob = new Blob([data.buffer], { type: "audio/mp4" });
+            const url = URL.createObjectURL(blob);
+
+            cleanAudio.src = url;
+            cleanAudio.classList.remove("d-none");
+
+            downloadBtn.href = url;
+            downloadBtn.download = "EBS_Temizlenmis_Ses.m4a";
+            downloadBtn.classList.remove("d-none");
+
+            outputInfo.innerText = "M4A / AAC";
+        }
+
+        else {
+            setStatus("[5/5] Temiz ses videoya tekrar gömülüyor...", 85);
+
+            await ffmpeg.run(
+                "-i", inputName,
+                "-i", cleanWav,
+                "-map", "0:v:0?",
+                "-map", "1:a:0",
+                "-c:v", "copy",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-shortest",
+                "-movflags", "+faststart",
+                outputMp4
+            );
+
+            const data = ffmpeg.FS("readFile", outputMp4);
+            const blob = new Blob([data.buffer], { type: "video/mp4" });
+            const url = URL.createObjectURL(blob);
+
+            cleanVideo.src = url;
+            cleanVideo.classList.remove("d-none");
+
+            downloadBtn.href = url;
+            downloadBtn.download = "EBS_Gurultu_Temizlenmis_Video.mp4";
+            downloadBtn.classList.remove("d-none");
+
+            outputInfo.innerText = "MP4";
+        }
+
+        setStatus("[SUCCESS] İşlem tamamlandı.", 100);
+
+        cleanupFiles([inputName, tempWav, cleanWav, cleanM4a, outputMp4]);
 
     } catch (error) {
         console.error(error);
-        statusText.innerText = "[ERROR] Hata oluştu: " + error.message;
+        setStatus("[ERROR] Hata oluştu: " + error.message);
     }
 
     processBtn.disabled = false;
