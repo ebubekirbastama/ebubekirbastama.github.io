@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Ses Gürültü Temizleme Aracı</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f3f5f7;
+    }
+    .card {
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+    video {
+      width: 100%;
+      border-radius: 14px;
+      background: #000;
+    }
+    .progress {
+      height: 22px;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-5">
+  <div class="card p-4">
+    <h3 class="mb-3">Video Ses Gürültü Temizleme</h3>
+
+    <div class="alert alert-info">
+      Video bilgisayarından dışarı yüklenmeden tarayıcı içinde işlenir.
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Video seç</label>
+      <input type="file" id="videoInput" class="form-control" accept="video/*">
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-3">
+        <label class="form-label">Gürültü Azaltma</label>
+        <select id="noiseLevel" class="form-select">
+          <option value="nr=8">Hafif</option>
+          <option value="nr=15" selected>Orta</option>
+          <option value="nr=25">Güçlü</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Kalın Dip Sesi Kes</label>
+        <select id="highpass" class="form-select">
+          <option value="80">80 Hz</option>
+          <option value="120" selected>120 Hz</option>
+          <option value="180">180 Hz</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Tiz Parazit Kes</label>
+        <select id="lowpass" class="form-select">
+          <option value="7000">7000 Hz</option>
+          <option value="9000" selected>9000 Hz</option>
+          <option value="12000">12000 Hz</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Ses Yükseltme</label>
+        <select id="volume" class="form-select">
+          <option value="1.0">Normal</option>
+          <option value="1.5" selected>+50%</option>
+          <option value="2.0">2 Kat</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="processBtn" class="btn btn-primary w-100 mb-3">
+      Gürültüyü Temizle
+    </button>
+
+    <div class="progress mb-3 d-none" id="progressBox">
+      <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%">
+        0%
+      </div>
+    </div>
+
+    <div id="status" class="mb-3 text-muted"></div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <h5>Orijinal Video</h5>
+        <video id="originalVideo" controls></video>
+      </div>
+
+      <div class="col-md-6">
+        <h5>Temizlenmiş Video</h5>
+        <video id="outputVideo" controls></video>
+        <a id="downloadBtn" class="btn btn-success w-100 mt-3 d-none" download="gurultu-temizlenmis-video.mp4">
+          Temizlenmiş Videoyu İndir
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+
+<script>
+const { FFmpeg } = FFmpegWASM;
+
+let ffmpeg = null;
+let selectedFile = null;
+
+const videoInput = document.getElementById("videoInput");
+const originalVideo = document.getElementById("originalVideo");
+const outputVideo = document.getElementById("outputVideo");
+const processBtn = document.getElementById("processBtn");
+const statusText = document.getElementById("status");
+const progressBox = document.getElementById("progressBox");
+const progressBar = document.getElementById("progressBar");
+const downloadBtn = document.getElementById("downloadBtn");
+
+videoInput.addEventListener("change", function () {
+  selectedFile = this.files[0];
+
+  if (!selectedFile) return;
+
+  originalVideo.src = URL.createObjectURL(selectedFile);
+  outputVideo.removeAttribute("src");
+  downloadBtn.classList.add("d-none");
+  statusText.innerText = "Video seçildi.";
+});
+
+async function loadFFmpeg() {
+  if (ffmpeg) return;
+
+  ffmpeg = new FFmpeg();
+
+  ffmpeg.on("log", ({ message }) => {
+    console.log(message);
+  });
+
+  ffmpeg.on("progress", ({ progress }) => {
+    const percent = Math.round(progress * 100);
+    progressBar.style.width = percent + "%";
+    progressBar.innerText = percent + "%";
+  });
+
+  statusText.innerText = "FFmpeg yükleniyor...";
+  await ffmpeg.load({
+    coreURL: "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js"
+  });
+}
+
+processBtn.addEventListener("click", async function () {
+  if (!selectedFile) {
+    alert("Lütfen önce video seçin.");
+    return;
+  }
+
+  processBtn.disabled = true;
+  progressBox.classList.remove("d-none");
+  progressBar.style.width = "0%";
+  progressBar.innerText = "0%";
+  statusText.innerText = "İşlem hazırlanıyor...";
+
+  try {
+    await loadFFmpeg();
+
+    const inputName = "input.mp4";
+    const outputName = "output.mp4";
+
+    const noiseLevel = document.getElementById("noiseLevel").value;
+    const highpass = document.getElementById("highpass").value;
+    const lowpass = document.getElementById("lowpass").value;
+    const volume = document.getElementById("volume").value;
+
+    const fileData = new Uint8Array(await selectedFile.arrayBuffer());
+
+    await ffmpeg.writeFile(inputName, fileData);
+
+    const audioFilter =
+      `afftdn=${noiseLevel}:nf=-25,` +
+      `highpass=f=${highpass},` +
+      `lowpass=f=${lowpass},` +
+      `volume=${volume}`;
+
+    statusText.innerText = "Video sesi temizleniyor...";
+
+    await ffmpeg.exec([
+      "-i", inputName,
+      "-map", "0:v:0",
+      "-map", "0:a:0?",
+      "-c:v", "copy",
+      "-af", audioFilter,
+      "-c:a", "aac",
+      "-b:a", "192k",
+      "-movflags", "+faststart",
+      outputName
+    ]);
+
+    const data = await ffmpeg.readFile(outputName);
+    const blob = new Blob([data.buffer], { type: "video/mp4" });
+    const url = URL.createObjectURL(blob);
+
+    outputVideo.src = url;
+    downloadBtn.href = url;
+    downloadBtn.classList.remove("d-none");
+
+    statusText.innerText = "İşlem tamamlandı. Temizlenmiş videoyu indirebilirsin.";
+
+  } catch (error) {
+    console.error(error);
+    statusText.innerText = "Hata oluştu: " + error.message;
+  }
+
+  processBtn.disabled = false;
+});
+</script>
+
+</body>
+</html>
