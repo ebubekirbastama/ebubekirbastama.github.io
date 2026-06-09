@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EBS Audio Cleaner Pro | Video Ses Gürültü Temizleme</title>
+<title>EBS Audio Cleaner Pro v3.0 | Video Ses Gürültü Temizleme</title>
+<meta name="description" content="Tarayıcı tabanlı video ve ses gürültü temizleme aracı. MP4 içindeki sesi WAV'a çevirir, profilli filtre uygular ve temiz MP4, WAV veya M4A olarak indirir.">
 
 <script src="coi-serviceworker.js"></script>
 
@@ -24,7 +25,7 @@
 body {
     background:var(--bg-dark);
     color:var(--text-main);
-    font-family:'Segoe UI',sans-serif;
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 }
 .app-window {
     background:var(--panel-dark);
@@ -72,6 +73,10 @@ body {
     border-color:var(--accent-color);
     box-shadow:0 0 10px var(--accent-glow);
 }
+.form-select option {
+    background:#1c2030;
+    color:#fff;
+}
 .file-upload-wrapper {
     position:relative;
     border:2px dashed var(--border-color);
@@ -80,6 +85,7 @@ body {
     text-align:center;
     background:#121420;
     cursor:pointer;
+    transition:.25s;
 }
 .file-upload-wrapper:hover {
     border-color:var(--accent-color);
@@ -97,10 +103,13 @@ body {
 .btn-primary {
     background:linear-gradient(135deg,#007bff,#0056b3);
     border:none;
-    font-weight:600;
+    font-weight:700;
     padding:14px;
     border-radius:8px;
     box-shadow:0 4px 15px var(--accent-glow);
+}
+.btn-primary:hover:not(:disabled) {
+    transform:translateY(-1px);
 }
 .progress {
     background:#121420;
@@ -136,6 +145,27 @@ video,audio {
     border:1px solid var(--border-color);
     color:#cdd6f4;
 }
+.profile-pill {
+    display:inline-block;
+    background:#1c2030;
+    border:1px solid var(--border-color);
+    color:#cdd6f4;
+    border-radius:999px;
+    padding:5px 9px;
+    margin:3px;
+    font-size:.78rem;
+}
+.log-box {
+    background:#090b12;
+    color:#9ee493;
+    border:1px solid var(--border-color);
+    border-radius:10px;
+    padding:12px;
+    height:130px;
+    overflow:auto;
+    font-size:12px;
+    font-family:Consolas,monospace;
+}
 </style>
 </head>
 
@@ -154,8 +184,8 @@ video,audio {
         <span class="dot-green"></span>
     </div>
     <div class="fw-bold text-uppercase" style="font-size:.8rem;color:var(--text-muted);">
-        <i class="fa-solid fa-wand-magic-sparkles text-primary me-1"></i>
-        EBS Audio Cleaner Pro v2.0
+        <i class="fa-solid fa-microphone-lines text-primary me-1"></i>
+        EBS Audio Cleaner Pro v3.0
     </div>
     <div></div>
 </div>
@@ -175,14 +205,22 @@ video,audio {
             <input type="file" id="videoInput" accept="video/*,audio/*">
         </div>
         <div class="small-note mt-2">
-            Sistem önce sesi WAV formatına çevirir, sonra temizlik uygular.
+            İş akışı: Dosya → WAV → Gürültü Temizleme → MP4/WAV/M4A çıktı.
         </div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Temizleme Profili</label>
         <select id="profileSelect" class="form-select">
-            <option value="news" selected>Haber Röportajı Temizleme</option>
+            <option value="voice_isolation" selected>Konuşmayı Yapay Zeka ile Ayır</option>
+            <option value="street_interview">Sokak Röportajları</option>
+            <option value="municipality">Belediye Açıklamaları</option>
+            <option value="press_conference">Basın Toplantıları</option>
+            <option value="news_video">Haber Videoları</option>
+            <option value="microphone">Mikrofonlu Çekimler</option>
+            <option value="tv_news">TV Haber Temizleme</option>
+            <option value="white_noise">Beyaz Gürültü Temizleme</option>
+            <option value="news">Haber Röportajı Temizleme</option>
             <option value="wind">Rüzgar Gürültüsü Temizleme</option>
             <option value="car">Araç İçi Gürültü Temizleme</option>
             <option value="crowd">Kalabalık Ortam Temizleme</option>
@@ -191,15 +229,16 @@ video,audio {
         </select>
     </div>
 
-    <div id="manualSettings">
+    <div id="manualSettings" style="display:none;">
 
         <div class="mb-3">
             <label class="form-label">Gürültü Temizleme Gücü</label>
             <select id="noiseLevel" class="form-select">
                 <option value="8">Hafif</option>
-                <option value="15" selected>Orta</option>
+                <option value="15">Orta</option>
                 <option value="25">Güçlü</option>
-                <option value="35">Çok Güçlü</option>
+                <option value="35" selected>Çok Güçlü</option>
+                <option value="45">Ultra</option>
             </select>
         </div>
 
@@ -207,8 +246,9 @@ video,audio {
             <label class="form-label">Dip Uğultu Kesme</label>
             <select id="highpass" class="form-select">
                 <option value="80">80 Hz</option>
-                <option value="120" selected>120 Hz</option>
-                <option value="180">180 Hz</option>
+                <option value="120">120 Hz</option>
+                <option value="150">150 Hz</option>
+                <option value="180" selected>180 Hz</option>
                 <option value="220">220 Hz</option>
             </select>
         </div>
@@ -216,8 +256,10 @@ video,audio {
         <div class="mb-3">
             <label class="form-label">Tiz Parazit Kesme</label>
             <select id="lowpass" class="form-select">
-                <option value="7000">7000 Hz</option>
-                <option value="8500" selected>8500 Hz</option>
+                <option value="6200">6200 Hz</option>
+                <option value="6500">6500 Hz</option>
+                <option value="7000" selected>7000 Hz</option>
+                <option value="8500">8500 Hz</option>
                 <option value="9000">9000 Hz</option>
                 <option value="12000">12000 Hz</option>
             </select>
@@ -227,8 +269,9 @@ video,audio {
             <label class="form-label">Ses Yükseltme</label>
             <select id="volumeLevel" class="form-select">
                 <option value="1.0">Normal</option>
-                <option value="1.3" selected>+30%</option>
-                <option value="1.6">+60%</option>
+                <option value="1.3">+30%</option>
+                <option value="1.6" selected>+60%</option>
+                <option value="1.8">+80%</option>
                 <option value="2.0">2 Kat</option>
             </select>
         </div>
@@ -238,7 +281,8 @@ video,audio {
     <div class="mb-3">
         <label class="form-label">Çıktı Tipi</label>
         <select id="outputMode" class="form-select">
-            <option value="mp4" selected>Video varsa MP4 olarak indir</option>
+            <option value="auto" selected>Otomatik: Video varsa MP4, yoksa M4A</option>
+            <option value="mp4">Video varsa MP4 olarak indir</option>
             <option value="wav">Sadece temiz WAV indir</option>
             <option value="m4a">Sadece temiz M4A/AAC indir</option>
         </select>
@@ -246,7 +290,7 @@ video,audio {
 
     <div class="d-grid mt-4">
         <button id="processBtn" class="btn btn-primary btn-lg">
-            <i class="fa-solid fa-broom me-2"></i>
+            <i class="fa-solid fa-wand-magic-sparkles me-2"></i>
             SESİ TEMİZLE
         </button>
     </div>
@@ -288,9 +332,20 @@ video,audio {
 
     <div class="preview-box mt-4">
         <label class="form-label">Profil Açıklaması</label>
-        <div id="profileDescription" class="small-note">
-            Haber röportajı profili konuşmayı öne çıkarır, dip uğultu ve ortam parazitini azaltır.
+        <div id="profileDescription" class="small-note"></div>
+        <div class="mt-3">
+            <span class="profile-pill">Sokak Röportajı</span>
+            <span class="profile-pill">Belediye Açıklaması</span>
+            <span class="profile-pill">Basın Toplantısı</span>
+            <span class="profile-pill">Haber Videosu</span>
+            <span class="profile-pill">Mikrofonlu Çekim</span>
+            <span class="profile-pill">Voice Isolation</span>
         </div>
+    </div>
+
+    <div class="preview-box mt-4">
+        <label class="form-label">İşlem Logları</label>
+        <div id="logBox" class="log-box">Hazır.</div>
     </div>
 
 </div>
@@ -334,11 +389,20 @@ const profileDescription = document.getElementById("profileDescription");
 
 const inputInfo = document.getElementById("inputInfo");
 const outputInfo = document.getElementById("outputInfo");
+const logBox = document.getElementById("logBox");
 
 let selectedFile = null;
 let hasVideoStream = false;
 
 const profileDescriptions = {
+    voice_isolation: "Konuşmayı öne çıkarır; beyaz gürültü, klima, fan, trafik ve kalabalık seslerini agresif şekilde bastırır. Gerçek AI model değil, FFmpeg ile voice isolation benzeri filtre zinciridir.",
+    street_interview: "Sokak röportajlarında trafik, rüzgâr, kalabalık ve açık alan uğultusunu azaltır; insan sesini 2–4 kHz bandında öne çıkarır.",
+    municipality: "Belediye açıklamaları ve resmi konuşmalar için salon uğultusu, yankı ve düşük frekans dip sesini azaltır; konuşmayı doğal bırakır.",
+    press_conference: "Basın toplantılarında salon yankısı, mikrofon dip sesi ve ortam uğultusunu azaltır; konuşma anlaşılabilirliğini artırır.",
+    news_video: "Haber videolarında saha sesi, röportaj, mikrofon ve ortam sesleri için dengeli temizlik uygular.",
+    microphone: "Mikrofonlu çekimlerde dip ses, cızırtı, patlama ve çok yakın mikrofon basını azaltır; sesi dengeler.",
+    tv_news: "TV haber tarzı temizlik yapar; konuşmayı parlatır, alt frekansları temizler, yayın sesine yakınlaştırır.",
+    white_noise: "Beyaz gürültü gibi sürekli tıslama seslerini agresif şekilde keser. Ses robotikleşebilir.",
     news: "Haber röportajı profili konuşmayı öne çıkarır, dip uğultu ve ortam parazitini azaltır.",
     wind: "Rüzgar profili düşük frekanslı patlama, uğultu ve dış ortam rüzgar sesini azaltmaya odaklanır.",
     car: "Araç içi profili motor, yol ve klima uğultusunu azaltır; konuşma netliğini artırır.",
@@ -347,13 +411,19 @@ const profileDescriptions = {
     manual: "Manuel ayarda filtre gücünü kendiniz seçebilirsiniz."
 };
 
-profileSelect.addEventListener("change", () => {
+function addLog(message) {
+    const now = new Date().toLocaleTimeString("tr-TR");
+    logBox.innerText += "\n[" + now + "] " + message;
+    logBox.scrollTop = logBox.scrollHeight;
+}
+
+function updateProfileUI() {
     const val = profileSelect.value;
     profileDescription.innerText = profileDescriptions[val] || "";
     manualSettings.style.display = val === "manual" ? "block" : "none";
-});
-
-manualSettings.style.display = "none";
+}
+profileSelect.addEventListener("change", updateProfileUI);
+updateProfileUI();
 
 videoInput.addEventListener("change", function(e) {
     selectedFile = e.target.files[0];
@@ -382,10 +452,21 @@ videoInput.addEventListener("change", function(e) {
         originalVideo.src = url;
         inputInfo.innerText = "Video / MP4";
     }
+
+    addLog("Dosya seçildi: " + selectedFile.name);
 });
 
 ffmpeg.setLogger(({ type, message }) => {
     console.log(type, message);
+    if (type === "fferr" && (
+        message.includes("Stream") ||
+        message.includes("Duration") ||
+        message.includes("Output") ||
+        message.includes("Error") ||
+        message.includes("matches no streams")
+    )) {
+        addLog(message);
+    }
 });
 
 ffmpeg.setProgress(({ ratio }) => {
@@ -395,12 +476,129 @@ ffmpeg.setProgress(({ ratio }) => {
 
 function setStatus(text, percent = null) {
     statusText.innerText = text;
+    addLog(text);
     if (percent !== null) {
         progressBar.style.width = percent + "%";
     }
 }
 
+function cleanFilterString(str) {
+    return str.replace(/\s+/g, "");
+}
+
 function getProfileFilter(profile) {
+
+    if (profile === "voice_isolation") {
+        return cleanFilterString(`
+            highpass=f=180,
+            lowpass=f=6200,
+            afftdn=nr=45:nf=-40,
+            equalizer=f=250:t=q:w=1:g=-5,
+            equalizer=f=1000:t=q:w=1:g=2,
+            equalizer=f=2500:t=q:w=1:g=6,
+            equalizer=f=4000:t=q:w=1:g=4,
+            compand=attacks=0.3:decays=0.8:points=-80/-80|-45/-45|-25/-18|-10/-8|0/-3,
+            dynaudnorm=f=150:g=15,
+            volume=1.8
+        `);
+    }
+
+    if (profile === "street_interview") {
+        return cleanFilterString(`
+            highpass=f=160,
+            lowpass=f=7200,
+            afftdn=nr=34:nf=-34,
+            equalizer=f=120:t=q:w=1:g=-5,
+            equalizer=f=600:t=q:w=1:g=-2,
+            equalizer=f=2200:t=q:w=1:g=5,
+            equalizer=f=3800:t=q:w=1:g=3,
+            compand=attacks=0.25:decays=0.8:points=-80/-80|-45/-45|-25/-17|-8/-6|0/-3,
+            dynaudnorm=f=150:g=13,
+            volume=1.55
+        `);
+    }
+
+    if (profile === "municipality") {
+        return cleanFilterString(`
+            highpass=f=120,
+            lowpass=f=8500,
+            afftdn=nr=24:nf=-30,
+            equalizer=f=180:t=q:w=1:g=-3,
+            equalizer=f=2500:t=q:w=1:g=3,
+            equalizer=f=4200:t=q:w=1:g=2,
+            compand=attacks=0.35:decays=1:points=-80/-80|-45/-43|-24/-18|-10/-8|0/-4,
+            dynaudnorm=f=180:g=10,
+            volume=1.35
+        `);
+    }
+
+    if (profile === "press_conference") {
+        return cleanFilterString(`
+            highpass=f=130,
+            lowpass=f=8000,
+            afftdn=nr=28:nf=-32,
+            equalizer=f=250:t=q:w=1:g=-3,
+            equalizer=f=1200:t=q:w=1:g=1,
+            equalizer=f=2600:t=q:w=1:g=4,
+            equalizer=f=5000:t=q:w=1:g=2,
+            compand=attacks=0.3:decays=0.9:points=-80/-80|-45/-43|-25/-18|-10/-7|0/-4,
+            dynaudnorm=f=160:g=12,
+            volume=1.45
+        `);
+    }
+
+    if (profile === "news_video") {
+        return cleanFilterString(`
+            highpass=f=120,
+            lowpass=f=8500,
+            afftdn=nr=30:nf=-34,
+            equalizer=f=300:t=q:w=1:g=-3,
+            equalizer=f=2500:t=q:w=1:g=4,
+            equalizer=f=4500:t=q:w=1:g=2,
+            compand=attacks=0.25:decays=0.85:points=-80/-80|-45/-43|-25/-17|-8/-6|0/-3,
+            dynaudnorm=f=150:g=12,
+            volume=1.45
+        `);
+    }
+
+    if (profile === "microphone") {
+        return cleanFilterString(`
+            highpass=f=100,
+            lowpass=f=9000,
+            afftdn=nr=20:nf=-28,
+            equalizer=f=100:t=q:w=1:g=-4,
+            equalizer=f=300:t=q:w=1:g=-2,
+            equalizer=f=2800:t=q:w=1:g=3,
+            equalizer=f=6000:t=q:w=1:g=-2,
+            compand=attacks=0.2:decays=0.7:points=-80/-80|-45/-43|-24/-18|-8/-6|0/-4,
+            dynaudnorm=f=140:g=10,
+            volume=1.3
+        `);
+    }
+
+    if (profile === "tv_news") {
+        return cleanFilterString(`
+            highpass=f=120,
+            lowpass=f=8500,
+            afftdn=nr=35:nf=-35,
+            equalizer=f=3000:t=q:w=1:g=4,
+            equalizer=f=4500:t=q:w=1:g=2,
+            dynaudnorm=f=120:g=12,
+            volume=1.5
+        `);
+    }
+
+    if (profile === "white_noise") {
+        return cleanFilterString(`
+            highpass=f=180,
+            lowpass=f=6500,
+            afftdn=nr=45:nf=-40,
+            equalizer=f=2500:t=q:w=1:g=4,
+            dynaudnorm=f=150:g=12,
+            volume=1.8
+        `);
+    }
+
     if (profile === "news") {
         return "highpass=f=110,lowpass=f=9000,afftdn=nr=18:nf=-28,equalizer=f=2500:t=q:w=1:g=3,volume=1.35";
     }
@@ -464,6 +662,7 @@ processBtn.addEventListener("click", async () => {
     downloadBtn.classList.add("d-none");
     cleanVideo.classList.add("d-none");
     cleanAudio.classList.add("d-none");
+    logBox.innerText = "İşlem başladı.";
 
     const inputName = "input_file";
     const tempWav = "temp_audio.wav";
@@ -491,7 +690,7 @@ processBtn.addEventListener("click", async () => {
             inputInfo.innerText = "Sadece Ses";
         }
 
-        setStatus("[3/5] MP4/MOV içindeki ses WAV formatına çevriliyor...", 30);
+        setStatus("[3/5] Ses WAV formatına çevriliyor...", 30);
 
         await ffmpeg.run(
             "-i", inputName,
@@ -505,7 +704,10 @@ processBtn.addEventListener("click", async () => {
         const profile = profileSelect.value;
         const filter = getProfileFilter(profile);
 
-        setStatus("[4/5] WAV ses üzerinde gürültü temizleme uygulanıyor...", 55);
+        addLog("Aktif profil: " + profile);
+        addLog("Filtre: " + filter);
+
+        setStatus("[4/5] WAV üzerinde gürültü temizleme uygulanıyor...", 55);
 
         await ffmpeg.run(
             "-i", tempWav,
@@ -513,7 +715,10 @@ processBtn.addEventListener("click", async () => {
             cleanWav
         );
 
-        const outputMode = document.getElementById("outputMode").value;
+        let outputMode = document.getElementById("outputMode").value;
+        if (outputMode === "auto") {
+            outputMode = hasVideoStream ? "mp4" : "m4a";
+        }
 
         if (outputMode === "wav") {
             setStatus("[5/5] Temiz WAV dosyası hazırlanıyor...", 85);
@@ -593,6 +798,7 @@ processBtn.addEventListener("click", async () => {
     } catch (error) {
         console.error(error);
         setStatus("[ERROR] Hata oluştu: " + error.message);
+        addLog("HATA: " + error.message);
     }
 
     processBtn.disabled = false;
