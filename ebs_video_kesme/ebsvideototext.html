@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0066)https://ebubekirbastama.com.tr/ebs_video_kesme/ebsvideototext.html -->
+<html lang="tr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EBS Premium Video Transkript Studio</title>
 
-<script src="coi-serviceworker.js"></script>
+<script src="./haber_kolaj_editoru_isiltili_tam_files/coi-serviceworker.js.indir"></script>
 
 <style>
 *{box-sizing:border-box}
@@ -252,25 +252,26 @@ code{
             <select id="modelSelect">
                 <option value="Xenova/whisper-tiny">⚡ Tiny - Çok Hızlı / Düşük Kalite</option>
                 <option value="Xenova/whisper-base">🚀 Base - Hızlı / İyi Kalite</option>
-                <option value="Xenova/whisper-small" selected>⭐ Small - Önerilen / Çok İyi Kalite</option>
+                <option value="Xenova/whisper-small" selected="">⭐ Small - Önerilen / Çok İyi Kalite</option>
                 <option value="Xenova/whisper-medium">👑 Medium - Profesyonel / En Kaliteli</option>
             </select>
 
-            <div id="modelInfo"></div>
+            <div id="modelInfo">
+        <strong style="color:#d4af37;">Small Model Bilgisi</strong><br>
+        Model Boyutu: <b>Yaklaşık 450-500 MB</b><br>
+        RAM Gereksinimi: <b>Minimum 8 GB RAM önerilir</b><br>
+        GPU Gereksinimi: <b>WebGPU destekli ekran kartı varsa daha iyi</b><br>
+        Hız: <b>Orta hız</b><br>
+        Kalite: <b>Çok iyi kalite</b><br>
+        <span class="model-warning">
+            Uyarı: Türkçe haber, röportaj ve video transkript için önerilen modeldir.
+        </span>
+    </div>
 
             <div class="status-grid">
-                <div id="ffmpegReady" class="ready-box ready-wait">
-                    <strong>FFmpeg</strong>
-                    Bekliyor
-                </div>
-                <div id="modelReady" class="ready-box ready-wait">
-                    <strong>Whisper Model</strong>
-                    Bekliyor
-                </div>
-                <div id="cacheReady" class="ready-box ready-wait">
-                    <strong>Cache</strong>
-                    Kontrol ediliyor
-                </div>
+                <div id="ffmpegReady" class="ready-box ready-wait"><strong>FFmpeg</strong>İlk işlemde yüklenecek</div>
+                <div id="modelReady" class="ready-box ready-wait"><strong>Whisper Model</strong>İlk işlemde yüklenecek</div>
+                <div id="cacheReady" class="ready-box ready-ok"><strong>Cache</strong>Aktif</div>
             </div>
 
             <div class="actions">
@@ -291,7 +292,7 @@ code{
 
             <div class="log-box">
                 <div class="log-title">Canlı Sistem Logları</div>
-                <div id="logPanel"></div>
+                <div id="logPanel"><div class="log-line">[11:02:47] Son kullanılan model seçildi: Xenova/whisper-small</div><div class="log-line">[11:02:47] Cache kontrolü tamamlandı. CacheStorage: 1 kayıt | IndexedDB: 0 veritabanı</div></div>
             </div>
 
             <div class="gold-line"></div>
@@ -313,7 +314,7 @@ code{
 
 </div>
 
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+<script src="./haber_kolaj_editoru_isiltili_tam_files/ffmpeg.min.js.indir"></script>
 
 <script type="module">
 import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.2";
@@ -677,13 +678,68 @@ async function decodeWavToFloat32Array(audioBlob){
 
     return audioBuffer.getChannelData(0);
 }
-function splitAudioIntoChunks(audioData, sampleRate = 16000, chunkSeconds = 30){
-    const chunkSize = sampleRate * chunkSeconds;
+function splitAudioBySilence(
+    audioData,
+    sampleRate = 16000,
+    silenceThreshold = 0.008,
+    minSilenceMs = 800,
+    minChunkSeconds = 3,
+    maxChunkSeconds = 60
+){
     const chunks = [];
 
-    for(let start = 0; start < audioData.length; start += chunkSize){
-        const end = Math.min(start + chunkSize, audioData.length);
-        chunks.push(audioData.slice(start, end));
+    const minSilenceSamples = Math.floor(sampleRate * minSilenceMs / 1000);
+    const minChunkSamples = sampleRate * minChunkSeconds;
+    const maxChunkSamples = sampleRate * maxChunkSeconds;
+
+    let chunkStart = 0;
+    let silenceCount = 0;
+    let lastGoodSplit = -1;
+
+    for(let i = 0; i < audioData.length; i++){
+        const amplitude = Math.abs(audioData[i]);
+
+        if(amplitude < silenceThreshold){
+            silenceCount++;
+        }else{
+            if(silenceCount >= minSilenceSamples){
+                const candidateSplit = i - silenceCount;
+
+                if(candidateSplit - chunkStart >= minChunkSamples){
+                    lastGoodSplit = candidateSplit;
+                }
+            }
+
+            silenceCount = 0;
+        }
+
+        const chunkLength = i - chunkStart;
+
+        if(lastGoodSplit > chunkStart){
+            chunks.push(audioData.slice(chunkStart, lastGoodSplit));
+            chunkStart = lastGoodSplit;
+            lastGoodSplit = -1;
+            silenceCount = 0;
+        }else if(chunkLength >= maxChunkSamples){
+            // Çok uzun konuşmalarda Whisper donmasın diye zorunlu bölme.
+            chunks.push(audioData.slice(chunkStart, i));
+            chunkStart = i;
+            lastGoodSplit = -1;
+            silenceCount = 0;
+        }
+    }
+
+    if(audioData.length - chunkStart >= minChunkSamples){
+        chunks.push(audioData.slice(chunkStart));
+    }else if(chunks.length > 0){
+        // Son çok kısa parçayı önceki parçaya ekle.
+        const lastChunk = chunks.pop();
+        const merged = new Float32Array(lastChunk.length + (audioData.length - chunkStart));
+        merged.set(lastChunk, 0);
+        merged.set(audioData.slice(chunkStart), lastChunk.length);
+        chunks.push(merged);
+    }else if(audioData.length > 0){
+        chunks.push(audioData);
     }
 
     return chunks;
@@ -696,19 +752,29 @@ async function transcribeAudio(audioData){
     }
 
     const sampleRate = 16000;
-    const chunkSeconds = 30;
+    const silenceThreshold = 0.008;
+    const minSilenceMs = 800;
+    const minChunkSeconds = 3;
+    const maxChunkSeconds = 60;
 
     const totalSeconds = Math.round(audioData.length / sampleRate);
     const totalMinutes = Math.floor(totalSeconds / 60);
     const remainSeconds = totalSeconds % 60;
 
-    setStatus("Ses parçalara bölünüyor...");
+    setStatus("Ses sessiz alanlara göre doğal parçalara bölünüyor...");
     addLog("Toplam ses süresi: " + totalMinutes + " dakika " + remainSeconds + " saniye");
 
-    const chunks = splitAudioIntoChunks(audioData, sampleRate, chunkSeconds);
+    const chunks = splitAudioBySilence(
+        audioData,
+        sampleRate,
+        silenceThreshold,
+        minSilenceMs,
+        minChunkSeconds,
+        maxChunkSeconds
+    );
 
-    addLog("Ses " + chunks.length + " parçaya bölündü.");
-    addLog("Her parça yaklaşık " + chunkSeconds + " saniye olarak işlenecek.");
+    addLog("Sessizlik analizi tamamlandı. " + chunks.length + " doğal konuşma bloğu bulundu.");
+    addLog("Bölme ayarı: " + minSilenceMs + " ms sessizlik | Maksimum parça: " + maxChunkSeconds + " saniye");
 
     let finalText = "";
 
@@ -898,5 +964,6 @@ window.addEventListener("load",()=>{
 });
 </script>
 
-</body>
-</html>
+
+
+</body></html>
