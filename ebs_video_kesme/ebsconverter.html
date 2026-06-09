@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EBS Premium Multi-Format Converter</title>
 
-<script src="https://ebubekirbastama.com.tr/ebs_video_kesme/coi-serviceworker.js.indir" async></script>
+<script src="coi-serviceworker.js"></script>
 
 <style>
 *{box-sizing:border-box}
@@ -87,7 +87,6 @@ input[type=file]{
     cursor: pointer;
 }
 
-/* Modern Segmented Format Picker (Özel Butonlu Seçici) */
 .format-group-title{
     font-size: 11px;
     text-transform: uppercase;
@@ -124,7 +123,6 @@ input[type=file]{
     box-shadow: 0 4px 12px rgba(212,175,55,0.2);
 }
 
-/* Önizleme Alanı */
 .preview-container {
     width: 100%;
     background: #050505;
@@ -305,17 +303,19 @@ button:disabled{opacity:.5;cursor:not-allowed}
 
             <label>Dönüştürülen Çıktı Sonucu</label>
             <div class="preview-container" id="outputPreviewContainer">
-                <div class="no-preview">Dönüştürme tamamlandığında oynatıcı/indirme butonu burada belirecek.</div>
+                <div class="no-preview">Dönüştürme tamamlandığında oynatıcı burada belirecek.</div>
             </div>
-            <button id="downloadBtn" style="display: none;">Dönüştürülen Dosyayı İndir</button>
+            <button id="downloadBtn" style="display: none; margin-top: 10px;">Dönüştürülen Dosyayı İndir</button>
         </div>
     </div>
 </div>
 
-<script src="https://ebubekirbastama.com.tr/ebs_video_kesme/ffmpeg.min.js.indir"></script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 
 <script>
+// Sizin verdiğiniz koddaki orijinal değişmez atama yapısı
 const { createFFmpeg, fetchFile } = FFmpeg;
+
 let ffmpeg = null;
 let selectedFormat = 'mp4';
 let currentFile = null;
@@ -361,7 +361,6 @@ videoInput.addEventListener('change', function(e) {
     currentFile = file;
     addLog(`Dosya yüklendi: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
     
-    // Temizleme işlemleri
     sourcePreviewContainer.innerHTML = '';
     outputPreviewContainer.innerHTML = '<div class="no-preview">Yeni dosya için dönüştürme bekleniyor...</div>';
     downloadBtn.style.display = 'none';
@@ -369,23 +368,21 @@ videoInput.addEventListener('change', function(e) {
     const fileUrl = URL.createObjectURL(file);
     
     if (file.type.startsWith('video/')) {
-        const videoHtml = `<video src="${fileUrl}" controls></video>`;
-        sourcePreviewContainer.innerHTML = videoHtml;
+        sourcePreviewContainer.innerHTML = `<video src="${fileUrl}" controls></video>`;
     } else if (file.type.startsWith('audio/')) {
-        const audioHtml = `<audio src="${fileUrl}" controls style="width:90%;"></audio>`;
-        sourcePreviewContainer.innerHTML = audioHtml;
+        sourcePreviewContainer.innerHTML = `<audio src="${fileUrl}" controls style="width:90%;"></audio>`;
     } else {
-        sourcePreviewContainer.innerHTML = `<div class="no-preview">Önizleme bu format için desteklenmiyor ama dönüştürülebilir.</div>`;
+        sourcePreviewContainer.innerHTML = `<div class="no-preview">Önizleme desteklenmiyor fakat dönüştürülebilir.</div>`;
     }
     
     statusEl.innerText = "Dosya hazır. Hedef formatı seçip işlemi başlatın.";
 });
 
-// FFmpeg Motorunu Yükleme
+// FFmpeg Motorunu Yükleme (Sizin Kod Yapınız)
 async function initFFmpeg() {
     if (ffmpeg) return ffmpeg;
     
-    statusEl.innerText = "FFmpeg motoru arka planda yükleniyor...";
+    statusEl.innerText = "FFmpeg motoru yükleniyor...";
     ffmpeg = createFFmpeg({
         log: true,
         progress: ({ ratio }) => {
@@ -397,7 +394,6 @@ async function initFFmpeg() {
     
     ffmpeg.setLogger(({ message }) => {
         if(message && message.trim() !== "") {
-            // Ham log panelini doldur
             if(message.includes('frame=') || message.includes('size=')){
                 statusEl.innerText = "Dönüştürülüyor: " + message;
             } else {
@@ -410,10 +406,10 @@ async function initFFmpeg() {
     return ffmpeg;
 }
 
-// Convert İşlemi Tetikleyicisi
+// Convert İşlemi
 convertBtn.addEventListener('click', async () => {
     if (!currentFile) {
-        alert("Lütfen önce bir video veya ses dosyası seçin.");
+        alert("Lütfen önce bir dosya seçin.");
         return;
     }
     
@@ -424,19 +420,18 @@ convertBtn.addEventListener('click', async () => {
         
         await initFFmpeg();
         
-        statusEl.innerText = "Dosya sanal belleğe yazılıyor...";
+        statusEl.innerText = "Dosya belleğe alınıyor...";
         const inputName = "input_" + currentFile.name;
         const outputName = "output_" + Date.now() + "." + selectedFormat;
         
         ffmpeg.FS("writeFile", inputName, await fetchFile(currentFile));
         
-        statusEl.innerText = "Dönüştürme algoritması başlatıldı...";
-        addLog(`${selectedFormat.toUpperCase()} kodlaması optimize ediliyor...`);
+        statusEl.innerText = "Dönüştürme işlemi başlatıldı...";
+        addLog(`${selectedFormat.toUpperCase()} kodlaması ayarlanıyor...`);
         
-        // Formata göre dinamik FFmpeg parametreleri
         let ffmpegArgs = ["-i", inputName];
         
-        // Ses formatları seçildiyse videoyu yoksay (-vn)
+        // Ses formatları seçildiyse videoyu devre dışı bırak (-vn)
         if (['mp3', 'wav', 'aac', 'flac'].includes(selectedFormat)) {
             ffmpegArgs.push("-vn");
             if (selectedFormat === 'mp3') ffmpegArgs.push("-acodec", "libmp3lame", "-ab", "192k");
@@ -444,29 +439,25 @@ convertBtn.addEventListener('click', async () => {
             else if (selectedFormat === 'aac') ffmpegArgs.push("-acodec", "aac");
             else if (selectedFormat === 'flac') ffmpegArgs.push("-acodec", "flac");
         } else {
-            // Video formatları için standart tarayıcı dostu dönüşümler
+            // Standart video dönüşüm parametreleri
             if (selectedFormat === 'mp4') {
                 ffmpegArgs.push("-c:v", "libx264", "-profile:v", "main", "-vf", "format=yuv420p", "-c:a", "aac", "-movflags", "+faststart");
             } else if (selectedFormat === 'webm') {
                 ffmpegArgs.push("-c:v", "libvpx", "-c:a", "libvorbis");
             } else {
-                // mkv, avi, mov için genel uyumluluk kopyalaması veya re-encode
                 ffmpegArgs.push("-c:v", "libx264", "-c:a", "aac");
             }
         }
         
         ffmpegArgs.push(outputName);
         
-        // FFmpeg Çalıştır
         await ffmpeg.run(...ffmpegArgs);
         
-        statusEl.innerText = "Dosya başarılı bir şekilde dönüştürüldü.";
-        addLog("İşlem bitti. Çıktı dosyası hazırlanıyor.");
+        statusEl.innerText = "Dönüştürme tamamlandı.";
+        addLog("İşlem bitti. Çıktı önizlemesi hazırlanıyor.");
         
-        // Sonucu Oku
         const data = ffmpeg.FS("readFile", outputName);
         
-        // Blob Tipi Belirleme
         let mimeType = currentFile.type;
         if(['mp3','wav','aac','flac'].includes(selectedFormat)){
             mimeType = 'audio/' + selectedFormat;
@@ -477,7 +468,6 @@ convertBtn.addEventListener('click', async () => {
         const outputBlob = new Blob([data.buffer], { type: mimeType });
         convertedBlobUrl = URL.createObjectURL(outputBlob);
         
-        // Sağ taraftaki Çıktı önizlemesini güncelle
         outputPreviewContainer.innerHTML = '';
         if (mimeType.startsWith('video/')) {
             outputPreviewContainer.innerHTML = `<video src="${convertedBlobUrl}" controls></video>`;
@@ -485,17 +475,15 @@ convertBtn.addEventListener('click', async () => {
             outputPreviewContainer.innerHTML = `<audio src="${convertedBlobUrl}" controls style="width:90%;"></audio>`;
         }
         
-        // İndirme Butonunu Göster
         downloadBtn.style.display = 'block';
         downloadBtn.onclick = () => {
             const a = document.createElement('a');
             a.href = convertedBlobUrl;
             a.download = "ebs_converted_" + Date.now() + "." + selectedFormat;
             a.click();
-            addLog("Dosya bilgisayara indirildi.");
+            addLog("Dosya indirildi.");
         };
         
-        // Temizlik
         ffmpeg.FS("unlink", inputName);
         ffmpeg.FS("unlink", outputName);
         
@@ -508,7 +496,6 @@ convertBtn.addEventListener('click', async () => {
     }
 });
 
-// Logları Temizle
 clearLogBtn.addEventListener('click', () => {
     logPanel.innerHTML = '<div class="log-line">[00:00:00] Log paneli temizlendi.</div>';
 });
