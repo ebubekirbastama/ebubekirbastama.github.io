@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Videolarda yüz sansürleme, blur ekleme, ses yükseltme ve 720p, 1080p, 2K, 4K, 8K çözünürlükte çıktı alma aracı. Ücretsiz online video düzenleyici.">
+    <meta name="keywords" content="video blur editor, video sansürleme, yüz bulanıklaştırma, ses yükseltme, video ses artırma, 4k video export, 8k video export, ücretsiz video düzenleme, online video editör">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="Ebubekir Baştama">
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr/video-ses-yukseltici-ve-blur-editor.html">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Ücretsiz Video Blur ve Ses Yükseltme Aracı">
+    <meta property="og:description" content="Videolarınızı sansürleyin, sesi yükseltin ve 4K-8K kaliteyle dışa aktarın.">
+    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/video-ses-yukseltici-ve-blur-editor.html">
+    <meta property="og:site_name" content="Ebubekir Baştama">
+    <meta property="og:image" content="https://www.ebubekirbastama.com.tr/images/video-blur-editor-cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ücretsiz Video Blur ve Ses Yükseltme Aracı">
+    <meta name="twitter:description" content="Video sansürleme, ses yükseltme ve 8K çıktı desteği.">
+    <meta name="twitter:image" content="https://www.ebubekirbastama.com.tr/images/video-blur-editor-cover.jpg">
+    <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"SoftwareApplication",
+      "name":"EBS Video Blur ve Ses Yükseltme Aracı",
+      "alternateName":"EBS Video Blur Editor",
+      "applicationCategory":"MultimediaApplication",
+      "operatingSystem":"Web Browser",
+      "url":"https://www.ebubekirbastama.com.tr/video-ses-yukseltici-ve-blur-editor.html",
+      "description":"Videolarda yüz sansürleme, blur ekleme, ses yükseltme ve 720p, 1080p, 2K, 4K, 8K çözünürlükte çıktı alma aracı.",
+      "offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"},
+      "creator":{"@type":"Person","name":"Ebubekir Baştama"}
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"FAQPage",
+      "mainEntity":[
+        {"@type":"Question","name":"Video blur nedir?","acceptedAnswer":{"@type":"Answer","text":"Video blur, videonun belirli bir alanını bulanıklaştırarak yüz, plaka, belge veya kişisel bilgileri gizleme işlemidir."}},
+        {"@type":"Question","name":"Bu araçla video sesi yükseltilebilir mi?","acceptedAnswer":{"@type":"Answer","text":"Evet. Araç, video ses seviyesini tarayıcı üzerinden artırmaya yardımcı olan ses yükseltme özelliği sunar."}},
+        {"@type":"Question","name":"Hangi çözünürlüklerde çıktı alınabilir?","acceptedAnswer":{"@type":"Answer","text":"Kullanıcılar orijinal boyut, 720p, 1080p, 2K, 4K ve 8K seçeneklerinden birini seçerek dışa aktarım yapabilir."}},
+        {"@type":"Question","name":"Program kurmak gerekir mi?","acceptedAnswer":{"@type":"Answer","text":"Hayır. Araç web tarayıcısı üzerinde çalışır ve ek program kurulumu gerektirmez."}}
+      ]
+    }
+    </script>
+    <title>Ücretsiz Video Blur ve Ses Yükseltme Aracı | 4K 8K Video Düzenleyici</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#080a10;
+            --panel:rgba(18,22,33,.86);
+            --panel-solid:#111622;
+            --stroke:rgba(255,255,255,.10);
+            --gold:#d6b06c;
+            --gold-2:#f1d59a;
+            --gold-dark:#8e6a31;
+            --text:#f7f2e8;
+            --muted:#9aa3b2;
+            --danger:#ff3860;
+            --blue:#7cc4ff;
+        }
+        *{box-sizing:border-box}
+        body{
+            min-height:100vh;
+            margin:0;
+            color:var(--text);
+            font-family:'Inter',sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(214,176,108,.18), transparent 34%),
+                radial-gradient(circle at 85% 0%, rgba(124,196,255,.12), transparent 32%),
+                linear-gradient(145deg,#070910,#121522 55%,#090b12);
+            overflow-x:hidden;
+        }
+        .app-shell{min-height:100vh;display:flex;flex-direction:column;padding:16px;gap:14px}
+        .app-header{
+            display:flex;justify-content:space-between;align-items:center;gap:16px;
+            background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
+            border:1px solid var(--stroke);border-radius:22px;padding:14px 18px;
+            box-shadow:0 18px 60px rgba(0,0,0,.22);backdrop-filter:blur(18px);
+        }
+        .brand{display:flex;align-items:center;gap:13px;min-width:260px}
+        .brand-badge{
+            width:46px;height:46px;border-radius:16px;display:grid;place-items:center;
+            color:#1a1306;background:linear-gradient(135deg,var(--gold-2),var(--gold));
+            box-shadow:0 0 34px rgba(214,176,108,.32);
+        }
+        .luxury-title{font-family:'Cinzel',serif;font-size:22px;line-height:1;margin:0;letter-spacing:.5px}
+        .brand small{color:var(--muted);font-weight:600;letter-spacing:.4px}
+        .status-pill{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.22);border:1px solid var(--stroke);border-radius:999px;padding:10px 14px;font-weight:800;font-family:monospace;color:var(--gold-2)}
+        .main-studio{min-height:0;flex:1;display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px}
+        .video-card,.side-card,.timeline-card{
+            background:var(--panel);border:1px solid var(--stroke);border-radius:24px;
+            box-shadow:0 24px 70px rgba(0,0,0,.30);backdrop-filter:blur(20px);overflow:hidden;
+        }
+        .video-card{display:flex;flex-direction:column;min-height:0}
+        .video-topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--stroke)}
+        .video-topbar .chip{font-size:12px;color:var(--muted);font-weight:700;background:rgba(255,255,255,.06);border:1px solid var(--stroke);border-radius:999px;padding:7px 10px}
+        .video-container{position:relative;flex:1;min-height:0;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        #videoRenderCanvas{max-width:100%;max-height:100%;display:block;user-select:none;cursor:crosshair}
+        #uploadArea{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(135deg,rgba(11,13,20,.98),rgba(19,23,35,.98))}
+        .upload-box{text-align:center;max-width:520px;padding:32px;border:1px dashed rgba(214,176,108,.55);border-radius:28px;background:rgba(255,255,255,.04)}
+        .upload-icon{width:92px;height:92px;margin:0 auto 20px;border-radius:28px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#181007;font-size:38px;box-shadow:0 0 55px rgba(214,176,108,.26)}
+        .blur-selection-box{position:absolute;border:2px dashed var(--danger);background:rgba(255,56,96,.18);display:none;pointer-events:none;z-index:25;border-radius:10px}
+        .side-card{padding:16px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+        .panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-weight:900;color:var(--gold-2);letter-spacing:.4px}
+        .control-block{background:rgba(255,255,255,.055);border:1px solid var(--stroke);border-radius:18px;padding:14px}
+        .form-label{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:800;margin-bottom:8px}
+        .form-range::-webkit-slider-thumb{background:var(--gold)}
+        .form-select,.form-control{background:#0b0f18!important;color:var(--text)!important;border:1px solid var(--stroke)!important;border-radius:12px!important;font-weight:700}
+        .form-select option{background:#0b0f18;color:#fff}
+        .value-badge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(214,176,108,.35);background:rgba(214,176,108,.12);color:var(--gold-2);border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px}
+        .btn-elite{border:0;border-radius:14px;padding:12px 16px;font-weight:900;color:#160f05!important;background:linear-gradient(135deg,var(--gold-2),var(--gold));box-shadow:0 14px 30px rgba(214,176,108,.22);transition:.2s}
+        .btn-elite:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.04)}
+        .btn-elite:disabled{opacity:.45;cursor:not-allowed}
+        .btn-ghost{border:1px solid rgba(214,176,108,.45);border-radius:14px;color:var(--gold-2)!important;background:rgba(214,176,108,.08);font-weight:800;padding:10px 13px}
+        .btn-dark-round{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--stroke);background:rgba(255,255,255,.08);color:#fff}
+        .timeline-card{display:none;padding:12px 16px}
+        .timeline-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+        .custom-range{appearance:none;width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.14);outline:none}
+        .custom-range::-webkit-slider-thumb{appearance:none;width:6px;height:24px;background:var(--gold-2);border-radius:4px;cursor:pointer}
+        .timeline-tracks{height:54px;background:rgba(255,255,255,.07);border:1px solid var(--stroke);border-radius:14px;position:relative;overflow:hidden}
+        .blur-track-block{position:absolute;height:22px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));color:#111;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:grab;user-select:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+        .track-resizer{width:8px;height:100%;position:absolute;top:0;cursor:ew-resize}.resizer-left{left:0}.resizer-right{right:0}
+        .export-overlay{display:none;position:absolute;inset:0;z-index:55;background:rgba(7,9,16,.82);backdrop-filter:blur(10px);align-items:center;justify-content:center;text-align:center;padding:20px}
+        .export-box{width:min(520px,90%);border:1px solid rgba(214,176,108,.32);border-radius:24px;padding:24px;background:rgba(17,22,34,.92)}
+        .progress{height:10px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}.progress-bar{background:linear-gradient(90deg,var(--gold),var(--gold-2))}
+        .hint{font-size:12px;color:var(--muted);line-height:1.45;margin:0}
+        .text-gold{color:var(--gold-2)!important}
+
+        .seo-content{max-width:1120px;margin:0 auto 48px;padding:0 18px 40px;color:#e8edf6}
+        .seo-content article{background:rgba(18,22,33,.78);border:1px solid var(--stroke);border-radius:28px;padding:30px;box-shadow:0 24px 70px rgba(0,0,0,.22)}
+        .seo-content h2,.seo-content h3{color:var(--gold-2);font-weight:900;margin-top:26px}
+        .seo-content p,.seo-content li{color:#c7cfdd;line-height:1.8}
+        .seo-content .lead{font-size:18px;color:#f4efe5}
+        .seo-content a{color:var(--gold-2);font-weight:800}
+        .faq-item{border-top:1px solid var(--stroke);padding-top:16px;margin-top:16px}
+        @media(max-width:1050px){body{overflow:auto}.app-shell{height:auto;min-height:100vh}.main-studio{grid-template-columns:1fr}.side-card{order:2}.timeline-card{order:3}.video-card{min-height:58vh}}
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="brand">
+            <div class="brand-badge"><i class="fa-solid fa-crown"></i></div>
+            <div>
+                <h1 class="luxury-title">Ücretsiz Video Blur ve Ses Yükseltme Aracı</h1>
+                <small>Yüz Sansürleme • Ses Yükseltme • 720p/1080p/4K/8K Export</small>
+            </div>
+        </div>
+        <div class="status-pill"><i class="fa-regular fa-clock"></i><span id="timeDisplay">00:00 / 00:00</span></div>
+    </header>
+
+    <main class="main-studio">
+        <section class="video-card">
+            <div class="video-topbar">
+                <span class="chip"><i class="fa-solid fa-video me-1 text-gold"></i> Önizleme</span>
+                <span class="chip" id="videoInfo">Video bekleniyor</span>
+            </div>
+            <div class="video-container" id="videoContainer">
+                <div id="uploadArea">
+                    <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime" class="d-none">
+                    <div class="upload-box">
+                        <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <h2 class="fw-black mb-2">Videoyu Yükle</h2>
+                        <p class="text-secondary mb-4">Sesli çıktı, blur katmanı ve çözünürlük seçimi için medya dosyanı seç.</p>
+                        <button type="button" class="btn btn-elite"><i class="fa-solid fa-file-video me-2"></i>Dosya Seç</button>
+                    </div>
+                </div>
+                <canvas id="videoRenderCanvas"></canvas>
+                <video id="sourceVideo" class="d-none" preload="auto" crossorigin="anonymous"></video>
+                <div id="blurSelectionBox" class="blur-selection-box"></div>
+                <div class="export-overlay" id="exportOverlay">
+                    <div class="export-box">
+                        <div class="display-6 text-gold mb-2"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h4 class="fw-bold mb-2">Video hazırlanıyor</h4>
+                        <p class="hint mb-3" id="exportDetailText">Ses ve görüntü birlikte kaydediliyor.</p>
+                        <div class="progress mb-2"><div id="exportProgressBar" class="progress-bar" style="width:0%"></div></div>
+                        <div class="fw-bold text-gold" id="exportStatusText">%0</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="side-card">
+            <div class="control-block">
+                <div class="panel-title"><span><i class="fa-solid fa-sliders me-2"></i>Video Blur</span></div>
+                <label class="form-label">Blur Gücü</label>
+                <input type="range" class="form-range" id="blurRadius" min="5" max="80" value="25">
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="hint">Alan seç, sonra katman yap.</span>
+                    <span class="value-badge" id="blurValueLabel">25 px</span>
+                </div>
+                <button id="btnCreateBlur" class="btn btn-ghost w-100 mt-3" disabled><i class="fa-solid fa-vector-square me-2"></i>Seçili Alanı Katman Yap</button>
+            </div>
+
+            <div class="control-block">
+                <div class="panel-title"><span><i class="fa-solid fa-volume-high me-2"></i>Ses Ayarı</span></div>
+                <label class="form-label">Ses Seviyesi</label>
+                <input type="range" class="form-range" id="audioVolumeSlider" min="0" max="4" step="0.1" value="1">
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="hint">0 sessiz, 1 normal, üstü yükseltme.</span>
+                    <span class="value-badge" id="volumeValueLabel">1.0x Normal</span>
+                </div>
+            </div>
+
+            <div class="control-block">
+                <div class="panel-title"><span><i class="fa-solid fa-display me-2"></i>Çıktı Kalitesi</span></div>
+                <label class="form-label" for="exportResolution">Çözünürlük Seç</label>
+                <select id="exportResolution" class="form-select">
+                    <option value="source" selected>Orijinal Boyut</option>
+                    <option value="720">720p HD</option>
+                    <option value="1080">1080p Full HD</option>
+                    <option value="1440">2K / 1440p</option>
+                    <option value="2160">4K / 2160p</option>
+                    <option value="4320">8K / 4320p</option>
+                </select>
+                <label class="form-label mt-3" for="exportFps">FPS</label>
+                <select id="exportFps" class="form-select">
+                    <option value="30" selected>30 FPS</option>
+                    <option value="60">60 FPS</option>
+                </select>
+                <p class="hint mt-3">Not: 4K/8K tarayıcı ve bilgisayar gücüne bağlıdır. Destek yoksa tarayıcı kayıt başlatmayabilir.</p>
+            </div>
+
+            <button id="btnExport" class="btn btn-elite w-100 mt-auto" disabled><i class="fa-solid fa-gem me-2"></i>Sesli Video Çıkart</button>
+        </aside>
+    </main>
+
+    <section class="timeline-card" id="timelineSection">
+        <div class="timeline-head">
+            <button id="btnPlay" class="btn-dark-round"><i class="fa-solid fa-play"></i></button>
+            <button id="btnPause" class="btn-dark-round d-none"><i class="fa-solid fa-pause"></i></button>
+            <input type="range" class="custom-range flex-grow-1" id="timelineSlider" min="0" max="100" step="0.01" value="0">
+            <span id="currentFrameLabel" class="value-badge">0.00s</span>
+        </div>
+        <div class="timeline-tracks" id="timelineTracks"></div>
+    </section>
+</div>
+
+
+<section class="seo-content" id="video-blur-editor-hakkinda">
+    <article>
+        <p class="lead"><strong>EBS Video Blur ve Ses Yükseltme Aracı</strong>, videolarda yüz sansürleme, plaka bulanıklaştırma, hassas alanları gizleme ve düşük ses seviyesini yükseltme işlemleri için geliştirilmiş ücretsiz online video düzenleme aracıdır. Tarayıcı üzerinden çalışır; kullanıcılar videolarına blur katmanı ekleyebilir ve 720p, 1080p, 2K, 4K veya 8K çözünürlük seçenekleriyle çıktı alabilir.</p>
+
+        <h2>Video Blur Nedir?</h2>
+        <p>Video blur, bir videonun belirli bölümünü bulanıklaştırarak görünmez veya tanınmaz hale getirme işlemidir. Bu işlem özellikle yüz gizleme, araç plakası sansürleme, kimlik bilgilerini kapatma, belge üzerindeki özel alanları saklama ve güvenlik kamerası görüntülerinde kişisel gizliliği koruma amacıyla kullanılır.</p>
+        <p>Haber siteleri, sosyal medya yöneticileri, gazeteciler, içerik üreticileri ve kurumsal ekipler için video sansürleme artık temel bir ihtiyaçtır. Yayına alınacak görüntülerde kişisel veri, çocuk yüzü, özel adres, telefon numarası veya araç plakası varsa bu bilgilerin bulanıklaştırılması hem etik hem de hukuki açıdan önemlidir.</p>
+
+        <h2>Ücretsiz Online Video Sansürleme Aracı</h2>
+        <p>Bu araç, ağır video düzenleme programları kurmadan pratik şekilde video blur işlemi yapmanıza yardımcı olur. Video dosyasını seçtikten sonra bulanıklaştırmak istediğiniz alanı fare ile işaretleyebilir, blur yoğunluğunu ayarlayabilir ve seçili bölgeyi katman olarak zaman çizelgesine ekleyebilirsiniz.</p>
+        <p>Katman mantığı sayesinde videonun yalnızca belirli saniyelerinde sansür uygulanabilir. Bu özellik, röportaj görüntüleri, güvenlik kamerası kayıtları, sokak videoları ve haber içerikleri için büyük kolaylık sağlar.</p>
+
+        <h2>Video Sesi Yükseltme Özelliği</h2>
+        <p>Video içeriklerinde görüntü kadar ses kalitesi de önemlidir. Telefonla çekilen videolar, röportaj kayıtları veya sosyal medya görüntüleri bazen düşük sesle kaydedilebilir. EBS Video Blur Editor içindeki ses ayarı bölümü, videonun ses seviyesini artırmanıza yardımcı olur.</p>
+        <p>Ses yükseltme özelliği özellikle haber videoları, açıklama görüntüleri, eğitim içerikleri ve konuşma ağırlıklı videolarda izleyici deneyimini iyileştirir. Kullanıcı ses seviyesini normalden daha yüksek değere alarak çıktıyı daha anlaşılır hale getirebilir.</p>
+
+        <h2>720p, 1080p, 2K, 4K ve 8K Çıktı Seçenekleri</h2>
+        <p>Araçta kullanıcı dışa aktarım çözünürlüğünü kendisi seçebilir. 720p daha küçük dosya boyutu isteyenler için uygundur. 1080p Full HD, YouTube, Instagram, Facebook ve web siteleri için en yaygın kullanılan kalitedir. 2K ve 4K seçenekleri profesyonel yayıncılık, kurumsal sunumlar ve yüksek kalite isteyen projeler için tercih edilir. 8K seçeneği ise güçlü bilgisayarlarda ve destekleyen tarayıcılarda üst düzey çıktı almak isteyen kullanıcılar için sunulur.</p>
+
+        <h2>Yüz Bulanıklaştırma Nasıl Yapılır?</h2>
+        <ol>
+            <li>Videonuzu araca yükleyin.</li>
+            <li>Önizleme ekranında bulanıklaştırılacak alanı fare ile seçin.</li>
+            <li>Blur gücünü ayarlayın.</li>
+            <li>Seçili alanı katman yapın.</li>
+            <li>Zaman çizelgesinden katman süresini düzenleyin.</li>
+            <li>Ses seviyesini ve çıktı çözünürlüğünü seçin.</li>
+            <li>Sesli videoyu dışa aktarın.</li>
+        </ol>
+
+        <h2>Haber Siteleri ve İçerik Üreticileri İçin Avantajlar</h2>
+        <p>Yerel haber siteleri, dijital medya ekipleri ve sosyal medya sayfaları çoğu zaman hızlı video hazırlamak zorundadır. Trafik kazası, güvenlik kamerası görüntüsü, sokak röportajı veya vatandaş videosu gibi içeriklerde kişilerin yüzleri ve özel bilgiler görünür olabilir. Bu araç sayesinde yayın öncesi hızlı şekilde sansürleme yapılabilir.</p>
+        <p>Aynı zamanda Instagram Reels, TikTok, YouTube Shorts ve Facebook videoları için hazırlanan içeriklerde de özel alanları gizlemek, plaka kapatmak veya arka plandaki hassas detayları bulanıklaştırmak mümkündür.</p>
+
+        <h2>Neden Bu Video Blur Editor Kullanılmalı?</h2>
+        <ul>
+            <li>Tarayıcı üzerinden çalışır.</li>
+            <li>Ücretsiz video blur işlemi sunar.</li>
+            <li>Yüz, plaka ve belge sansürleme için uygundur.</li>
+            <li>Video sesini yükseltme desteği vardır.</li>
+            <li>720p, 1080p, 2K, 4K ve 8K çıktı seçenekleri sunar.</li>
+            <li>Modern ve kolay kullanılabilir arayüze sahiptir.</li>
+        </ul>
+
+        <h2>Sık Sorulan Sorular</h2>
+        <div class="faq-item">
+            <h3>Video blur işlemi ne işe yarar?</h3>
+            <p>Video blur, görüntüdeki yüz, plaka, belge veya hassas bilgileri bulanıklaştırarak gizlemek için kullanılır.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Bu araç video sesini yükseltir mi?</h3>
+            <p>Evet. Ses ayarı bölümünden video ses seviyesini artırabilir ve daha yüksek sesli çıktı alabilirsiniz.</p>
+        </div>
+        <div class="faq-item">
+            <h3>4K ve 8K çıktı alınabilir mi?</h3>
+            <p>Evet. Araç 720p, 1080p, 2K, 4K ve 8K seçenekleri sunar. Ancak yüksek çözünürlük performansı bilgisayar ve tarayıcı desteğine bağlıdır.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Program kurmak gerekiyor mu?</h3>
+            <p>Hayır. Araç doğrudan web tarayıcısı üzerinde çalışır.</p>
+        </div>
+    </article>
+</section>
+
+<script>
+const videoInput=document.getElementById('videoInput');
+const uploadArea=document.getElementById('uploadArea');
+const sourceVideo=document.getElementById('sourceVideo');
+const canvas=document.getElementById('videoRenderCanvas');
+const ctx=canvas.getContext('2d');
+const timelineSection=document.getElementById('timelineSection');
+const timelineSlider=document.getElementById('timelineSlider');
+const timeDisplay=document.getElementById('timeDisplay');
+const currentFrameLabel=document.getElementById('currentFrameLabel');
+const timelineTracks=document.getElementById('timelineTracks');
+const btnPlay=document.getElementById('btnPlay');
+const btnPause=document.getElementById('btnPause');
+const btnCreateBlur=document.getElementById('btnCreateBlur');
+const btnExport=document.getElementById('btnExport');
+const blurSelectionBox=document.getElementById('blurSelectionBox');
+const audioVolumeSlider=document.getElementById('audioVolumeSlider');
+const volumeValueLabel=document.getElementById('volumeValueLabel');
+const blurRadius=document.getElementById('blurRadius');
+const blurValueLabel=document.getElementById('blurValueLabel');
+const exportResolution=document.getElementById('exportResolution');
+const exportFps=document.getElementById('exportFps');
+const exportOverlay=document.getElementById('exportOverlay');
+const exportProgressBar=document.getElementById('exportProgressBar');
+const exportStatusText=document.getElementById('exportStatusText');
+const exportDetailText=document.getElementById('exportDetailText');
+const videoInfo=document.getElementById('videoInfo');
+
+let blurZones=[];
+let activeTrackAction=null;
+let isDrawing=false;
+let drawStartCanvasX=0,drawStartCanvasY=0;
+let currentTempBox=null;
+let isDraggingExistingBox=false;
+let draggedZone=null;
+let dragOffsetCanvasX=0,dragOffsetCanvasY=0;
+let audioCtx=null,audioSource=null,gainNode=null,audioDestinationNode=null;
+let objectUrl=null;
+let isExporting=false;
+
+uploadArea.addEventListener('click',()=>videoInput.click());
+videoInput.addEventListener('change',e=>{
+    const file=e.target.files[0];
+    if(!file)return;
+    if(objectUrl)URL.revokeObjectURL(objectUrl);
+    objectUrl=URL.createObjectURL(file);
+    sourceVideo.src=objectUrl;
+    sourceVideo.loop=false;
+    uploadArea.style.display='none';
+    timelineSection.style.display='block';
+    btnCreateBlur.disabled=false;
+    btnExport.disabled=false;
+});
+
+sourceVideo.addEventListener('loadedmetadata',()=>{
+    canvas.width=sourceVideo.videoWidth;
+    canvas.height=sourceVideo.videoHeight;
+    timelineSlider.max=sourceVideo.duration;
+    videoInfo.textContent=`${sourceVideo.videoWidth}×${sourceVideo.videoHeight} • ${formatTime(sourceVideo.duration)}`;
+    updateTimeText();
+    drawFrame();
+    initAudioEngine();
+});
+
+function initAudioEngine(){
+    if(audioCtx)return;
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    audioSource=audioCtx.createMediaElementSource(sourceVideo);
+    gainNode=audioCtx.createGain();
+    audioDestinationNode=audioCtx.createMediaStreamDestination();
+    audioSource.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    gainNode.gain.setValueAtTime(parseFloat(audioVolumeSlider.value),audioCtx.currentTime);
+}
+
+blurRadius.addEventListener('input',()=>blurValueLabel.textContent=`${blurRadius.value} px`);
+audioVolumeSlider.addEventListener('input',()=>{
+    const val=parseFloat(audioVolumeSlider.value);
+    if(gainNode)gainNode.gain.setValueAtTime(val,audioCtx.currentTime);
+    volumeValueLabel.textContent=val===0?'Sessiz':(val===1?'1.0x Normal':`${val.toFixed(1)}x Yüksek`);
+});
+
+sourceVideo.addEventListener('play',()=>{
+    if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
+    btnPlay.classList.add('d-none');btnPause.classList.remove('d-none');
+    requestAnimationFrame(renderLoop);
+});
+sourceVideo.addEventListener('pause',()=>{btnPlay.classList.remove('d-none');btnPause.classList.add('d-none');});
+sourceVideo.addEventListener('ended',()=>{if(!isExporting){sourceVideo.pause();sourceVideo.currentTime=sourceVideo.duration;drawFrame();}});
+
+function renderLoop(){
+    if(!sourceVideo.paused&&!sourceVideo.ended){
+        timelineSlider.value=sourceVideo.currentTime;
+        updateTimeText();
+        drawFrame();
+        requestAnimationFrame(renderLoop);
+    }
+}
+
+function drawFrame(){drawTo(ctx,canvas.width,canvas.height,sourceVideo.paused&&!isExporting);}
+function drawTo(targetCtx,targetW,targetH,showBoxes){
+    targetCtx.clearRect(0,0,targetW,targetH);
+    targetCtx.drawImage(sourceVideo,0,0,targetW,targetH);
+    const sx=targetW/canvas.width;
+    const sy=targetH/canvas.height;
+    const currentTime=sourceVideo.currentTime;
+    blurZones.forEach(zone=>{
+        if(currentTime>=zone.startTime&&currentTime<=zone.endTime){
+            const x=zone.x*sx,y=zone.y*sy,w=zone.w*sx,h=zone.h*sy;
+            targetCtx.save();
+            targetCtx.beginPath();targetCtx.rect(x,y,w,h);targetCtx.clip();
+            targetCtx.filter=`blur(${Math.max(1,zone.radius*((sx+sy)/2))}px)`;
+            targetCtx.drawImage(sourceVideo,0,0,targetW,targetH);
+            targetCtx.restore();
+            if(showBoxes){
+                targetCtx.save();targetCtx.strokeStyle='#d6b06c';targetCtx.lineWidth=3;targetCtx.setLineDash([8,5]);targetCtx.strokeRect(x,y,w,h);targetCtx.fillStyle='#f1d59a';targetCtx.font='bold 14px Inter';targetCtx.fillText('TUT TAŞI',x+7,y+22);targetCtx.restore();
+            }
+        }
+    });
+}
+function getCanvasCoordinates(e){const r=canvas.getBoundingClientRect();return{x:((e.clientX-r.left)/r.width)*canvas.width,y:((e.clientY-r.top)/r.height)*canvas.height,cssX:e.clientX-r.left,cssY:e.clientY-r.top,viewRect:r};}
+canvas.addEventListener('mousedown',e=>{
+    if(uploadArea.style.display!=='none'&&!sourceVideo.duration)return;
+    const coords=getCanvasCoordinates(e);const currentTime=sourceVideo.currentTime;
+    let clickedZone=null;
+    for(let i=blurZones.length-1;i>=0;i--){const z=blurZones[i];if(currentTime>=z.startTime&&currentTime<=z.endTime&&coords.x>=z.x&&coords.x<=z.x+z.w&&coords.y>=z.y&&coords.y<=z.y+z.h){clickedZone=z;break;}}
+    if(clickedZone){isDraggingExistingBox=true;draggedZone=clickedZone;dragOffsetCanvasX=coords.x-clickedZone.x;dragOffsetCanvasY=coords.y-clickedZone.y;sourceVideo.pause();}
+    else{isDrawing=true;drawStartCanvasX=coords.x;drawStartCanvasY=coords.y;blurSelectionBox.style.left=coords.cssX+'px';blurSelectionBox.style.top=coords.cssY+'px';blurSelectionBox.style.width='0px';blurSelectionBox.style.height='0px';blurSelectionBox.style.display='block';currentTempBox=null;}
+    e.preventDefault();
+});
+canvas.addEventListener('mousemove',e=>{
+    const coords=getCanvasCoordinates(e);
+    if(isDraggingExistingBox&&draggedZone){let nx=coords.x-dragOffsetCanvasX,ny=coords.y-dragOffsetCanvasY;nx=Math.max(0,Math.min(nx,canvas.width-draggedZone.w));ny=Math.max(0,Math.min(ny,canvas.height-draggedZone.h));draggedZone.x=nx;draggedZone.y=ny;drawFrame();}
+    else if(isDrawing){const r=canvas.getBoundingClientRect();const cx=e.clientX-r.left,cy=e.clientY-r.top;const sx=parseFloat(blurSelectionBox.style.left),sy=parseFloat(blurSelectionBox.style.top);blurSelectionBox.style.width=Math.abs(cx-sx)+'px';blurSelectionBox.style.height=Math.abs(cy-sy)+'px';if(cx<sx)blurSelectionBox.style.left=cx+'px';if(cy<sy)blurSelectionBox.style.top=cy+'px';let rw=coords.x-drawStartCanvasX,rh=coords.y-drawStartCanvasY,rx=drawStartCanvasX,ry=drawStartCanvasY;if(rw<0){rx=coords.x;rw=Math.abs(rw);}if(rh<0){ry=coords.y;rh=Math.abs(rh);}currentTempBox={x:rx,y:ry,w:rw,h:rh};}
+});
+window.addEventListener('mouseup',()=>{isDrawing=false;isDraggingExistingBox=false;draggedZone=null;activeTrackAction=null;});
+btnCreateBlur.addEventListener('click',()=>{
+    if(!currentTempBox||currentTempBox.w<10||currentTempBox.h<10){alert('Lütfen video üzerinde mouse ile sürükleyerek bir sansür alanı belirleyin.');return;}
+    const startTime=sourceVideo.currentTime,endTime=Math.min(startTime+3,sourceVideo.duration);
+    blurZones.push({id:Date.now(),startTime,endTime,x:currentTempBox.x,y:currentTempBox.y,w:currentTempBox.w,h:currentTempBox.h,radius:parseInt(blurRadius.value,10),trackIndex:blurZones.length%2});
+    currentTempBox=null;blurSelectionBox.style.display='none';renderVisualTimelineBlocks();drawFrame();
+});
+function renderVisualTimelineBlocks(){timelineTracks.innerHTML='';const total=sourceVideo.duration||100,trackW=timelineTracks.offsetWidth||1;blurZones.forEach(zone=>{const block=document.createElement('div');block.className='blur-track-block';block.style.left=`${(zone.startTime/total)*trackW}px`;block.style.width=`${((zone.endTime-zone.startTime)/total)*trackW}px`;block.style.top=`${zone.trackIndex*25+4}px`;block.textContent='Katman';const l=document.createElement('div'),r=document.createElement('div');l.className='track-resizer resizer-left';r.className='track-resizer resizer-right';block.appendChild(l);block.appendChild(r);block.addEventListener('contextmenu',e=>{e.preventDefault();if(confirm('Bu katmanı kaldırmak istiyor musunuz?')){blurZones=blurZones.filter(z=>z.id!==zone.id);renderVisualTimelineBlocks();drawFrame();}});block.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'move',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});l.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'resize-left',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});r.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'resize-right',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});timelineTracks.appendChild(block);});}
+window.addEventListener('mousemove',e=>{if(!activeTrackAction)return;const zone=blurZones.find(z=>z.id===activeTrackAction.zoneId);if(!zone)return;const total=sourceVideo.duration,trackW=timelineTracks.offsetWidth||1,delta=((e.clientX-activeTrackAction.initialMouseX)/trackW)*total;if(activeTrackAction.action==='move'){let ns=activeTrackAction.initialStart+delta,ne=activeTrackAction.initialEnd+delta;if(ns>=0&&ne<=total){zone.startTime=ns;zone.endTime=ne;}}else if(activeTrackAction.action==='resize-left'){let ns=activeTrackAction.initialStart+delta;if(ns>=0&&ns<zone.endTime-.1)zone.startTime=ns;}else{let ne=activeTrackAction.initialEnd+delta;if(ne<=total&&ne>zone.startTime+.1)zone.endTime=ne;}renderVisualTimelineBlocks();drawFrame();});
+timelineSlider.addEventListener('input',()=>{sourceVideo.currentTime=parseFloat(timelineSlider.value);updateTimeText();drawFrame();});
+btnPlay.addEventListener('click',async()=>{if(audioCtx&&audioCtx.state==='suspended')await audioCtx.resume();sourceVideo.play();});
+btnPause.addEventListener('click',()=>sourceVideo.pause());
+function updateTimeText(){timeDisplay.textContent=`${formatTime(sourceVideo.currentTime)} / ${formatTime(sourceVideo.duration||0)}`;currentFrameLabel.textContent=`${sourceVideo.currentTime.toFixed(2)}s`;}
+function formatTime(sec){sec=Number.isFinite(sec)?sec:0;return `${Math.floor(sec/60).toString().padStart(2,'0')}:${Math.floor(sec%60).toString().padStart(2,'0')}`;}
+function getExportSize(){const originalW=sourceVideo.videoWidth,originalH=sourceVideo.videoHeight,val=exportResolution.value;if(val==='source')return{w:originalW,h:originalH,label:`${originalW}x${originalH}`};const targetH=parseInt(val,10);const ratio=originalW/originalH;let targetW=Math.round(targetH*ratio);if(targetW%2)targetW++;return{w:targetW,h:targetH,label:`${targetW}x${targetH}`};}
+function pickMimeType(){const types=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];return types.find(t=>MediaRecorder.isTypeSupported(t))||'';}
+btnExport.addEventListener('click',async()=>{
+    if(!sourceVideo.duration)return;
+    try{
+        isExporting=true;btnExport.disabled=true;btnPlay.disabled=true;btnPause.disabled=true;exportOverlay.style.display='flex';
+        if(audioCtx&&audioCtx.state==='suspended')await audioCtx.resume();
+        const size=getExportSize();const fps=parseInt(exportFps.value,10);
+        const exportCanvas=document.createElement('canvas');exportCanvas.width=size.w;exportCanvas.height=size.h;const exportCtx=exportCanvas.getContext('2d');
+        const canvasStream=exportCanvas.captureStream(fps);
+        try{gainNode.disconnect(audioCtx.destination);}catch(e){}
+        try{gainNode.disconnect(audioDestinationNode);}catch(e){}
+        audioDestinationNode=audioCtx.createMediaStreamDestination();
+        gainNode.connect(audioDestinationNode);
+        const stream=new MediaStream();
+        const videoTrack=canvasStream.getVideoTracks()[0];stream.addTrack(videoTrack);
+        const audioTrack=audioDestinationNode.stream.getAudioTracks()[0];if(audioTrack)stream.addTrack(audioTrack);
+        const mimeType=pickMimeType();
+        const recorder=new MediaRecorder(stream,mimeType?{mimeType}:undefined);
+        const chunks=[];
+        recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+        const done=new Promise(resolve=>{recorder.onstop=resolve;});
+        let rafId=null;
+        const renderExport=()=>{drawTo(exportCtx,size.w,size.h,false);const p=Math.min(100,Math.floor((sourceVideo.currentTime/sourceVideo.duration)*100));exportProgressBar.style.width=p+'%';exportStatusText.textContent='%'+p;timelineSlider.value=sourceVideo.currentTime;updateTimeText();exportDetailText.textContent=`${size.label} • ${fps} FPS • sesli kayıt alınıyor`;if(!sourceVideo.ended&&!sourceVideo.paused)rafId=requestAnimationFrame(renderExport);};
+        sourceVideo.pause();sourceVideo.currentTime=0;await new Promise(r=>setTimeout(r,120));
+        recorder.start(500);sourceVideo.play();renderExport();
+        await new Promise(resolve=>{sourceVideo.onended=resolve;});
+        if(rafId)cancelAnimationFrame(rafId);drawTo(exportCtx,size.w,size.h,false);
+        if(recorder.state!=='inactive')recorder.stop();await done;
+        const blob=new Blob(chunks,{type:recorder.mimeType||'video/webm'});
+        const url=URL.createObjectURL(blob);const a=document.createElement('a');
+        a.href=url;a.download=`ebs_elite_sesli_${size.label.replace('x','_')}.webm`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+        sourceVideo.pause();sourceVideo.currentTime=0;drawFrame();
+    }catch(err){console.error(err);alert('Çıktı alınamadı: '+err.message);}
+    finally{
+        try{gainNode.disconnect(audioDestinationNode);}catch(e){}
+        try{gainNode.connect(audioCtx.destination);}catch(e){}
+        exportOverlay.style.display='none';exportProgressBar.style.width='0%';exportStatusText.textContent='%0';
+        btnExport.disabled=false;btnPlay.disabled=false;btnPause.disabled=false;isExporting=false;updateTimeText();
+    }
+});
+window.addEventListener('resize',renderVisualTimelineBlocks);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
