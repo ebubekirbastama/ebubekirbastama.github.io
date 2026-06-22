@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EBS ASM → C# Semantic Decompiler Engine</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root{
+      --ebs-bg:#07111f;
+      --ebs-card:#0d1b2e;
+      --ebs-card2:#10233d;
+      --ebs-line:#213b5f;
+      --ebs-text:#eaf2ff;
+      --ebs-muted:#98aac3;
+      --ebs-accent:#ffc107;
+      --ebs-blue:#22a6f2;
+      --ebs-green:#38d39f;
+      --ebs-red:#ff6b6b;
+    }
+    body{background:radial-gradient(circle at top left,#142b4d 0,#07111f 38%,#050914 100%); color:var(--ebs-text); min-height:100vh;}
+    .navbar-ebs{background:rgba(7,17,31,.86); backdrop-filter:blur(12px); border-bottom:1px solid var(--ebs-line);}
+    .brand-badge{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--ebs-accent),#ff7a00);display:grid;place-items:center;color:#111;font-weight:900;box-shadow:0 0 26px rgba(255,193,7,.25)}
+    .glass-card{background:linear-gradient(180deg,rgba(16,35,61,.92),rgba(8,18,32,.92)); border:1px solid var(--ebs-line); border-radius:22px; box-shadow:0 18px 60px rgba(0,0,0,.25)}
+    .soft-card{background:rgba(13,27,46,.82); border:1px solid var(--ebs-line); border-radius:18px;}
+    textarea, .form-control, .form-select{background:#071524 !important; color:#eaf2ff !important; border:1px solid #29466e !important; border-radius:14px !important;}
+    textarea:focus,.form-control:focus{box-shadow:0 0 0 .25rem rgba(34,166,242,.12)!important;border-color:#22a6f2!important;}
+    pre.codebox{background:#050b14; color:#dff3ff; border:1px solid #20385a; border-radius:16px; padding:18px; min-height:360px; max-height:660px; overflow:auto; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere;}
+    textarea{width:100%; max-width:100%; font-family:Consolas,Monaco,monospace; line-height:1.45;}
+    .code-scroll{max-width:100%; overflow-x:auto;}
+    .mobile-action-grid .btn{white-space:normal;}
+    @media (max-width: 576px){
+      .brand-badge{width:36px;height:36px;border-radius:12px;font-size:.85rem;}
+      .navbar .fs-5{font-size:1rem!important;}
+      .mini-muted{font-size:.78rem;}
+      pre.codebox{min-height:300px; padding:12px; font-size:.82rem;}
+      textarea{rows:14; font-size:.86rem;}
+      .nav-pills{overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px;}
+      .nav-pills .nav-link{white-space:nowrap;}
+      .glass-card,.soft-card{border-radius:16px;}
+    }
+    .mini-muted{color:var(--ebs-muted);font-size:.88rem;}
+    .pill{border:1px solid #29466e; background:#081a2e; color:#cfe6ff; border-radius:999px; padding:.28rem .65rem; font-size:.82rem; display:inline-flex; gap:.35rem; align-items:center; margin:.14rem;}
+    .pill b{color:#fff;}
+    .stat{background:linear-gradient(135deg,#0c2038,#102a49);border:1px solid #23466f;border-radius:16px;padding:12px 14px;}
+    .stat .num{font-size:1.35rem;font-weight:800;color:#fff;}
+    .stat .lbl{font-size:.78rem;color:var(--ebs-muted);}
+    .table-darkish{--bs-table-bg:#071524;--bs-table-color:#eaf2ff;--bs-table-border-color:#213b5f;}
+    .badge-op{background:#153d64;color:#9ed7ff;border:1px solid #2f6da5;}
+    .badge-api{background:#3a2c06;color:#ffe39b;border:1px solid #8b6a13;}
+    .badge-warn{background:#442026;color:#ffc8c8;border:1px solid #8b3b47;}
+    .btn-ebs{border-radius:14px;font-weight:700;}
+    .small-code{font-family:Consolas,Monaco,monospace;color:#a7e2ff;}
+    .line-chip{display:block;border-left:3px solid #22a6f2;background:#071524;border-radius:10px;padding:8px 10px;margin-bottom:8px;}
+    .copy-toast{position:fixed;right:18px;bottom:18px;z-index:2000;display:none;}
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-ebs sticky-top py-3">
+  <div class="container-fluid px-3 px-lg-4">
+    <div class="d-flex align-items-center gap-3">
+      <div class="brand-badge">EBS</div>
+      <div>
+        <div class="fw-bold fs-5">ASM → C# Semantic Decompiler Engine</div>
+        <div class="mini-muted">Komut sözlüğü + register hafızası + API çözümleme + high-level C# üretimi</div>
+      </div>
+    </div>
+    <div class="d-flex flex-column flex-sm-row gap-2 ms-auto">
+      <button class="btn btn-outline-info btn-ebs btn-sm" onclick="loadSample('loop')"><i class="bi bi-arrow-repeat"></i> Döngü</button>
+      <button class="btn btn-outline-warning btn-ebs btn-sm" onclick="loadSample('license')"><i class="bi bi-shield-lock"></i> Lisans</button>
+    </div>
+  </div>
+</nav>
+
+<main class="container-fluid p-3 p-lg-4">
+  <div class="row g-4">
+    <div class="col-12 col-xl-5">
+      <div class="glass-card p-3 p-lg-4 h-100">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+          <div>
+            <h4 class="mb-1"><i class="bi bi-cpu text-warning"></i> Assembly Girişi</h4>
+            <div class="mini-muted">Adres, yorum, label, push/call ve jump yapıları otomatik ayrıştırılır.</div>
+          </div>
+          <span class="pill"><i class="bi bi-magic"></i> semantic mode</span>
+        </div>
+
+<textarea id="asmInput" rows="18" spellcheck="false">mov eax, [UserLicense]
+mov msg,[UserLicense]
+cmp eax, ebx
+jne 00401A18 ; Eşit değilse hataya git
+mov msg, "BAŞARILI!" ➔ ret
+00401A18:
+mov msg, "LİSANS HATALI!" ; Hata bloğu
+push 0
+push "Lisans Durumu"
+push msg
+push 0
+call MessageBoxA
+ret</textarea>
+
+        <div class="row g-2 mt-3 mobile-action-grid">
+          <div class="col-12 col-md-5">
+            <button class="btn btn-warning w-100 btn-ebs py-2" onclick="decompile()"><i class="bi bi-lightning-charge-fill"></i> Çözümle ve C# Üret</button>
+          </div>
+          <div class="col-12 col-md-3">
+            <button class="btn btn-success w-100 btn-ebs py-2" onclick="pseudoCompile()"><i class="bi bi-play-circle"></i> Pseudo Compile</button>
+          </div>
+          <div class="col-6 col-md-2">
+            <button class="btn btn-outline-light w-100 btn-ebs py-2" onclick="copyOutput()"><i class="bi bi-copy"></i> Kopyala</button>
+          </div>
+          <div class="col-6 col-md-2">
+            <button class="btn btn-outline-danger w-100 btn-ebs py-2" onclick="clearAll()"><i class="bi bi-trash"></i> Temizle</button>
+          </div>
+        </div>
+
+        <div class="row g-2 mt-3">
+          <div class="col-6 col-md-3"><div class="stat"><div class="num" id="statLines">0</div><div class="lbl">Satır</div></div></div>
+          <div class="col-6 col-md-3"><div class="stat"><div class="num" id="statOps">0</div><div class="lbl">Komut</div></div></div>
+          <div class="col-6 col-md-3"><div class="stat"><div class="num" id="statApi">0</div><div class="lbl">API</div></div></div>
+          <div class="col-6 col-md-3"><div class="stat"><div class="num" id="statLabels">0</div><div class="lbl">Label</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-7">
+      <div class="glass-card p-3 p-lg-4">
+        <ul class="nav nav-pills gap-2 mb-3" id="resultTabs" role="tablist">
+          <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabCsharp" type="button">C# Çıktı</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabAnalysis" type="button">Analiz</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabCompile" type="button">Compile</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tabDictionary" type="button">Sözlük</button></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="tabCsharp"><pre id="csharpOutput" class="codebox">// C# çıktısı burada görünecek.</pre></div>
+          <div class="tab-pane fade" id="tabAnalysis"><div id="analysisOutput" class="soft-card p-3 mini-muted">Henüz analiz yapılmadı.</div></div>
+          <div class="tab-pane fade" id="tabCompile"><div id="compileOutput" class="soft-card p-3 mini-muted">Pseudo compile sonucu burada görünecek. Gerçek C# derleme için sunucu tarafında Roslyn/.NET SDK gerekir.</div></div>
+          <div class="tab-pane fade" id="tabDictionary"><div id="dictionaryOutput" class="soft-card p-3"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-12 col-lg-6">
+      <div class="soft-card p-3">
+        <h5><i class="bi bi-book text-info"></i> Mantık Notu</h5>
+        <div class="mini-muted">
+          <span class="line-chip"><b>mov msg,[UserLicense]</b> ekrana yazdırmaz; sadece <span class="small-code">msg = UserLicense;</span> ataması yapar.</span>
+          <span class="line-chip"><b>push + call MessageBoxA</b> görülürse stack argümanları okunur ve <span class="small-code">MessageBox.Show(...)</span> üretilir.</span>
+          <span class="line-chip"><b>cmp + jne/je</b> beraber yorumlanır. Geriye label'a jump varsa while döngüsü kurulabilir.</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <div class="soft-card p-3">
+        <h5><i class="bi bi-diagram-3 text-warning"></i> Desteklenen Ana Gruplar</h5>
+        <div id="featurePills"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="alert alert-success copy-toast" id="copyToast"><i class="bi bi-check-circle"></i> C# çıktısı kopyalandı.</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const REGISTERS = {
+  eax:{type:'int',desc:'Accumulator register'}, ebx:{type:'int',desc:'Base register'}, ecx:{type:'int',desc:'Counter register'}, edx:{type:'int',desc:'Data register'},
+  esi:{type:'int',desc:'Source index'}, edi:{type:'int',desc:'Destination index'}, esp:{type:'IntPtr',desc:'Stack pointer'}, ebp:{type:'IntPtr',desc:'Base pointer'},
+  rax:{type:'long',desc:'x64 accumulator'}, rbx:{type:'long',desc:'x64 base'}, rcx:{type:'long',desc:'x64 arg/counter'}, rdx:{type:'long',desc:'x64 arg/data'}, rsi:{type:'long',desc:'x64 source'}, rdi:{type:'long',desc:'x64 destination'}
+};
+
+const INSTRUCTIONS = {
+  mov:{group:'data',desc:'Veriyi kaynaktan hedefe kopyalar',template:'dst = src'}, lea:{group:'data',desc:'Adres hesaplar',template:'dst = &src'},
+  add:{group:'math',desc:'Toplama',template:'dst += src'}, sub:{group:'math',desc:'Çıkarma',template:'dst -= src'}, imul:{group:'math',desc:'Çarpma',template:'dst *= src'}, mul:{group:'math',desc:'Unsigned çarpma'}, idiv:{group:'math',desc:'Signed bölme'}, div:{group:'math',desc:'Unsigned bölme'},
+  inc:{group:'math',desc:'1 artırır',template:'x++'}, dec:{group:'math',desc:'1 azaltır',template:'x--'}, neg:{group:'math',desc:'İşaret değiştirir'},
+  and:{group:'bit',desc:'Bitwise AND'}, or:{group:'bit',desc:'Bitwise OR'}, xor:{group:'bit',desc:'Bitwise XOR'}, not:{group:'bit',desc:'Bitwise NOT'}, shl:{group:'bit',desc:'Sola kaydırma'}, shr:{group:'bit',desc:'Sağa kaydırma'}, sar:{group:'bit',desc:'Aritmetik sağa kaydırma'},
+  cmp:{group:'compare',desc:'Karşılaştırma yapar, flag ayarlar'}, test:{group:'compare',desc:'Bit testi yapar, flag ayarlar'},
+  jmp:{group:'jump',desc:'Koşulsuz zıplama'}, je:{group:'jump',desc:'Eşitse zıpla'}, jz:{group:'jump',desc:'Sıfırsa zıpla'}, jne:{group:'jump',desc:'Eşit değilse zıpla'}, jnz:{group:'jump',desc:'Sıfır değilse zıpla'}, jg:{group:'jump',desc:'Büyükse zıpla'}, jge:{group:'jump',desc:'Büyük/eşitse zıpla'}, jl:{group:'jump',desc:'Küçükse zıpla'}, jle:{group:'jump',desc:'Küçük/eşitse zıpla'}, ja:{group:'jump',desc:'Unsigned büyükse'}, jb:{group:'jump',desc:'Unsigned küçükse'},
+  push:{group:'stack',desc:'Stack üzerine değer koyar'}, pop:{group:'stack',desc:'Stackten değer alır'}, call:{group:'api',desc:'Fonksiyon/API çağırır'}, ret:{group:'flow',desc:'Fonksiyondan döner'}, nop:{group:'flow',desc:'İşlem yapmaz'}
+};
+
+const JUMP_COND = { je:'==', jz:'==', jne:'!=', jnz:'!=', jg:'>', jge:'>=', jl:'<', jle:'<=', ja:'>', jb:'<' };
+const INVERT_COND = {'==':'!=','!=':'==','>':'<=','>=':'<','<':'>=','<=':'>'};
+
+const API_DB = {
+  MessageBoxA:{kind:'gui',csharp:'MessageBox.Show',args:['hWnd','text','caption','type'],returns:'int'},
+  MessageBoxW:{kind:'gui',csharp:'MessageBox.Show',args:['hWnd','text','caption','type'],returns:'int'},
+  printf:{kind:'console',csharp:'Console.WriteLine',args:['format','...']}, puts:{kind:'console',csharp:'Console.WriteLine',args:['text']}, scanf:{kind:'console',csharp:'Console.ReadLine',args:['format','...']},
+  CreateFileA:{kind:'file',csharp:'File.Open / FileStream',args:['fileName','access','share','security','creation','flags','template']},
+  ReadFile:{kind:'file',csharp:'stream.Read',args:['handle','buffer','bytesToRead','bytesRead','overlapped']}, WriteFile:{kind:'file',csharp:'stream.Write',args:['handle','buffer','bytesToWrite','bytesWritten','overlapped']}, CloseHandle:{kind:'system',csharp:'Dispose / Close',args:['handle']},
+  RegOpenKeyExA:{kind:'registry',csharp:'RegistryKey.OpenSubKey',args:['hKey','subKey','options','sam','result']}, RegQueryValueExA:{kind:'registry',csharp:'RegistryKey.GetValue',args:['key','valueName','reserved','type','data','size']},
+  InternetOpenA:{kind:'network',csharp:'HttpClient / WebRequest init'}, InternetOpenUrlA:{kind:'network',csharp:'HttpClient.GetAsync',args:['session','url','headers','headersLen','flags','context']},
+  socket:{kind:'network',csharp:'new Socket(...)'}, connect:{kind:'network',csharp:'socket.Connect(...)'}, send:{kind:'network',csharp:'socket.Send(...)'}, recv:{kind:'network',csharp:'socket.Receive(...)'}, closesocket:{kind:'network',csharp:'socket.Close()'},
+  Sleep:{kind:'thread',csharp:'Thread.Sleep',args:['milliseconds']}, ExitProcess:{kind:'process',csharp:'Environment.Exit',args:['exitCode']},
+  GetProcAddress:{kind:'loader',csharp:'NativeLibrary.GetExport'}, LoadLibraryA:{kind:'loader',csharp:'NativeLibrary.Load'},
+  Console_WriteLine:{kind:'dotnet',csharp:'Console.WriteLine',args:['value']}, WriteLine:{kind:'dotnet',csharp:'Console.WriteLine',args:['value']}
+};
+
+const samples = {
+  loop:`00402B00: mov ecx, 5\n00402B05: mov eax, 0\nDONGU_BASLA:\n    add eax, 10 ; Her adımda 10 ekle\n    dec ecx     ; Sayacı 1 azalt\n    cmp ecx, 0  ; Sayaç bitti mi?\n    jne DONGU_BASLA\n00402B1A: ret`,
+  license:`mov eax, [UserLicense]\nmov msg,[UserLicense]\ncmp eax, ebx\njne 00401A18 ; Eşit değilse hataya git\nmov msg, "BAŞARILI!" ➔ ret\n00401A18:\nmov msg, "LİSANS HATALI!" ; Hata bloğu\npush 0\npush "Lisans Durumu"\npush msg\npush 0\ncall MessageBoxA\nret`
+};
+
+function loadSample(name){ document.getElementById('asmInput').value = samples[name]; decompile(); }
+function clearAll(){ document.getElementById('asmInput').value=''; document.getElementById('csharpOutput').textContent='// C# çıktısı burada görünecek.'; document.getElementById('analysisOutput').innerHTML='Henüz analiz yapılmadı.'; }
+function cleanLine(raw){
+  let original = raw;
+  let comment = '';
+  if(raw.includes(';')){ comment = raw.split(';').slice(1).join(';').trim(); raw = raw.split(';')[0]; }
+  raw = raw.replace(/➔/g,' ').trim();
+  raw = raw.replace(/^[0-9A-Fa-f]{6,16}:\s*/,'');
+  return {text:raw.trim(), comment, original};
+}
+function splitArgs(str){
+  let args=[], cur='', inQ=false;
+  for(let ch of str){ if(ch==='"') inQ=!inQ; if(ch===',' && !inQ){ args.push(cur.trim()); cur=''; } else cur+=ch; }
+  if(cur.trim()) args.push(cur.trim());
+  return args;
+}
+function normalizeSymbol(x){
+  if(!x) return x;
+  x = x.trim();
+  if(/^\[.+\]$/.test(x)) return x.slice(1,-1).trim();
+  return x;
+}
+function parse(input){
+  const parsed=[]; const labels={};
+  input.split('\n').forEach((raw, idx)=>{
+    let c = cleanLine(raw); if(!c.text) return;
+    let text = c.text;
+    if(/^\S+:$/.test(text)){ let label=text.slice(0,-1); labels[label]=parsed.length; parsed.push({type:'label',label,raw,comment:c.comment,idx}); return; }
+    let parts = text.split(/\s+/); let op = parts[0].toLowerCase();
+    let rest = text.slice(parts[0].length).trim();
+    let args = splitArgs(rest);
+    if(rest.toLowerCase()==='ret'){ op='ret'; args=[]; }
+    if(op==='ret') parsed.push({type:'instruction',op,args:[],raw,comment:c.comment,idx});
+    else parsed.push({type:'instruction',op,args,raw,comment:c.comment,idx});
+  });
+  return {parsed, labels};
+}
+function scanSymbols(parsed){
+  const vars={}, apiCalls=[];
+  parsed.forEach(n=>{
+    if(n.type!=='instruction') return;
+    if(n.op==='mov' && n.args[0]){ const dst=normalizeSymbol(n.args[0]); if(!REGISTERS[dst?.toLowerCase()]) vars[dst]=inferType(n.args[1]); }
+    if(n.op==='call' && n.args[0]) apiCalls.push(n.args[0]);
+    n.args.forEach(a=>{let s=normalizeSymbol(a); if(s && /^[A-Za-z_]\w*$/.test(s) && !REGISTERS[s.toLowerCase()] && !API_DB[s]) vars[s]=vars[s]||'object';});
+  });
+  return {vars, apiCalls};
+}
+function inferType(v){ v=(v||'').trim(); if(/^".*"$/.test(v)) return 'string'; if(/^-?\d+$/.test(v)) return 'int'; return 'object'; }
+function renderAssignment(dst,src,declared){
+  dst=normalizeSymbol(dst); src=normalizeSymbol(src);
+  const low=dst.toLowerCase();
+  if(!declared.has(dst)){
+    let type = REGISTERS[low]?.type || inferType(src);
+    declared.add(dst);
+    return `${type} ${dst} = ${src};`;
+  }
+  return `${dst} = ${src};`;
+}
+function apiToCSharp(api, stack){
+  let name = api.replace(/^_+/,''); const meta = API_DB[name] || API_DB[api];
+  let args = stack.slice().reverse().map(normalizeSymbol);
+  if(!meta) return `/* call ${api}(${args.join(', ')}) */`;
+  if(name==='MessageBoxA' || name==='MessageBoxW'){
+    const text = args[1] || args[0] || '""';
+    const cap = args[2] || '""';
+    return `MessageBox.Show(${text}, ${cap});`;
+  }
+  if(['printf','puts','Console_WriteLine','WriteLine'].includes(name)) return `Console.WriteLine(${args[0] || '""'});`;
+  if(name==='Sleep') return `Thread.Sleep(${args[0] || '0'});`;
+  if(name==='ExitProcess') return `Environment.Exit(${args[0] || '0'});`;
+  return `${meta.csharp}(${args.join(', ')});`;
+}
+function findBackwardLoop(parsed, labels, i, lastCmp){
+  const n=parsed[i]; if(!n || n.type!=='instruction' || !(n.op in JUMP_COND) || !n.args[0] || !lastCmp) return null;
+  const target=n.args[0]; if(labels[target]===undefined) return null;
+  if(labels[target] < i){ return {start:labels[target], end:i, cond:`${normalizeSymbol(lastCmp.left)} ${JUMP_COND[n.op]} ${normalizeSymbol(lastCmp.right)}`}; }
+  return null;
+}
+function decompile(){
+  const input=document.getElementById('asmInput').value;
+  const {parsed, labels}=parse(input);
+  const symbols=scanSymbols(parsed);
+  const declared=new Set(); const stack=[]; const out=[]; const analysis=[]; const usedApis=[];
+  const skip=new Set(); let lastCmp=null;
+
+  // detect simple backward loops and mark body
+  const loops=[];
+  for(let i=0;i<parsed.length;i++){
+    const n=parsed[i];
+    if(n.type==='instruction' && n.op==='cmp') lastCmp={left:n.args[0],right:n.args[1],index:i};
+    const loop=findBackwardLoop(parsed, labels, i, lastCmp);
+    if(loop){ loops.push(loop); }
+  }
+
+  out.push('using System;');
+  if(parsed.some(n=>n.type==='instruction' && n.op==='call' && /MessageBox/i.test(n.args[0]||''))) out.push('using System.Windows.Forms;');
+  if(parsed.some(n=>n.type==='instruction' && n.op==='call' && /Sleep/i.test(n.args[0]||''))) out.push('using System.Threading;');
+  out.push(''); out.push('class Program'); out.push('{'); out.push('    static void Main()'); out.push('    {');
+
+  lastCmp=null;
+  for(let i=0;i<parsed.length;i++){
+    if(skip.has(i)) continue;
+    const loop = loops.find(l=>l.start===i);
+    if(loop){
+      const label=parsed[i]; out.push(`        while (${loop.cond})`); out.push('        {');
+      for(let j=i+1;j<loop.end;j++){
+        const line = convertInstruction(parsed[j], declared, stack, usedApis, true);
+        if(line && !line.startsWith('// compare')) out.push('            '+line);
+        skip.add(j);
+      }
+      out.push('        }'); skip.add(loop.end); continue;
+    }
+    const n=parsed[i];
+    if(n.type==='label') { analysis.push(`<span class="line-chip"><b>Label:</b> ${n.label}</span>`); continue; }
+    if(n.type==='instruction' && n.op==='cmp'){ lastCmp={left:n.args[0],right:n.args[1],index:i}; analysis.push(`<span class="line-chip"><b>cmp:</b> ${n.args[0]} ile ${n.args[1]} karşılaştırıldı.</span>`); continue; }
+    if(n.type==='instruction' && n.op in JUMP_COND){
+      const cond = lastCmp ? `${normalizeSymbol(lastCmp.left)} ${JUMP_COND[n.op]} ${normalizeSymbol(lastCmp.right)}` : `/* condition */`;
+      const target = n.args[0] || '';
+      out.push(`        if (${cond})`); out.push('        {'); out.push(`            // jump target: ${target}`); out.push('        }');
+      analysis.push(`<span class="line-chip"><b>${n.op}:</b> ${cond} koşulunda ${target} hedefi.</span>`);
+      continue;
+    }
+    let line=convertInstruction(n, declared, stack, usedApis, false);
+    if(line) out.push('        '+line);
+  }
+  out.push('    }'); out.push('}');
+  document.getElementById('csharpOutput').textContent=out.join('\n');
+  document.getElementById('analysisOutput').innerHTML = buildAnalysis(parsed, labels, symbols, loops, usedApis, analysis);
+  document.getElementById('statLines').textContent = parsed.length;
+  document.getElementById('statOps').textContent = parsed.filter(x=>x.type==='instruction').length;
+  document.getElementById('statApi').textContent = usedApis.length;
+  document.getElementById('statLabels').textContent = Object.keys(labels).length;
+  renderDictionary();
+}
+function convertInstruction(n, declared, stack, usedApis, inLoop){
+  if(!n || n.type!=='instruction') return '';
+  let op=n.op, a=n.args;
+  switch(op){
+    case 'mov': return renderAssignment(a[0],a[1],declared);
+    case 'lea': return renderAssignment(a[0],`/* address of */ ${normalizeSymbol(a[1])}`,declared);
+    case 'add': return `${normalizeSymbol(a[0])} += ${normalizeSymbol(a[1])};`;
+    case 'sub': return `${normalizeSymbol(a[0])} -= ${normalizeSymbol(a[1])};`;
+    case 'inc': return `${normalizeSymbol(a[0])}++;`;
+    case 'dec': return `${normalizeSymbol(a[0])}--;`;
+    case 'xor': if(a[0] && a[1] && a[0].trim()===a[1].trim()) return `${normalizeSymbol(a[0])} = 0;`; return `${normalizeSymbol(a[0])} ^= ${normalizeSymbol(a[1])};`;
+    case 'and': return `${normalizeSymbol(a[0])} &= ${normalizeSymbol(a[1])};`;
+    case 'or': return `${normalizeSymbol(a[0])} |= ${normalizeSymbol(a[1])};`;
+    case 'shl': return `${normalizeSymbol(a[0])} <<= ${normalizeSymbol(a[1])};`;
+    case 'shr': case 'sar': return `${normalizeSymbol(a[0])} >>= ${normalizeSymbol(a[1])};`;
+    case 'push': stack.push(a.join(' ')); return `// push ${a.join(' ')}`;
+    case 'pop': return renderAssignment(a[0], stack.pop() || '/* stack */', declared);
+    case 'call': usedApis.push(a[0]); const line=apiToCSharp(a[0], stack); stack.length=0; return line;
+    case 'ret': return 'return;';
+    case 'cmp': return `// compare: ${normalizeSymbol(a[0])} ? ${normalizeSymbol(a[1])}`;
+    case 'test': return `// test: ${normalizeSymbol(a[0])} & ${normalizeSymbol(a[1])}`;
+    case 'nop': return '// nop';
+    default: return `// unsupported: ${op} ${a.join(', ')}`;
+  }
+}
+function buildAnalysis(parsed, labels, symbols, loops, usedApis, extra){
+  let html='<div class="row g-3">';
+  html += `<div class="col-12 col-lg-6"><h6>Algılanan Değişken/Register</h6>`;
+  Object.keys(symbols.vars).slice(0,40).forEach(k=> html+=`<span class="pill"><b>${k}</b> ${symbols.vars[k]}</span>`);
+  html+='</div>';
+  html += `<div class="col-12 col-lg-6"><h6>API Çağrıları</h6>`;
+  if(usedApis.length===0) html+='<span class="mini-muted">API çağrısı yok.</span>';
+  usedApis.forEach(api=> html+=`<span class="pill"><i class="bi bi-plug"></i><b>${api}</b> ${(API_DB[api]?.csharp||'tanımsız')}</span>`);
+  html+='</div>';
+  html += `<div class="col-12"><h6>Döngü / Jump Analizi</h6>`;
+  if(loops.length===0) html+='<span class="mini-muted">Geriye jump ile while deseni bulunmadı.</span>';
+  loops.forEach(l=> html+=`<span class="line-chip"><b>while bulundu:</b> satır ${l.start+1} → ${l.end+1}, koşul <span class="small-code">${l.cond}</span></span>`);
+  html += extra.join('');
+  html+='</div></div>';
+  return html;
+}
+function renderDictionary(){
+  const groups={}; Object.entries(INSTRUCTIONS).forEach(([k,v])=>{groups[v.group]=groups[v.group]||[];groups[v.group].push([k,v]);});
+  let html='<div class="row g-3">';
+  html+='<div class="col-12"><h6>ASM Komut Sözlüğü</h6></div>';
+  Object.entries(groups).forEach(([g,arr])=>{ html+=`<div class="col-12 col-lg-6"><div class="soft-card p-3 h-100"><h6 class="text-info">${g}</h6>`; arr.forEach(([k,v])=> html+=`<span class="pill"><b>${k}</b> ${v.desc}</span>`); html+='</div></div>'; });
+  html+='<div class="col-12"><div class="soft-card p-3"><h6 class="text-warning">API Veritabanı</h6>';
+  Object.entries(API_DB).forEach(([k,v])=> html+=`<span class="pill"><b>${k}</b> → ${v.csharp}</span>`);
+  html+='</div></div></div>';
+  document.getElementById('dictionaryOutput').innerHTML=html;
+}
+function copyOutput(){
+  navigator.clipboard.writeText(document.getElementById('csharpOutput').textContent||'');
+  const t=document.getElementById('copyToast'); t.style.display='block'; setTimeout(()=>t.style.display='none',1800);
+}
+
+function pseudoCompile(){
+  decompile();
+  const code = document.getElementById('csharpOutput').textContent || '';
+  const asm = document.getElementById('asmInput').value || '';
+  const issues=[];
+  const warnings=[];
+  const infos=[];
+  const openBrace=(code.match(/\{/g)||[]).length, closeBrace=(code.match(/\}/g)||[]).length;
+  if(openBrace!==closeBrace) issues.push(`Süslü parantez dengesi bozuk: {=${openBrace}, }=${closeBrace}`);
+  code.split('\n').forEach((line,i)=>{
+    const t=line.trim();
+    if(!t || t.endsWith('{') || t.endsWith('}') || t.startsWith('//') || t.startsWith('using ') || t==='class Program' || t==='static void Main()') return;
+    if(!t.endsWith(';') && !t.endsWith(':')) warnings.push(`${i+1}. satır sonunda ; olmayabilir: ${t}`);
+    if(t.includes('/* call') || t.includes('unsupported')) warnings.push(`${i+1}. satırda tanımsız/yorumlanmamış çağrı var: ${t}`);
+  });
+  if(/MessageBox\.Show/.test(code) && !/using System\.Windows\.Forms;/.test(code)) issues.push('MessageBox.Show kullanılmış ama using System.Windows.Forms eksik.');
+  if(/MessageBox\.Show/.test(code)) infos.push('Windows Forms projesinde System.Windows.Forms referansı gerekir. Konsol uygulamasında csproj içine <UseWindowsForms>true</UseWindowsForms> eklenebilir.');
+  if(/jump target/.test(code)) warnings.push('Forward jump if/else bloğuna indirgenmemiş. Daha temiz çıktı için label hedef bloğu analizi geliştirilmeli.');
+  if(/➔\s*ret|\bret\b/i.test(asm)) infos.push('ASM içinde ret bulundu; C# tarafında return üretildi.');
+  const status = issues.length ? 'danger' : (warnings.length ? 'warning' : 'success');
+  const title = issues.length ? 'Compile başarısız görünüyor' : (warnings.length ? 'Pseudo compile geçti, uyarılar var' : 'Pseudo compile başarılı');
+  let html = `<div class="alert alert-${status} mb-3"><b>${title}</b><br><span class="small">Bu tarayıcı içi kontrol gerçek Roslyn derlemesi değildir; syntax/semantik ön kontrol yapar.</span></div>`;
+  if(issues.length) html += `<h6 class="text-danger">Hatalar</h6>` + issues.map(x=>`<span class="line-chip"><i class="bi bi-x-circle text-danger"></i> ${x}</span>`).join('');
+  if(warnings.length) html += `<h6 class="text-warning mt-3">Uyarılar</h6>` + warnings.map(x=>`<span class="line-chip"><i class="bi bi-exclamation-triangle text-warning"></i> ${x}</span>`).join('');
+  if(infos.length) html += `<h6 class="text-info mt-3">Notlar</h6>` + infos.map(x=>`<span class="line-chip"><i class="bi bi-info-circle text-info"></i> ${x}</span>`).join('');
+  html += `<div class="mt-3"><button class="btn btn-outline-info btn-sm btn-ebs" onclick="downloadProjectZipHint()"><i class="bi bi-box"></i> Proje/Compile için gerekenler</button></div>`;
+  document.getElementById('compileOutput').innerHTML = html;
+  const trigger = document.querySelector('[data-bs-target="#tabCompile"]');
+  if(trigger) bootstrap.Tab.getOrCreateInstance(trigger).show();
+}
+function downloadProjectZipHint(){
+  document.getElementById('compileOutput').innerHTML += `<div class="alert alert-info mt-3"><b>Gerçek compile için:</b><br>1) Backend: .NET SDK + Roslyn gerekir.<br>2) Tarayıcıdan C# doğrudan exe üretilemez.<br>3) Sunucuya C# kodu gönderilir, backend <span class="small-code">dotnet build</span> veya Roslyn ile derler.<br>4) Güvenlik için sandbox, timeout ve dosya erişim kısıtı şarttır.</div>`;
+}
+
+function initPills(){
+  const features=['mov/add/sub/inc/dec','cmp + je/jne/jg/jl','label + backward jump → while','push/call stack analizi','MessageBox/printf/puts','WinAPI/CRT/.NET API DB','register sözlüğü','responsive Bootstrap UI','pseudo compile / syntax kontrol','C# proje iskeleti üretimi'];
+  document.getElementById('featurePills').innerHTML=features.map(f=>`<span class="pill"><i class="bi bi-check2-circle text-success"></i>${f}</span>`).join('');
+  renderDictionary(); decompile();
+}
+initPills();
+</script>
+</body>
+</html>
