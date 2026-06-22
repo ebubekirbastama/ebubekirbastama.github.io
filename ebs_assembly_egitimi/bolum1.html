@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bölüm 1 - Temeller</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding: 20px; }
+        .code-block { background-color: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; }
+        .register-box { border: 2px solid #212529; border-radius: 6px; padding: 10px; text-align: center; background-color: #fff; font-weight: bold; }
+        .comment { color: #6a9955; } .keyword { color: #569cd6; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="nav nav-pills nav-fill mb-4 border p-2 rounded bg-white" id="tabs">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#p1">1. Temel Mantık</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#p2">2. Registerlar</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#p3">3. Temel Komutlar</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#p4">4. Dallanma & Test</button></li>
+    </ul>
+
+    <div class="tab-content bg-white p-4 rounded border shadow-sm">
+        <div class="tab-pane fade show active" id="p1">
+            <h4>1. Aşama: Assembly Nedir?</h4>
+            <p>İşlemciler yüksek seviyeli dilleri (C#, Python) anlamazlar, sadece 1 ve 0'lardan oluşan makine kodlarını işleyebilirler. Assembly, bu 1 ve 0'ların insan tarafından okunabilen en yalın kelime (Mnemonic) karşılığıdır.</p>
+            <div class="alert alert-dark text-center fw-bold">Yüksek Dil ➔ Assembly (MOV, CMP) ➔ Makine Kodu (010110)</div>
+        </div>
+        
+        <div class="tab-pane fade" id="p2">
+            <h4>2. Aşama: Register Mantığı</h4>
+            <p>İşlemcinin veri işlemek için kullandığı ultra hızlı küçük odacıklara <strong>Register (Yazmaç)</strong> denir.</p>
+            <div class="row text-center g-2">
+                <div class="col-3"><div class="register-box">EAX<br><small class="text-muted">Biriktirici / Sonuç</small></div></div>
+                <div class="col-3"><div class="register-box">EBX<br><small class="text-muted">Taban Veri</small></div></div>
+                <div class="col-3"><div class="register-box">ECX<br><small class="text-muted">Döngü Sayacı</small></div></div>
+                <div class="col-3"><div class="register-box">EDX<br><small class="text-muted">Genel Veri</small></div></div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="p3">
+            <h4>3. Aşama: Temel Komutlar</h4>
+            <table class="table table-striped border">
+                <thead><tr><th>Komut</th><th>Açıklama</th><th>Örnek</th></tr></thead>
+                <tbody>
+                    <tr><td><b>MOV</b></td><td>Veri Taşır/Kopyalar</td><td><code>mov eax, 5</code></td></tr>
+                    <tr><td><b>ADD</b></td><td>Toplama Yapar</td><td><code>add eax, ebx</code></td></tr>
+                    <tr><td><b>SUB</b></td><td>Çıkarma Yapar</td><td><code>sub eax, 2</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="p4">
+            <h4>4. Aşama: Karşılaştırma & Dallanma</h4>
+            <div class="code-block mb-3">
+                <span class="keyword">cmp</span> eax, ebx <span class="comment">; İki değeri kıyasla</span><br>
+                <span class="keyword">jne</span> else_label <span class="comment">; Eşit değilse zıpla</span>
+            </div>
+            <div class="card border-warning p-3">
+                <h6>Hızlı Kontrol Sorusu:</h6>
+                <p>EAX ve EBX değerleri birbirine eşitse, <code>jne else_label</code> çalışınca ne olur?</p>
+                <button class="btn btn-sm btn-outline-danger m-1" onclick="check(false)">A) else_label satırına zıplar.</button>
+                <button class="btn btn-sm btn-outline-success m-1" onclick="check(true)">B) Zıplamaz, bir alt satırdan devam eder.</button>
+                <div id="res" class="mt-2 fw-bold"></div>
+            </div>
+            <div class="mt-4 border-top pt-3 text-end">
+                <a href="index.html" target="_top" class="btn btn-dark">🏠 Ana Sayfaya Dön</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function check(c) {
+        document.getElementById('res').innerHTML = c ? 
+        "<span class='text-success'>✓ Doğru! Eşit oldukları için jne (Not Equal) şartı sağlanmaz.</span>" : 
+        "<span class='text-danger'>✗ Yanlış. jne sadece eşit DEĞİLSELER zıplar.</span>";
+    }
+</script>
+</body>
+</html>

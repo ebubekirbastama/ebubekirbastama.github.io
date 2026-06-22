@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembly Programlama - Bölüm 6: Sistem Çağrıları & Kesmeler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .nav-pills .nav-link.active { background-color: #fd7e14; color: #fff; }
+        .nav-pills .nav-link { color: #495057; font-weight: 600; }
+        .code-block { background-color: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; overflow-x: auto; }
+        .kernel-panel { background-color: #111827; border: 2px solid #fd7e14; border-radius: 8px; color: #ffb17a; font-family: monospace; padding: 15px; }
+        .register-badge { background-color: #2d2d2d; color: #ffc107; padding: 4px 10px; border-radius: 4px; display: inline-block; font-family: monospace; }
+        .comment { color: #6a9955; } 
+        .keyword { color: #569cd6; font-weight: bold; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <ul class="nav nav-pills nav-fill mb-4 border p-2 rounded bg-white" id="lessonTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="page17-tab" data-bs-toggle="tab" data-bs-target="#page17" type="button" role="tab">17. Aşama: Kesme (Interrupt) ve INT 0x80</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="page18-tab" data-bs-toggle="tab" data-bs-target="#page18" type="button" role="tab">18. Aşama: Modern Syscall Mimarisi (x64)</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="page19-tab" data-bs-toggle="tab" data-bs-target="#page19" type="button" role="tab">19. Aşama: İnteraktif Çekirdek (Kernel) Tetikleyici</button>
+        </li>
+    </ul>
+
+    <div class="tab-content bg-white p-4 rounded shadow-sm border" id="lessonTabContent">
+        
+        <div class="tab-pane fade show active" id="page17" role="tabpanel">
+            <h3 class="text-warning text-dark border-bottom pb-2">17. Aşama: Donanımsal ve Yazılımsal Kesmeler (Interrupts)</h3>
+            <p class="mt-3">Bir işlemci normal şartlarda kodları yukarıdan aşağıya doğru sırayla işler. Ancak olağanüstü veya özel bir durum oluştuğunda mevcut işi durdurup başka bir göreve odaklanması gerekir. Buna <strong>Interrupt (Kesme)</strong> denir.</p>
+            
+            <h5>İki Tip Kesme Vardır:</h5>
+            <ul>
+                <li><strong>Donanımsal Kesmeler:</strong> Klavyeden bir tuşa basılması, fare hareketi veya ağ kartına bir veri paketinin gelmesiyle tetiklenir.</li>
+                <li><strong>Yazılımsal Kesmeler:</strong> Kodun içinden bilerek çağrılır. Geleneksel 32-bit x86 mimarisinde işletim sisteminden (Kernel) yardım istemek için <code>int 0x80</code> (Linux) veya <code>int 0x21</code> (DOS) komutları yürütülür.</li>
+            </ul>
+
+            <div class="code-block my-3 shadow-sm">
+                <span class="keyword">mov</span> eax, <span class="number">1</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">; 1 numaralı işlem: sys_exit (Programı kapatma emri)</span><br>
+                <span class="keyword">mov</span> ebx, <span class="number">0</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">; Hata kodu: 0 (Başarılı çıkış)</span><br>
+                <span class="keyword">int</span> <span class="number">0x80</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">; İşlemciyi kesintiye uğrat ve çekirdeğe kontrolü ver!</span>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="page18" role="tabpanel">
+            <h3 class="text-dark border-bottom pb-2">18. Aşama: Modern 64-Bit Sistem Çağrıları (Syscall)</h3>
+            <p class="mt-3">Yazılımsal kesmeler (`int 0x80`) eski ve yavaş bir yöntemdir çünkü işlemciyi ağır bir yük altına sokar. Modern 64-bit (x64) işlemci mimarilerinde bunun yerine doğrudan çekirdeğe atlama sağlayan ultra hızlı <code>syscall</code> komutu geliştirilmiştir.</p>
+            
+            
+
+            <h5>64-Bit Linux Dünyasında Standart Kayıt Kuralları:</h5>
+            <p>Bir sistem çağrısı yapmadan önce parametreler belirli register odalarına dizilmelidir:</p>
+            <ul>
+                <li><strong>RAX:</strong> Çağrılacak fonksiyonun kimlik numarası (Örn: 60 = sys_exit, 1 = sys_write).</li>
+                <li><strong>RDI:</strong> 1. Parametre (Örn: Hangi dosyaya yazılacak? Standart çıktı için = 1).</li>
+                <li><strong>RSI:</strong> 2. Parametre (Örn: Yazılacak metnin RAM bellek adresi).</li>
+                <li><strong>RDX:</strong> 3. Parametre (Örn: Yazılacak metnin kaç byte uzunluğunda olduğu).</li>
+            </ul>
+
+            <div class="alert alert-info border-start border-info border-4">
+                <strong>🛡️ Güvenlik ve Analiz Notu:</strong> Antivirüs (AV) ve EDR yazılımları, bir programın zararlı olup olmadığını anlamak için kullanıcı katmanındaki API'lerden ziyade programın çekirdeğe gönderdiği bu <code>syscall</code> numaralarını ve çağrı anlarını (Hooking yöntemiyle) izlerler.
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="page19" role="tabpanel">
+            <h3 class="text-dark border-bottom pb-2">19. Aşama: İnteraktif İşletim Sistemi Çağrı Paneli</h3>
+            <p class="mt-3">Aşağıdaki panelde, register odalarına farklı sistem görevleri yüklenmiştir. Doğru register emirlerini hazırlayıp <code>SYSCALL Komutunu Yürüt</code> butonuna basarak işletim sistemi çekirdeğinin vereceği tepkiyi gözlemleyin.</p>
+
+            <div class="row g-4">
+                <div class="col-md-5">
+                    <div class="card border-warning bg-light p-3">
+                        <h6 class="fw-bold mb-3">🛠️ Register Yapılandırması</h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">RAX (Sistem Çağrı Numarası Seçin):</label>
+                            <select id="raxSelect" class="form-select form-select-sm">
+                                <option value="0">Seçiniz...</option>
+                                <option value="1">1 (sys_write - Ekrana Veri Yazdır)</option>
+                                <option value="60">60 (sys_exit - Programı Güvenli Kapat)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">RDI (Çıktı / Durum Kodu Hedefi):</label>
+                            <select id="rdiSelect" class="form-select form-select-sm">
+                                <option value="0">0 (Hatasız / Başarılı Kapanış Durumu)</option>
+                                <option value="1">1 (Stdout - Konsol Ekranına Yönlendir)</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-warning w-100 btn-sm fw-bold text-dark" onclick="executeSyscall()">⚡ SYSCALL Komutunu Yürüt</button>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="card bg-dark text-light p-3 font-monospace" style="font-size:13px;">
+                        <div class="mb-2 border-bottom border-secondary pb-1">
+                            <span class="register-badge">RAX: <span id="viewRAX">0</span></span>
+                            <span class="register-badge">RDI: <span id="viewRDI">0</span></span>
+                        </div>
+                        <div class="kernel-panel" id="kernelOutput">
+                            [KERNEL STATUS]: Çekirdek hazır, sinyal bekleniyor...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-start mt-4 border-top pt-3">
+                <a href="index.html" target="_top" class="btn btn-dark">🏠 Ana Sayfaya Dön</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function executeSyscall() {
+        var rax = document.getElementById('raxSelect').value;
+        var rdi = document.getElementById('rdiSelect').value;
+        var output = document.getElementById('kernelOutput');
+        
+        document.getElementById('viewRAX').innerText = rax;
+        document.getElementById('viewRDI').innerText = rdi;
+
+        if (rax == "0") {
+            output.innerHTML = "<span class='text-danger'>[KERNEL ERROR]: Geçersiz çağrı! RAX sıfır olamaz. İşlemci çöktü (Segmentation Fault).</span>";
+            return;
+        }
+
+        if (rax == "1" && rdi == "1") {
+            output.innerHTML = "<span class='text-success'>[KERNEL SUCCESS]: sys_write çağrısı algılandı.<br>➔ Çıktı: 'SIGNAL' mesajı konsol ekranına başarıyla yazdırıldı!</span>";
+        } else if (rax == "1" && rdi == "0") {
+            output.innerHTML = "<span class='text-warning'>[KERNEL WARNING]: Ekrana yazdırma istendi (RAX=1) ancak hedef olarak başarılı çıkış kodu (RDI=0) verildi. Yazma işlemi başarısız!</span>";
+        } else if (rax == "60" && rdi == "0") {
+            output.innerHTML = "<span class='text-info'>[KERNEL PROCESS]: sys_exit çağrısı algılandı.<br>➔ Program 0 (Hatasız) koduyla bellekten temizlendi ve kapatıldı.</span>";
+        } else if (rax == "60" && rdi == "1") {
+            output.innerHTML = "<span class='text-warning'>[KERNEL PROCESS]: sys_exit çağrısı algılandı.<br>➔ Program 1 (Hata kodu) ile zorla sonlandırıldı.</span>";
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembly & Reverse Engineering Academy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #060913;          /* Derin Uzay Siyahı */
+            --bg-card: #0f1626;          /* Elit Panel Rengi */
+            --border-glow: #1e293b;      /* Pasif Çizgi Rengi */
+            --accent-neon: #38bdf8;      /* Siber Mavi Neon */
+            --text-pure: #ffffff;        /* Cam Gibi Beyaz Yazı */
+            --text-dim: #94a3b8;         /* Net Okunabilir Açık Gri */
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-pure);
+            font-family: 'Space Grotesk', sans-serif;
+            padding-bottom: 60px;
+            overflow-x: hidden;
+        }
+
+        /* Üst Alan Bilgileri */
+        .hero-section {
+            background: radial-gradient(circle at top center, rgba(56, 189, 248, 0.15), transparent 60%);
+            border-bottom: 1px solid #111c30;
+            padding: 60px 0 40px 0;
+        }
+
+        .academy-title {
+            font-weight: 700;
+            font-size: 2.8rem;
+            letter-spacing: -1px;
+            color: var(--text-pure);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* 7'li Elit Kart Sistemi */
+        .course-card {
+            background-color: var(--bg-card);
+            border: 1px solid #1e2942;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* Görünmezlik Sorununu Çözen Net Yazı Renkleri */
+        .card-title {
+            color: var(--text-pure) !important;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .card-text {
+            color: var(--text-dim) !important;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Aktif Kart Seçildiğinde veya Üzerine Gelindiğinde Neon Parlama */
+        .course-card:hover, .course-card.active-card {
+            transform: translateY(-5px);
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        .badge-step {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Canlı Çalışma Alanı Kapsayıcısı */
+        .stage-container {
+            border: 1px solid #1e2942;
+            border-radius: 20px;
+            background-color: #090d16;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .stage-header {
+            background-color: #0f1626;
+            border-bottom: 1px solid #1e2942;
+            padding: 18px 25px;
+        }
+
+        /* Lab İframe Boyutları */
+        .lesson-iframe {
+            width: 100%;
+            height: 750px;
+            border: none;
+            background-color: #ffffff; /* Lab içeriklerinin düzgün görünmesi için */
+            border-radius: 0 0 20px 20px;
+        }
+
+        /* Alt Analiz Kutusu */
+        .info-footer-box {
+            background: linear-gradient(90deg, #0f1626 0%, #090d16 100%);
+            border: 1px solid #1e2942;
+            border-radius: 16px;
+            padding: 28px;
+            margin-top: 40px;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero-section text-center mb-5">
+    <div class="container">
+        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 mb-3 px-3 py-2 font-mono" style="letter-spacing: 1px;">⚡ INTERACTIVE CORE TERMINAL v2.5</span>
+        <h1 class="academy-title mb-3">Assembly & Mühendislik Akademisi</h1>
+        <p class="text-muted mx-auto" style="max-width: 700px; font-size: 15px; color: var(--text-dim) !important;">
+            İşlemci mimarisi ve tersine mühendislik pratiklerini tek pencereli üst düzey mimari üzerinden canlı simülasyonlarla deneyimleyin. Analiz etmek istediğiniz modülü seçin.
+        </p>
+    </div>
+</div>
+
+<div class="container-fluid px-4">
+    
+    <div class="row g-3 justify-content-center mb-5" id="courseCardsRow">
+        
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="card course-card h-100 p-2" onclick="loadLesson(this, 'bolum1.html', 'Bölüm 1: Temeller & Koşullu Akış')">
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="mb-2">
+                        <span class="badge bg-primary bg-opacity-20 text-primary badge-step">MODÜL 01</span>
+                    </div>
+                    <h6 class="card-title">Temeller & Akış</h6>
+                    <p class="card-text flex-grow-1">MOV, ADD, CMP ve JNE kayıt yönetimi.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="card course-card h-100 p-2" onclick="loadLesson(this, 'bolum2.html', 'Bölüm 2: Yığın Bellek & Fonksiyonlar')">
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="mb-2">
+                        <span class="badge bg-info bg-opacity-20 text-info badge-step">MODÜL 02</span>
+                    </div>
+                    <h6 class="card-title">Stack & Adresleme</h6>
+                    <p class="card-text flex-grow-1">PUSH, POP, CALL/RET ve pointer mantığı.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="card course-card h-100 p-2" onclick="loadLesson(this, 'bolum3.html', 'Bölüm 3: Tersine Mühendislik')">
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="mb-2">
+                        <span class="badge bg-danger bg-opacity-20 text-danger badge-step">MODÜL 03</span>
+                    </div>
+                    <h6 class="card-title">Tersine Mühendislik</h6>
+                    <p class="card-text flex-grow-1">Debugger simülasyonu ve Canlı Yama Pratiği.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="card course-card h-100 p-2" onclick="loadLesson(this, 'bolum4.html', 'Bölüm 4: Döngüler & Bellek')">
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="mb-2">
+                        <span class="badge bg-success bg-opacity-20 text-success badge-step">MODÜL 04</span>
+                    </div>
+                    <h6 class="card-title">Döngü Yapıları</h6>
+                    <p class="card-text flex-grow-1">DEC, ECX sayaçları ve ESI/EDI dizileri.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="card course-card h-100 p-2" onclick="loadLesson(this, 'bolum5.html', 'Bölüm 5: Mantıksal İşlemler & Kripto')">
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="mb-2">
+                        <span class="badge bg-purple bg-opacity-20 text-warning badge-step" style="color: #e9d5ff !important;">MODÜL 05</span>
+                    </div>
+                    <h6 class="card-title">Mantık & Kripto</h6>
+                    <p class="card-text flex-grow-1">AND, OR, XOR işlemleri ve şifre analizleri.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="card course-card h-100 p-2" onclick="loadLesson(this, 'bolum6.html', 'Bölüm 6: Sistem Çağrıları')">
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="mb-2">
+                        <span class="badge bg-warning bg-opacity-20 text-warning badge-step">MODÜL 06</span>
+                    </div>
+                    <h6 class="card-title">Syscall & Çekirdek</h6>
+                    <p class="card-text flex-grow-1">int 0x80, RAX mimarisi ve Kernel yapısı.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="card course-card h-100 p-2 border-warning border-opacity-50" onclick="loadLesson(this, 'bolum7.html', 'Bölüm 7: Büyük Final Sınavı')">
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="mb-2">
+                        <span class="badge bg-warning text-dark badge-step fw-bold">FINAL STAGE</span>
+                    </div>
+                    <h6 class="card-title text-warning">Sertifika & Sınav</h6>
+                    <p class="card-text flex-grow-1">Yeterlilik testi ve dijital başarı belgesi.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row justify-content-center mb-5 d-none" id="lessonWorkspace">
+        <div class="col-xl-11 col-lg-12">
+            <div class="stage-container">
+                <div class="stage-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <span class="spinner-grow spinner-grow-sm text-info me-3" role="status"></span>
+                        <h5 class="m-0 fw-bold font-mono text-white" id="currentLessonTitle" style="font-size: 14px; letter-spacing: 0.5px;">LAB YÜKLENİYOR...</h5>
+                    </div>
+                    <button class="btn btn-xs btn-outline-danger px-3 font-mono" onclick="closeWorkspace()" style="font-size:11px; border-radius: 6px;">✕ Terminali Kapat</button>
+                </div>
+                <div class="bg-transparent">
+                    <iframe id="lessonFrame" class="lesson-iframe" src=""></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-11 col-lg-12">
+            <div class="info-footer-box">
+                <h5 class="text-white fw-bold mb-3 d-flex align-items-center" style="font-size: 16px;">
+                    <span class="me-2">💡</span> Tersine Mühendislik Laboratuvar Mimarisi Hakkında
+                </h5>
+                <p class="text-muted mb-0" style="font-size: 13.5px; color: var(--text-dim) !important; line-height: 1.6;">
+                    Bu platformda simüle edilen makine komutları; kaynak koduna erişiminiz olmayan derlenmiş binary dosyaları, malware örneklerini veya işletim sistemi çekirdek yapılarını analiz ederken **Ghidra, x64dbg ve IDA Pro** gibi profesyonel araçlarda karşınıza çıkacak ham komut zincirleridir. Modülleri sırayla tamamlayarak nihai aşamadaki test alanını başarıyla deşifre edebilir ve sertifikanızı alabilirsiniz.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function loadLesson(element, fileName, lessonTitle) {
+        var workspace = document.getElementById('lessonWorkspace');
+        var iframe = document.getElementById('lessonFrame');
+        var titleContainer = document.getElementById('currentLessonTitle');
+        
+        // Tüm kartlardan aktiflik class'ını temizle
+        var cards = document.querySelectorAll('.course-card');
+        cards.forEach(card => card.classList.remove('active-card'));
+        
+        // Tıklanan karta aktiflik efekti ver
+        element.classList.add('active-card');
+        
+        // Yapıyı yükle ve başlığı yazdır
+        titleContainer.innerText = "ACTIVE TERMINAL: " + lessonTitle.toUpperCase();
+        iframe.src = fileName;
+        
+        workspace.classList.remove('d-none');
+        
+        setTimeout(() => {
+            workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    function closeWorkspace() {
+        var workspace = document.getElementById('lessonWorkspace');
+        var iframe = document.getElementById('lessonFrame');
+        
+        // Aktiflik kart stilini temizle
+        var cards = document.querySelectorAll('.course-card');
+        cards.forEach(card => card.classList.remove('active-card'));
+        
+        workspace.classList.add('d-none');
+        iframe.src = "";
+    }
+</script>
+</body>
+</html>

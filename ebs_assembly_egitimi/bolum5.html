@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembly Programlama - Bölüm 5: Mantıksal İşlemler & Kripto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .nav-pills .nav-link.active { background-color: #0dcaf0; color: #000; }
+        .nav-pills .nav-link { color: #495057; font-weight: 600; }
+        .code-block { background-color: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; overflow-x: auto; }
+        .crypto-box { background-color: #111827; border: 2px solid #0dcaf0; border-radius: 8px; color: #00ffcc; font-family: monospace; padding: 15px; }
+        .register-badge { background-color: #2d2d2d; color: #ffc107; padding: 4px 10px; border-radius: 4px; display: inline-block; font-family: monospace; }
+        .comment { color: #6a9955; } 
+        .keyword { color: #569cd6; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <ul class="nav nav-pills nav-fill mb-4 border p-2 rounded bg-white" id="lessonTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="page14-tab" data-bs-toggle="tab" data-bs-target="#page14" type="button" role="tab">14. Aşama: Bit Düzeyinde Mantık (AND, OR, XOR)</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="page15-tab" data-bs-toggle="tab" data-bs-target="#page15" type="button" role="tab">15. Aşama: Bit Kaydırma (SHL & SHR)</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="page16-tab" data-bs-toggle="tab" data-bs-target="#page16" type="button" role="tab">16. Aşama: İnteraktif XOR De-Crypto Dünyası</button>
+        </li>
+    </ul>
+
+    <div class="tab-content bg-white p-4 rounded shadow-sm border" id="lessonTabContent">
+        
+        <div class="tab-pane fade show active" id="page14" role="tabpanel">
+            <h3 class="text-info text-dark border-bottom pb-2">14. Aşama: Bit Düzeyinde Mantıksal İşlemler</h3>
+            <p class="mt-3">İşlemciler verileri sadece sayılar olarak değil, bit bit (0 ve 1) manipüle ederek çok hızlı kararlar alabilirler. Tersine mühendislikte en sık karşımıza çıkan üç temel komut şunlardır:</p>
+            
+            <div class="table-responsive my-3">
+                <table class="table table-bordered bg-light">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Komut</th>
+                            <th>Mantık</th>
+                            <th>Assembly Kullanımı & Siber Güvenlikteki Önemi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>AND</code></td>
+                            <td>Her iki bit de 1 ise sonuç 1 olur.</td>
+                            <td><code>and eax, 0x0F</code> <br> <small class="text-muted">Maskeleme yapmak veya belirli bitleri sıfırlamak için kullanılır.</small></td>
+                        </tr>
+                        <tr>
+                            <td><code>OR</code></td>
+                            <td>En az bir bit 1 ise sonuç 1 olur.</td>
+                            <td><code>or eax, ebx</code> <br> <small class="text-muted">Bitleri birleştirmek veya bayrakları aktif etmek için tercih edilir.</small></td>
+                        </tr>
+                        <tr>
+                            <td><code>XOR</code></td>
+                            <td><strong>Bitler birbirinden farklıysa 1 olur!</strong></td>
+                            <td><code>xor eax, eax</code> ➔ EAX'ı sıfırlar (0 yapar). <br> <code>xor eax, 0x55</code> ➔ Veriyi 0x55 anahtarı ile şifreler/çözer.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-warning border-start border-warning border-4">
+                <strong>💡 Altın Bilgi (XOR Sıfırlaması):</strong> Derleyiciler bir register'ı sıfırlamak için <code>mov eax, 0</code> yazmak yerine <code>xor eax, eax</code> yazarlar. Çünkü bir sayıyı kendisiyle XOR'lamak tüm bitleri 0 yapar ve bu komut işlemci mimarisinde çok daha az yer kaplayıp (Byte boyutu düşüktür) daha hızlı çalışır!
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="page15" role="tabpanel">
+            <h3 class="text-dark border-bottom pb-2">15. Aşama: Bit Kaydırma Komutları (SHL & SHR)</h3>
+            <p class="mt-3">Bitleri sağa veya sola kaydırmak, işlemci seviyesinde matematiksel çarpma ve bölme işlemlerini ışık hızında yapmanın yoludur.</p>
+            
+            <div class="code-block mb-3">
+                <span class="keyword">mov</span> eax, <span class="number">2</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">; İkilik tabanda: 00000010 (Ondalık: 2)</span><br>
+                <span class="keyword">shl</span> eax, <span class="number">1</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">; SOLA 1 bit kaydır: 00000100 (Ondalık: 4 oluyor!)</span><br>
+                <span class="keyword">shr</span> eax, <span class="number">1</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">; SAĞA 1 bit kaydır: 00000010 (Tekrar 2 oldu!)</span>
+            </div>
+
+            <div class="card bg-light p-3">
+                <h5>Matematiksel Karşılığı:</h5>
+                <ul>
+                    <li><strong>SHL (Shift Left):</strong> Veriyi sola kaydırdığı her adım için <strong>2 ile çarpar</strong>.</li>
+                    <li><strong>SHR (Shift Right):</strong> Veriyi sağa kaydırdığı her adım için <strong>2'ye böler</strong> (Kalanı çöpe atar).</li>
+                </ul>
+                <small class="text-danger">** Analiz ettiğiniz bir kodda sürekli SHL/SHR görüyorsanız arka planda bir hash hesabı veya özel bir matematiksel paketleme algoritması dönüyor demektir.</small>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="page16" role="tabpanel">
+            <h3 class="text-dark border-bottom pb-2">16. Aşama: İnteraktif Malware XOR Şifre Çözücü</h3>
+            <p class="mt-3">Bir fidye yazılımı (Ransomware) ya da trojan, sistemdeki string verilerini AV (Antivirüs) yazılımlarından kaçırmak için genellikle XOR şifrelemesi kullanır. Aşağıda şifrelenmiş ham byte'lar yer almaktadır. Doğru XOR anahtarını (Key) bularak gizli mesajı deşifre edin!</p>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-info">
+                        <div class="card-header bg-info text-dark fw-bold">🔐 Şifreli Bellek Alanı (Dump)</div>
+                        <div class="card-body bg-dark">
+                            <div class="crypto-box text-center mb-3">
+                                <span class="text-muted d-block small mb-1">Encrypted Bytes (Hex)</span>
+                                <h5 class="text-warning font-monospace">0x06, 0x01, 0x10, 0x61, 0x75, 0x61, 0x76, 0x1A</h5>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label text-white small fw-bold">Denenecek XOR Key (0-255 arası bir sayı):</label>
+                                <div class="input-group">
+                                    <input type="number" id="xorKeyInput" class="form-control" value="0" min="0" max="255">
+                                    <button class="btn btn-info fw-bold" onclick="decryptXOR()">XOR'la ve Çöz</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card border-secondary h-100 d-flex flex-column justify-content-between">
+                        <div class="p-3">
+                            <h5 class="fw-bold">Deşifre Edilen String Çıktısı</h5>
+                            <p class="text-muted small">XOR anahtarı yanlışsa anlamsız karakterler görürsünüz. Doğru anahtar, işlemcinin gizli komutu okumasını sağlayacaktır.</p>
+                            
+                            <div class="p-3 bg-light border rounded text-center my-3">
+                                <span class="text-muted d-block small">Temiz Metin (ASCII)</span>
+                                <h3 id="decryptedOutput" class="text-danger fw-bold font-monospace">????</h3>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-light border-top text-center">
+                            <small class="text-muted">İpucu: Gizli anahtar, 20 ile 30 arasında uğurlu bir sayıdır (20 küsüratlı)...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-start mt-4 border-top pt-3">
+                <a href="index.html" target="_top" class="btn btn-dark">🏠 Ana Sayfaya Dön</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Şifreli veri: "EBS_2026" kelimesinin 0x23 (35) ile XOR'lanmış hali
+    // Düzenleme: İpucuna uygun olarak "SIGNAL" kelimesini 0x23 (35) ile XOR'layalım. 
+    // S=0x53^0x23=0x70(112), I=0x49^0x23=0x6A(106), G=0x47^0x23=0x64(100), N=0x4E^0x23=0x6D(109), A=0x41^0x23=0x62(98), L=0x4C^0x23=0x6F(111)
+    // Farklı bir kelime: 0x23 anahtarı ile "EBS" bazlı bir yapı yapalım.
+    // Kolaylık olsun diye: Şifreli dizi "EBS-2026" nın 0x25 (37) ile XOR'lanmış hali olsun.
+    // E(69)^37=104('h'), B(66)^37=103('g'), S(83)^37=118('v'), -(45)^37=8(''), 2(50)^37=23, 0(48)^37=21, 2(50)^37=23, 6(54)^37=19
+    // Kullanıcının seveceği net bir kelime: "SIGNAL" kelimesini 0x25 anahtarı ile yapalım:
+    // S(83)^37=118('v'), I(73)^37=108('l'), G(71)^37=106('j'), N(78)^37=107('k'), A(65)^37=96('`'), L(76)^37=105('i')
+    
+    // Doğrudan net veri: Key = 23 (Ondalık) -> 0x17 olsun.
+    // Kelimemiz: "SIGNAL" -> S(83)^23=64('@'), I(73)^23=90('Z'), G(71)^23=88('X'), N(78)^23=65('A'), A(65)^23=82('R'), L(76)^23=91('[')
+    // Byte dizimiz: 64, 90, 88, 65, 82, 91
+    var encryptedBytes = [64, 90, 88, 65, 82, 91]; 
+    var correctKey = 23;
+
+    function decryptXOR() {
+        var key = parseInt(document.getElementById('xorKeyInput').value);
+        var outputDiv = document.getElementById('decryptedOutput');
+        
+        if (isNaN(key) || key < 0 || key > 255) {
+            alert("Lütfen 0-255 arası geçerli bir anahtar girin.");
+            return;
+        }
+
+        var resultStr = "";
+        for (var i = 0; i < encryptedBytes.length; i++) {
+            // Her karakteri girilen anahtarla XOR'la ve karakter karşılığını bul
+            var decryptedByte = encryptedBytes[i] ^ key;
+            resultStr += String.fromCharCode(decryptedByte);
+        }
+
+        outputDiv.innerText = resultStr;
+
+        if (key === correctKey) {
+            outputDiv.className = "text-success fw-bold font-monospace";
+            alert("🔓 Tebrikler! Gizli şifre çözüldü. Arka plandaki görünmez veri: " + resultStr);
+        } else {
+            outputDiv.className = "text-danger fw-bold font-monospace";
+        }
+    }
+</script>
+</body>
+</html>
