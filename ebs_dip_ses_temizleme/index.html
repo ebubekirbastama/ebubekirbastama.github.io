@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <!-- SEO Meta Etiketleri -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Video Ses Gürültüsü Temizleme | Ebubekir Bastama</title>
+    <meta name="description" content="Videolarınızdaki arka plan dip seslerini, ssss tıslamalarını ve beyaz gürültüleri yapay zeka tabanlı Web Audio algoritmalarıyla tarayıcı üzerinden ücretsiz ve güvenli şekilde temizleyin.">
+    <meta name="keywords" content="video ses temizleme, dip ses kaldırma, video gürültü azaltma, ses cızırtı silme, online video edit, ebubekir bastama">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+
+    <!-- Open Graph (Sosyal Medya SEO) -->
+    <meta property="og:title" content="Online Video Ses Gürültüsü Temizleme | Ebubekir Bastama">
+    <meta property="og:description" content="Videolardaki rahatsız edici arka plan seslerini ve tıslamaları tarayıcı konforunda anında yok edin.">
+    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card SEO -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Online Video Ses Gürültüsü Temizleme | Ebubekir Bastama">
+    <meta name="twitter:description" content="Videolardaki cızırtı ve dip sesleri temizleme aracı.">
+
+    <!-- Bootstrap 5 Premium & Google Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- COI Service Worker (FFmpeg / Gelişmiş Worker Koruması İçin) -->
+    <script src="coi-serviceworker.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --card-dark: #151b2c;
+            --accent-gold: #c5a880;
+            --text-muted: #8a99ad;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .premium-card {
+            background: var(--card-dark);
+            border: 1px solid rgba(197, 168, 128, 0.15);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .gold-title {
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .video-wrapper {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        .form-control, .form-range {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-gold);
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #c5a880 0%, #a38558 100%);
+            color: #0b0f19;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(197, 168, 128, 0.3);
+            color: #0b0f19;
+        }
+
+        .btn-outline-premium {
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .btn-outline-premium:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        /* Yükleme Çubuğu Animasyonu */
+        .progress-bar-animated {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-dark py-4">
+        <div class="container justify-content-center">
+            <a class="navbar-brand text-uppercase tracking-wide font-weight-bold" href="#">
+                <span class="gold-title">EBUBEKİR BASTAMA</span> <span class="text-white-50">| LABS</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="card premium-card p-4 p-md-5 shadow-lg">
+                    
+                    <div class="text-center mb-5">
+                        <h1 class="h2 gold-title mb-2">Video Arka Plan Ses Tıslaması (Ssss) Temizleyici</h1>
+                        <p class="text-muted">Gelişmiş Web Audio API filtreleri kullanarak videonuzdaki istenmeyen frekansları elit bir hassasiyetle ayıklayın.</p>
+                    </div>
+
+                    <!-- Dosya Yükleme Paneli -->
+                    <div class="mb-5">
+                        <div class="p-4 text-center rounded-3" style="border: 2px dashed rgba(197, 168, 128, 0.3); background: rgba(255,255,255,0.01)">
+                            <label for="videoInput" class="form-label text-white-50 mb-3 fs-5">İşlenecek Video Dosyasını Sürükleyin veya Seçin</label>
+                            <input class="form-control max-w-md mx-auto" type="file" id="videoInput" accept="video/*">
+                        </div>
+                    </div>
+
+                    <!-- Video Stüdyo Alanı (Varsayılan olarak gizli) -->
+                    <div class="row g-4 mb-4 d-none" id="studioContainer">
+                        <div class="col-md-6">
+                            <h3 class="h5 mb-3 text-white-50 text-center">Orijinal Video</h3>
+                            <div class="video-wrapper">
+                                <video id="originalVideo" controls></video>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="h5 mb-3 gold-title text-center">Filtrelenmiş & Temizlenmiş Ses</h3>
+                            <div class="video-wrapper">
+                                <video id="filteredVideo" controls></video>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Akıllı Filtre Kontrolleri -->
+                    <div class="d-none mt-4" id="controlsContainer">
+                        <div class="p-4 rounded-3 mb-4" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05)">
+                            <h4 class="h6 gold-title mb-3 text-uppercase">Gürültü Baskılama Parametreleri</h4>
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <label for="freqRange" class="form-label text-white-50 m-0">Tıslama Kesim Sınırı:</label>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="range" class="form-range" id="freqRange" min="1500" max="6000" step="50" value="2800">
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <span id="freqValue" class="badge bg-dark border border-secondary p-2 fs-6">2800 Hz</span>
+                                </div>
+                            </div>
+                            <small class="text-muted d-block mt-2">İpucu: Kadın seslerindeki tıslamaları ("Ssss") yok etmek için en ideal kesim aralığı 2500Hz - 3200Hz arasıdır.</small>
+                        </div>
+                        
+                        <!-- Aksiyon Butonları -->
+                        <div class="d-flex flex-column flex-sm-row gap-3">
+                            <button id="processBtn" class="btn btn-premium flex-grow-1 py-3 text-uppercase">
+                                Videoyu İşle ve Filtreyi Kilitle
+                            </button>
+                            <a id="downloadBtn" class="btn btn-outline-premium py-3 px-4 text-uppercase d-none">
+                                Temizlenen Videoyu İndir
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Durum Bildirim Alanı -->
+                    <div id="statusArea" class="mt-4 d-none">
+                        <div class="alert alert-dark border border-secondary text-white-50" role="alert">
+                            <span id="statusText">İşlem yapılıyor...</span>
+                            <div class="progress mt-2" style="height: 6px; background-color: rgba(255,255,255,0.1)">
+                                <div id="processingProgress" class="progress-bar bg-warning progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Kodları (Web Audio ve İndirme Motoru) -->
+    <script>
+        const videoInput = document.getElementById('videoInput');
+        const originalVideo = document.getElementById('originalVideo');
+        const filteredVideo = document.getElementById('filteredVideo');
+        const studioContainer = document.getElementById('studioContainer');
+        const controlsContainer = document.getElementById('controlsContainer');
+        const freqRange = document.getElementById('freqRange');
+        const freqValue = document.getElementById('freqValue');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusArea = document.getElementById('statusArea');
+        const statusText = document.getElementById('statusText');
+        const progressBar = document.getElementById('processingProgress');
+
+        let audioCtx, source, biquadFilter, mediaStreamDestination;
+        let recordedChunks = [];
+        let mediaRecorder;
+
+        videoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const objectURL = URL.createObjectURL(file);
+            
+            // Panelleri Aç
+            studioContainer.classList.remove('d-none');
+            controlsContainer.classList.remove('d-none');
+            downloadBtn.classList.add('d-none');
+            statusArea.classList.add('d-none');
+
+            originalVideo.src = objectURL;
+            filteredVideo.src = objectURL;
+
+            // Audio API Ağını Kur
+            initAudioGraph(filteredVideo);
+        });
+
+        function initAudioGraph(video) {
+            if (audioCtx) audioCtx.close();
+
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+
+            source = audioCtx.createMediaElementSource(video);
+            biquadFilter = audioCtx.createBiquadFilter();
+            
+            // Ssss (Tıslama) önlemek için lowpass (yüksek frekansları sönümleme) ayarı
+            biquadFilter.type = 'lowpass';
+            biquadFilter.frequency.setValueAtTime(freqRange.value, audioCtx.currentTime);
+            biquadFilter.Q.setValueAtTime(1.2, audioCtx.currentTime); // Elit keskinlik derecesi
+
+            // Video kaydı için stream çıkışı oluşturuyoruz
+            mediaStreamDestination = audioCtx.createMediaStreamDestination();
+
+            // Bağlantı Haritası
+            source.connect(biquadFilter);
+            biquadFilter.connect(audioCtx.destination); // Hoparlöre ver
+            biquadFilter.connect(mediaStreamDestination); // Kaydediciye ver
+
+            freqRange.addEventListener('input', function() {
+                freqValue.innerText = this.value + " Hz";
+                biquadFilter.frequency.setValueAtTime(this.value, audioCtx.currentTime);
+            });
+        }
+
+        // VİDEOYU SESSİZCE ARKA PLANDA FİLTRELEYİP KAYDETME MOTORU
+        processBtn.addEventListener('click', async function() {
+            statusArea.classList.remove('d-none');
+            processBtn.disabled = true;
+            downloadBtn.classList.add('d-none');
+            
+            statusText.innerText = "Video işleniyor ve filtre kalıcı hale getiriliyor... Lütfen bekleyin.";
+            progressBar.style.width = "30%";
+
+            // Video elementinden canvas ve ses akışını yakala
+            const videoStream = filteredVideo.captureStream ? filteredVideo.captureStream() : filteredVideo.mozCaptureStream();
+            const filteredAudioTrack = mediaStreamDestination.stream.getAudioTracks()[0];
+            
+            // Orijinal videonun görüntüsü ile filtrelenmiş sesi birleştir
+            const combinedStream = new MediaStream();
+            combinedStream.addTrack(videoStream.getVideoTracks()[0]);
+            combinedStream.addTrack(filteredAudioTrack);
+
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm;codecs=vp9,opus' });
+
+            mediaRecorder.ondataavailable = function(e) {
+                if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = function() {
+                progressBar.style.width = "100%";
+                statusText.innerText = "İşlem başarıyla tamamlandı! Videonuz indirilmeye hazır.";
+                
+                const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                const outputURL = URL.createObjectURL(blob);
+                
+                downloadBtn.href = outputURL;
+                downloadBtn.download = "ebubekir_bastama_temiz_video.mp4";
+                downloadBtn.classList.remove('d-none');
+                processBtn.disabled = false;
+            };
+
+            // Videoyu baştan oynatarak kaydetmeye başla
+            filteredVideo.currentTime = 0;
+            mediaRecorder.start();
+            filteredVideo.play();
+            progressBar.style.width = "60%";
+
+            filteredVideo.onended = function() {
+                mediaRecorder.stop();
+            };
+        });
+    </script>
+</body>
+</html>

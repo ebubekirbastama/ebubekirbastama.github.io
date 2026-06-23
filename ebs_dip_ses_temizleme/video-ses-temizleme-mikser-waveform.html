@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Video Ses Temizleme | Dip Ses ve Tıslama Azaltma Aracı</title>
+    <meta name="description" content="Video dosyalarınızdaki dip ses, tıslama, fan uğultusu ve yüksek frekanslı rahatsız edici sesleri tarayıcı üzerinden azaltın. Kurulum gerektirmeyen online video ses temizleme aracı.">
+    <meta name="keywords" content="video ses temizleme, dip ses kaldırma, online ses temizleme, video gürültü azaltma, tıslama temizleme, fan sesi azaltma, web audio filtre, mp4 ses düzeltme">
+    <meta name="author" content="Ebubekir Bastama">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+
+    <meta property="og:title" content="Online Video Ses Temizleme | Dip Ses ve Tıslama Azaltma">
+    <meta property="og:description" content="Videolardaki dip ses, tıslama ve fan uğultusunu tarayıcı üzerinden azaltan pratik ses düzenleme aracı.">
+    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Online Video Ses Temizleme Aracı",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web Browser",
+      "description": "Video dosyalarındaki dip ses, tıslama ve yüksek frekanslı gürültüleri tarayıcı üzerinden azaltmaya yardımcı olan online video ses temizleme aracı.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TRY"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Video ses temizleme aracı ne işe yarar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Video dosyalarındaki dip ses, tıslama, fan uğultusu ve yüksek frekanslı rahatsız edici sesleri azaltmaya yardımcı olur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Program kurmak gerekir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır. Araç modern tarayıcılar üzerinde çalışır ve ayrı bir program kurulumu gerektirmez."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hangi video türlerinde kullanılabilir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tarayıcının desteklediği MP4, WebM ve benzeri video formatlarında kullanılabilir."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lokal dosya olarak açıldığında Service Worker çalışmaz. Bu araç FFmpeg kullanmadığı için COI zorunlu değildir. -->
+    <script>
+        if (location.protocol === "http:" || location.protocol === "https:") {
+            const coiScript = document.createElement("script");
+            coiScript.src = "coi-serviceworker.js";
+            coiScript.onerror = function () {
+                console.warn("coi-serviceworker.js bulunamadı veya yüklenemedi. Araç normal şekilde çalışmaya devam eder.");
+            };
+            document.head.appendChild(coiScript);
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg: #070b14;
+            --bg-2: #0d1324;
+            --card: rgba(18, 26, 46, 0.78);
+            --card-2: rgba(255, 255, 255, 0.055);
+            --line: rgba(255, 255, 255, 0.11);
+            --gold: #d8b774;
+            --gold-2: #f5d891;
+            --blue: #8bb7ff;
+            --green: #53e0b6;
+            --text: #f7f7fb;
+            --muted: #9aa8c2;
+            --danger: #ff6b88;
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at top left, rgba(216,183,116,.18), transparent 34%),
+                radial-gradient(circle at top right, rgba(139,183,255,.17), transparent 30%),
+                linear-gradient(180deg, var(--bg), var(--bg-2) 48%, #060910);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.025em;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .23;
+            background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: linear-gradient(to bottom, black, transparent 78%);
+            z-index: -1;
+        }
+        a { color: inherit; text-decoration: none; }
+        .text-muted-custom { color: var(--muted) !important; }
+        .gold { color: var(--gold-2); }
+        .green { color: var(--green); }
+        .navbar-premium {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(18px);
+            background: rgba(7, 11, 20, .72);
+            border-bottom: 1px solid var(--line);
+        }
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: inline-grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(245,216,145,.95), rgba(139,183,255,.72));
+            color: #07101f;
+            font-weight: 900;
+            box-shadow: 0 10px 30px rgba(216,183,116,.25);
+        }
+        .nav-link-custom {
+            color: var(--muted);
+            font-size: .95rem;
+            font-weight: 600;
+        }
+        .nav-link-custom:hover { color: #fff; }
+        .hero { padding: 80px 0 38px; position: relative; }
+        .hero-badge {
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+            padding: 9px 14px;
+            border: 1px solid rgba(245,216,145,.25);
+            border-radius: 999px;
+            background: rgba(255,255,255,.045);
+            color: var(--gold-2);
+            font-weight: 700;
+            font-size: .88rem;
+        }
+        .hero h1 {
+            font-size: clamp(2.25rem, 6vw, 5rem);
+            line-height: .96;
+            font-weight: 900;
+            margin: 22px 0;
+        }
+        .hero p.lead {
+            color: var(--muted);
+            max-width: 860px;
+            font-size: clamp(1rem, 2vw, 1.24rem);
+            line-height: 1.7;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, var(--gold-2), var(--blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .glass-card {
+            background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.035));
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(22px);
+        }
+        .soft-card {
+            background: var(--card-2);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+        }
+        .stat-card { padding: 20px; height: 100%; }
+        .stat-card strong { display:block; font-size: 1.55rem; color: #fff; }
+        .stat-card span { color: var(--muted); font-size: .94rem; }
+        .upload-zone {
+            border: 2px dashed rgba(245,216,145,.28);
+            border-radius: 24px;
+            padding: 34px 22px;
+            background: linear-gradient(135deg, rgba(245,216,145,.07), rgba(139,183,255,.055));
+            transition: .25s ease;
+        }
+        .upload-zone:hover {
+            border-color: rgba(245,216,145,.55);
+            transform: translateY(-2px);
+        }
+        .form-control, .form-range {
+            background-color: rgba(255, 255, 255, 0.055);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.075);
+            border-color: var(--gold);
+            color: #fff;
+            box-shadow: 0 0 0 .25rem rgba(216,183,116,.12);
+        }
+        .video-wrapper {
+            background: #000;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.08);
+            box-shadow: 0 18px 45px rgba(0,0,0,.42);
+        }
+        video { width: 100%; display: block; }
+
+        .mixer-panel {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(130px, 1fr));
+            gap: 18px;
+        }
+        .mixer-channel {
+            min-height: 260px;
+            padding: 18px 14px;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.028));
+            border: 1px solid rgba(255,255,255,.105);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mixer-channel label {
+            color: #fff;
+            font-weight: 800;
+            font-size: .92rem;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .mixer-desc {
+            color: var(--muted);
+            font-size: .78rem;
+            text-align: center;
+            min-height: 36px;
+            line-height: 1.35;
+        }
+        .mixer-value {
+            color: var(--gold-2);
+            font-weight: 850;
+            border: 1px solid rgba(245,216,145,.22);
+            background: rgba(0,0,0,.22);
+            border-radius: 999px;
+            padding: 6px 10px;
+            min-width: 82px;
+            text-align: center;
+        }
+        .vertical-range {
+            writing-mode: vertical-lr;
+            direction: rtl;
+            width: 38px;
+            height: 150px;
+            accent-color: var(--gold-2);
+        }
+        .waveform-box {
+            border-radius: 22px;
+            background: radial-gradient(circle at 20% 0%, rgba(245,216,145,.12), transparent 30%), rgba(0,0,0,.25);
+            border: 1px solid rgba(255,255,255,.09);
+            padding: 18px;
+            overflow: hidden;
+        }
+        #waveformCanvas {
+            width: 100%;
+            height: 150px;
+            display: block;
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+        }
+        @media (max-width: 991px) {
+            .mixer-panel { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+        }
+        @media (max-width: 575px) {
+            .mixer-panel { grid-template-columns: 1fr; }
+            .mixer-channel { min-height: auto; }
+            .vertical-range { writing-mode: horizontal-tb; direction: ltr; width: 100%; height: auto; }
+        }
+        .btn-premium {
+            background: linear-gradient(135deg, var(--gold-2), var(--gold));
+            color: #07101f;
+            font-weight: 850;
+            border: none;
+            border-radius: 16px;
+            transition: .25s ease;
+        }
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(216,183,116,.25);
+            color: #07101f;
+        }
+        .btn-outline-premium {
+            border: 1px solid rgba(245,216,145,.45);
+            color: var(--gold-2);
+            font-weight: 800;
+            border-radius: 16px;
+            background: rgba(255,255,255,.03);
+        }
+        .btn-outline-premium:hover { background: rgba(245,216,145,.12); color: #fff; }
+        .section { padding: 54px 0; }
+        .section-title { font-weight: 900; letter-spacing: -.04em; }
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            display:grid;
+            place-items:center;
+            border-radius: 14px;
+            background: rgba(245,216,145,.12);
+            border: 1px solid rgba(245,216,145,.18);
+            color: var(--gold-2);
+            font-size: 1.25rem;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(139,183,255,.13);
+            color: var(--blue);
+            display:grid;
+            place-items:center;
+            font-weight:900;
+            border:1px solid rgba(139,183,255,.2);
+            flex: 0 0 40px;
+        }
+        .article-box p, .article-box li { color: var(--muted); line-height: 1.8; }
+        .article-box h2, .article-box h3 { color: #fff; font-weight: 850; }
+        .faq-item { padding: 22px; }
+        .faq-item h3 { font-size: 1.05rem; font-weight: 850; }
+        .alert-dark-custom {
+            background: rgba(0,0,0,.22);
+            border: 1px solid rgba(255,255,255,.12);
+            color: var(--muted);
+        }
+        .progress { background-color: rgba(255,255,255,.1); }
+        .progress-bar-animated {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+        footer {
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            padding: 32px 0;
+            background: rgba(0,0,0,.18);
+        }
+        @media (max-width: 768px) {
+            .hero { padding-top: 48px; }
+            .glass-card { border-radius: 22px; }
+            .display-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar-premium py-3">
+    <div class="container d-flex align-items-center justify-content-between gap-3">
+        <a href="#" class="d-flex align-items-center gap-3">
+            <span class="brand-mark">E</span>
+            <span>
+                <strong class="d-block">EBS Audio Labs</strong>
+                <small class="text-muted-custom">Online Video Ses Temizleme</small>
+            </span>
+        </a>
+        <div class="d-none d-md-flex align-items-center gap-4">
+            <a class="nav-link-custom" href="#arac">Aracı Kullan</a>
+            <a class="nav-link-custom" href="#nasil-kullanilir">Nasıl Kullanılır?</a>
+            <a class="nav-link-custom" href="#seo-bilgi">Bilgi</a>
+            <a class="nav-link-custom" href="#sss">SSS</a>
+        </div>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="container text-center">
+        <span class="hero-badge">🎙️ Tarayıcı Üzerinden Video Ses İyileştirme</span>
+        <h1><span class="gradient-text">Video Sesini Temizle,</span><br>Dip Ses ve Tıslamayı Azalt</h1>
+        <p class="lead mx-auto">
+            Video dosyanızdaki rahatsız edici tıslama, fan uğultusu, yüksek frekanslı cızırtı ve arka plan dip seslerini azaltmak için hazırlanmış pratik bir online ses düzenleme aracıdır. Dosyanızı seçin, filtre seviyesini ayarlayın ve temizlenmiş videoyu indirin.
+        </p>
+        <div class="d-flex display-buttons justify-content-center gap-3 mt-4">
+            <a href="#arac" class="btn btn-premium px-4 py-3">Videoyu Düzenlemeye Başla</a>
+            <a href="#nasil-kullanilir" class="btn btn-outline-premium px-4 py-3">Nasıl Kullanılır?</a>
+        </div>
+    </div>
+</header>
+
+<section class="container pb-4">
+    <div class="row g-3">
+        <div class="col-md-3 col-6"><div class="soft-card stat-card"><strong>Online</strong><span>Kurulum gerekmez</span></div></div>
+        <div class="col-md-3 col-6"><div class="soft-card stat-card"><strong>Video</strong><span>Görüntü korunur</span></div></div>
+        <div class="col-md-3 col-6"><div class="soft-card stat-card"><strong>Filtre</strong><span>Hz ayarı yapılır</span></div></div>
+        <div class="col-md-3 col-6"><div class="soft-card stat-card"><strong>İndir</strong><span>İşlenen dosyayı al</span></div></div>
+    </div>
+</section>
+
+<main>
+    <section id="arac" class="section">
+        <div class="container">
+            <div class="glass-card p-4 p-md-5">
+                <div class="row align-items-end mb-4 g-3">
+                    <div class="col-lg-8">
+                        <span class="hero-badge">Video Edit Bölümü</span>
+                        <h2 class="section-title mt-3 mb-2">Online Video Ses Temizleme Aracı</h2>
+                        <p class="text-muted-custom mb-0">Önce videonuzu seçin. Sonra filtre ayarını değiştirerek önizleme yapın ve işlemi başlatın.</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <small class="text-muted-custom">Önerilen başlangıç: <span class="gold fw-bold">2800 Hz</span></small>
+                    </div>
+                </div>
+
+                <div class="upload-zone text-center mb-5">
+                    <div class="feature-icon mx-auto mb-3">⬆</div>
+                    <label for="videoInput" class="form-label text-white mb-3 fs-5 fw-bold">İşlenecek Video Dosyasını Seçin</label>
+                    <p class="text-muted-custom mb-3">MP4, WebM ve tarayıcınızın desteklediği video formatlarıyla çalışır.</p>
+                    <input class="form-control mx-auto" style="max-width: 560px;" type="file" id="videoInput" accept="video/*">
+                </div>
+
+                <div class="row g-4 mb-4 d-none" id="studioContainer">
+                    <div class="col-md-6">
+                        <h3 class="h5 mb-3 text-white-50 text-center">Orijinal Video</h3>
+                        <div class="video-wrapper"><video id="originalVideo" controls></video></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h5 mb-3 gold text-center">Filtrelenmiş Önizleme</h3>
+                        <div class="video-wrapper"><video id="filteredVideo" controls></video></div>
+                    </div>
+                </div>
+
+                <div class="d-none mt-4" id="controlsContainer">
+                    <div class="soft-card p-4 mb-4">
+                        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+                            <div>
+                                <h4 class="h6 gold mb-2 text-uppercase">Canlı Ses Mikseri</h4>
+                                <p class="text-muted-custom mb-0">Gürültü azaltma, tıslama kesimi, konuşma netliği ve çıkış sesini mikser mantığıyla ayarlayın.</p>
+                            </div>
+                            <small class="text-muted-custom">Öneri: Önce videoyu oynatın, dalgayı izleyerek ayar yapın.</small>
+                        </div>
+
+                        <div class="mixer-panel">
+                            <div class="mixer-channel">
+                                <label for="noiseRange">Gürültü Azaltma</label>
+                                <span class="mixer-desc">Dip ses ve genel uğultuyu yumuşatır.</span>
+                                <input type="range" class="form-range vertical-range" id="noiseRange" min="0" max="100" step="1" value="55">
+                                <span id="noiseValue" class="mixer-value">%55</span>
+                            </div>
+                            <div class="mixer-channel">
+                                <label for="freqRange">Tıslama Kesimi</label>
+                                <span class="mixer-desc">S, cızırtı ve ince frekansları kontrol eder.</span>
+                                <input type="range" class="form-range vertical-range" id="freqRange" min="1500" max="6000" step="50" value="2800">
+                                <span id="freqValue" class="mixer-value">2800 Hz</span>
+                            </div>
+                            <div class="mixer-channel">
+                                <label for="clarityRange">Konuşma Netliği</label>
+                                <span class="mixer-desc">Sesin anlaşılır bölgesini hafif öne alır.</span>
+                                <input type="range" class="form-range vertical-range" id="clarityRange" min="0" max="100" step="1" value="35">
+                                <span id="clarityValue" class="mixer-value">%35</span>
+                            </div>
+                            <div class="mixer-channel">
+                                <label for="outputRange">Çıkış Sesi</label>
+                                <span class="mixer-desc">İşlenen sesin genel seviyesini ayarlar.</span>
+                                <input type="range" class="form-range vertical-range" id="outputRange" min="50" max="150" step="1" value="100">
+                                <span id="outputValue" class="mixer-value">%100</span>
+                            </div>
+                        </div>
+
+                        <div class="waveform-box mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2 gap-3">
+                                <strong class="gold">Canlı Ses Dalgası</strong>
+                                <small class="text-muted-custom">Filtrelenmiş önizleme oynarken hareket eder</small>
+                            </div>
+                            <canvas id="waveformCanvas" width="1200" height="150"></canvas>
+                        </div>
+
+                        <small class="text-muted-custom d-block mt-3">Not: Aşırı gürültü azaltma konuşmayı boğuklaştırabilir. En doğal sonuç için ayarları küçük adımlarla değiştirin.</small>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3">
+                        <button id="processBtn" class="btn btn-premium flex-grow-1 py-3 text-uppercase">Videoyu İşle</button>
+                        <a id="downloadBtn" class="btn btn-outline-premium py-3 px-4 text-uppercase d-none">Temizlenen Videoyu İndir</a>
+                    </div>
+                </div>
+                <div id="statusArea" class="mt-4 d-none">
+                    <div class="alert alert-dark-custom" role="alert">
+                        <span id="statusText">İşlem yapılıyor...</span>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div id="processingProgress" class="progress-bar bg-warning progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="nasil-kullanilir" class="section">
+        <div class="container">
+            <div class="row g-4 align-items-stretch">
+                <div class="col-lg-5">
+                    <div class="glass-card p-4 p-md-5 h-100">
+                        <span class="hero-badge">Kullanım Rehberi</span>
+                        <h2 class="section-title mt-3">Nasıl Kullanılır?</h2>
+                        <p class="text-muted-custom">Video ses temizleme işlemi için teknik bilgi gerekmez. Aşağıdaki adımları takip ederek videodaki rahatsız edici sesleri azaltabilirsiniz.</p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="soft-card p-4 mb-3 d-flex gap-3"><span class="step-number">1</span><div><h3 class="h5">Videoyu seçin</h3><p class="text-muted-custom mb-0">Bilgisayarınızdan temizlemek istediğiniz video dosyasını yükleme alanından seçin.</p></div></div>
+                    <div class="soft-card p-4 mb-3 d-flex gap-3"><span class="step-number">2</span><div><h3 class="h5">Filtre seviyesini ayarlayın</h3><p class="text-muted-custom mb-0">Mikser panelindeki gürültü azaltma, tıslama kesimi, konuşma netliği ve çıkış sesi ayarlarını değiştirerek en uygun sonucu bulun.</p></div></div>
+                    <div class="soft-card p-4 mb-3 d-flex gap-3"><span class="step-number">3</span><div><h3 class="h5">Önizleme yapın</h3><p class="text-muted-custom mb-0">Orijinal video ile filtrelenmiş videoyu karşılaştırarak sesin doğal kalıp kalmadığını kontrol edin.</p></div></div>
+                    <div class="soft-card p-4 d-flex gap-3"><span class="step-number">4</span><div><h3 class="h5">İşleyip indirin</h3><p class="text-muted-custom mb-0">Son ayarı beğendiğinizde videoyu işleyin ve temizlenmiş dosyayı indirin.</p></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4"><div class="soft-card p-4 h-100"><div class="feature-icon mb-3">🎧</div><h3 class="h5">Dip Ses Azaltma</h3><p class="text-muted-custom mb-0">Kayıt sırasında oluşan hafif uğultu, fan sesi ve ortam dip sesini daha kontrollü hale getirmeye yardımcı olur.</p></div></div>
+                <div class="col-md-4"><div class="soft-card p-4 h-100"><div class="feature-icon mb-3">〰</div><h3 class="h5">Tıslama Kontrolü</h3><p class="text-muted-custom mb-0">Konuşma kayıtlarında duyulan “sss” benzeri yüksek frekanslı tıslamaları azaltmak için filtreleme uygular.</p></div></div>
+                <div class="col-md-4"><div class="soft-card p-4 h-100"><div class="feature-icon mb-3">🎬</div><h3 class="h5">Video Görüntüsünü Korur</h3><p class="text-muted-custom mb-0">Amaç, videonun görüntüsünü koruyup ses kanalına filtre uygulanmış yeni bir çıktı oluşturmaktır.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="seo-bilgi" class="section">
+        <div class="container">
+            <article class="glass-card p-4 p-md-5 article-box">
+                <h2>Online Video Ses Temizleme Nedir?</h2>
+                <p>Online video ses temizleme, video dosyasındaki rahatsız edici arka plan seslerini azaltmak ve konuşmanın daha anlaşılır duyulmasını sağlamak için kullanılan bir düzenleme işlemidir. Özellikle röportaj, haber videosu, sosyal medya içeriği, eğitim videosu, podcast klibi ve YouTube çekimlerinde dip ses problemi sık görülür.</p>
+
+                <h3>Hangi Sesler Azaltılabilir?</h3>
+                <p>Bu araç özellikle yüksek frekanslı tıslama, ince cızırtı, fan uğultusu, mikrofon kaynaklı hafif dip ses ve ortamdan gelen sabit gürültüler üzerinde faydalıdır. Çok yüksek seviyedeki kalabalık sesi, müzik, yankı veya patlama yapan mikrofon sesleri için sonuç dosyaya göre değişebilir.</p>
+
+                <h3>En İyi Sonuç İçin Öneriler</h3>
+                <ul>
+                    <li>Filtre değerini bir anda çok düşürmeyin; konuşma boğuklaşabilir.</li>
+                    <li>Önce 2800 Hz civarında deneyin, sonra ihtiyaca göre artırın veya azaltın.</li>
+                    <li>Konuşma netliğini korumak için orijinal video ile filtrelenmiş önizlemeyi karşılaştırın.</li>
+                    <li>Çok gürültülü kayıtlarda tek filtre tüm problemi tamamen yok etmeyebilir.</li>
+                </ul>
+
+                <h3>Kimler Kullanabilir?</h3>
+                <p>Bu araç; gazeteciler, sosyal medya içerik üreticileri, YouTube yayıncıları, eğitim videosu hazırlayanlar, podcast üreticileri, röportaj yapanlar ve hızlı video düzenleme ihtiyacı olan herkes için pratik bir yardımcıdır.</p>
+            </article>
+        </div>
+    </section>
+
+    <section id="sss" class="section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <span class="hero-badge">Sık Sorulan Sorular</span>
+                <h2 class="section-title mt-3">Video Ses Temizleme Hakkında</h2>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6"><div class="soft-card faq-item h-100"><h3>Bu araç tamamen otomatik mi?</h3><p class="text-muted-custom mb-0">Dosyayı seçtikten sonra filtre değerini siz ayarlarsınız. Böylece videonuzdaki ses yapısına göre daha kontrollü sonuç alabilirsiniz.</p></div></div>
+                <div class="col-md-6"><div class="soft-card faq-item h-100"><h3>Ses kalitesi her videoda aynı olur mu?</h3><p class="text-muted-custom mb-0">Hayır. Sonuç; mikrofon kalitesi, gürültü seviyesi, konuşma tonu ve video formatına göre değişebilir.</p></div></div>
+                <div class="col-md-6"><div class="soft-card faq-item h-100"><h3>Konuşma sesi boğuklaşırsa ne yapmalıyım?</h3><p class="text-muted-custom mb-0">Kesim frekansını yükseltin. Çok düşük frekans değerleri tıslamayı azaltırken konuşmanın parlaklığını da azaltabilir.</p></div></div>
+                <div class="col-md-6"><div class="soft-card faq-item h-100"><h3>Mobilde çalışır mı?</h3><p class="text-muted-custom mb-0">Modern mobil tarayıcılarda çalışabilir; ancak büyük video dosyalarında masaüstü tarayıcı daha stabil sonuç verir.</p></div></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+        <span>© <span id="year"></span> EBS Audio Labs</span>
+        <span>Online video ses temizleme, dip ses azaltma ve tıslama kontrol aracı.</span>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('year').innerText = new Date().getFullYear();
+
+    const videoInput = document.getElementById('videoInput');
+    const originalVideo = document.getElementById('originalVideo');
+    const filteredVideo = document.getElementById('filteredVideo');
+    const studioContainer = document.getElementById('studioContainer');
+    const controlsContainer = document.getElementById('controlsContainer');
+    const freqRange = document.getElementById('freqRange');
+    const freqValue = document.getElementById('freqValue');
+    const noiseRange = document.getElementById('noiseRange');
+    const noiseValue = document.getElementById('noiseValue');
+    const clarityRange = document.getElementById('clarityRange');
+    const clarityValue = document.getElementById('clarityValue');
+    const outputRange = document.getElementById('outputRange');
+    const outputValue = document.getElementById('outputValue');
+    const waveformCanvas = document.getElementById('waveformCanvas');
+    const waveCtx = waveformCanvas.getContext('2d');
+    const processBtn = document.getElementById('processBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusArea = document.getElementById('statusArea');
+    const statusText = document.getElementById('statusText');
+    const progressBar = document.getElementById('processingProgress');
+
+    let audioCtx, source, highpassFilter, lowpassFilter, presenceFilter, compressor, outputGain, analyserNode, mediaStreamDestination;
+    let recordedChunks = [];
+    let mediaRecorder;
+    let animationId;
+
+    videoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const objectURL = URL.createObjectURL(file);
+        studioContainer.classList.remove('d-none');
+        controlsContainer.classList.remove('d-none');
+        downloadBtn.classList.add('d-none');
+        statusArea.classList.add('d-none');
+        progressBar.style.width = "0%";
+
+        originalVideo.src = objectURL;
+        filteredVideo.src = objectURL;
+        initAudioGraph(filteredVideo);
+        drawIdleWaveform();
+    });
+
+    function initAudioGraph(video) {
+        if (animationId) cancelAnimationFrame(animationId);
+        if (audioCtx) audioCtx.close();
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+
+        source = audioCtx.createMediaElementSource(video);
+        highpassFilter = audioCtx.createBiquadFilter();
+        lowpassFilter = audioCtx.createBiquadFilter();
+        presenceFilter = audioCtx.createBiquadFilter();
+        compressor = audioCtx.createDynamicsCompressor();
+        outputGain = audioCtx.createGain();
+        analyserNode = audioCtx.createAnalyser();
+        mediaStreamDestination = audioCtx.createMediaStreamDestination();
+
+        highpassFilter.type = 'highpass';
+        lowpassFilter.type = 'lowpass';
+        presenceFilter.type = 'peaking';
+        presenceFilter.frequency.value = 3200;
+        presenceFilter.Q.value = 1.1;
+        compressor.threshold.value = -30;
+        compressor.knee.value = 22;
+        compressor.ratio.value = 3;
+        compressor.attack.value = 0.004;
+        compressor.release.value = 0.24;
+        analyserNode.fftSize = 2048;
+        analyserNode.smoothingTimeConstant = 0.82;
+
+        source
+            .connect(highpassFilter)
+            .connect(lowpassFilter)
+            .connect(presenceFilter)
+            .connect(compressor)
+            .connect(outputGain)
+            .connect(analyserNode);
+
+        analyserNode.connect(audioCtx.destination);
+        analyserNode.connect(mediaStreamDestination);
+
+        applyMixerSettings();
+    }
+
+    function applyMixerSettings() {
+        if (!audioCtx || !highpassFilter || !lowpassFilter || !presenceFilter || !outputGain) return;
+
+        const noiseAmount = Number(noiseRange.value);
+        const lowpassBase = Number(freqRange.value);
+        const clarityAmount = Number(clarityRange.value);
+        const outputAmount = Number(outputRange.value);
+
+        const highpassHz = 25 + (noiseAmount * 2.2);       // 25Hz - 245Hz arası dip uğultu kesimi
+        const lowpassHz = Math.max(1500, lowpassBase - (noiseAmount * 9));
+        const clarityGain = -2 + (clarityAmount / 100) * 7; // -2dB ile +5dB arası konuşma netliği
+        const gainValue = outputAmount / 100;
+
+        highpassFilter.frequency.setTargetAtTime(highpassHz, audioCtx.currentTime, 0.02);
+        highpassFilter.Q.setTargetAtTime(0.8, audioCtx.currentTime, 0.02);
+        lowpassFilter.frequency.setTargetAtTime(lowpassHz, audioCtx.currentTime, 0.02);
+        lowpassFilter.Q.setTargetAtTime(1.05 + (noiseAmount / 180), audioCtx.currentTime, 0.02);
+        presenceFilter.gain.setTargetAtTime(clarityGain, audioCtx.currentTime, 0.02);
+        outputGain.gain.setTargetAtTime(gainValue, audioCtx.currentTime, 0.02);
+
+        noiseValue.innerText = `%${noiseAmount}`;
+        freqValue.innerText = `${lowpassBase} Hz`;
+        clarityValue.innerText = `%${clarityAmount}`;
+        outputValue.innerText = `%${outputAmount}`;
+    }
+
+    [noiseRange, freqRange, clarityRange, outputRange].forEach(function(slider) {
+        slider.addEventListener('input', applyMixerSettings);
+    });
+
+    filteredVideo.addEventListener('play', async function() {
+        if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+        drawWaveform();
+    });
+    filteredVideo.addEventListener('pause', drawIdleWaveform);
+    filteredVideo.addEventListener('ended', drawIdleWaveform);
+
+    function drawIdleWaveform() {
+        if (!waveCtx) return;
+        const w = waveformCanvas.width;
+        const h = waveformCanvas.height;
+        waveCtx.clearRect(0, 0, w, h);
+        waveCtx.lineWidth = 2;
+        waveCtx.strokeStyle = 'rgba(245,216,145,.55)';
+        waveCtx.beginPath();
+        for (let x = 0; x < w; x += 8) {
+            const y = h / 2 + Math.sin(x * 0.025) * 10;
+            if (x === 0) waveCtx.moveTo(x, y);
+            else waveCtx.lineTo(x, y);
+        }
+        waveCtx.stroke();
+    }
+
+    function drawWaveform() {
+        if (!analyserNode || !waveCtx) return;
+        const bufferLength = analyserNode.fftSize;
+        const dataArray = new Uint8Array(bufferLength);
+        const w = waveformCanvas.width;
+        const h = waveformCanvas.height;
+
+        function render() {
+            animationId = requestAnimationFrame(render);
+            analyserNode.getByteTimeDomainData(dataArray);
+
+            waveCtx.clearRect(0, 0, w, h);
+            waveCtx.fillStyle = 'rgba(255,255,255,.018)';
+            waveCtx.fillRect(0, 0, w, h);
+
+            waveCtx.lineWidth = 3;
+            waveCtx.strokeStyle = 'rgba(245,216,145,.92)';
+            waveCtx.beginPath();
+
+            const sliceWidth = w / bufferLength;
+            let x = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = v * h / 2;
+                if (i === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+                x += sliceWidth;
+            }
+            waveCtx.lineTo(w, h / 2);
+            waveCtx.stroke();
+        }
+        render();
+    }
+
+    processBtn.addEventListener('click', async function() {
+        if (!filteredVideo.src || !mediaStreamDestination) {
+            alert('Lütfen önce bir video dosyası seçin.');
+            return;
+        }
+
+        if (audioCtx && audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+        }
+
+        statusArea.classList.remove('d-none');
+        processBtn.disabled = true;
+        downloadBtn.classList.add('d-none');
+        statusText.innerText = "Video mikser ayarlarıyla işleniyor. Lütfen işlem bitene kadar sayfayı kapatmayın.";
+        progressBar.style.width = "30%";
+
+        const videoStream = filteredVideo.captureStream ? filteredVideo.captureStream() : filteredVideo.mozCaptureStream();
+        const filteredAudioTrack = mediaStreamDestination.stream.getAudioTracks()[0];
+        const videoTrack = videoStream.getVideoTracks()[0];
+
+        if (!videoTrack || !filteredAudioTrack) {
+            statusText.innerText = "Video veya ses akışı alınamadı. Farklı bir tarayıcı ya da video formatı deneyin.";
+            processBtn.disabled = false;
+            return;
+        }
+
+        const combinedStream = new MediaStream();
+        combinedStream.addTrack(videoTrack);
+        combinedStream.addTrack(filteredAudioTrack);
+
+        recordedChunks = [];
+        let mimeType = 'video/webm;codecs=vp9,opus';
+        if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8,opus';
+        if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+        mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+        mediaRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = function() {
+            progressBar.style.width = "100%";
+            statusText.innerText = "İşlem tamamlandı. Temizlenen videoyu indirebilirsiniz.";
+            const blob = new Blob(recordedChunks, { type: mimeType });
+            const outputURL = URL.createObjectURL(blob);
+            downloadBtn.href = outputURL;
+            downloadBtn.download = "temizlenen-video.webm";
+            downloadBtn.classList.remove('d-none');
+            processBtn.disabled = false;
+        };
+
+        filteredVideo.currentTime = 0;
+        mediaRecorder.start();
+        filteredVideo.play();
+        progressBar.style.width = "60%";
+
+        filteredVideo.onended = function() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        };
+    });
+
+    drawIdleWaveform();
+</script>
+</body>
+</html>
