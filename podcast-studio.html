@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EBS Live Audio Cleaner | Canlı Mikrofon Ses Temizleme</title>
+  <meta name="description" content="Podcast, röportaj ve canlı konuşma kayıtları için tarayıcı tabanlı gerçek zamanlı mikrofon dip ses temizleme aracı." />
+  <meta name="keywords" content="canlı ses temizleme, podcast ses temizleme, mikrofon dip ses azaltma, web audio noise gate, röportaj ses temizleme" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#070812;--panel:#111525;--panel2:#181d31;--line:rgba(255,255,255,.11);
+      --text:#f8fafc;--muted:#9aa7bd;--gold:#f5d27a;--red:#ff4d6d;--green:#39e6a1;--blue:#83b6ff;
+      --shadow:0 28px 90px rgba(0,0,0,.45)
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at 10% 0%,rgba(245,210,122,.16),transparent 32%),radial-gradient(circle at 95% 10%,rgba(131,182,255,.15),transparent 35%),linear-gradient(180deg,#070812,#090b14 55%,#05060b);color:var(--text);min-height:100vh}
+    .wrap{width:min(1220px,calc(100% - 32px));margin:auto}.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0}.brand{display:flex;align-items:center;gap:12px;font-weight:900}.mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--blue));display:grid;place-items:center;color:#07101f}.badge{border:1px solid rgba(245,210,122,.35);background:rgba(255,255,255,.05);color:var(--gold);border-radius:999px;padding:8px 13px;font-weight:800;font-size:13px}
+    .hero{padding:44px 0 26px;text-align:center}.hero h1{font-size:clamp(34px,6vw,76px);line-height:.95;margin:16px 0;font-weight:950;letter-spacing:-.06em}.grad{background:linear-gradient(90deg,#fff,var(--gold),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{max-width:850px;margin:0 auto;color:var(--muted);line-height:1.75;font-size:18px}
+    .studio{display:grid;grid-template-columns:1.12fr .88fr;gap:22px;margin:28px 0 42px}.card{background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);backdrop-filter:blur(16px)}.card-in{padding:24px}.title{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:18px}.title h2{margin:0;font-size:23px}.muted{color:var(--muted);line-height:1.55}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.control{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:18px;padding:16px}.control label{display:flex;justify-content:space-between;gap:10px;font-weight:800;margin-bottom:10px}.val{color:var(--gold)}input[type=range]{width:100%;accent-color:var(--gold)}select{width:100%;padding:12px;border-radius:14px;background:#0d1221;color:#fff;border:1px solid var(--line);font-weight:700}.buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}.btn{border:0;border-radius:16px;padding:14px 18px;font-weight:900;cursor:pointer;color:#08101d;background:linear-gradient(135deg,var(--gold),#d6ab50);transition:.2s}.btn:hover{transform:translateY(-1px)}.btn.secondary{background:rgba(255,255,255,.06);color:#fff;border:1px solid var(--line)}.btn.danger{background:linear-gradient(135deg,#ff6b88,#d7355a);color:#fff}.btn.green{background:linear-gradient(135deg,var(--green),#2fc789)}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.meterbox{padding:18px;border-radius:22px;background:rgba(0,0,0,.22);border:1px solid var(--line)}canvas{width:100%;height:170px;display:block;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015))}.meters{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.meter{height:14px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;border:1px solid var(--line)}.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--gold),var(--red));transition:width .06s linear}.status{padding:14px 16px;border-radius:16px;background:rgba(131,182,255,.08);border:1px solid rgba(131,182,255,.18);color:#cfe1ff;margin-top:16px}.preset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.preset{padding:13px;border-radius:15px;background:rgba(255,255,255,.055);border:1px solid var(--line);color:#fff;font-weight:850;cursor:pointer}.preset.active{border-color:rgba(245,210,122,.6);color:var(--gold);background:rgba(245,210,122,.09)}.download{display:none;margin-top:14px}.download a{color:var(--gold);font-weight:900}.transcript{margin:-12px 0 42px}.transcript-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}.transcript-box{min-height:210px;max-height:360px;overflow:auto;padding:16px;border-radius:20px;background:rgba(0,0,0,.24);border:1px solid var(--line);line-height:1.7}.transcript-line{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)}.transcript-time{color:var(--gold);font-weight:900;margin-right:8px}.interim{color:#cfe1ff;opacity:.85}.tiny{font-size:12px}.info{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:42px}.info .mini{padding:18px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid var(--line)}.mini b{display:block;font-size:18px;margin-bottom:6px}@media(max-width:900px){.studio{grid-template-columns:1fr}.controls,.preset-grid,.info{grid-template-columns:1fr}.top{align-items:flex-start;gap:12px;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="top">
+      <div class="brand"><span class="mark">E</span><div>EBS Live Audio Cleaner<br><span class="muted" style="font-size:13px;font-weight:700">Canlı Podcast / Röportaj Ses Temizleme</span></div></div>
+      <span class="badge">🎙️ Gerçek Zamanlı Mikrofon Filtresi</span>
+    </nav>
+
+    <header class="hero">
+      <span class="badge">Tarayıcı Üzerinden Kurulumsuz Çalışır</span>
+      <h1><span class="grad">Konuşurken Dip Sesi Temizle,</span><br>Podcast Kalitesinde Kayıt Al</h1>
+      <p class="lead">Mikrofon sesini canlı işler: dip ses, tıslama, fan/klima uğultusu, nefes-puf sesleri ve sessiz anlarda arka plan gürültüsünü azaltır. Temizlenen sesi canlı dinleyebilir ve kayıt alabilirsiniz.</p>
+    </header>
+
+    <section class="studio">
+      <div class="card"><div class="card-in">
+        <div class="title"><div><h2>Canlı Ses Stüdyosu</h2><div class="muted">Mikrofonu başlat, kulaklıkla temizlenmiş sesi dinle, gerekirse kayıt al.</div></div><span id="engineStatus" class="badge">Hazır</span></div>
+        <div class="meterbox">
+          <canvas id="scope" width="1200" height="220"></canvas>
+          <div class="meters">
+            <div><div class="muted" style="margin-bottom:6px">Giriş Seviyesi</div><div class="meter"><div id="inputBar" class="bar"></div></div></div>
+            <div><div class="muted" style="margin-bottom:6px">Çıkış Seviyesi</div><div class="meter"><div id="outputBar" class="bar"></div></div></div>
+          </div>
+        </div>
+        <div class="buttons">
+          <button class="btn green" id="startBtn">Mikrofonu Başlat</button>
+          <button class="btn secondary" id="monitorBtn" disabled>Canlı Dinleme Aç</button>
+          <button class="btn" id="recordBtn" disabled>Kayıt Başlat</button>
+          <button class="btn danger" id="stopBtn" disabled>Durdur</button>
+        </div>
+        <div class="status" id="status">Mikrofon izni verildikten sonra ses tarayıcı içinde işlenir. En iyi sonuç için kulaklık kullan.</div>
+        <div class="download" id="downloadBox">Kayıt hazır: <a id="downloadLink" download="ebs-temiz-ses.webm">temiz sesi indir</a></div>
+      </div></div>
+
+      <aside class="card"><div class="card-in">
+        <div class="title"><div><h2>Presetler</h2><div class="muted">Tek tıkla röportaj/podcast ayarı uygula.</div></div></div>
+        <div class="preset-grid">
+          <button class="preset active" data-preset="podcast">Podcast</button>
+          <button class="preset" data-preset="interview">Röportaj</button>
+          <button class="preset" data-preset="street">Sokak Röportajı</button>
+          <button class="preset" data-preset="breath">Nefes/Puf Agresif</button>
+        </div>
+        <div style="height:18px"></div>
+        <div class="controls">
+          <div class="control"><label>Noise Gate <span class="val" id="gateVal">-46 dB</span></label><input id="gate" type="range" min="-70" max="-25" value="-46"></div>
+          <div class="control"><label>Dip Ses Azaltma <span class="val" id="noiseVal">55%</span></label><input id="noise" type="range" min="0" max="100" value="55"></div>
+          <div class="control"><label>Tıslama / De-Esser <span class="val" id="deessVal">45%</span></label><input id="deess" type="range" min="0" max="100" value="45"></div>
+          <div class="control"><label>Nefes/Puf Bastırma <span class="val" id="breathVal">35%</span></label><input id="breath" type="range" min="0" max="100" value="35"></div>
+          <div class="control"><label>Konuşma Netliği <span class="val" id="clarityVal">45%</span></label><input id="clarity" type="range" min="0" max="100" value="45"></div>
+          <div class="control"><label>Çıkış Sesi <span class="val" id="gainVal">100%</span></label><input id="gain" type="range" min="50" max="160" value="100"></div>
+        </div>
+      </div></aside>
+    </section>
+
+    <section class="card transcript"><div class="card-in">
+      <div class="transcript-head">
+        <div>
+          <h2 style="margin:0 0 6px">Canlı Transkript Paneli</h2>
+          <div class="muted">Konuşulanları anlık Türkçe yazıya döker. Chrome/Edge üzerinde Web Speech API ile çalışır.</div>
+        </div>
+        <span id="transcriptStatus" class="badge">Kapalı</span>
+      </div>
+      <div class="buttons" style="margin-top:0;margin-bottom:14px">
+        <button class="btn green" id="transcriptStartBtn">Transkripti Başlat</button>
+        <button class="btn secondary" id="transcriptStopBtn" disabled>Transkripti Durdur</button>
+        <button class="btn secondary" id="copyTranscriptBtn">Metni Kopyala</button>
+        <button class="btn secondary" id="downloadTxtBtn">TXT İndir</button>
+        <button class="btn secondary" id="downloadSrtBtn">SRT İndir</button>
+        <button class="btn danger" id="clearTranscriptBtn">Temizle</button>
+      </div>
+      <div id="transcriptBox" class="transcript-box">
+        <div class="muted">Transkript başlatıldığında konuşmalar burada görünecek.</div>
+      </div>
+      <div class="status tiny">Not: Tarayıcı konuşma tanıma desteği cihaza ve tarayıcıya göre değişebilir. En iyi sonuç için Chrome veya Edge kullan.</div>
+    </div></section>
+
+    <section class="info">
+      <div class="mini"><b>Noise Gate</b><span class="muted">Konuşma yokken mikrofonu kısar; oda uğultusunu ve dip sesi bastırır.</span></div>
+      <div class="mini"><b>Nefes/Puf Bastırma</b><span class="muted">Düşük frekanslı puflamaları high-pass ve dinamik kontrolle azaltır.</span></div>
+      <div class="mini"><b>Canlı Kayıt</b><span class="muted">Temizlenen sesi WebM olarak kaydeder ve indirme bağlantısı oluşturur.</span></div>
+    </section>
+  </div>
+<script>
+const $=id=>document.getElementById(id);const scope=$('scope'),ctx=scope.getContext('2d');
+let audioCtx,stream,source,inputAnalyser,outputAnalyser,hp,lp,presence,deesser,compressor,gain,gateNode,monitorOn=false,recorder,chunks=[],drawId;
+const controls=['gate','noise','deess','breath','clarity','gain'];
+function dbToGain(db){return Math.pow(10,db/20)}
+function setStatus(t){$('status').textContent=t}
+async function startMic(){
+  stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:false},video:false});
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  source=audioCtx.createMediaStreamSource(stream); inputAnalyser=audioCtx.createAnalyser(); outputAnalyser=audioCtx.createAnalyser(); inputAnalyser.fftSize=2048; outputAnalyser.fftSize=2048;
+  hp=audioCtx.createBiquadFilter(); hp.type='highpass'; lp=audioCtx.createBiquadFilter(); lp.type='lowpass';
+  presence=audioCtx.createBiquadFilter(); presence.type='peaking'; presence.frequency.value=3200; presence.Q.value=1.1;
+  deesser=audioCtx.createBiquadFilter(); deesser.type='peaking'; deesser.frequency.value=6800; deesser.Q.value=3.8;
+  compressor=audioCtx.createDynamicsCompressor(); compressor.threshold.value=-24; compressor.knee.value=18; compressor.ratio.value=4; compressor.attack.value=.003; compressor.release.value=.18;
+  gateNode=audioCtx.createGain(); gain=audioCtx.createGain();
+  dest=audioCtx.createMediaStreamDestination();
+  source.connect(inputAnalyser); source.connect(hp).connect(lp).connect(presence).connect(deesser).connect(compressor).connect(gateNode).connect(gain).connect(outputAnalyser).connect(dest);
+  window.cleanDest=dest; apply(); animate(); $('startBtn').disabled=true;$('monitorBtn').disabled=false;$('recordBtn').disabled=false;$('stopBtn').disabled=false;$('engineStatus').textContent='Çalışıyor'; setStatus('Mikrofon açık. Canlı dinleme için kulaklık kullan; hoparlörde yankı yapabilir.');
+}
+function apply(){if(!audioCtx)return; const noise=+$('noise').value, breath=+$('breath').value, de=+$('deess').value, clarity=+$('clarity').value, out=+$('gain').value, gate=+$('gate').value;
+  hp.frequency.setTargetAtTime(70 + breath*2.2 + noise*.7,audioCtx.currentTime,.02); hp.Q.value=.85;
+  lp.frequency.setTargetAtTime(10500 - de*42 - noise*12,audioCtx.currentTime,.02); lp.Q.value=.75;
+  presence.gain.setTargetAtTime(-1 + clarity*.07,audioCtx.currentTime,.02);
+  deesser.gain.setTargetAtTime(-(de*.09),audioCtx.currentTime,.02);
+  compressor.threshold.setTargetAtTime(-20 - noise*.16 - breath*.08,audioCtx.currentTime,.02); compressor.ratio.setTargetAtTime(2.5 + noise*.035,audioCtx.currentTime,.02);
+  gain.gain.setTargetAtTime(out/100,audioCtx.currentTime,.02);
+  $('gateVal').textContent=gate+' dB'; $('noiseVal').textContent=noise+'%'; $('deessVal').textContent=de+'%'; $('breathVal').textContent=breath+'%'; $('clarityVal').textContent=clarity+'%'; $('gainVal').textContent=out+'%';
+}
+controls.forEach(id=>$(id).addEventListener('input',apply));
+function rms(an){const data=new Uint8Array(an.fftSize);an.getByteTimeDomainData(data);let s=0;for(let i=0;i<data.length;i++){let v=(data[i]-128)/128;s+=v*v}return Math.sqrt(s/data.length)}
+function animate(){const data=new Uint8Array(outputAnalyser.fftSize);function loop(){drawId=requestAnimationFrame(loop); const inR=rms(inputAnalyser), outR=rms(outputAnalyser); $('inputBar').style.width=Math.min(100,inR*260)+'%'; $('outputBar').style.width=Math.min(100,outR*260)+'%';
+  const gateDb=+$('gate').value; const currentDb=20*Math.log10(inR+.00001); const target=currentDb<gateDb?dbToGain(-24-(+$('noise').value*.16)):1; gateNode.gain.setTargetAtTime(target,audioCtx.currentTime,.025);
+  outputAnalyser.getByteTimeDomainData(data); ctx.clearRect(0,0,scope.width,scope.height); ctx.fillStyle='rgba(255,255,255,.018)';ctx.fillRect(0,0,scope.width,scope.height);ctx.lineWidth=3;ctx.strokeStyle='rgba(245,210,122,.95)';ctx.beginPath();let x=0,sw=scope.width/data.length;for(let i=0;i<data.length;i++){let y=(data[i]/128)*scope.height/2;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);x+=sw}ctx.stroke();}loop()}
+function idle(){ctx.clearRect(0,0,scope.width,scope.height);ctx.strokeStyle='rgba(245,210,122,.45)';ctx.lineWidth=2;ctx.beginPath();for(let x=0;x<scope.width;x+=8){let y=scope.height/2+Math.sin(x*.025)*12;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.stroke()} idle();
+$('startBtn').onclick=()=>startMic().catch(e=>setStatus('Mikrofon açılamadı: '+e.message));
+$('monitorBtn').onclick=()=>{if(!audioCtx)return; if(!monitorOn){gain.connect(audioCtx.destination);monitorOn=true;$('monitorBtn').textContent='Canlı Dinleme Kapat';setStatus('Canlı dinleme açık. Yankı olursa kulaklık kullan.')}else{try{gain.disconnect(audioCtx.destination)}catch(e){}monitorOn=false;$('monitorBtn').textContent='Canlı Dinleme Aç';setStatus('Canlı dinleme kapalı; filtreler kayıt için çalışmaya devam eder.')}};
+$('recordBtn').onclick=()=>{if(!window.cleanDest)return; if(!recorder||recorder.state==='inactive'){chunks=[];recorder=new MediaRecorder(window.cleanDest.stream,{mimeType:'audio/webm'});recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onstop=()=>{const blob=new Blob(chunks,{type:'audio/webm'});const url=URL.createObjectURL(blob);$('downloadLink').href=url;$('downloadBox').style.display='block';};recorder.start();$('recordBtn').textContent='Kaydı Bitir';setStatus('Temizlenmiş ses kaydediliyor.')}else{recorder.stop();$('recordBtn').textContent='Kayıt Başlat';setStatus('Kayıt tamamlandı. İndirme bağlantısı hazır.')}};
+$('stopBtn').onclick=()=>{if(recorder&&recorder.state==='recording')recorder.stop(); if(drawId)cancelAnimationFrame(drawId); if(stream)stream.getTracks().forEach(t=>t.stop()); if(audioCtx)audioCtx.close(); audioCtx=null; $('startBtn').disabled=false;$('monitorBtn').disabled=true;$('recordBtn').disabled=true;$('stopBtn').disabled=true;$('engineStatus').textContent='Durduruldu'; setStatus('Mikrofon durduruldu.'); idle();};
+document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));b.classList.add('active');const p=b.dataset.preset;const vals={podcast:[-46,55,45,35,45,100],interview:[-43,62,35,42,58,105],street:[-39,76,52,58,62,110],breath:[-44,68,50,86,48,100]}[p];['gate','noise','deess','breath','clarity','gain'].forEach((id,i)=>$(id).value=vals[i]);apply();});
+
+// Canlı Transkript Paneli
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let transcriptRunning = false;
+let transcriptStartedAt = 0;
+let transcriptItems = [];
+let lastFinalText = '';
+
+function fmtTime(ms){
+  const total = Math.max(0, Math.floor(ms/1000));
+  const h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60;
+  return (h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function srtTime(ms){
+  const total = Math.max(0, Math.floor(ms));
+  const h = Math.floor(total/3600000), m = Math.floor((total%3600000)/60000), s = Math.floor((total%60000)/1000), x = total%1000;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(x).padStart(3,'0')}`;
+}
+function escapeHtml(t){return String(t).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function renderTranscript(interimText=''){
+  const box = $('transcriptBox');
+  if(!transcriptItems.length && !interimText){
+    box.innerHTML = '<div class="muted">Transkript başlatıldığında konuşmalar burada görünecek.</div>';
+    return;
+  }
+  box.innerHTML = transcriptItems.map(item => `<div class="transcript-line"><span class="transcript-time">[${fmtTime(item.start)}]</span>${escapeHtml(item.text)}</div>`).join('') +
+    (interimText ? `<div class="transcript-line interim"><span class="transcript-time">[${fmtTime(Date.now()-transcriptStartedAt)}]</span>${escapeHtml(interimText)}</div>` : '');
+  box.scrollTop = box.scrollHeight;
+}
+function makeTxt(){return transcriptItems.map(i=>`[${fmtTime(i.start)}] ${i.text}`).join('\n');}
+function makeSrt(){return transcriptItems.map((i,idx)=>`${idx+1}\n${srtTime(i.start)} --> ${srtTime(i.end || i.start+2500)}\n${i.text}\n`).join('\n');}
+function downloadText(filename, content){
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function initRecognition(){
+  if(!SpeechRecognition){
+    $('transcriptStatus').textContent='Destek Yok';
+    setStatus('Bu tarayıcı canlı transkript desteklemiyor. Chrome veya Edge kullan.');
+    return null;
+  }
+  const rec = new SpeechRecognition();
+  rec.lang = 'tr-TR';
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.maxAlternatives = 1;
+  rec.onstart = () => {$('transcriptStatus').textContent='Yazıyor';};
+  rec.onerror = e => { $('transcriptStatus').textContent='Hata'; setStatus('Transkript hatası: '+(e.error || 'bilinmeyen hata')); };
+  rec.onend = () => { if(transcriptRunning){ try{ rec.start(); }catch(e){} } else { $('transcriptStatus').textContent='Kapalı'; } };
+  rec.onresult = event => {
+    let interim = '';
+    for(let i=event.resultIndex; i<event.results.length; i++){
+      const text = event.results[i][0].transcript.trim();
+      if(event.results[i].isFinal){
+        if(text && text !== lastFinalText){
+          const now = Date.now() - transcriptStartedAt;
+          transcriptItems.push({start: now, end: now + Math.max(1800, text.length*85), text});
+          lastFinalText = text;
+        }
+      }else{
+        interim += (interim ? ' ' : '') + text;
+      }
+    }
+    renderTranscript(interim);
+  };
+  return rec;
+}
+$('transcriptStartBtn').onclick = () => {
+  if(!recognition) recognition = initRecognition();
+  if(!recognition) return;
+  if(!transcriptStartedAt) transcriptStartedAt = Date.now();
+  transcriptRunning = true;
+  $('transcriptStartBtn').disabled = true; $('transcriptStopBtn').disabled = false;
+  try{ recognition.start(); setStatus('Canlı transkript başladı. Konuşmalar alttaki panelde yazılacak.'); }catch(e){}
+};
+$('transcriptStopBtn').onclick = () => {
+  transcriptRunning = false;
+  $('transcriptStartBtn').disabled = false; $('transcriptStopBtn').disabled = true;
+  if(recognition) recognition.stop();
+  $('transcriptStatus').textContent='Kapalı';
+};
+$('copyTranscriptBtn').onclick = async () => {
+  const text = makeTxt();
+  if(!text) return setStatus('Kopyalanacak transkript yok.');
+  await navigator.clipboard.writeText(text);
+  setStatus('Transkript panoya kopyalandı.');
+};
+$('downloadTxtBtn').onclick = () => downloadText('ebs-canli-transkript.txt', makeTxt() || '');
+$('downloadSrtBtn').onclick = () => downloadText('ebs-canli-transkript.srt', makeSrt() || '');
+$('clearTranscriptBtn').onclick = () => { transcriptItems=[]; lastFinalText=''; transcriptStartedAt=Date.now(); renderTranscript(); setStatus('Transkript temizlendi.'); };
+
+</script>
+</body>
+</html>
