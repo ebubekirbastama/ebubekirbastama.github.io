@@ -66,8 +66,9 @@
     </script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Lokal dosya olarak açıldığında Service Worker çalışmaz. Bu araç FFmpeg kullanmadığı için COI zorunlu değildir. -->
+    <!-- FFmpeg.wasm SharedArrayBuffer için Cross-Origin Isolation gerekir. coi-serviceworker.js aynı klasörde olmalıdır. -->
     <script>
         if (location.protocol === "http:" || location.protocol === "https:") {
             const coiScript = document.createElement("script");
@@ -613,10 +614,13 @@
     let recordedChunks = [];
     let mediaRecorder;
     let animationId;
+    let selectedVideoFile = null;
+    let ffmpegInstance = null;
 
     videoInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
+        selectedVideoFile = file;
 
         const objectURL = URL.createObjectURL(file);
         studioContainer.classList.remove('d-none');
@@ -761,67 +765,123 @@
         render();
     }
 
-    processBtn.addEventListener('click', async function() {
-        if (!filteredVideo.src || !mediaStreamDestination) {
-            alert('Lütfen önce bir video dosyası seçin.');
-            return;
+    function getFFmpegFilterString() {
+        const noiseAmount = Number(noiseRange.value);
+        const lowpassBase = Number(freqRange.value);
+        const clarityAmount = Number(clarityRange.value);
+        const outputAmount = Number(outputRange.value);
+
+        const highpassHz = Math.round(25 + (noiseAmount * 2.2));
+        const lowpassHz = Math.round(Math.max(1500, lowpassBase - (noiseAmount * 9)));
+        const clarityGain = (-2 + (clarityAmount / 100) * 7).toFixed(2);
+        const gainValue = (outputAmount / 100).toFixed(2);
+
+        return [
+            `highpass=f=${highpassHz}`,
+            `lowpass=f=${lowpassHz}`,
+            `equalizer=f=3200:t=q:w=1.1:g=${clarityGain}`,
+            `acompressor=threshold=-30dB:ratio=3:attack=4:release=240`,
+            `volume=${gainValue}`
+        ].join(',');
+    }
+
+    async function getFFmpeg() {
+        if (typeof SharedArrayBuffer === 'undefined' || !window.crossOriginIsolated) {
+            throw new Error('SharedArrayBuffer aktif değil. Bu dosyayı file:// ile değil, HTTPS veya localhost üzerinden açın ve coi-serviceworker.js dosyasını HTML ile aynı klasöre koyun. İlk açılıştan sonra sayfa otomatik yenilenir; yenilenmezse elle yenileyin.');
         }
 
-        if (audioCtx && audioCtx.state === 'suspended') {
-            await audioCtx.resume();
+        if (!window.FFmpeg || !window.FFmpeg.createFFmpeg) {
+            throw new Error('FFmpeg.wasm kütüphanesi yüklenemedi. İnternet bağlantısını veya CDN erişimini kontrol edin.');
+        }
+
+        if (!ffmpegInstance) {
+            const { createFFmpeg } = FFmpeg;
+            ffmpegInstance = createFFmpeg({
+                log: false,
+                progress: function(progressInfo) {
+                    const ratio = progressInfo && typeof progressInfo.ratio === 'number' ? progressInfo.ratio : 0;
+                    const pct = Math.min(95, Math.max(15, Math.round(ratio * 100)));
+                    progressBar.style.width = pct + '%';
+                }
+            });
+        }
+
+        if (!ffmpegInstance.isLoaded()) {
+            statusText.innerText = 'FFmpeg motoru yükleniyor. İlk açılışta biraz zaman alabilir.';
+            progressBar.style.width = '10%';
+            await ffmpegInstance.load();
+        }
+
+        return ffmpegInstance;
+    }
+
+    function getInputExtension(file) {
+        const name = file && file.name ? file.name : 'video.mp4';
+        const parts = name.split('.');
+        return parts.length > 1 ? parts.pop().toLowerCase().replace(/[^a-z0-9]/g, '') : 'mp4';
+    }
+
+    processBtn.addEventListener('click', async function() {
+        if (!selectedVideoFile) {
+            alert('Lütfen önce bir video dosyası seçin.');
+            return;
         }
 
         statusArea.classList.remove('d-none');
         processBtn.disabled = true;
         downloadBtn.classList.add('d-none');
-        statusText.innerText = "Video mikser ayarlarıyla işleniyor. Lütfen işlem bitene kadar sayfayı kapatmayın.";
-        progressBar.style.width = "30%";
+        progressBar.style.width = '5%';
+        statusText.innerText = 'Video hazırlanıyor. Bu işlemde görüntü yeniden kaydedilmez; sadece ses filtrelenir.';
 
-        const videoStream = filteredVideo.captureStream ? filteredVideo.captureStream() : filteredVideo.mozCaptureStream();
-        const filteredAudioTrack = mediaStreamDestination.stream.getAudioTracks()[0];
-        const videoTrack = videoStream.getVideoTracks()[0];
+        try {
+            if (!filteredVideo.paused) filteredVideo.pause();
+            if (!originalVideo.paused) originalVideo.pause();
 
-        if (!videoTrack || !filteredAudioTrack) {
-            statusText.innerText = "Video veya ses akışı alınamadı. Farklı bir tarayıcı ya da video formatı deneyin.";
-            processBtn.disabled = false;
-            return;
-        }
+            const ffmpeg = await getFFmpeg();
+            const { fetchFile } = FFmpeg;
 
-        const combinedStream = new MediaStream();
-        combinedStream.addTrack(videoTrack);
-        combinedStream.addTrack(filteredAudioTrack);
+            const inputExt = getInputExtension(selectedVideoFile);
+            const inputName = `input.${inputExt}`;
+            const outputName = inputExt === 'webm' ? 'temizlenen-video.webm' : 'temizlenen-video.mp4';
+            const audioCodecArgs = inputExt === 'webm'
+                ? ['-c:a', 'libopus', '-b:a', '128k']
+                : ['-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart'];
 
-        recordedChunks = [];
-        let mimeType = 'video/webm;codecs=vp9,opus';
-        if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8,opus';
-        if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+            try { ffmpeg.FS('unlink', inputName); } catch (e) {}
+            try { ffmpeg.FS('unlink', outputName); } catch (e) {}
 
-        mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
-        mediaRecorder.ondataavailable = function(e) {
-            if (e.data.size > 0) recordedChunks.push(e.data);
-        };
+            ffmpeg.FS('writeFile', inputName, await fetchFile(selectedVideoFile));
+            progressBar.style.width = '20%';
 
-        mediaRecorder.onstop = function() {
-            progressBar.style.width = "100%";
-            statusText.innerText = "İşlem tamamlandı. Temizlenen videoyu indirebilirsiniz.";
-            const blob = new Blob(recordedChunks, { type: mimeType });
+            const audioFilter = getFFmpegFilterString();
+
+            await ffmpeg.run(
+                '-i', inputName,
+                '-map', '0:v:0',
+                '-map', '0:a:0?',
+                '-c:v', 'copy',
+                '-af', audioFilter,
+                ...audioCodecArgs,
+                '-shortest',
+                outputName
+            );
+
+            const data = ffmpeg.FS('readFile', outputName);
+            const mime = outputName.endsWith('.webm') ? 'video/webm' : 'video/mp4';
+            const blob = new Blob([data.buffer], { type: mime });
             const outputURL = URL.createObjectURL(blob);
+
             downloadBtn.href = outputURL;
-            downloadBtn.download = "temizlenen-video.webm";
+            downloadBtn.download = outputName;
             downloadBtn.classList.remove('d-none');
+            progressBar.style.width = '100%';
+            statusText.innerText = 'İşlem tamamlandı. Görüntü kopyalandı, sadece ses filtrelenip videoya eklendi.';
+        } catch (err) {
+            console.error(err);
+            statusText.innerText = 'İşlem başarısız oldu: ' + (err && err.message ? err.message : 'Bilinmeyen hata. Farklı bir video formatı deneyin.');
+        } finally {
             processBtn.disabled = false;
-        };
-
-        filteredVideo.currentTime = 0;
-        mediaRecorder.start();
-        filteredVideo.play();
-        progressBar.style.width = "60%";
-
-        filteredVideo.onended = function() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-        };
+        }
     });
 
     drawIdleWaveform();
