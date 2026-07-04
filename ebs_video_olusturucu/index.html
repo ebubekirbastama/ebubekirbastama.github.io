@@ -261,11 +261,17 @@
     if(!crossOriginIsolated) throw new Error('Multithread için crossOriginIsolated aktif değil. coi-serviceworker.js index.html ile aynı dizinde olmalı ve sayfayı Ctrl+F5 ile yenilemelisin.');
     showProgress(true,'Multithread video motoru yükleniyor...',0);
     ffmpeg.on('progress',({progress})=>updateProgress(Math.min(99,Math.max(0,Math.round((progress||0)*100))),'Video işleniyor...'));
-    const baseURL='https://unpkg.com/@ffmpeg/core-mt@0.12.10/dist/esm';
+    // FFmpeg 0.12 ESM sürümünde iki ayrı Worker vardır:
+    // 1) @ffmpeg/ffmpeg wrapper worker.js
+    // 2) @ffmpeg/core-mt ffmpeg-core.worker.js
+    // İkisini de toBlobURL ile blob'a çevirmezsek bazı sunucularda CORS hatası verir.
+    const ffmpegBaseURL='https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm';
+    const coreBaseURL='https://unpkg.com/@ffmpeg/core-mt@0.12.10/dist/esm';
     await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`,'text/javascript'),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`,'application/wasm'),
-      workerURL: await toBlobURL(`${baseURL}/ffmpeg-core.worker.js`,'text/javascript')
+      classWorkerURL: await toBlobURL(`${ffmpegBaseURL}/worker.js`,'text/javascript'),
+      coreURL: await toBlobURL(`${coreBaseURL}/ffmpeg-core.js`,'text/javascript'),
+      wasmURL: await toBlobURL(`${coreBaseURL}/ffmpeg-core.wasm`,'application/wasm'),
+      workerURL: await toBlobURL(`${coreBaseURL}/ffmpeg-core.worker.js`,'text/javascript')
     });
     state.ffmpegLoaded=true;
   }
