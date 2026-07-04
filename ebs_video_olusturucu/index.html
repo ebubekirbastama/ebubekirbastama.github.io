@@ -483,7 +483,7 @@
       const out=`${slug(main.name)}_${fmt.name}.mp4`;
       let cmd=[...input,'-filter_complex',filter,'-map','[v]'];
       if(audioIdx!==null || $('mainAudio').checked) cmd.push('-map','[a]'); else cmd.push('-an');
-      cmd.push('-c:v','libx264','-preset','veryfast','-crf',String($('crf').value||24),'-r',String(fps),'-c:a','aac','-b:a','192k','-movflags','+faststart','-shortest',out);
+      cmd.push('-c:v','libx264','-crf',String($('crf').value||24),'-r',String(fps),'-c:a','aac','-b:a','192k','-movflags','+faststart','-shortest',out);
       await ffmpeg.run(...cmd);
       const data=ffmpeg.FS('readFile',out);
       downloadBlob(new Blob([data.buffer],{type:'video/mp4'}), out);
