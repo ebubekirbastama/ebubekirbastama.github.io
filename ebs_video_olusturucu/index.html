@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="tr">
 <head>
+  <script src="coi-serviceworker.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sosyal Video Mockup Hazırlama Aracı | Instagram Story, Reels ve YouTube Shorts</title>
+  <title>EBS Sosyal Video Mockup Hazırlama Aracı | Instagram Story, Reels ve YouTube Shorts</title>
   <meta name="description" content="Haber, siyasi açıklama ve sosyal medya içerikleri için tarayıcı üzerinden Instagram gönderi, story, reels ve YouTube Shorts formatlarında profesyonel video mockup hazırlama aracı.">
   <meta name="keywords" content="sosyal medya video aracı, instagram story video hazırlama, youtube shorts video oluşturma, reels video editörü, haber videosu hazırlama, siyasi video tasarım, online video mockup">
   <meta name="robots" content="index, follow, max-image-preview:large">
@@ -11,18 +12,18 @@
   <link rel="canonical" href="https://ebubekirbastama.com.tr/">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Sosyal Video Mockup Hazırlama Aracı">
+  <meta property="og:title" content="EBS Sosyal Video Mockup Hazırlama Aracı">
   <meta property="og:description" content="Instagram, Story, Reels ve YouTube Shorts için profesyonel sosyal video mockup hazırlayın.">
   <meta property="og:url" content="https://ebubekirbastama.com.tr/">
   <meta property="og:site_name" content="Ebubekir Baştama">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Sosyal Video Mockup Hazırlama Aracı">
+  <meta name="twitter:title" content="EBS Sosyal Video Mockup Hazırlama Aracı">
   <meta name="twitter:description" content="Haber ve sosyal medya ekipleri için hızlı video mockup üretim aracı.">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"SoftwareApplication",
-    "name":"Sosyal Video Mockup Hazırlama Aracı",
+    "name":"EBS Sosyal Video Mockup Hazırlama Aracı",
     "applicationCategory":"MultimediaApplication",
     "operatingSystem":"Web Browser",
     "url":"https://ebubekirbastama.com.tr/",
@@ -61,7 +62,7 @@
     .drop strong{display:block}.drop span{font-size:.82rem;color:var(--muted);word-break:break-word}.form-label{font-weight:800;font-size:.85rem;color:#374151}
     .btn-primary{background:var(--brand2);border-color:var(--brand2);font-weight:800}.btn-danger{background:var(--accent);border-color:var(--accent);font-weight:800}.btn-outline-primary{font-weight:800}
     .studio-wrap{background:#111827;border-radius:18px;min-height:560px;display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden}
-    canvas#previewCanvas{max-width:100%;max-height:540px;background:#000;border-radius:14px;box-shadow:0 20px 70px rgba(0,0,0,.35);touch-action:none}
+    canvas#previewCanvas{max-width:100%;max-height:540px;background:#000;border-radius:14px;box-shadow:0 20px 70px rgba(0,0,0,.35);touch-action:none;cursor:grab}
     .empty-preview{position:absolute;text-align:center;color:#d1d5db;max-width:360px;padding:20px}.empty-preview i{font-size:3rem;margin-bottom:12px;color:#fff}
     .progress-box{display:none;position:absolute;inset:0;background:rgba(17,24,39,.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;z-index:20;color:#fff;text-align:center;padding:20px}
     .progress-card{width:min(440px,92%);background:#fff;color:var(--ink);border-radius:20px;padding:24px}.progress{height:11px;border-radius:999px}.small-help{font-size:.82rem;color:var(--muted)}
@@ -75,7 +76,7 @@
     <div class="container py-3 d-flex align-items-center justify-content-between gap-3">
       <div class="d-flex align-items-center gap-3">
         <div class="brand-mark"><i class="fa-solid fa-video"></i></div>
-        <div><h1 class="app-title">Sosyal Video Mockup Hazırlama Aracı</h1><div class="app-sub">Haber, tanıtım, basın açıklaması ve sosyal medya içerikleri için profesyonel video üretim paneli</div></div>
+        <div><h1 class="app-title">EBS Sosyal Video Mockup Hazırlama Aracı</h1><div class="app-sub">Haber, tanıtım, basın açıklaması ve sosyal medya içerikleri için profesyonel video üretim paneli</div></div>
       </div>
       <span class="chip d-none d-md-inline-flex"><i class="fa-solid fa-shield-halved me-2"></i>Tarayıcıda çalışır</span>
     </div>
@@ -124,6 +125,16 @@
             <select id="audioMode" class="form-select mb-3"><option value="outro">Müzik sadece finalde çalsın</option><option value="all">Müzik tüm videoda çalsın</option><option value="mute">Müzik kapalı</option></select>
             <div class="form-check"><input class="form-check-input" type="checkbox" id="mainAudio" checked><label class="form-check-label" for="mainAudio">Ana videonun sesini kullan</label></div>
             <div class="form-check"><input class="form-check-input" type="checkbox" id="softZoom"><label class="form-check-label" for="softZoom">Ana videoya hafif zoom efekti</label></div>
+
+            <div class="border-top pt-3 mt-3">
+              <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                <label class="form-label mb-0">Ana video boyutu</label>
+                <span class="chip" id="mainScaleLabel">100%</span>
+              </div>
+              <input id="mainScale" type="range" min="60" max="140" value="100" step="1" class="form-range">
+              <div class="small-help">Önizlemede ana videoyu fareyle sağa/sola/yukarı/aşağı sürükleyebilirsin. Boyutu buradan değişir.</div>
+              <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="resetLayoutBtn"><i class="fa-solid fa-rotate-left me-1"></i>Konumu Sıfırla</button>
+            </div>
           </div>
         </div>
       </div>
@@ -134,7 +145,7 @@
           <div class="p-3">
             <div class="studio-wrap" id="studioWrap">
               <canvas id="previewCanvas" width="540" height="960"></canvas>
-              <div class="empty-preview" id="emptyPreview"><i class="fa-solid fa-cloud-arrow-up"></i><h2 class="h4 fw-bold">Medyaları seçerek başla</h2><p>Alt şerit ve logoyu önizleme üzerinde sürükleyerek konumlandırabilirsin.</p></div>
+              <div class="empty-preview" id="emptyPreview"><i class="fa-solid fa-cloud-arrow-up"></i><h2 class="h4 fw-bold">Medyaları seçerek başla</h2><p>Ana video, alt şerit ve logoyu önizleme üzerinde sürükleyerek konumlandırabilirsin.</p></div>
               <div class="progress-box" id="progressBox"><div class="progress-card"><h3 class="h5 fw-bold mb-2">Video hazırlanıyor</h3><p class="small-help" id="progressDetail">FFmpeg yükleniyor...</p><div class="progress my-3"><div class="progress-bar" id="progressBar" style="width:0%"></div></div><strong id="progressPct">%0</strong></div></div>
             </div>
             <div class="d-flex flex-wrap gap-2 mt-3">
@@ -144,7 +155,7 @@
               <button class="btn btn-outline-dark" id="saveProjectBtn"><i class="fa-solid fa-floppy-disk me-2"></i>Ayar Kaydet</button>
               <label class="btn btn-outline-dark mb-0"><i class="fa-solid fa-folder-open me-2"></i>Ayar Aç<input type="file" id="projectInput" accept="application/json" hidden></label>
             </div>
-            <p class="small-help mt-2 mb-0">İpucu: Alt şerit ve logo seçildikten sonra önizleme alanında fareyle sürüklenebilir.</p>
+            <p class="small-help mt-2 mb-0">İpucu: Ana video, alt şerit ve logo önizleme alanında fareyle sürüklenebilir. Ana video boyutunu sol panelden değiştirebilirsin.</p>
           </div>
         </div>
       </div>
@@ -157,7 +168,7 @@
         <div class="col-md-4"><div class="feature-card"><h3 class="h5"><i class="fa-solid fa-mobile-screen text-primary me-2"></i>Sosyal medya</h3><p class="mb-0">Instagram gönderi, Story, Reels ve YouTube Shorts ölçülerinde dışa aktarım alın.</p></div></div>
       </div>
       <div class="panel p-4 p-lg-5">
-        <h2>Sosyal Video Mockup Hazırlama Aracı</h2>
+        <h2>EBS Sosyal Video Mockup Hazırlama Aracı</h2>
         <p>Bu araç; haber siteleri, ajanslar, sosyal medya yöneticileri, siyasi iletişim ekipleri ve kurumsal tanıtım çalışmaları için pratik video mockup üretimi sağlar. Ana videoyu seçip arka plan videosu, alt şerit, logo ve final görseli ekleyerek farklı sosyal medya formatlarına uygun çıktı alınabilir.</p>
         <h3>Instagram, Reels ve YouTube Shorts için hızlı üretim</h3>
         <p>Video içeriklerinin sosyal medyada doğru ölçülerle yayınlanması erişim ve izleme deneyimi açısından önemlidir. Araç, 1:1 gönderi ve 9:16 dikey video formatlarını destekler. Böylece aynı içeriği Instagram gönderi, Instagram Story, Reels ve YouTube Shorts için ayrı ayrı hazırlamak kolaylaşır.</p>
@@ -179,7 +190,7 @@
     const files = { mains: [], bg: null, banner: null, outro: null, logo: null, audio: null };
     const urls = { main: null, bg: null, banner: null, outro: null, logo: null };
     const img = { banner: null, outro: null, logo: null };
-    const state = { bannerX:.5, bannerY:.82, logoX:.82, logoY:.06, dragging:null, playing:false, ffmpegLoaded:false };
+    const state = { mainX:.5, mainY:.44, mainScale:1, bannerX:.5, bannerY:.82, logoX:.82, logoY:.06, dragging:null, dragOffsetX:0, dragOffsetY:0, playing:false, ffmpegLoaded:false };
     const canvas = $('previewCanvas'), ctx = canvas.getContext('2d');
     const mainVideo = $('mainVideo'), bgVideo = $('bgVideo');
     const ffmpeg = new FFmpeg();
@@ -198,7 +209,8 @@
     });
 
     ['mainInput','bgInput','bannerInput','outroInput','logoInput','audioInput'].forEach(id => $(id).addEventListener('change', e => handleDropped(Array.from(e.target.files), id)));
-    ['softZoom','mainAudio','musicVolume','audioMode','transitionType'].forEach(id => $(id).addEventListener('input', drawPreview));
+    ['softZoom','mainAudio','musicVolume','audioMode','transitionType','mainScale'].forEach(id => $(id).addEventListener('input', () => { if(id==='mainScale'){ state.mainScale = Number($('mainScale').value)/100; $('mainScaleLabel').textContent = $('mainScale').value + '%'; } drawPreview(); }));
+    $('resetLayoutBtn').onclick = () => { state.mainX=.5; state.mainY=.44; state.bannerX=.5; state.bannerY=.82; state.logoX=.82; state.logoY=.06; state.mainScale=1; $('mainScale').value=100; $('mainScaleLabel').textContent='100%'; drawPreview(); };
     $('playBtn').onclick = () => { state.playing = true; mainVideo.play(); bgVideo.play(); requestAnimationFrame(loop); };
     $('pauseBtn').onclick = () => { state.playing = false; mainVideo.pause(); bgVideo.pause(); drawPreview(); };
     $('exportBtn').onclick = exportSelected;
@@ -236,18 +248,69 @@
       const mode = getPreviewMode(); canvas.width=mode.w; canvas.height=mode.h; ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.fillStyle='#111827'; ctx.fillRect(0,0,canvas.width,canvas.height);
       if(bgVideo.readyState>=2) drawCover(ctx,bgVideo,0,0,canvas.width,canvas.height,true); else { ctx.fillStyle='#0f3d73'; ctx.fillRect(0,0,canvas.width,canvas.height); }
-      if(mainVideo.readyState>=2){ const mw=canvas.width*.86, mh=canvas.height*.76, mx=(canvas.width-mw)/2, my=canvas.height*.06; ctx.fillStyle='rgba(0,0,0,.28)'; roundRect(mx-5,my-5,mw+10,mh+10,18,true,false); drawContain(ctx,mainVideo,mx,my,mw,mh); }
-      if(img.banner){ const bw=canvas.width*.94, bh=img.banner.height*(bw/img.banner.width); ctx.drawImage(img.banner, (canvas.width-bw)/2, state.bannerY*canvas.height, bw,bh); }
+      if(mainVideo.readyState>=2){
+        const box = getMainBox(canvas.width, canvas.height);
+        ctx.fillStyle='rgba(0,0,0,.28)';
+        roundRect(box.x-5,box.y-5,box.w+10,box.h+10,18,true,false);
+        drawContain(ctx,mainVideo,box.x,box.y,box.w,box.h);
+        ctx.save(); ctx.strokeStyle='rgba(255,255,255,.55)'; ctx.setLineDash([8,5]); ctx.lineWidth=2; ctx.strokeRect(box.x,box.y,box.w,box.h); ctx.restore();
+      }
+      if(img.banner){ const bw=canvas.width*.94, bh=img.banner.height*(bw/img.banner.width); ctx.drawImage(img.banner, state.bannerX*canvas.width - bw/2, state.bannerY*canvas.height, bw,bh); }
       if(img.logo){ const lw=canvas.width*.16, lh=img.logo.height*(lw/img.logo.width); ctx.drawImage(img.logo, state.logoX*canvas.width, state.logoY*canvas.height, lw,lh); }
     }
+
+    function getMainBox(w,h){
+      const baseW=w*.86, baseH=h*.76;
+      const mw=baseW*state.mainScale, mh=baseH*state.mainScale;
+      return {x:state.mainX*w-mw/2, y:state.mainY*h-mh/2, w:mw, h:mh};
+    }
+
     function getPreviewMode(){ return $('fmtSquare').checked && !$('fmtStory').checked && !$('fmtShorts').checked ? {w:540,h:540} : {w:540,h:960}; }
     function loop(){ if(!state.playing) return; drawPreview(); if(mainVideo.ended){ state.playing=false; return; } requestAnimationFrame(loop); }
 
     canvas.addEventListener('pointerdown', e=>{
-      const p=canvasPoint(e); if(img.logo){ const lw=canvas.width*.16, lh=img.logo.height*(lw/img.logo.width), x=state.logoX*canvas.width, y=state.logoY*canvas.height; if(p.x>=x&&p.x<=x+lw&&p.y>=y&&p.y<=y+lh){state.dragging='logo'; return;} }
-      if(img.banner){ const bw=canvas.width*.94, bh=img.banner.height*(bw/img.banner.width), x=(canvas.width-bw)/2, y=state.bannerY*canvas.height; if(p.x>=x&&p.x<=x+bw&&p.y>=y&&p.y<=y+bh){state.dragging='banner'; return;} }
+      const p=canvasPoint(e);
+      if(img.logo){
+        const lw=canvas.width*.16, lh=img.logo.height*(lw/img.logo.width), x=state.logoX*canvas.width, y=state.logoY*canvas.height;
+        if(p.x>=x&&p.x<=x+lw&&p.y>=y&&p.y<=y+lh){state.dragging='logo'; state.dragOffsetX=p.x-x; state.dragOffsetY=p.y-y; return;}
+      }
+      if(img.banner){
+        const bw=canvas.width*.94, bh=img.banner.height*(bw/img.banner.width), x=state.bannerX*canvas.width-bw/2, y=state.bannerY*canvas.height;
+        if(p.x>=x&&p.x<=x+bw&&p.y>=y&&p.y<=y+bh){state.dragging='banner'; state.dragOffsetX=p.x-x; state.dragOffsetY=p.y-y; return;}
+      }
+      if(mainVideo.readyState>=2){
+        const b=getMainBox(canvas.width, canvas.height);
+        if(p.x>=b.x&&p.x<=b.x+b.w&&p.y>=b.y&&p.y<=b.y+b.h){state.dragging='main'; state.dragOffsetX=p.x-b.x; state.dragOffsetY=p.y-b.y; return;}
+      }
     });
-    canvas.addEventListener('pointermove', e=>{ if(!state.dragging)return; const p=canvasPoint(e); if(state.dragging==='banner') state.bannerY=Math.max(.05,Math.min(.94,p.y/canvas.height)); if(state.dragging==='logo'){state.logoX=Math.max(0,Math.min(.88,p.x/canvas.width)); state.logoY=Math.max(0,Math.min(.88,p.y/canvas.height));} drawPreview(); });
+    canvas.addEventListener('pointermove', e=>{
+      if(!state.dragging)return;
+      const p=canvasPoint(e);
+      if(state.dragging==='banner'){
+        const bw=canvas.width*.94;
+        state.bannerX=Math.max(0.03,Math.min(.97,(p.x-state.dragOffsetX+bw/2)/canvas.width));
+        state.bannerY=Math.max(.05,Math.min(.94,(p.y-state.dragOffsetY)/canvas.height));
+      }
+      if(state.dragging==='logo'){
+        state.logoX=Math.max(0,Math.min(.88,(p.x-state.dragOffsetX)/canvas.width));
+        state.logoY=Math.max(0,Math.min(.88,(p.y-state.dragOffsetY)/canvas.height));
+      }
+      if(state.dragging==='main'){
+        const b=getMainBox(canvas.width, canvas.height);
+        state.mainX=Math.max(-.5,Math.min(1.5,(p.x-state.dragOffsetX+b.w/2)/canvas.width));
+        state.mainY=Math.max(-.5,Math.min(1.5,(p.y-state.dragOffsetY+b.h/2)/canvas.height));
+      }
+      drawPreview();
+    });
+    canvas.addEventListener('wheel', e=>{
+      if(!mainVideo.readyState) return;
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.04 : -0.04;
+      state.mainScale = Math.max(.6, Math.min(1.4, state.mainScale + delta));
+      $('mainScale').value = Math.round(state.mainScale*100);
+      $('mainScaleLabel').textContent = $('mainScale').value + '%';
+      drawPreview();
+    }, {passive:false});
     window.addEventListener('pointerup',()=>state.dragging=null);
     function canvasPoint(e){ const r=canvas.getBoundingClientRect(); return {x:(e.clientX-r.left)/r.width*canvas.width,y:(e.clientY-r.top)/r.height*canvas.height}; }
 
@@ -301,14 +364,26 @@
     }
 
     function buildFilter(w,h,dur,outro,trans,audioIdx,logoIdx){
-      const fps=Number($('fps').value||30), mw=Math.round(w*.86), mh=Math.round(h*.76), my=Math.round(h*.06), by=Math.round(h*state.bannerY), bw=Math.round(w*.94), outDur=Math.max(.2,outro-trans), offset=Math.max(.1,dur-trans);
+      const fps=Number($('fps').value||30);
+      const mainBox=getMainBox(w,h);
+      const mw=Math.round(mainBox.w), mh=Math.round(mainBox.h), mx=Math.round(mainBox.x), my=Math.round(mainBox.y);
+      const by=Math.round(h*state.bannerY), bxExpr=Math.round(w*state.bannerX), bw=Math.round(w*.94);
+      const outDur=Math.max(.2,outro-trans), offset=Math.max(.1,dur-trans);
       let p=[];
       p.push(`[1:v]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},fps=${fps},trim=0:${dur.toFixed(3)},setpts=PTS-STARTPTS,boxblur=8:1,setsar=1[bg1]`);
       let main=`[0:v]scale=${mw}:${mh}:force_original_aspect_ratio=decrease,fps=${fps},setpts=PTS-STARTPTS,setsar=1`;
       if($('softZoom').checked) main += `,zoompan=z='min(zoom+0.00045,1.045)':d=1:s=${mw}x${mh}:fps=${fps}`;
-      p.push(main+'[main]'); p.push(`[bg1][main]overlay=(W-w)/2:${my}[m1]`); p.push(`[2:v]scale=${bw}:-1,fps=${fps},trim=0:${dur.toFixed(3)},setpts=PTS-STARTPTS[ban]`); p.push(`[m1][ban]overlay=(W-w)/2:${by}:format=auto[m2]`);
-      let last='m2'; if(logoIdx!==null){ const lw=Math.round(w*.16), lx=Math.round(w*state.logoX), ly=Math.round(h*state.logoY); p.push(`[${logoIdx}:v]scale=${lw}:-1,fps=${fps},trim=0:${dur.toFixed(3)},setpts=PTS-STARTPTS[logo]`); p.push(`[${last}][logo]overlay=${lx}:${ly}:format=auto[m3]`); last='m3'; }
-      p.push(`[${last}]format=yuv420p[vmain]`); p.push(`[1:v]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},fps=${fps},trim=0:${outDur.toFixed(3)},setpts=PTS-STARTPTS,boxblur=10:1,setsar=1[bg2]`); p.push(`[3:v]scale=${w}:${h}:force_original_aspect_ratio=decrease,fps=${fps},trim=0:${outDur.toFixed(3)},setpts=PTS-STARTPTS,setsar=1[outimg]`); p.push(`[bg2][outimg]overlay=(W-w)/2:(H-h)/2,format=yuv420p[vout]`); p.push(`[vmain][vout]xfade=transition=${$('transitionType').value}:duration=${trans}:offset=${offset.toFixed(3)},format=yuv420p[v]`);
+      p.push(main+'[main]');
+      p.push(`[bg1][main]overlay=${mx}:${my}[m1]`);
+      p.push(`[2:v]scale=${bw}:-1,fps=${fps},trim=0:${dur.toFixed(3)},setpts=PTS-STARTPTS[ban]`);
+      p.push(`[m1][ban]overlay=${bxExpr}-w/2:${by}:format=auto[m2]`);
+      let last='m2';
+      if(logoIdx!==null){ const lw=Math.round(w*.16), lx=Math.round(w*state.logoX), ly=Math.round(h*state.logoY); p.push(`[${logoIdx}:v]scale=${lw}:-1,fps=${fps},trim=0:${dur.toFixed(3)},setpts=PTS-STARTPTS[logo]`); p.push(`[${last}][logo]overlay=${lx}:${ly}:format=auto[m3]`); last='m3'; }
+      p.push(`[${last}]format=yuv420p[vmain]`);
+      p.push(`[1:v]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},fps=${fps},trim=0:${outDur.toFixed(3)},setpts=PTS-STARTPTS,boxblur=10:1,setsar=1[bg2]`);
+      p.push(`[3:v]scale=${w}:${h}:force_original_aspect_ratio=decrease,fps=${fps},trim=0:${outDur.toFixed(3)},setpts=PTS-STARTPTS,setsar=1[outimg]`);
+      p.push(`[bg2][outimg]overlay=(W-w)/2:(H-h)/2,format=yuv420p[vout]`);
+      p.push(`[vmain][vout]xfade=transition=${$('transitionType').value}:duration=${trans}:offset=${offset.toFixed(3)},format=yuv420p[v]`);
       const total=dur+outro;
       if(audioIdx!==null && $('mainAudio').checked){ const delay=$('audioMode').value==='outro'?Math.round((dur-trans)*1000):0; p.push(`[0:a]atrim=0:${total.toFixed(3)},asetpts=PTS-STARTPTS[ma]`); p.push(`[${audioIdx}:a]volume=${Number($('musicVolume').value||.7).toFixed(2)},atrim=0:${total.toFixed(3)},asetpts=PTS-STARTPTS,adelay=${delay}|${delay}[mu]`); p.push(`[ma][mu]amix=inputs=2:duration=first:dropout_transition=0[a]`); }
       else if(audioIdx!==null){ const delay=$('audioMode').value==='outro'?Math.round((dur-trans)*1000):0; p.push(`[${audioIdx}:a]volume=${Number($('musicVolume').value||.7).toFixed(2)},atrim=0:${total.toFixed(3)},asetpts=PTS-STARTPTS,adelay=${delay}|${delay},atrim=0:${total.toFixed(3)},asetpts=PTS-STARTPTS[a]`); }
@@ -325,8 +400,8 @@
     function drawCover(c,source,x,y,w,h){ const sw=source.videoWidth||source.width, sh=source.videoHeight||source.height, sr=sw/sh, dr=w/h; let dw,dh,dx,dy; if(sr>dr){dh=h;dw=h*sr;dx=x-(dw-w)/2;dy=y}else{dw=w;dh=w/sr;dx=x;dy=y-(dh-h)/2} c.drawImage(source,dx,dy,dw,dh); }
     function drawContain(c,source,x,y,w,h){ const sw=source.videoWidth||source.width, sh=source.videoHeight||source.height, r=Math.min(w/sw,h/sh), dw=sw*r, dh=sh*r; c.drawImage(source,x+(w-dw)/2,y+(h-dh)/2,dw,dh); }
     function roundRect(x,y,w,h,r,fill,stroke){ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); if(fill)ctx.fill(); if(stroke)ctx.stroke(); }
-    function saveProject(){ const data={bannerX:state.bannerX,bannerY:state.bannerY,logoX:state.logoX,logoY:state.logoY,crf:$('crf').value,fps:$('fps').value,transitionType:$('transitionType').value,outroSec:$('outroSec').value,musicVolume:$('musicVolume').value,audioMode:$('audioMode').value,mainAudio:$('mainAudio').checked,softZoom:$('softZoom').checked}; downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),'video_mockup_ayar.json'); }
-    async function openProject(e){ const f=e.target.files[0]; if(!f)return; const data=JSON.parse(await f.text()); Object.assign(state,{bannerX:data.bannerX??state.bannerX,bannerY:data.bannerY??state.bannerY,logoX:data.logoX??state.logoX,logoY:data.logoY??state.logoY}); ['crf','fps','transitionType','outroSec','musicVolume','audioMode'].forEach(id=>{ if(data[id]!==undefined) $(id).value=data[id]; }); $('mainAudio').checked=!!data.mainAudio; $('softZoom').checked=!!data.softZoom; drawPreview(); }
+    function saveProject(){ const data={mainX:state.mainX,mainY:state.mainY,mainScale:state.mainScale,bannerX:state.bannerX,bannerY:state.bannerY,logoX:state.logoX,logoY:state.logoY,crf:$('crf').value,fps:$('fps').value,transitionType:$('transitionType').value,outroSec:$('outroSec').value,musicVolume:$('musicVolume').value,audioMode:$('audioMode').value,mainAudio:$('mainAudio').checked,softZoom:$('softZoom').checked}; downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),'video_mockup_ayar.json'); }
+    async function openProject(e){ const f=e.target.files[0]; if(!f)return; const data=JSON.parse(await f.text()); Object.assign(state,{mainX:data.mainX??state.mainX,mainY:data.mainY??state.mainY,mainScale:data.mainScale??state.mainScale,bannerX:data.bannerX??state.bannerX,bannerY:data.bannerY??state.bannerY,logoX:data.logoX??state.logoX,logoY:data.logoY??state.logoY}); ['crf','fps','transitionType','outroSec','musicVolume','audioMode'].forEach(id=>{ if(data[id]!==undefined) $(id).value=data[id]; }); $('mainScale').value=Math.round(state.mainScale*100); $('mainScaleLabel').textContent=$('mainScale').value+'%'; $('mainAudio').checked=!!data.mainAudio; $('softZoom').checked=!!data.softZoom; drawPreview(); }
   </script>
 </body>
 </html>
