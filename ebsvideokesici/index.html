@@ -418,7 +418,7 @@ async function ensureFFmpeg(){
     }
   });
 
-  const coreBaseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+  const coreBaseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
 
   const coreBlobURL = await toBlobURL(`${coreBaseURL}/ffmpeg-core.js`, 'text/javascript');
   const wasmBlobURL = await toBlobURL(`${coreBaseURL}/ffmpeg-core.wasm`, 'application/wasm');
