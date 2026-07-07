@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EBS Kesici — Video Bölüm Silici</title>
+
+<style>
+:root{
+  --ink:#161311;
+  --paper:#efe8db;
+  --panel:#fbf7ee;
+  --brass:#a8783c;
+  --brass-dark:#7c5626;
+  --line:#d8cdb6;
+  --ok:#4f7d5a;
+  --err:#a33e3e;
+  --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:radial-gradient(ellipse at top left,#f4efe3 0%,var(--paper) 55%);
+  color:var(--ink);
+  font-family:Georgia,'Times New Roman',serif;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:56px 20px;
+}
+.wrap{width:100%;max-width:760px;}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--brass-dark);
+  margin:0 0 6px 2px;
+}
+h1{margin:0 0 6px;font-size:38px;font-weight:400;}
+h1 em{color:var(--brass-dark);}
+.sub{
+  margin:0 0 32px 2px;
+  color:#57503f;
+  font-size:15px;
+  max-width:52ch;
+  line-height:1.5;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:2px;
+  padding:36px;
+  position:relative;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid var(--line);
+  pointer-events:none;
+  opacity:.6;
+}
+.field{margin-bottom:26px;}
+.field label{
+  display:block;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--brass-dark);
+  margin-bottom:9px;
+}
+.drop{
+  border:1.5px dashed var(--brass);
+  border-radius:2px;
+  padding:22px;
+  text-align:center;
+  cursor:pointer;
+  background:#fff9ee;
+}
+.drop:hover,.drop.drag{background:#fbf0d9;border-color:var(--brass-dark);}
+.drop input{display:none;}
+.fname{
+  font-family:var(--mono);
+  font-size:13px;
+  margin-top:6px;
+  word-break:break-all;
+}
+.hint{font-size:12.5px;color:#8a8271;margin-top:7px;}
+.hint code{font-family:var(--mono);background:#f0e6cf;padding:1px 5px;border-radius:3px;}
+video{
+  width:100%;
+  margin-top:14px;
+  border-radius:2px;
+  border:1px solid var(--line);
+  display:none;
+  background:#000;
+}
+input[type=text]{
+  width:100%;
+  font-family:var(--mono);
+  font-size:14px;
+  padding:12px 14px;
+  border:1.5px solid var(--brass);
+  border-radius:2px;
+  background:#fff9ee;
+  color:var(--ink);
+  outline:none;
+}
+.modes{display:flex;flex-direction:column;gap:8px;}
+.modeOpt{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:14px;
+  padding:10px 12px;
+  border:1.5px solid var(--line);
+  border-radius:2px;
+  background:#fff9ee;
+  cursor:pointer;
+}
+.modeOpt input{accent-color:var(--brass-dark);}
+.modeOpt:has(input:checked){border-color:var(--brass-dark);background:#fbf0d9;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.chip{
+  font-family:var(--mono);
+  font-size:12px;
+  background:#f0e6cf;
+  border:1px solid var(--line);
+  padding:5px 10px;
+  border-radius:20px;
+}
+button{
+  width:100%;
+  background:var(--brass-dark);
+  color:#fbf7ee;
+  border:none;
+  padding:16px;
+  font-family:var(--mono);
+  font-size:13px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+button:disabled{opacity:.45;cursor:not-allowed;}
+.status{
+  margin-top:22px;
+  font-family:var(--mono);
+  font-size:13px;
+  padding:16px 18px;
+  border:1px solid var(--line);
+  background:#f4efe1;
+  color:#57503f;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.status.ok{border-color:var(--ok);color:#2f4a35;background:#eef4ef;}
+.status.err{border-color:var(--err);color:#5a2626;background:#f6ecec;}
+.progress-track{height:6px;background:#e3d9c2;border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;width:0%;background:var(--brass);}
+.result{margin-top:18px;display:none;}
+.result a{
+  display:block;
+  text-align:center;
+  background:var(--ok);
+  color:#fff;
+  padding:14px;
+  text-decoration:none;
+  font-family:var(--mono);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-size:13px;
+}
+.foot{
+  margin-top:18px;
+  text-align:center;
+  font-size:12px;
+  color:#a49b85;
+  font-family:var(--mono);
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <p class="eyebrow">EBS · Elite Bölüm Silici</p>
+  <h1>Video'dan <em>saniye saniye</em> kırp</h1>
+  <p class="sub">Videoyu yükle, silmek istediğin zaman aralıklarını saniye cinsinden yaz. Belirttiğin bölümler videodan çıkarılır, kalan kısımlar tek dosya yapılır.</p>
+
+  <div class="card">
+    <div class="field">
+      <label>01 — Video Dosyası</label>
+      <div class="drop" id="drop">
+        <input type="file" id="videoInput" accept="video/*">
+        <div class="hint" id="dropHint">Dosyayı buraya sürükle veya tıklayıp seç</div>
+        <div class="fname" id="fname"></div>
+      </div>
+      <video id="preview" controls></video>
+    </div>
+
+    <div class="field">
+      <label>02 — Mod</label>
+      <div class="modes" id="modes">
+        <label class="modeOpt">
+          <input type="radio" name="mode" value="delete" checked>
+          <span>Bu aralıkları SİL, gerisini birleştir</span>
+        </label>
+        <label class="modeOpt">
+          <input type="radio" name="mode" value="keep">
+          <span>Sadece bu aralığı/aralıkları TUT</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>03 — Zaman Aralıkları</label>
+      <input type="text" id="ranges" placeholder="Örn: 00:16:46-00:32:30, 00:40:00-00:42:10">
+      <div class="hint">Format: <code>SS-SS</code> (saniye) veya <code>SS:SS</code> ya da <code>SS:SS:SS</code> (saat:dakika:saniye). Birden fazla aralık virgülle ayrılır.</div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <button id="runBtn" onclick="processVideo()">İşlemi Başlat</button>
+
+    <div class="status" id="status" style="display:none;"></div>
+
+    <div class="result" id="result">
+      <a id="downloadLink" download="kirpilmis_video.mp4">İşlenmiş Videoyu İndir</a>
+    </div>
+  </div>
+
+  <p class="foot">FFmpeg tarayıcı içinde çalışır.</p>
+</div>
+
+<script type="module">
+if (!window.crossOriginIsolated && navigator.serviceWorker) {
+  navigator.serviceWorker.register('./coi-serviceworker.js').then(() => {
+    if (!navigator.serviceWorker.controller) {
+      location.reload();
+    }
+  }).catch(console.error);
+}
+
+import { FFmpeg } from './vendor/ffmpeg/index.js';
+
+async function fetchFile(file){
+  return new Uint8Array(await file.arrayBuffer());
+}
+
+async function toBlobURL(url, mimeType){
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(url + ' indirilemedi: HTTP ' + res.status);
+  }
+  const blob = await res.blob();
+  return URL.createObjectURL(new Blob([blob], {type:mimeType}));
+}
+
+const videoInput = document.getElementById('videoInput');
+const drop = document.getElementById('drop');
+const dropHint = document.getElementById('dropHint');
+const fname = document.getElementById('fname');
+const preview = document.getElementById('preview');
+const rangesInput = document.getElementById('ranges');
+const chips = document.getElementById('chips');
+const status = document.getElementById('status');
+const result = document.getElementById('result');
+const downloadLink = document.getElementById('downloadLink');
+const runBtn = document.getElementById('runBtn');
+
+let currentFile = null;
+let ffmpeg = null;
+let ffmpegLoaded = false;
+
+drop.addEventListener('click', () => videoInput.click());
+
+drop.addEventListener('dragover', e => {
+  e.preventDefault();
+  drop.classList.add('drag');
+});
+
+drop.addEventListener('dragleave', () => {
+  drop.classList.remove('drag');
+});
+
+drop.addEventListener('drop', e => {
+  e.preventDefault();
+  drop.classList.remove('drag');
+
+  if (e.dataTransfer.files.length) {
+    videoInput.files = e.dataTransfer.files;
+    handleFile(e.dataTransfer.files[0]);
+  }
+});
+
+videoInput.addEventListener('change', () => {
+  if (videoInput.files.length) {
+    handleFile(videoInput.files[0]);
+  }
+});
+
+function handleFile(file){
+  currentFile = file;
+  fname.textContent = file.name + ' · ' + (file.size / 1024 / 1024).toFixed(1) + ' MB';
+  dropHint.textContent = 'Farklı dosya seçmek için tıkla';
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = 'block';
+  result.style.display = 'none';
+}
+
+rangesInput.addEventListener('input', () => {
+  const parsed = parseRanges(rangesInput.value);
+  chips.innerHTML = '';
+
+  parsed.forEach(r => {
+    const c = document.createElement('div');
+    c.className = 'chip';
+    c.textContent = `${formatSeconds(r[0])} → ${formatSeconds(r[1])}`;
+    chips.appendChild(c);
+  });
+});
+
+function parseTimeToken(tok){
+  tok = tok.trim();
+  if (!tok) return null;
+
+  // saf saniye: 12 veya 12.5
+  if (/^\d+(?:\.\d+)?$/.test(tok)) {
+    return parseFloat(tok);
+  }
+
+  // SS:SS veya SS:SS:SS(.ms)
+  const parts = tok.split(':').map(p => p.trim());
+  if (parts.length < 2 || parts.length > 3) return null;
+  if (!parts.every(p => /^\d+(?:\.\d+)?$/.test(p))) return null;
+
+  const nums = parts.map(Number);
+  let seconds = 0;
+
+  if (nums.length === 3) {
+    seconds = nums[0] * 3600 + nums[1] * 60 + nums[2];
+  } else {
+    seconds = nums[0] * 60 + nums[1];
+  }
+
+  return seconds;
+}
+
+function formatSeconds(s){
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = (s % 60);
+  const secStr = (sec % 1 === 0 ? String(Math.floor(sec)) : sec.toFixed(2)).padStart(2, '0');
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${secStr}`;
+}
+
+function parseRanges(str){
+  if (!str.trim()) return [];
+
+  return str.split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(part => {
+      // ayırıcı '-' hem aralık hem SS:SS-SS:SS içinde geçebilir,
+      // bu yüzden son '-' değil, aralığı iki zaman token'ına bölen '-' aranır.
+      const m = part.match(/^(.+?)\s*-\s*(.+)$/);
+      if (!m) return null;
+
+      const a = parseTimeToken(m[1]);
+      const b = parseTimeToken(m[2]);
+
+      if (a === null || b === null || isNaN(a) || isNaN(b) || b <= a) return null;
+
+      return [a, b];
+    })
+    .filter(Boolean)
+    .sort((a, b) => a[0] - b[0]);
+}
+
+function setStatus(msg, kind = '', showBar = false){
+  status.style.display = 'flex';
+  status.className = 'status' + (kind ? ' ' + kind : '');
+  status.innerHTML = '';
+
+  const line = document.createElement('div');
+  line.textContent = msg;
+  status.appendChild(line);
+
+  if (showBar) {
+    const track = document.createElement('div');
+    track.className = 'progress-track';
+
+    const fill = document.createElement('div');
+    fill.className = 'progress-fill';
+    fill.id = 'progressFill';
+
+    track.appendChild(fill);
+    status.appendChild(track);
+  }
+}
+
+async function ensureFFmpeg(){
+  if (ffmpegLoaded) return;
+
+  setStatus('Motor yükleniyor...', '', true);
+
+  ffmpeg = new FFmpeg();
+
+  ffmpeg.on('log', ({message}) => {
+    console.log(message);
+  });
+
+  ffmpeg.on('progress', ({progress}) => {
+    const fill = document.getElementById('progressFill');
+    if (fill) {
+      fill.style.width = Math.min(100, Math.round(progress * 100)) + '%';
+    }
+  });
+
+  const coreBaseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+
+  const coreBlobURL = await toBlobURL(`${coreBaseURL}/ffmpeg-core.js`, 'text/javascript');
+  const wasmBlobURL = await toBlobURL(`${coreBaseURL}/ffmpeg-core.wasm`, 'application/wasm');
+
+  console.log('coreBlobURL:', coreBlobURL);
+  console.log('wasmBlobURL:', wasmBlobURL);
+  console.log('load öncesi');
+
+  await ffmpeg.load({
+    coreURL: coreBlobURL,
+    wasmURL: wasmBlobURL
+  });
+
+  console.log('load sonrası');
+
+  ffmpegLoaded = true;
+}
+
+async function getDuration(file){
+  return new Promise((resolve, reject) => {
+    const v = document.createElement('video');
+    v.preload = 'metadata';
+
+    v.onloadedmetadata = () => {
+      resolve(v.duration);
+      URL.revokeObjectURL(v.src);
+    };
+
+    v.onerror = () => {
+      reject(new Error('Video süresi okunamadı.'));
+    };
+
+    v.src = URL.createObjectURL(file);
+  });
+}
+
+function invertRanges(cuts, duration){
+  const keep = [];
+  let cursor = 0;
+
+  for (const [a, b] of cuts) {
+    if (a > cursor) {
+      keep.push([cursor, a]);
+    }
+    cursor = Math.max(cursor, b);
+  }
+
+  if (cursor < duration) {
+    keep.push([cursor, duration]);
+  }
+
+  return keep.filter(([a, b]) => b - a > 0.05);
+}
+
+window.processVideo = async function(){
+  if (!currentFile) {
+    setStatus('Lütfen önce video dosyası seçin.', 'err');
+    return;
+  }
+
+  const cuts = parseRanges(rangesInput.value);
+
+  if (!cuts.length) {
+    setStatus('Lütfen geçerli aralık girin. Örn: 0-5, 10-15', 'err');
+    return;
+  }
+
+  runBtn.disabled = true;
+  result.style.display = 'none';
+
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+
+  try {
+    const duration = await getDuration(currentFile);
+
+    let keepSegments;
+    if (mode === 'keep') {
+      // seçilen aralıkların kendisi saklanacak, çakışanları birleştir
+      keepSegments = [];
+      for (const [a, b] of cuts) {
+        const clampedA = Math.max(0, a);
+        const clampedB = Math.min(duration, b);
+        if (clampedB <= clampedA) continue;
+
+        const last = keepSegments[keepSegments.length - 1];
+        if (last && clampedA <= last[1] + 0.05) {
+          last[1] = Math.max(last[1], clampedB);
+        } else {
+          keepSegments.push([clampedA, clampedB]);
+        }
+      }
+    } else {
+      keepSegments = invertRanges(cuts, duration);
+    }
+
+    if (!keepSegments.length) {
+      setStatus(mode === 'keep'
+        ? 'Belirtilen aralık video süresiyle örtüşmüyor.'
+        : 'Girilen aralıklar videonun tamamını kapsıyor.', 'err');
+      return;
+    }
+
+    await ensureFFmpeg();
+
+    setStatus('Video motoruna yükleniyor...', '', true);
+
+    const inputName = 'input' + (currentFile.name.match(/\.\w+$/)?.[0] || '.mp4');
+
+    await ffmpeg.writeFile(inputName, await fetchFile(currentFile));
+
+    const segFiles = [];
+
+    for (let i = 0; i < keepSegments.length; i++) {
+      const [a, b] = keepSegments[i];
+      const outName = `seg${i}.mp4`;
+
+      setStatus(`Parça ${i + 1}/${keepSegments.length} kesiliyor...`, '', true);
+
+      await ffmpeg.exec([
+        '-ss', String(a),
+        '-to', String(b),
+        '-i', inputName,
+        '-c', 'copy',
+        '-avoid_negative_ts', 'make_zero',
+        outName
+      ]);
+
+      segFiles.push(outName);
+    }
+
+    setStatus('Parçalar birleştiriliyor...', '', true);
+
+    const listContent = segFiles.map(f => `file '${f}'`).join('\n');
+
+    await ffmpeg.writeFile('list.txt', listContent);
+
+    await ffmpeg.exec([
+      '-f', 'concat',
+      '-safe', '0',
+      '-i', 'list.txt',
+      '-c', 'copy',
+      'output.mp4'
+    ]);
+
+    const data = await ffmpeg.readFile('output.mp4');
+
+    const blob = new Blob([data.buffer], {
+      type: 'video/mp4'
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    downloadLink.href = url;
+
+    setStatus('Tamamlandı. Video hazır.', 'ok');
+    result.style.display = 'block';
+
+  } catch (err) {
+    console.error(err);
+    setStatus('Hata oluştu: ' + (err?.message || err), 'err');
+  } finally {
+    runBtn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>
