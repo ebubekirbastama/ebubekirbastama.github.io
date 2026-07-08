@@ -132,6 +132,20 @@
         .progress{height:10px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}.progress-bar{background:linear-gradient(90deg,var(--gold),var(--gold-2))}
         .hint{font-size:12px;color:var(--muted);line-height:1.45;margin:0}
         .text-gold{color:var(--gold-2)!important}
+        .app-header,.video-card,.side-card,.timeline-card,.control-block{transition:box-shadow .25s ease,border-color .25s ease}
+        .btn-elite,.btn-ghost,.btn-dark-round{transition:transform .18s ease,filter .18s ease,box-shadow .18s ease,background .18s ease}
+        .btn-dark-round:hover{background:rgba(214,176,108,.16);border-color:rgba(214,176,108,.4)}
+        .shape-btn.active{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#160f05!important;border-color:transparent}
+        .control-block:hover{border-color:rgba(214,176,108,.28)}
+        .blur-track-block.selected-zone{outline:2px solid #fff;outline-offset:1px;box-shadow:0 0 0 3px rgba(214,176,108,.35)}
+        .blur-selection-box.shape-ellipse{border-radius:50%}
+        #videoRenderCanvas{will-change:auto}
+        ::-webkit-scrollbar{width:9px;height:9px}
+        ::-webkit-scrollbar-thumb{background:rgba(214,176,108,.35);border-radius:99px}
+        ::-webkit-scrollbar-track{background:transparent}
+        .side-card{scrollbar-width:thin;scrollbar-color:rgba(214,176,108,.35) transparent}
+        .live-perf-chip{font-size:11px;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:6px}
+        .live-perf-chip .dot{width:7px;height:7px;border-radius:50%;background:#3ddc84;box-shadow:0 0 8px #3ddc84}
 
         .seo-content{max-width:1120px;margin:0 auto 48px;padding:0 18px 40px;color:#e8edf6}
         .seo-content article{background:rgba(18,22,33,.78);border:1px solid var(--stroke);border-radius:28px;padding:30px;box-shadow:0 24px 70px rgba(0,0,0,.22)}
@@ -161,6 +175,7 @@
             <div class="video-topbar">
                 <span class="chip"><i class="fa-solid fa-video me-1 text-gold"></i> Önizleme</span>
                 <span class="chip" id="videoInfo">Video bekleniyor</span>
+                <span class="live-perf-chip"><span class="dot"></span><span id="fpsCounter">-- FPS</span></span>
             </div>
             <div class="video-container" id="videoContainer">
                 <div id="uploadArea">
@@ -196,7 +211,20 @@
                     <span class="hint">Alan seç, sonra katman yap.</span>
                     <span class="value-badge" id="blurValueLabel">25 px</span>
                 </div>
+                <label class="form-label mt-3">Katman Süresi</label>
+                <input type="range" class="form-range" id="zoneDuration" min="0.5" max="15" step="0.5" value="3">
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="hint">Yeni katmanın kaç saniye süreceği.</span>
+                    <span class="value-badge" id="zoneDurationLabel">3.0 sn</span>
+                </div>
+                <label class="form-label mt-3">Şekil</label>
+                <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-ghost shape-btn active" data-shape="rect"><i class="fa-solid fa-square me-1"></i>Kare</button>
+                    <button type="button" class="btn btn-ghost shape-btn" data-shape="ellipse"><i class="fa-solid fa-circle me-1"></i>Oval</button>
+                </div>
                 <button id="btnCreateBlur" class="btn btn-ghost w-100 mt-3" disabled><i class="fa-solid fa-vector-square me-2"></i>Seçili Alanı Katman Yap</button>
+                <button id="btnClearZones" class="btn btn-ghost w-100 mt-2" disabled><i class="fa-solid fa-trash me-2"></i>Tüm Katmanları Temizle</button>
+                <p class="hint mt-2 mb-0">İpucu: Bir katmanı seçip <b>Delete</b> tuşuyla silebilirsin.</p>
             </div>
 
             <div class="control-block">
@@ -207,6 +235,7 @@
                     <span class="hint">0 sessiz, 1 normal, üstü yükseltme.</span>
                     <span class="value-badge" id="volumeValueLabel">1.0x Normal</span>
                 </div>
+                <button id="btnMute" class="btn btn-ghost w-100 mt-3"><i class="fa-solid fa-volume-xmark me-2"></i>Sessize Al</button>
             </div>
 
             <div class="control-block">
@@ -238,8 +267,15 @@
             <button id="btnPause" class="btn-dark-round d-none"><i class="fa-solid fa-pause"></i></button>
             <input type="range" class="custom-range flex-grow-1" id="timelineSlider" min="0" max="100" step="0.01" value="0">
             <span id="currentFrameLabel" class="value-badge">0.00s</span>
+            <select id="playbackRate" class="form-select form-select-sm" style="width:auto">
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+            </select>
         </div>
         <div class="timeline-tracks" id="timelineTracks"></div>
+        <p class="hint mt-2 mb-0" id="zoneSelectedHint">Bir katmana tıklayınca burada bilgisi görünür.</p>
     </section>
 </div>
 
@@ -311,9 +347,10 @@
 <script>
 const videoInput=document.getElementById('videoInput');
 const uploadArea=document.getElementById('uploadArea');
+const videoContainer=document.getElementById('videoContainer');
 const sourceVideo=document.getElementById('sourceVideo');
 const canvas=document.getElementById('videoRenderCanvas');
-const ctx=canvas.getContext('2d');
+const ctx=canvas.getContext('2d',{alpha:false});
 const timelineSection=document.getElementById('timelineSection');
 const timelineSlider=document.getElementById('timelineSlider');
 const timeDisplay=document.getElementById('timeDisplay');
@@ -322,12 +359,19 @@ const timelineTracks=document.getElementById('timelineTracks');
 const btnPlay=document.getElementById('btnPlay');
 const btnPause=document.getElementById('btnPause');
 const btnCreateBlur=document.getElementById('btnCreateBlur');
+const btnClearZones=document.getElementById('btnClearZones');
 const btnExport=document.getElementById('btnExport');
+const btnMute=document.getElementById('btnMute');
 const blurSelectionBox=document.getElementById('blurSelectionBox');
 const audioVolumeSlider=document.getElementById('audioVolumeSlider');
 const volumeValueLabel=document.getElementById('volumeValueLabel');
 const blurRadius=document.getElementById('blurRadius');
 const blurValueLabel=document.getElementById('blurValueLabel');
+const zoneDuration=document.getElementById('zoneDuration');
+const zoneDurationLabel=document.getElementById('zoneDurationLabel');
+const zoneSelectedHint=document.getElementById('zoneSelectedHint');
+const playbackRate=document.getElementById('playbackRate');
+const shapeButtons=document.querySelectorAll('.shape-btn');
 const exportResolution=document.getElementById('exportResolution');
 const exportFps=document.getElementById('exportFps');
 const exportOverlay=document.getElementById('exportOverlay');
@@ -335,18 +379,32 @@ const exportProgressBar=document.getElementById('exportProgressBar');
 const exportStatusText=document.getElementById('exportStatusText');
 const exportDetailText=document.getElementById('exportDetailText');
 const videoInfo=document.getElementById('videoInfo');
+const fpsCounter=document.getElementById('fpsCounter');
+
+// PERFORMANS: önizleme her zaman küçültülmüş bir çözünürlükte çizilir,
+// böylece 4K/8K videolarda arayüz kasmaz. Dışa aktarım ise ayrı, tam
+// çözünürlüklü bir canvas üzerinden yapılır. Tüm blur katmanları video
+// boyutuna göre ORANSAL (0-1) koordinatlarda tutulur; bu sayede önizleme
+// ile dışa aktarım arasında hiçbir kayma / hizalama hatası oluşmaz.
+const PREVIEW_MAX_DIM=1280;
 
 let blurZones=[];
+let selectedZoneId=null;
 let activeTrackAction=null;
 let isDrawing=false;
-let drawStartCanvasX=0,drawStartCanvasY=0;
-let currentTempBox=null;
+let drawStartRX=0,drawStartRY=0;
+let currentTempBox=null; // {rx,ry,rw,rh} oransal
 let isDraggingExistingBox=false;
 let draggedZone=null;
-let dragOffsetCanvasX=0,dragOffsetCanvasY=0;
+let dragOffsetRX=0,dragOffsetRY=0;
 let audioCtx=null,audioSource=null,gainNode=null,audioDestinationNode=null;
 let objectUrl=null;
 let isExporting=false;
+let currentShape='rect';
+let lastVolumeBeforeMute=1;
+let rafId=null;
+let usingVFC=('requestVideoFrameCallback' in HTMLVideoElement.prototype);
+let fpsFrames=0,fpsLastTs=performance.now();
 
 uploadArea.addEventListener('click',()=>videoInput.click());
 videoInput.addEventListener('change',e=>{
@@ -360,11 +418,18 @@ videoInput.addEventListener('change',e=>{
     timelineSection.style.display='block';
     btnCreateBlur.disabled=false;
     btnExport.disabled=false;
+    btnClearZones.disabled=false;
+    blurZones=[];selectedZoneId=null;
 });
 
 sourceVideo.addEventListener('loadedmetadata',()=>{
-    canvas.width=sourceVideo.videoWidth;
-    canvas.height=sourceVideo.videoHeight;
+    const ratio=sourceVideo.videoWidth/sourceVideo.videoHeight;
+    let pw=sourceVideo.videoWidth,ph=sourceVideo.videoHeight;
+    if(Math.max(pw,ph)>PREVIEW_MAX_DIM){
+        if(pw>=ph){pw=PREVIEW_MAX_DIM;ph=Math.round(pw/ratio);}
+        else{ph=PREVIEW_MAX_DIM;pw=Math.round(ph*ratio);}
+    }
+    canvas.width=pw;canvas.height=ph;
     timelineSlider.max=sourceVideo.duration;
     videoInfo.textContent=`${sourceVideo.videoWidth}×${sourceVideo.videoHeight} • ${formatTime(sourceVideo.duration)}`;
     updateTimeText();
@@ -384,74 +449,248 @@ function initAudioEngine(){
 }
 
 blurRadius.addEventListener('input',()=>blurValueLabel.textContent=`${blurRadius.value} px`);
+zoneDuration.addEventListener('input',()=>zoneDurationLabel.textContent=`${parseFloat(zoneDuration.value).toFixed(1)} sn`);
 audioVolumeSlider.addEventListener('input',()=>{
     const val=parseFloat(audioVolumeSlider.value);
     if(gainNode)gainNode.gain.setValueAtTime(val,audioCtx.currentTime);
     volumeValueLabel.textContent=val===0?'Sessiz':(val===1?'1.0x Normal':`${val.toFixed(1)}x Yüksek`);
+    btnMute.innerHTML=val===0?'<i class="fa-solid fa-volume-high me-2"></i>Sesi Aç':'<i class="fa-solid fa-volume-xmark me-2"></i>Sessize Al';
 });
+btnMute.addEventListener('click',()=>{
+    const val=parseFloat(audioVolumeSlider.value);
+    if(val>0){lastVolumeBeforeMute=val;audioVolumeSlider.value=0;}
+    else{audioVolumeSlider.value=lastVolumeBeforeMute||1;}
+    audioVolumeSlider.dispatchEvent(new Event('input'));
+});
+playbackRate.addEventListener('change',()=>{sourceVideo.playbackRate=parseFloat(playbackRate.value);});
+shapeButtons.forEach(b=>b.addEventListener('click',()=>{
+    shapeButtons.forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    currentShape=b.dataset.shape;
+    blurSelectionBox.classList.toggle('shape-ellipse',currentShape==='ellipse');
+}));
 
 sourceVideo.addEventListener('play',()=>{
     if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
     btnPlay.classList.add('d-none');btnPause.classList.remove('d-none');
-    requestAnimationFrame(renderLoop);
+    startRenderLoop();
 });
-sourceVideo.addEventListener('pause',()=>{btnPlay.classList.remove('d-none');btnPause.classList.add('d-none');});
+sourceVideo.addEventListener('pause',()=>{btnPlay.classList.remove('d-none');btnPause.classList.add('d-none');stopRenderLoop();drawFrame();});
 sourceVideo.addEventListener('ended',()=>{if(!isExporting){sourceVideo.pause();sourceVideo.currentTime=sourceVideo.duration;drawFrame();}});
 
-function renderLoop(){
-    if(!sourceVideo.paused&&!sourceVideo.ended){
-        timelineSlider.value=sourceVideo.currentTime;
-        updateTimeText();
-        drawFrame();
-        requestAnimationFrame(renderLoop);
+function startRenderLoop(){
+    stopRenderLoop();
+    if(usingVFC){
+        const step=()=>{
+            if(sourceVideo.paused||sourceVideo.ended)return;
+            timelineSlider.value=sourceVideo.currentTime;
+            updateTimeText();
+            drawFrame();
+            trackFps();
+            rafId=sourceVideo.requestVideoFrameCallback(step);
+        };
+        rafId=sourceVideo.requestVideoFrameCallback(step);
+    }else{
+        const loop=()=>{
+            if(sourceVideo.paused||sourceVideo.ended)return;
+            timelineSlider.value=sourceVideo.currentTime;
+            updateTimeText();
+            drawFrame();
+            trackFps();
+            rafId=requestAnimationFrame(loop);
+        };
+        rafId=requestAnimationFrame(loop);
+    }
+}
+function stopRenderLoop(){
+    if(rafId==null)return;
+    if(usingVFC&&sourceVideo.cancelVideoFrameCallback)sourceVideo.cancelVideoFrameCallback(rafId);
+    else cancelAnimationFrame(rafId);
+    rafId=null;
+}
+function trackFps(){
+    fpsFrames++;
+    const now=performance.now();
+    if(now-fpsLastTs>=1000){
+        fpsCounter.textContent=`${Math.round(fpsFrames*1000/(now-fpsLastTs))} FPS`;
+        fpsFrames=0;fpsLastTs=now;
     }
 }
 
 function drawFrame(){drawTo(ctx,canvas.width,canvas.height,sourceVideo.paused&&!isExporting);}
+
 function drawTo(targetCtx,targetW,targetH,showBoxes){
     targetCtx.clearRect(0,0,targetW,targetH);
     targetCtx.drawImage(sourceVideo,0,0,targetW,targetH);
-    const sx=targetW/canvas.width;
-    const sy=targetH/canvas.height;
     const currentTime=sourceVideo.currentTime;
     blurZones.forEach(zone=>{
         if(currentTime>=zone.startTime&&currentTime<=zone.endTime){
-            const x=zone.x*sx,y=zone.y*sy,w=zone.w*sx,h=zone.h*sy;
+            const x=zone.rx*targetW,y=zone.ry*targetH,w=zone.rw*targetW,h=zone.rh*targetH;
+            const radiusPx=Math.max(1,zone.radius*((targetW/1280)));
             targetCtx.save();
-            targetCtx.beginPath();targetCtx.rect(x,y,w,h);targetCtx.clip();
-            targetCtx.filter=`blur(${Math.max(1,zone.radius*((sx+sy)/2))}px)`;
+            targetCtx.beginPath();
+            if(zone.shape==='ellipse'){targetCtx.ellipse(x+w/2,y+h/2,Math.max(1,w/2),Math.max(1,h/2),0,0,Math.PI*2);}
+            else{targetCtx.rect(x,y,w,h);}
+            targetCtx.clip();
+            targetCtx.filter=`blur(${radiusPx}px)`;
             targetCtx.drawImage(sourceVideo,0,0,targetW,targetH);
             targetCtx.restore();
             if(showBoxes){
-                targetCtx.save();targetCtx.strokeStyle='#d6b06c';targetCtx.lineWidth=3;targetCtx.setLineDash([8,5]);targetCtx.strokeRect(x,y,w,h);targetCtx.fillStyle='#f1d59a';targetCtx.font='bold 14px Inter';targetCtx.fillText('TUT TAŞI',x+7,y+22);targetCtx.restore();
+                targetCtx.save();
+                targetCtx.strokeStyle=zone.id===selectedZoneId?'#ffffff':'#d6b06c';
+                targetCtx.lineWidth=3;targetCtx.setLineDash([8,5]);
+                if(zone.shape==='ellipse'){targetCtx.beginPath();targetCtx.ellipse(x+w/2,y+h/2,Math.max(1,w/2),Math.max(1,h/2),0,0,Math.PI*2);targetCtx.stroke();}
+                else{targetCtx.strokeRect(x,y,w,h);}
+                targetCtx.setLineDash([]);
+                targetCtx.fillStyle='#f1d59a';targetCtx.font='bold 14px Inter';targetCtx.fillText('TUT TAŞI',x+7,y+22);
+                targetCtx.restore();
             }
         }
     });
 }
-function getCanvasCoordinates(e){const r=canvas.getBoundingClientRect();return{x:((e.clientX-r.left)/r.width)*canvas.width,y:((e.clientY-r.top)/r.height)*canvas.height,cssX:e.clientX-r.left,cssY:e.clientY-r.top,viewRect:r};}
+
+// Fare/dokunuş koordinatlarını 0-1 arası ORANSAL video koordinatına çevirir.
+// Tüm hesap canvas'ın kendi getBoundingClientRect değerine göre yapılır,
+// bu yüzden konteynerdeki olası boşluk/ortalama farkı artık sorun yaratmaz.
+function getRelativeCoords(e){
+    const r=canvas.getBoundingClientRect();
+    const rx=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
+    const ry=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));
+    return{rx,ry,rect:r};
+}
+// Ekran üzerindeki seçim kutusunu (blurSelectionBox), canvas'ın gerçek
+// render dikdörtgenine göre konumlandırır (konteyner değil!) — işaretleme
+// hatasının kök nedeni buydu.
+function positionSelectionBoxFromRect(rectLeftPx,rectTopPx,widthPx,heightPx,canvasRect){
+    const containerRect=videoContainer.getBoundingClientRect();
+    blurSelectionBox.style.left=(canvasRect.left-containerRect.left+rectLeftPx)+'px';
+    blurSelectionBox.style.top=(canvasRect.top-containerRect.top+rectTopPx)+'px';
+    blurSelectionBox.style.width=widthPx+'px';
+    blurSelectionBox.style.height=heightPx+'px';
+}
+
 canvas.addEventListener('mousedown',e=>{
     if(uploadArea.style.display!=='none'&&!sourceVideo.duration)return;
-    const coords=getCanvasCoordinates(e);const currentTime=sourceVideo.currentTime;
+    const {rx,ry,rect}=getRelativeCoords(e);
+    const currentTime=sourceVideo.currentTime;
     let clickedZone=null;
-    for(let i=blurZones.length-1;i>=0;i--){const z=blurZones[i];if(currentTime>=z.startTime&&currentTime<=z.endTime&&coords.x>=z.x&&coords.x<=z.x+z.w&&coords.y>=z.y&&coords.y<=z.y+z.h){clickedZone=z;break;}}
-    if(clickedZone){isDraggingExistingBox=true;draggedZone=clickedZone;dragOffsetCanvasX=coords.x-clickedZone.x;dragOffsetCanvasY=coords.y-clickedZone.y;sourceVideo.pause();}
-    else{isDrawing=true;drawStartCanvasX=coords.x;drawStartCanvasY=coords.y;blurSelectionBox.style.left=coords.cssX+'px';blurSelectionBox.style.top=coords.cssY+'px';blurSelectionBox.style.width='0px';blurSelectionBox.style.height='0px';blurSelectionBox.style.display='block';currentTempBox=null;}
+    for(let i=blurZones.length-1;i>=0;i--){
+        const z=blurZones[i];
+        if(currentTime>=z.startTime&&currentTime<=z.endTime&&rx>=z.rx&&rx<=z.rx+z.rw&&ry>=z.ry&&ry<=z.ry+z.rh){clickedZone=z;break;}
+    }
+    if(clickedZone){
+        isDraggingExistingBox=true;draggedZone=clickedZone;selectedZoneId=clickedZone.id;
+        dragOffsetRX=rx-clickedZone.rx;dragOffsetRY=ry-clickedZone.ry;
+        sourceVideo.pause();
+        updateZoneHint(clickedZone);
+        renderVisualTimelineBlocks();
+    }else{
+        isDrawing=true;drawStartRX=rx;drawStartRY=ry;
+        positionSelectionBoxFromRect(rx*rect.width,ry*rect.height,0,0,rect);
+        blurSelectionBox.style.display='block';
+        currentTempBox=null;
+    }
     e.preventDefault();
 });
 canvas.addEventListener('mousemove',e=>{
-    const coords=getCanvasCoordinates(e);
-    if(isDraggingExistingBox&&draggedZone){let nx=coords.x-dragOffsetCanvasX,ny=coords.y-dragOffsetCanvasY;nx=Math.max(0,Math.min(nx,canvas.width-draggedZone.w));ny=Math.max(0,Math.min(ny,canvas.height-draggedZone.h));draggedZone.x=nx;draggedZone.y=ny;drawFrame();}
-    else if(isDrawing){const r=canvas.getBoundingClientRect();const cx=e.clientX-r.left,cy=e.clientY-r.top;const sx=parseFloat(blurSelectionBox.style.left),sy=parseFloat(blurSelectionBox.style.top);blurSelectionBox.style.width=Math.abs(cx-sx)+'px';blurSelectionBox.style.height=Math.abs(cy-sy)+'px';if(cx<sx)blurSelectionBox.style.left=cx+'px';if(cy<sy)blurSelectionBox.style.top=cy+'px';let rw=coords.x-drawStartCanvasX,rh=coords.y-drawStartCanvasY,rx=drawStartCanvasX,ry=drawStartCanvasY;if(rw<0){rx=coords.x;rw=Math.abs(rw);}if(rh<0){ry=coords.y;rh=Math.abs(rh);}currentTempBox={x:rx,y:ry,w:rw,h:rh};}
+    const {rx,ry,rect}=getRelativeCoords(e);
+    if(isDraggingExistingBox&&draggedZone){
+        let nrx=rx-dragOffsetRX,nry=ry-dragOffsetRY;
+        nrx=Math.max(0,Math.min(nrx,1-draggedZone.rw));
+        nry=Math.max(0,Math.min(nry,1-draggedZone.rh));
+        draggedZone.rx=nrx;draggedZone.ry=nry;
+        drawFrame();
+    }else if(isDrawing){
+        let rw=rx-drawStartRX,rh=ry-drawStartRY,rxx=drawStartRX,ryy=drawStartRY;
+        if(rw<0){rxx=rx;rw=Math.abs(rw);}
+        if(rh<0){ryy=ry;rh=Math.abs(rh);}
+        currentTempBox={rx:rxx,ry:ryy,rw,rh};
+        positionSelectionBoxFromRect(rxx*rect.width,ryy*rect.height,rw*rect.width,rh*rect.height,rect);
+    }
 });
 window.addEventListener('mouseup',()=>{isDrawing=false;isDraggingExistingBox=false;draggedZone=null;activeTrackAction=null;});
-btnCreateBlur.addEventListener('click',()=>{
-    if(!currentTempBox||currentTempBox.w<10||currentTempBox.h<10){alert('Lütfen video üzerinde mouse ile sürükleyerek bir sansür alanı belirleyin.');return;}
-    const startTime=sourceVideo.currentTime,endTime=Math.min(startTime+3,sourceVideo.duration);
-    blurZones.push({id:Date.now(),startTime,endTime,x:currentTempBox.x,y:currentTempBox.y,w:currentTempBox.w,h:currentTempBox.h,radius:parseInt(blurRadius.value,10),trackIndex:blurZones.length%2});
-    currentTempBox=null;blurSelectionBox.style.display='none';renderVisualTimelineBlocks();drawFrame();
+
+document.addEventListener('keydown',e=>{
+    if((e.key==='Delete'||e.key==='Backspace')&&selectedZoneId!=null&&document.activeElement.tagName!=='INPUT'){
+        blurZones=blurZones.filter(z=>z.id!==selectedZoneId);
+        selectedZoneId=null;
+        renderVisualTimelineBlocks();drawFrame();
+        zoneSelectedHint.textContent='Katman silindi.';
+    }
 });
-function renderVisualTimelineBlocks(){timelineTracks.innerHTML='';const total=sourceVideo.duration||100,trackW=timelineTracks.offsetWidth||1;blurZones.forEach(zone=>{const block=document.createElement('div');block.className='blur-track-block';block.style.left=`${(zone.startTime/total)*trackW}px`;block.style.width=`${((zone.endTime-zone.startTime)/total)*trackW}px`;block.style.top=`${zone.trackIndex*25+4}px`;block.textContent='Katman';const l=document.createElement('div'),r=document.createElement('div');l.className='track-resizer resizer-left';r.className='track-resizer resizer-right';block.appendChild(l);block.appendChild(r);block.addEventListener('contextmenu',e=>{e.preventDefault();if(confirm('Bu katmanı kaldırmak istiyor musunuz?')){blurZones=blurZones.filter(z=>z.id!==zone.id);renderVisualTimelineBlocks();drawFrame();}});block.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'move',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});l.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'resize-left',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});r.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'resize-right',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});timelineTracks.appendChild(block);});}
-window.addEventListener('mousemove',e=>{if(!activeTrackAction)return;const zone=blurZones.find(z=>z.id===activeTrackAction.zoneId);if(!zone)return;const total=sourceVideo.duration,trackW=timelineTracks.offsetWidth||1,delta=((e.clientX-activeTrackAction.initialMouseX)/trackW)*total;if(activeTrackAction.action==='move'){let ns=activeTrackAction.initialStart+delta,ne=activeTrackAction.initialEnd+delta;if(ns>=0&&ne<=total){zone.startTime=ns;zone.endTime=ne;}}else if(activeTrackAction.action==='resize-left'){let ns=activeTrackAction.initialStart+delta;if(ns>=0&&ns<zone.endTime-.1)zone.startTime=ns;}else{let ne=activeTrackAction.initialEnd+delta;if(ne<=total&&ne>zone.startTime+.1)zone.endTime=ne;}renderVisualTimelineBlocks();drawFrame();});
+
+btnCreateBlur.addEventListener('click',()=>{
+    if(!currentTempBox||currentTempBox.rw*canvas.width<8||currentTempBox.rh*canvas.height<8){
+        alert('Lütfen video üzerinde mouse ile sürükleyerek bir sansür alanı belirleyin.');
+        return;
+    }
+    const dur=parseFloat(zoneDuration.value);
+    const startTime=sourceVideo.currentTime,endTime=Math.min(startTime+dur,sourceVideo.duration);
+    const zone={id:Date.now(),startTime,endTime,rx:currentTempBox.rx,ry:currentTempBox.ry,rw:currentTempBox.rw,rh:currentTempBox.rh,radius:parseInt(blurRadius.value,10),shape:currentShape,trackIndex:blurZones.length%2};
+    blurZones.push(zone);
+    selectedZoneId=zone.id;
+    currentTempBox=null;blurSelectionBox.style.display='none';
+    renderVisualTimelineBlocks();drawFrame();
+    updateZoneHint(zone);
+});
+btnClearZones.addEventListener('click',()=>{
+    if(blurZones.length&&confirm('Tüm katmanları silmek istediğine emin misin?')){
+        blurZones=[];selectedZoneId=null;renderVisualTimelineBlocks();drawFrame();
+        zoneSelectedHint.textContent='Bir katmana tıklayınca burada bilgisi görünür.';
+    }
+});
+function updateZoneHint(zone){
+    zoneSelectedHint.textContent=`Seçili katman: ${zone.startTime.toFixed(1)}s → ${zone.endTime.toFixed(1)}s • ${zone.shape==='ellipse'?'Oval':'Kare'} • Blur ${zone.radius}px`;
+}
+
+function renderVisualTimelineBlocks(){
+    timelineTracks.innerHTML='';
+    const total=sourceVideo.duration||100,trackW=timelineTracks.offsetWidth||1;
+    blurZones.forEach(zone=>{
+        const block=document.createElement('div');
+        block.className='blur-track-block'+(zone.id===selectedZoneId?' selected-zone':'');
+        block.style.left=`${(zone.startTime/total)*trackW}px`;
+        block.style.width=`${Math.max(6,((zone.endTime-zone.startTime)/total)*trackW)}px`;
+        block.style.top=`${zone.trackIndex*25+4}px`;
+        block.textContent='Katman';
+        const l=document.createElement('div'),r=document.createElement('div');
+        l.className='track-resizer resizer-left';r.className='track-resizer resizer-right';
+        block.appendChild(l);block.appendChild(r);
+        block.addEventListener('contextmenu',e=>{
+            e.preventDefault();
+            if(confirm('Bu katmanı kaldırmak istiyor musunuz?')){
+                blurZones=blurZones.filter(z=>z.id!==zone.id);
+                if(selectedZoneId===zone.id)selectedZoneId=null;
+                renderVisualTimelineBlocks();drawFrame();
+            }
+        });
+        block.addEventListener('mousedown',e=>{
+            e.stopPropagation();
+            selectedZoneId=zone.id;updateZoneHint(zone);renderVisualTimelineBlocks();
+            activeTrackAction={zoneId:zone.id,action:'move',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};
+        });
+        l.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'resize-left',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});
+        r.addEventListener('mousedown',e=>{e.stopPropagation();activeTrackAction={zoneId:zone.id,action:'resize-right',initialMouseX:e.clientX,initialStart:zone.startTime,initialEnd:zone.endTime};});
+        timelineTracks.appendChild(block);
+    });
+}
+window.addEventListener('mousemove',e=>{
+    if(!activeTrackAction)return;
+    const zone=blurZones.find(z=>z.id===activeTrackAction.zoneId);
+    if(!zone)return;
+    const total=sourceVideo.duration,trackW=timelineTracks.offsetWidth||1,delta=((e.clientX-activeTrackAction.initialMouseX)/trackW)*total;
+    if(activeTrackAction.action==='move'){
+        let ns=activeTrackAction.initialStart+delta,ne=activeTrackAction.initialEnd+delta;
+        if(ns>=0&&ne<=total){zone.startTime=ns;zone.endTime=ne;}
+    }else if(activeTrackAction.action==='resize-left'){
+        let ns=activeTrackAction.initialStart+delta;
+        if(ns>=0&&ns<zone.endTime-.1)zone.startTime=ns;
+    }else{
+        let ne=activeTrackAction.initialEnd+delta;
+        if(ne<=total&&ne>zone.startTime+.1)zone.endTime=ne;
+    }
+    renderVisualTimelineBlocks();drawFrame();
+});
 timelineSlider.addEventListener('input',()=>{sourceVideo.currentTime=parseFloat(timelineSlider.value);updateTimeText();drawFrame();});
 btnPlay.addEventListener('click',async()=>{if(audioCtx&&audioCtx.state==='suspended')await audioCtx.resume();sourceVideo.play();});
 btnPause.addEventListener('click',()=>sourceVideo.pause());
@@ -463,9 +702,10 @@ btnExport.addEventListener('click',async()=>{
     if(!sourceVideo.duration)return;
     try{
         isExporting=true;btnExport.disabled=true;btnPlay.disabled=true;btnPause.disabled=true;exportOverlay.style.display='flex';
+        stopRenderLoop();
         if(audioCtx&&audioCtx.state==='suspended')await audioCtx.resume();
         const size=getExportSize();const fps=parseInt(exportFps.value,10);
-        const exportCanvas=document.createElement('canvas');exportCanvas.width=size.w;exportCanvas.height=size.h;const exportCtx=exportCanvas.getContext('2d');
+        const exportCanvas=document.createElement('canvas');exportCanvas.width=size.w;exportCanvas.height=size.h;const exportCtx=exportCanvas.getContext('2d',{alpha:false});
         const canvasStream=exportCanvas.captureStream(fps);
         try{gainNode.disconnect(audioCtx.destination);}catch(e){}
         try{gainNode.disconnect(audioDestinationNode);}catch(e){}
@@ -479,17 +719,24 @@ btnExport.addEventListener('click',async()=>{
         const chunks=[];
         recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
         const done=new Promise(resolve=>{recorder.onstop=resolve;});
-        let rafId=null;
-        const renderExport=()=>{drawTo(exportCtx,size.w,size.h,false);const p=Math.min(100,Math.floor((sourceVideo.currentTime/sourceVideo.duration)*100));exportProgressBar.style.width=p+'%';exportStatusText.textContent='%'+p;timelineSlider.value=sourceVideo.currentTime;updateTimeText();exportDetailText.textContent=`${size.label} • ${fps} FPS • sesli kayıt alınıyor`;if(!sourceVideo.ended&&!sourceVideo.paused)rafId=requestAnimationFrame(renderExport);};
-        sourceVideo.pause();sourceVideo.currentTime=0;await new Promise(r=>setTimeout(r,120));
+        let exportRafId=null;
+        const renderExport=()=>{
+            drawTo(exportCtx,size.w,size.h,false);
+            const p=Math.min(100,Math.floor((sourceVideo.currentTime/sourceVideo.duration)*100));
+            exportProgressBar.style.width=p+'%';exportStatusText.textContent='%'+p;
+            timelineSlider.value=sourceVideo.currentTime;updateTimeText();
+            exportDetailText.textContent=`${size.label} • ${fps} FPS • sesli kayıt alınıyor`;
+            if(!sourceVideo.ended&&!sourceVideo.paused)exportRafId=requestAnimationFrame(renderExport);
+        };
+        sourceVideo.pause();sourceVideo.currentTime=0;sourceVideo.playbackRate=1;await new Promise(r=>setTimeout(r,120));
         recorder.start(500);sourceVideo.play();renderExport();
         await new Promise(resolve=>{sourceVideo.onended=resolve;});
-        if(rafId)cancelAnimationFrame(rafId);drawTo(exportCtx,size.w,size.h,false);
+        if(exportRafId)cancelAnimationFrame(exportRafId);drawTo(exportCtx,size.w,size.h,false);
         if(recorder.state!=='inactive')recorder.stop();await done;
         const blob=new Blob(chunks,{type:recorder.mimeType||'video/webm'});
         const url=URL.createObjectURL(blob);const a=document.createElement('a');
         a.href=url;a.download=`ebs_elite_sesli_${size.label.replace('x','_')}.webm`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
-        sourceVideo.pause();sourceVideo.currentTime=0;drawFrame();
+        sourceVideo.pause();sourceVideo.currentTime=0;sourceVideo.playbackRate=parseFloat(playbackRate.value);drawFrame();
     }catch(err){console.error(err);alert('Çıktı alınamadı: '+err.message);}
     finally{
         try{gainNode.disconnect(audioDestinationNode);}catch(e){}
