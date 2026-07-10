@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yüz Bulanıklaştırma Aracı — Fotoğraflarda Yüzleri Otomatik Gizleyin | Ebubekir Bastama</title>
+<meta name="description" content="Yapay zeka ile fotoğraflardaki yüzleri otomatik tespit edip bulanıklaştırın. Katman katman düzenleyin, kendi bölgenizi çizin, PNG, JPEG ve WebP olarak indirin. Tamamen tarayıcınızda çalışır, hiçbir görsel sunucuya gönderilmez.">
+<meta name="keywords" content="yüz bulanıklaştırma, fotoğraf gizleme, yüz sansürleme, resim düzenleme, gizlilik aracı, blur tool, face blur, çevrimiçi fotoğraf editörü">
+<meta name="author" content="Ebubekir Bastama">
+<link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yüz Bulanıklaştırma Aracı — Otomatik Yüz Gizleme">
+<meta property="og:description" content="Fotoğraflarınızdaki yüzleri yapay zeka ile otomatik tespit edip katman katman bulanıklaştırın. Ücretsiz, tarayıcı tabanlı, güvenli.">
+<meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+<meta property="og:image" content="https://www.ebubekirbastama.com.tr/yuz-bulaniklastirma-og.jpg">
+<meta property="og:image:secure_url" content="https://www.ebubekirbastama.com.tr/yuz-bulaniklastirma-og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Yüz Bulanıklaştırma Aracı — Otomatik yüz gizleme ekranı">
+<meta property="og:site_name" content="Ebubekir Bastama">
+<meta property="og:locale" content="tr_TR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Yüz Bulanıklaştırma Aracı — Otomatik Yüz Gizleme">
+<meta name="twitter:description" content="Fotoğraflarınızdaki yüzleri yapay zeka ile otomatik tespit edip bulanıklaştırın. Ücretsiz, tarayıcı tabanlı ve güvenli.">
+<meta name="twitter:image" content="https://www.ebubekirbastama.com.tr/yuz-bulaniklastirma-og.jpg">
+<meta name="twitter:image:alt" content="Yüz Bulanıklaştırma Aracı — Otomatik yüz gizleme ekranı">
+<meta name="robots" content="index, follow">
+
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Yüz Bulanıklaştırma Aracı",
+  "url": "https://www.ebubekirbastama.com.tr/",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"},
+  "author": {"@type": "Person", "name": "Ebubekir Bastama"}
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://www.ebubekirbastama.com.tr/#website",
+  "url": "https://www.ebubekirbastama.com.tr/",
+  "name": "Ebubekir Bastama",
+  "inLanguage": "tr-TR",
+  "publisher": {
+    "@id": "https://www.ebubekirbastama.com.tr/#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://www.ebubekirbastama.com.tr/?s={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.ebubekirbastama.com.tr/#organization",
+  "name": "Ebubekir Bastama",
+  "url": "https://www.ebubekirbastama.com.tr/",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://www.ebubekirbastama.com.tr/logo.png",
+    "width": 512,
+    "height": 512
+  },
+  "image": "https://www.ebubekirbastama.com.tr/yuz-bulaniklastirma-og.jpg",
+  "founder": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://www.ebubekirbastama.com.tr/#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Fotoğraflarım bir sunucuya yükleniyor mu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hayır. Tüm yüz tespiti ve bulanıklaştırma işlemleri tarayıcınızda JavaScript ile gerçekleştirilir. Görseliniz cihazınızdan hiç ayrılmaz."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hangi görsel formatlarını destekliyor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yükleme tarafında JPG, PNG, WEBP, AVIF, BMP ve GIF gibi tarayıcının desteklediği yaygın formatlar kabul edilir. Dışa aktarmada PNG, JPEG ve WEBP seçenekleri sunulur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Otomatik tespit edilen bulanıklığı kaldırabilir miyim?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Evet. Katmanlar listesinden her bir bulanıklık katmanını tek tek silebilir, gizleyebilir veya yeniden gösterebilirsiniz."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Yüz dışındaki bir bölgeyi de bulanıklaştırabilir miyim?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Evet. Yuvarlak Alan veya Serbest Çizim araçlarıyla fotoğrafın istediğiniz herhangi bir bölgesine manuel bulanıklaştırma katmanı ekleyebilirsiniz."
+      }
+    }
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --ink:#12151A;
+    --surface:#1B1F27;
+    --surface-2:#232833;
+    --line:#333A47;
+    --paper:#EDE9E3;
+    --muted:#8B92A0;
+    --stamp:#E5484D;
+    --stamp-dim:#7A2C2F;
+    --ok:#4FD1C5;
+    --radius:10px;
+    --display:'Bricolage Grotesque', sans-serif;
+    --body:'Inter', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--body);
+    line-height:1.6;
+  }
+  h1,h2,h3,h4,.display{font-family:var(--display); letter-spacing:-0.02em;}
+  .mono{font-family:var(--mono);}
+  a{color:var(--ok); text-decoration:none;}
+  ::selection{background:var(--stamp); color:#fff;}
+
+  /* ---------- NAV ---------- */
+  .navbar-custom{
+    background:rgba(18,21,26,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:.9rem 0;
+  }
+  .brand-mark{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:1.25rem;
+    color:var(--paper);
+  }
+  .brand-mark span{color:var(--stamp);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:5.5rem 0 3rem;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:radial-gradient(circle at 1px 1px, rgba(237,233,227,0.06) 1px, transparent 1px);
+    background-size:26px 26px;
+    pointer-events:none;
+  }
+  .stamp-badge{
+    display:inline-flex; align-items:center; gap:.5rem;
+    border:2px solid var(--stamp);
+    color:var(--stamp);
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:.35rem .75rem;
+    border-radius:999px;
+    transform:rotate(-3deg);
+    margin-bottom:1.4rem;
+  }
+  .stamp-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--stamp);}
+  .hero h1{
+    font-size:clamp(2.3rem, 5vw, 3.8rem);
+    font-weight:800;
+    max-width:16ch;
+    margin-bottom:1.1rem;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--stamp);
+    position:relative;
+  }
+  .hero p.lead{
+    color:var(--muted);
+    max-width:52ch;
+    font-size:1.08rem;
+  }
+  .btn-stamp{
+    background:var(--stamp);
+    border:none;
+    color:#fff;
+    font-weight:700;
+    padding:.85rem 1.6rem;
+    border-radius:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 0 0 0 rgba(229,72,77,.5);
+  }
+  .btn-stamp:hover{transform:translateY(-2px); box-shadow:0 10px 24px -8px rgba(229,72,77,.6); color:#fff;}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:.85rem 1.4rem;
+    border-radius:8px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .btn-ghost:hover{border-color:var(--ok); color:var(--paper); background:rgba(79,209,197,.06);}
+
+  /* ---------- STUDIO ---------- */
+  .studio{
+    padding:2.5rem 0 4rem;
+  }
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+  }
+  .panel-head{
+    padding:.9rem 1.1rem;
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:between;
+    gap:.5rem;
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .dropzone{
+    border:2px dashed var(--line);
+    border-radius:var(--radius);
+    padding:2.5rem 1rem;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .dropzone:hover, .dropzone.dragover{border-color:var(--ok); background:rgba(79,209,197,.05);}
+  .dropzone svg{opacity:.6; margin-bottom:.6rem;}
+
+  .canvas-wrap{
+    background:
+      linear-gradient(45deg, #20242c 25%, transparent 25%),
+      linear-gradient(-45deg, #20242c 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #20242c 75%),
+      linear-gradient(-45deg, transparent 75%, #20242c 75%);
+    background-size:20px 20px;
+    background-position:0 0, 0 10px, 10px -10px, -10px 0px;
+    background-color:#171a20;
+    border-radius:var(--radius);
+    display:flex; align-items:center; justify-content:center;
+    min-height:340px;
+    max-height:70vh;
+    overflow:auto;
+    position:relative;
+  }
+  #mainCanvas{max-width:100%; touch-action:none; cursor:crosshair; border-radius:4px;}
+  .corner-mark{position:absolute; width:16px; height:16px; opacity:.5; pointer-events:none;}
+  .corner-mark.tl{top:8px; left:8px; border-top:2px solid var(--stamp); border-left:2px solid var(--stamp);}
+  .corner-mark.tr{top:8px; right:8px; border-top:2px solid var(--stamp); border-right:2px solid var(--stamp);}
+  .corner-mark.bl{bottom:8px; left:8px; border-bottom:2px solid var(--stamp); border-left:2px solid var(--stamp);}
+  .corner-mark.br{bottom:8px; right:8px; border-bottom:2px solid var(--stamp); border-right:2px solid var(--stamp);}
+
+  .tool-btn{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--paper);
+    border-radius:8px;
+    padding:.55rem .8rem;
+    font-size:.85rem;
+    display:flex; align-items:center; gap:.45rem;
+    transition:all .15s ease;
+    width:100%;
+  }
+  .tool-btn:hover{border-color:var(--ok); color:var(--paper);}
+  .tool-btn.active{background:var(--ok); border-color:var(--ok); color:#0b1210; font-weight:700;}
+
+  .layer-item{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:.55rem .7rem;
+    display:flex; align-items:center; gap:.6rem;
+    margin-bottom:.5rem;
+    cursor:grab;
+    transition:border-color .15s ease;
+  }
+  .layer-item.selected{border-color:var(--stamp);}
+  .layer-item:active{cursor:grabbing;}
+  .layer-swatch{width:26px; height:26px; border-radius:50%; background:repeating-linear-gradient(45deg, #444 0 3px, #555 3px 6px); flex-shrink:0; border:1px solid var(--line);}
+  .layer-name{font-size:.82rem; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .layer-name small{display:block; color:var(--muted); font-family:var(--mono); font-size:.68rem;}
+  .layer-icon-btn{background:none; border:none; color:var(--muted); padding:.2rem .35rem;}
+  .layer-icon-btn:hover{color:var(--stamp);}
+  .layer-icon-btn.eye:hover{color:var(--ok);}
+
+  .range-row{display:flex; align-items:center; gap:.7rem; margin-bottom:.9rem;}
+  .range-row label{font-size:.78rem; color:var(--muted); min-width:86px;}
+  .form-range::-webkit-slider-thumb{background:var(--ok);}
+
+  .status-pill{
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.08em;
+    padding:.3rem .65rem; border-radius:999px; border:1px solid var(--line); color:var(--muted);
+  }
+  .status-pill.busy{color:var(--stamp); border-color:var(--stamp);}
+  .status-pill.ready{color:var(--ok); border-color:var(--ok);}
+
+  .export-format{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:8px;
+    padding:.6rem; text-align:center; cursor:pointer; transition:all .15s ease;
+  }
+  .export-format:hover{border-color:var(--ok);}
+  .export-format input{display:none;}
+  .export-format.active{border-color:var(--ok); background:rgba(79,209,197,.08);}
+
+  /* ---------- SEO SECTIONS ---------- */
+  .section{padding:4.5rem 0; border-top:1px solid var(--line);}
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--stamp); margin-bottom:.7rem; display:block;
+  }
+  .section h2{font-size:clamp(1.6rem,3vw,2.3rem); margin-bottom:1rem;}
+  .section p{color:var(--muted);}
+  .feature-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:1.6rem; height:100%; transition:transform .2s ease, border-color .2s ease;
+  }
+  .feature-card:hover{transform:translateY(-4px); border-color:var(--ok);}
+  .feature-card .num{font-family:var(--mono); color:var(--stamp); font-size:.78rem; letter-spacing:.1em;}
+  .feature-card h3{font-size:1.05rem; margin:.5rem 0 .5rem;}
+  .feature-card p{font-size:.9rem; margin:0;}
+
+  .faq-item{border-bottom:1px solid var(--line); padding:1.1rem 0;}
+  .faq-item summary{cursor:pointer; font-weight:600; list-style:none; display:flex; justify-content:space-between; align-items:center;}
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{content:"+"; font-family:var(--mono); color:var(--stamp); font-size:1.2rem;}
+  .faq-item[open] summary::after{content:"–";}
+  .faq-item p{margin-top:.7rem; color:var(--muted); font-size:.92rem;}
+
+  footer{border-top:1px solid var(--line); padding:2.5rem 0; color:var(--muted); font-size:.85rem;}
+  footer a{color:var(--muted);}
+  footer a:hover{color:var(--ok);}
+
+  ::-webkit-scrollbar{width:10px; height:10px;}
+  ::-webkit-scrollbar-track{background:var(--surface);}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:6px;}
+
+  @media (max-width:991px){
+    .studio-sidebar{margin-top:1.2rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav class="navbar navbar-custom fixed-top">
+  <div class="container d-flex justify-content-between align-items-center">
+    <span class="brand-mark">ebubekir<span>bastama</span>.com.tr</span>
+    <a href="#studio" class="btn btn-stamp btn-sm d-none d-sm-inline-block">Aracı Aç</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="container position-relative" style="padding-top:2.5rem;">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <span class="stamp-badge"><span class="dot"></span> Tarayıcıda Çalışır · Sunucuya Yüklenmez</span>
+        <h1>Yüzleri <em>otomatik</em> bul, katman katman gizle.</h1>
+        <p class="lead">Fotoğrafını yükle, yapay zeka yüzleri saniyeler içinde tespit edip bulanıklaştırsın. Beğenmediğin katmanı sil, istediğin bölgeye kendi elinle daire veya serbest çizim ile yeni bir gizleme katmanı ekle — sürükle, boyutlandır, dışa aktar.</p>
+        <div class="d-flex gap-3 flex-wrap mt-4">
+          <a href="#studio" class="btn btn-stamp">Fotoğraf Yükle →</a>
+          <a href="#nasil-calisir" class="btn btn-ghost">Nasıl çalışır?</a>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block text-center">
+        <svg width="280" height="280" viewBox="0 0 280 280" fill="none" style="opacity:.9">
+          <circle cx="140" cy="140" r="120" stroke="#333A47" stroke-width="1.5"/>
+          <circle cx="140" cy="140" r="90" stroke="#E5484D" stroke-width="2" stroke-dasharray="6 8"/>
+          <circle cx="140" cy="140" r="55" fill="#232833" stroke="#4FD1C5" stroke-width="2"/>
+          <text x="140" y="147" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#4FD1C5">GİZLİ</text>
+          <line x1="140" y1="20" x2="140" y2="45" stroke="#333A47"/>
+          <line x1="140" y1="235" x2="140" y2="260" stroke="#333A47"/>
+          <line x1="20" y1="140" x2="45" y2="140" stroke="#333A47"/>
+          <line x1="235" y1="140" x2="260" y2="140" stroke="#333A47"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= STUDIO ================= -->
+<section class="studio" id="studio">
+  <div class="container">
+
+    <div id="uploadStage">
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept="image/*,.heic,.webp,.avif" hidden>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B92A0" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+        <div class="mono" style="font-size:.85rem; color:var(--muted);">Fotoğrafı buraya sürükle ya da tıkla</div>
+        <div style="font-size:.75rem; color:var(--muted); margin-top:.3rem;">JPG · PNG · WEBP · AVIF · BMP · GIF destekler</div>
+      </div>
+    </div>
+
+    <div id="editStage" class="row g-3" style="display:none;">
+      <!-- CANVAS COLUMN -->
+      <div class="col-lg-8">
+        <div class="panel">
+          <div class="panel-head">
+            <span>Önizleme Alanı</span>
+            <span class="ms-auto d-flex align-items-center gap-2">
+              <span id="statusPill" class="status-pill ready">hazır</span>
+            </span>
+          </div>
+          <div class="p-3">
+            <div class="canvas-wrap" id="canvasWrap">
+              <span class="corner-mark tl"></span><span class="corner-mark tr"></span>
+              <span class="corner-mark bl"></span><span class="corner-mark br"></span>
+              <canvas id="mainCanvas"></canvas>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+              <div class="d-flex gap-2">
+                <button class="btn btn-ghost btn-sm" id="btnRedetect">↻ Yeniden Tespit Et</button>
+                <button class="btn btn-ghost btn-sm" id="btnClearAll">Tüm Katmanları Temizle</button>
+              </div>
+              <label class="btn btn-ghost btn-sm mb-0">
+                Yeni Fotoğraf <input type="file" id="fileInputAlt" accept="image/*" hidden>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXPORT -->
+        <div class="panel mt-3">
+          <div class="panel-head"><span>Dışa Aktar</span></div>
+          <div class="p-3">
+            <div class="row g-2 mb-3">
+              <div class="col-4">
+                <label class="export-format active" data-fmt="image/png"><input type="radio" name="fmt" checked> <div class="mono" style="font-size:.8rem;">PNG</div><div style="font-size:.68rem; color:var(--muted);">Şeffaf, kayıpsız</div></label>
+              </div>
+              <div class="col-4">
+                <label class="export-format" data-fmt="image/jpeg"><input type="radio" name="fmt"> <div class="mono" style="font-size:.8rem;">JPEG</div><div style="font-size:.68rem; color:var(--muted);">Küçük boyut</div></label>
+              </div>
+              <div class="col-4">
+                <label class="export-format" data-fmt="image/webp"><input type="radio" name="fmt"> <div class="mono" style="font-size:.8rem;">WEBP</div><div style="font-size:.68rem; color:var(--muted);">Modern, hafif</div></label>
+              </div>
+            </div>
+            <div class="range-row" id="qualityRow">
+              <label>Kalite</label>
+              <input type="range" class="form-range" id="qualityRange" min="0.4" max="1" step="0.05" value="0.92">
+              <span class="mono" id="qualityVal" style="font-size:.75rem; width:36px;">92%</span>
+            </div>
+            <button class="btn btn-stamp w-100" id="btnExport">⬇ Görseli İndir</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="col-lg-4 studio-sidebar">
+        <div class="panel mb-3">
+          <div class="panel-head"><span>Katman Ekle</span></div>
+          <div class="p-3">
+            <div class="row g-2 mb-3">
+              <div class="col-6"><button class="tool-btn" id="toolCircle">⬤ Yuvarlak Alan</button></div>
+              <div class="col-6"><button class="tool-btn" id="toolBrush">✎ Serbest Çizim</button></div>
+            </div>
+            <div class="range-row">
+              <label>Fırça / Yarıçap</label>
+              <input type="range" class="form-range" id="brushSize" min="10" max="140" value="45">
+            </div>
+            <div class="range-row">
+              <label>Bulanıklık</label>
+              <input type="range" class="form-range" id="blurAmount" min="4" max="60" value="18">
+            </div>
+            <div style="font-size:.76rem; color:var(--muted);">Bir araç seç, sonra tuval üzerinde tıklayıp sürükleyerek gizlemek istediğin bölgeyi işaretle.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <span>Katmanlar</span>
+            <span class="ms-auto mono" id="layerCount" style="font-size:.7rem; color:var(--muted);">0</span>
+          </div>
+          <div class="p-3" id="layerList" style="max-height:360px; overflow-y:auto;">
+            <div class="text-center" style="color:var(--muted); font-size:.82rem; padding:1.5rem 0;" id="emptyLayers">
+              Henüz katman yok.<br>Fotoğraf yüklendiğinde yüzler otomatik eklenir.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= NASIL ÇALIŞIR / SEO ================= -->
+<section class="section" id="nasil-calisir">
+  <div class="container">
+    <span class="eyebrow">Nasıl Çalışır</span>
+    <h2>Üç adımda gizlilik odaklı fotoğraf düzenleme</h2>
+    <p style="max-width:60ch; margin-bottom:2.5rem;">Bu araç, yüz tespiti dahil tüm işlemleri doğrudan tarayıcınızın içinde, cihazınızın işlemcisiyle gerçekleştirir. Fotoğrafınız hiçbir zaman bir sunucuya yüklenmez; bu da onu KVKK ve genel veri gizliliği pratikleri açısından güvenli bir seçim yapar.</p>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="feature-card">
+          <span class="num">01</span>
+          <h3>Fotoğrafı Yükle</h3>
+          <p>JPG, PNG, WEBP, AVIF, BMP, GIF gibi yaygın tüm formatları sürükle-bırak veya dosya seçici ile yükleyebilirsin.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <span class="num">02</span>
+          <h3>Otomatik Tespit ve Düzenleme</h3>
+          <p>Yapay zeka modeli yüzleri saniyeler içinde bulur ve bulanık katman ekler. İstemediğin katmanı sil, kendi bölgeni daire veya serbest çizimle işaretle, sürükleyip konumlandır.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <span class="num">03</span>
+          <h3>İndir</h3>
+          <p>PNG, JPEG veya WEBP formatında, istediğin kalite ayarıyla tek tıkla dışa aktar.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Neden Bu Araç</span>
+    <h2>Gizliliğe uygun, katman tabanlı bir düzenleyici</h2>
+    <div class="row g-3 mt-2">
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card"><h3>🔒 %100 Tarayıcı Tabanlı</h3><p>Görseller cihazından hiç çıkmaz, üçüncü bir sunucuya gönderilmez.</p></div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card"><h3>🎯 Akıllı Yüz Tespiti</h3><p>Birden fazla yüzü aynı anda tanır ve ayrı katmanlar olarak listeler.</p></div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card"><h3>🖌️ Serbest Katman Kontrolü</h3><p>Katmanları sil, ekle, sürükle; yuvarlak veya serbest çizimle özel bölgeler tanımla.</p></div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card"><h3>📤 Çoklu Format Çıktı</h3><p>PNG, JPEG ve WEBP formatlarında, ayarlanabilir kalitede dışa aktar.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">Sık Sorulan Sorular</span>
+    <h2>Merak edilenler</h2>
+    <div style="max-width:70ch;">
+      <details class="faq-item">
+        <summary>Fotoğraflarım bir sunucuya yükleniyor mu?</summary>
+        <p>Hayır. Tüm yüz tespiti ve bulanıklaştırma işlemleri tarayıcınızda, JavaScript ile gerçekleştirilir. Görseliniz cihazınızdan hiç ayrılmaz.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Hangi görsel formatlarını destekliyor?</summary>
+        <p>Yükleme tarafında JPG, PNG, WEBP, AVIF, BMP ve GIF gibi tarayıcının desteklediği tüm yaygın formatları kabul eder. Dışa aktarmada PNG, JPEG ve WEBP seçenekleri sunulur.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Otomatik tespit edilen bulanıklığı kaldırabilir miyim?</summary>
+        <p>Evet. Sağdaki katmanlar listesinden her bir bulanıklık katmanını tek tek silebilir veya gizleyip tekrar gösterebilirsin.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Yüz dışındaki bir bölgeyi de bulanıklaştırabilir miyim?</summary>
+        <p>Evet. "Yuvarlak Alan" veya "Serbest Çizim" araçlarıyla fotoğrafın istediğin herhangi bir bölgesine manuel katman ekleyebilirsin.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container d-flex flex-wrap justify-content-between gap-3">
+    <div>© <span id="year"></span> ebubekirbastama.com.tr — Tüm hakları saklıdır.</div>
+    <div class="d-flex gap-3">
+      <a href="#studio">Araç</a>
+      <a href="#nasil-calisir">Nasıl Çalışır</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ============================================================
+   YÜZ BULANIKLAŞTIRMA STÜDYOSU
+   ============================================================ */
+const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const fileInputAlt = document.getElementById('fileInputAlt');
+const uploadStage = document.getElementById('uploadStage');
+const editStage = document.getElementById('editStage');
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d');
+const statusPill = document.getElementById('statusPill');
+const layerListEl = document.getElementById('layerList');
+const emptyLayers = document.getElementById('emptyLayers');
+const layerCountEl = document.getElementById('layerCount');
+
+let originalCanvas = document.createElement('canvas');
+let originalCtx = originalCanvas.getContext('2d');
+let img = new Image();
+let layers = [];       // {id, type:'circle'|'brush', cx, cy, r, points:[{x,y,r}], blur, visible, name}
+let layerSeq = 1;
+let selectedLayerId = null;
+let activeTool = null; // 'circle' | 'brush'
+let modelsReady = false;
+let modelsLoading = false;
+
+/* ---------- setStatus ---------- */
+function setStatus(text, mode){
+  statusPill.textContent = text;
+  statusPill.className = 'status-pill ' + (mode || '');
+}
+
+/* ---------- Upload handling ---------- */
+[dropzone].forEach(z=>{
+  z.addEventListener('click', ()=> fileInput.click());
+  z.addEventListener('dragover', e=>{e.preventDefault(); z.classList.add('dragover');});
+  z.addEventListener('dragleave', ()=> z.classList.remove('dragover'));
+  z.addEventListener('drop', e=>{
+    e.preventDefault(); z.classList.remove('dragover');
+    if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+});
+fileInput.addEventListener('change', e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
+fileInputAlt.addEventListener('change', e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(file){
+  const url = URL.createObjectURL(file);
+  const im = new Image();
+  im.onload = ()=>{
+    img = im;
+    const maxW = 1400;
+    let w = im.naturalWidth, h = im.naturalHeight;
+    if(w > maxW){ h = h * (maxW/w); w = maxW; }
+    originalCanvas.width = w; originalCanvas.height = h;
+    originalCtx.clearRect(0,0,w,h);
+    originalCtx.drawImage(im,0,0,w,h);
+    canvas.width = w; canvas.height = h;
+    layers = []; layerSeq = 1; selectedLayerId = null;
+    uploadStage.style.display = 'none';
+    editStage.style.display = 'flex';
+    renderCanvas();
+    renderLayerList();
+    runFaceDetection();
+    URL.revokeObjectURL(url);
+  };
+  im.src = url;
+}
+
+/* ---------- Face-api model loading + detection ---------- */
+async function ensureModels(){
+  if(modelsReady) return true;
+  if(modelsLoading) return false;
+  modelsLoading = true;
+  setStatus('model yükleniyor…','busy');
+  try{
+    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+    modelsReady = true;
+    return true;
+  }catch(err){
+    console.error(err);
+    setStatus('model yüklenemedi','busy');
+    return false;
+  }finally{
+    modelsLoading = false;
+  }
+}
+
+async function runFaceDetection(){
+  const ok = await ensureModels();
+  if(!ok){ setStatus('hazır','ready'); return; }
+  setStatus('yüzler taranıyor…','busy');
+  try{
+    const detections = await faceapi.detectAllFaces(originalCanvas, new faceapi.TinyFaceDetectorOptions({inputSize:416, scoreThreshold:0.4}));
+    detections.forEach(d=>{
+      const box = d.box;
+      const cx = box.x + box.width/2;
+      const cy = box.y + box.height/2;
+      const r = Math.max(box.width, box.height) * 0.62;
+      layers.push({
+        id: layerSeq++, type:'circle', cx, cy, r,
+        blur: 18, visible:true, name:'Otomatik Yüz'
+      });
+    });
+    setStatus(detections.length ? detections.length+' yüz bulundu' : 'yüz bulunamadı','ready');
+  }catch(err){
+    console.error(err);
+    setStatus('tespit hatası','ready');
+  }
+  renderCanvas();
+  renderLayerList();
+}
+
+document.getElementById('btnRedetect').addEventListener('click', ()=>{
+  layers = layers.filter(l=> l.type !== 'circle' || l.name !== 'Otomatik Yüz');
+  runFaceDetection();
+});
+document.getElementById('btnClearAll').addEventListener('click', ()=>{
+  layers = []; selectedLayerId = null; renderCanvas(); renderLayerList();
+});
+
+/* ---------- Rendering ---------- */
+function renderCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(originalCanvas,0,0);
+  layers.forEach(layer=>{
+    if(!layer.visible) return;
+    if(layer.type === 'circle'){
+      drawBlurredCircle(layer.cx, layer.cy, layer.r, layer.blur);
+    } else if(layer.type === 'brush'){
+      drawBlurredPath(layer.points, layer.blur);
+    }
+    if(layer.id === selectedLayerId){
+      ctx.save();
+      ctx.strokeStyle = '#E5484D';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6,5]);
+      if(layer.type === 'circle'){
+        ctx.beginPath();
+        ctx.arc(layer.cx, layer.cy, layer.r, 0, Math.PI*2);
+        ctx.stroke();
+      } else {
+        ctx.stroke(buildBrushPath(layer.points));
+      }
+      ctx.restore();
+    }
+  });
+}
+
+function drawBlurredCircle(cx, cy, r, blurPx){
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.clip();
+  ctx.filter = `blur(${blurPx}px)`;
+  ctx.drawImage(originalCanvas, 0, 0);
+  ctx.restore();
+}
+
+function brushBounds(layer){
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  layer.points.forEach(p=>{
+    minX=Math.min(minX,p.x); minY=Math.min(minY,p.y);
+    maxX=Math.max(maxX,p.x); maxY=Math.max(maxY,p.y);
+  });
+  return {x:minX,y:minY,w:maxX-minX,h:maxY-minY};
+}
+
+/* Serbest çizim: kullanıcının çizdiği kapalı yol (kare, daire, ya da elle çizilmiş
+   herhangi bir şekil) çevrelediği TÜM alanı doldurup blurlar — sadece çizgi boyunca değil. */
+function buildBrushPath(points){
+  const path = new Path2D();
+  if(points.length < 2){
+    if(points.length===1) path.arc(points[0].x, points[0].y, Math.max(brushSizeInput.value*0.5,10), 0, Math.PI*2);
+    return path;
+  }
+  path.moveTo(points[0].x, points[0].y);
+  for(let i=1;i<points.length;i++) path.lineTo(points[i].x, points[i].y);
+  path.closePath();
+  return path;
+}
+
+function drawBlurredPath(points, blurPx){
+  if(!points || points.length===0) return;
+  ctx.save();
+  const path = buildBrushPath(points);
+  ctx.clip(path);
+  ctx.filter = `blur(${blurPx}px)`;
+  ctx.drawImage(originalCanvas, 0, 0);
+  ctx.restore();
+}
+
+/* ---------- Layer list UI ---------- */
+function renderLayerList(){
+  layerListEl.querySelectorAll('.layer-item').forEach(n=>n.remove());
+  layerCountEl.textContent = layers.length;
+  emptyLayers.style.display = layers.length ? 'none' : 'block';
+
+  [...layers].reverse().forEach(layer=>{
+    const item = document.createElement('div');
+    item.className = 'layer-item' + (layer.id===selectedLayerId ? ' selected':'');
+    item.draggable = true;
+    item.dataset.id = layer.id;
+    item.innerHTML = `
+      <div class="layer-swatch"></div>
+      <div class="layer-name">${layer.name}<small>#${layer.id} · blur ${layer.blur}px</small></div>
+      <button class="layer-icon-btn eye" title="Göster/Gizle">${layer.visible?'👁':'🚫'}</button>
+      <button class="layer-icon-btn del" title="Sil">✕</button>
+    `;
+    item.addEventListener('click', (e)=>{
+      if(e.target.closest('.eye') || e.target.closest('.del')) return;
+      selectedLayerId = layer.id; renderCanvas(); renderLayerList();
+    });
+    item.querySelector('.eye').addEventListener('click', ()=>{
+      layer.visible = !layer.visible; renderCanvas(); renderLayerList();
+    });
+    item.querySelector('.del').addEventListener('click', ()=>{
+      layers = layers.filter(l=>l.id!==layer.id);
+      if(selectedLayerId===layer.id) selectedLayerId=null;
+      renderCanvas(); renderLayerList();
+    });
+    item.addEventListener('dragstart', ()=> item.classList.add('dragging'));
+    item.addEventListener('dragend', ()=>{
+      item.classList.remove('dragging');
+      const order = [...layerListEl.querySelectorAll('.layer-item')].map(n=>+n.dataset.id).reverse();
+      layers.sort((a,b)=> order.indexOf(a.id) - order.indexOf(b.id));
+      renderCanvas();
+    });
+    layerListEl.appendChild(item);
+  });
+
+  layerListEl.addEventListener('dragover', e=>{
+    e.preventDefault();
+    const dragging = layerListEl.querySelector('.dragging');
+    if(!dragging) return;
+    const after = [...layerListEl.querySelectorAll('.layer-item:not(.dragging)')].find(el=>{
+      const box = el.getBoundingClientRect();
+      return e.clientY < box.top + box.height/2;
+    });
+    if(after) layerListEl.insertBefore(dragging, after);
+    else layerListEl.appendChild(dragging);
+  });
+}
+
+/* ---------- Tool selection ---------- */
+const toolCircleBtn = document.getElementById('toolCircle');
+const toolBrushBtn = document.getElementById('toolBrush');
+const brushSizeInput = document.getElementById('brushSize');
+const blurAmountInput = document.getElementById('blurAmount');
+
+function setTool(t){
+  activeTool = (activeTool === t) ? null : t;
+  toolCircleBtn.classList.toggle('active', activeTool==='circle');
+  toolBrushBtn.classList.toggle('active', activeTool==='brush');
+}
+toolCircleBtn.addEventListener('click', ()=> setTool('circle'));
+toolBrushBtn.addEventListener('click', ()=> setTool('brush'));
+
+blurAmountInput.addEventListener('input', ()=>{
+  if(selectedLayerId){
+    const l = layers.find(x=>x.id===selectedLayerId);
+    if(l){ l.blur = +blurAmountInput.value; renderCanvas(); renderLayerList(); }
+  }
+});
+
+/* ---------- Canvas interaction: create / move / resize ---------- */
+let dragState = null; // {mode:'create-circle'|'create-brush'|'move'|'resize', layer, offsetX, offsetY}
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  return { x: cx*scaleX, y: cy*scaleY };
+}
+
+function hitTestLayer(pos){
+  for(let i=layers.length-1;i>=0;i--){
+    const l = layers[i];
+    if(!l.visible) continue;
+    if(l.type==='circle'){
+      const d = Math.hypot(pos.x-l.cx, pos.y-l.cy);
+      if(d <= l.r) return {layer:l, edge: d > l.r-10};
+    } else {
+      const b = brushBounds(l);
+      if(pos.x>=b.x && pos.x<=b.x+b.w && pos.y>=b.y && pos.y<=b.y+b.h) return {layer:l, edge:false};
+    }
+  }
+  return null;
+}
+
+canvas.addEventListener('mousedown', onDown);
+canvas.addEventListener('touchstart', onDown, {passive:false});
+
+function onDown(e){
+  e.preventDefault();
+  const pos = getPos(e);
+
+  if(activeTool === 'circle'){
+    const r = +brushSizeInput.value;
+    const layer = { id: layerSeq++, type:'circle', cx:pos.x, cy:pos.y, r, blur:+blurAmountInput.value, visible:true, name:'Özel Alan' };
+    layers.push(layer);
+    selectedLayerId = layer.id;
+    dragState = { mode:'resize', layer };
+    renderCanvas(); renderLayerList();
+    return;
+  }
+  if(activeTool === 'brush'){
+    const layer = { id: layerSeq++, type:'brush', points:[{x:pos.x,y:pos.y,r:+brushSizeInput.value}], blur:+blurAmountInput.value, visible:true, name:'Serbest Çizim' };
+    layers.push(layer);
+    selectedLayerId = layer.id;
+    dragState = { mode:'draw', layer };
+    renderCanvas(); renderLayerList();
+    return;
+  }
+
+  const hit = hitTestLayer(pos);
+  if(hit){
+    selectedLayerId = hit.layer.id;
+    blurAmountInput.value = hit.layer.blur;
+    if(hit.layer.type==='circle' && hit.edge){
+      dragState = { mode:'resize', layer:hit.layer };
+    } else {
+      dragState = { mode:'move', layer:hit.layer, startX:pos.x, startY:pos.y,
+        origCx: hit.layer.cx, origCy: hit.layer.cy,
+        origPoints: hit.layer.points ? hit.layer.points.map(p=>({...p})) : null };
+    }
+    renderCanvas(); renderLayerList();
+  } else {
+    selectedLayerId = null;
+    renderCanvas(); renderLayerList();
+  }
+}
+
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('touchmove', onMove, {passive:false});
+
+function onMove(e){
+  if(!dragState) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  const layer = dragState.layer;
+
+  if(dragState.mode === 'resize' && layer.type==='circle'){
+    layer.r = Math.max(8, Math.hypot(pos.x-layer.cx, pos.y-layer.cy));
+  } else if(dragState.mode === 'draw'){
+    layer.points.push({x:pos.x, y:pos.y, r:+brushSizeInput.value});
+  } else if(dragState.mode === 'move'){
+    const dx = pos.x - dragState.startX;
+    const dy = pos.y - dragState.startY;
+    if(layer.type==='circle'){
+      layer.cx = dragState.origCx + dx;
+      layer.cy = dragState.origCy + dy;
+    } else {
+      layer.points = dragState.origPoints.map(p=>({x:p.x+dx, y:p.y+dy, r:p.r}));
+    }
+  }
+  renderCanvas();
+}
+
+function onUp(){
+  if(dragState && dragState.mode !== 'draw'){
+    // keep tool active off after single create for circle mode? leave tool selectable
+  }
+  dragState = null;
+  activeToolReset();
+  renderLayerList();
+}
+window.addEventListener('mouseup', onUp);
+window.addEventListener('touchend', onUp);
+
+function activeToolReset(){
+  // Auto-deselect drawing tool after one shape so user doesn't spam-create
+  if(activeTool){ activeTool=null; toolCircleBtn.classList.remove('active'); toolBrushBtn.classList.remove('active'); }
+}
+
+/* ---------- Export ---------- */
+let exportFmt = 'image/png';
+document.querySelectorAll('.export-format').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.export-format').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    el.querySelector('input').checked = true;
+    exportFmt = el.dataset.fmt;
+    document.getElementById('qualityRow').style.display = exportFmt==='image/png' ? 'none' : 'flex';
+  });
+});
+const qualityRange = document.getElementById('qualityRange');
+const qualityVal = document.getElementById('qualityVal');
+qualityRange.addEventListener('input', ()=> qualityVal.textContent = Math.round(qualityRange.value*100)+'%');
+
+document.getElementById('btnExport').addEventListener('click', ()=>{
+  const prevSelected = selectedLayerId;
+  selectedLayerId = null;
+  renderCanvas();
+  const quality = +qualityRange.value;
+  canvas.toBlob((blob)=>{
+    const a = document.createElement('a');
+    const ext = exportFmt.split('/')[1];
+    a.href = URL.createObjectURL(blob);
+    a.download = `bulaniklastirilmis-foto.${ext}`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    selectedLayerId = prevSelected;
+    renderCanvas();
+  }, exportFmt, exportFmt==='image/png' ? undefined : quality);
+});
+</script>
+</body>
+</html>
