@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haber Masası — Özetle & Dinle</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1a17;
+    --paper:#f6f2ea;
+    --paper-2:#eee7d8;
+    --rule:#d8cfb8;
+    --accent:#8a3324;
+    --accent-2:#2e5339;
+    --muted:#7a7266;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    min-height:100vh;
+  }
+  .masthead{
+    border-bottom:3px solid var(--ink);
+    padding:1.75rem 0 1rem;
+  }
+  .masthead .kicker{
+    font-size:.72rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .masthead h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:2.6rem;
+    margin:.15rem 0 0;
+    letter-spacing:-0.01em;
+  }
+  .masthead .dateline{
+    font-size:.8rem;
+    color:var(--muted);
+    border-top:1px solid var(--rule);
+    margin-top:.9rem;
+    padding-top:.5rem;
+    display:flex;
+    justify-content:space-between;
+  }
+  .panel{
+    background:var(--paper-2);
+    border:1px solid var(--rule);
+  }
+  .panel-label{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.05rem;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .panel-label .num{
+    color:var(--accent);
+    font-variant-numeric:tabular-nums;
+  }
+  textarea.newsroom{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    font-family:'Source Sans 3', sans-serif;
+    font-size:.95rem;
+    line-height:1.55;
+    resize:vertical;
+  }
+  textarea.newsroom:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(138,51,36,.12);
+  }
+  .btn-ink{
+    background:var(--ink);
+    color:var(--paper);
+    border:1px solid var(--ink);
+    font-weight:600;
+    letter-spacing:.02em;
+  }
+  .btn-ink:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn-outline-ink{
+    border:1px solid var(--ink);
+    color:var(--ink);
+    background:transparent;
+    font-weight:600;
+  }
+  .btn-outline-ink:hover{ background:var(--ink); color:var(--paper); }
+  .slider-row{
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+  }
+  .slider-row input[type=range]{ accent-color: var(--accent); flex:1; }
+  #summaryBox{
+    font-family:'Fraunces', serif;
+    font-size:1.12rem;
+    line-height:1.7;
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-left:4px solid var(--accent);
+    padding:1.25rem 1.4rem;
+    min-height:160px;
+  }
+  #summaryBox .placeholder{ color:var(--muted); font-family:'Source Sans 3', sans-serif; font-style:italic; font-size:.95rem;}
+  .stat-strip{
+    display:flex;
+    gap:1.5rem;
+    font-size:.78rem;
+    color:var(--muted);
+    border-top:1px solid var(--rule);
+    padding-top:.6rem;
+    margin-top:.9rem;
+  }
+  .stat-strip b{ color:var(--ink); }
+  .reader-bar{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    flex-wrap:wrap;
+  }
+  .voice-select{
+    font-size:.82rem;
+    background:var(--paper);
+    border:1px solid var(--rule);
+  }
+  mark.hl{
+    background:#f0d9a6;
+    border-radius:2px;
+    box-decoration-break:clone;
+  }
+  .badge-soft{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    color:var(--ink);
+    font-weight:500;
+    font-size:.75rem;
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+  }
+  .status-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--muted);
+    display:inline-block;
+    flex-shrink:0;
+  }
+  .status-dot.live{
+    background:var(--accent);
+    animation:pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:.45; transform:scale(1.4); }
+  }
+
+  /* Reader panel */
+  .reader-panel{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-left:4px solid var(--accent);
+    padding:1.25rem 1.4rem;
+    min-height:160px;
+    font-family:'Fraunces', serif;
+    font-size:1.1rem;
+    line-height:1.75;
+  }
+  .reader-panel .placeholder{ color:var(--muted); font-family:'Source Sans 3', sans-serif; font-style:italic; font-size:.95rem;}
+  .reader-panel .rs{ transition:background .15s ease, box-shadow .15s ease; border-radius:2px; }
+  .reader-panel .rs.current{
+    background:#f0d9a6;
+    box-shadow:0 0 0 2px #f0d9a6;
+  }
+  .reader-panel .rs.done{ color:var(--muted); }
+
+  .source-toggle{
+    display:inline-flex;
+    border:1px solid var(--ink);
+    border-radius:.375rem;
+    overflow:hidden;
+    font-size:.78rem;
+  }
+  .source-toggle button{
+    background:var(--paper);
+    border:none;
+    padding:.28rem .7rem;
+    color:var(--ink);
+    font-weight:600;
+    cursor:pointer;
+  }
+  .source-toggle button + button{ border-left:1px solid var(--ink); }
+  .source-toggle button.active{ background:var(--ink); color:var(--paper); }
+
+  .progress-track{
+    height:5px;
+    background:var(--rule);
+    border-radius:3px;
+    overflow:hidden;
+    cursor:pointer;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    width:0%;
+    transition:width .12s linear;
+  }
+  .time-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:.72rem;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+    margin-top:.25rem;
+  }
+  .icon-btn{
+    border:1px solid var(--ink);
+    background:var(--paper);
+    color:var(--ink);
+    width:34px; height:34px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:.9rem;
+    line-height:1;
+  }
+  .icon-btn:hover:not(:disabled){ background:var(--ink); color:var(--paper); }
+  .icon-btn:disabled{ opacity:.35; }
+  .icon-btn.play-main{
+    width:44px; height:44px;
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+    font-size:1.05rem;
+  }
+  .icon-btn.play-main:hover:not(:disabled){ background:#6f281c; }
+  .icon-btn.play-main:disabled{ background:var(--rule); border-color:var(--rule); color:#fff; opacity:1; }
+  .voice-row{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    flex-wrap:wrap;
+  }
+  .field-label{
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--muted);
+    font-weight:600;
+    margin-bottom:.2rem;
+  }
+  footer.signoff{
+    font-size:.78rem;
+    color:var(--muted);
+    text-align:center;
+    padding:2rem 0 1rem;
+  }
+  @media (max-width: 767px){
+    .masthead h1{ font-size:1.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" style="max-width:960px;">
+  <div class="masthead">
+    <div class="kicker">Kişisel Haber Masanız</div>
+    <h1>Haber Masası</h1>
+    <div class="dateline">
+      <span id="todayDate"></span>
+      <span>Özetle · Dinle · Anla</span>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <!-- Sol: Giriş -->
+    <div class="col-lg-6">
+      <div class="panel p-3 p-md-4 h-100">
+        <div class="panel-label mb-2"><span class="num">01</span> Haberi Yapıştırın</div>
+        <textarea id="newsInput" class="form-control newsroom" rows="14" placeholder="Haber metnini buraya yapıştırın veya yazın..."></textarea>
+
+        <div class="mt-3">
+          <label class="form-label small fw-semibold">Özet uzunluğu</label>
+          <div class="slider-row">
+            <span class="small text-muted">Kısa</span>
+            <input type="range" id="lengthSlider" min="1" max="5" value="3">
+            <span class="small text-muted">Uzun</span>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button id="summarizeBtn" class="btn btn-ink flex-grow-1 py-2">Özetle</button>
+          <button id="clearBtn" class="btn btn-outline-ink py-2">Temizle</button>
+        </div>
+        <div class="stat-strip">
+          <span>Kelime: <b id="wordCount">0</b></span>
+          <span>Cümle: <b id="sentCount">0</b></span>
+          <span>Tahmini okuma: <b id="readTime">0 dk</b></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sağ: Özet -->
+    <div class="col-lg-6">
+      <div class="panel p-3 p-md-4 h-100 d-flex flex-column">
+        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+          <div class="panel-label"><span class="num">02</span> Okuyucu</div>
+          <div class="source-toggle" id="sourceToggle">
+            <button type="button" class="active" data-mode="summary">Özet</button>
+            <button type="button" data-mode="full">Tam Metin</button>
+          </div>
+        </div>
+
+        <div id="summaryBox" class="reader-panel flex-grow-1">
+          <span class="placeholder">Özet burada görünecek. Soldaki kutuya bir haber yapıştırıp "Özetle" düğmesine basın.</span>
+        </div>
+
+        <div class="mt-3">
+          <!-- İlerleme -->
+          <div class="progress-track" id="progressTrack">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="time-row">
+            <span id="timeElapsed">0:00</span>
+            <span id="sentenceCounter">Cümle 0 / 0</span>
+            <span id="timeRemaining">-0:00</span>
+          </div>
+
+          <!-- Transport kontrolleri -->
+          <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+            <button id="prevBtn" class="icon-btn" disabled title="Önceki cümle">⏮</button>
+            <button id="playBtn" class="icon-btn play-main" disabled title="Oynat">▶</button>
+            <button id="pauseBtn" class="icon-btn" disabled title="Duraklat">⏸</button>
+            <button id="stopBtn" class="icon-btn" disabled title="Durdur">⏹</button>
+            <button id="nextBtn" class="icon-btn" disabled title="Sonraki cümle">⏭</button>
+          </div>
+
+          <!-- Ses ve hız ayarları -->
+          <div class="voice-row mt-3">
+            <div>
+              <div class="field-label">Ses</div>
+              <div class="d-flex gap-1">
+                <select id="voiceSelect" class="form-select form-select-sm voice-select" style="max-width:200px;"></select>
+                <button id="previewBtn" class="btn btn-outline-ink btn-sm" title="Sesi önizle">🔊</button>
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Hız — <span id="rateVal">1.0×</span></div>
+              <input type="range" id="rateSlider" min="0.6" max="1.6" step="0.1" value="1" style="width:110px;">
+            </div>
+            <div>
+              <div class="field-label">Ses Düzeyi</div>
+              <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" style="width:90px;">
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <span class="badge badge-soft" id="ttsStatus"><span class="status-dot" id="statusDot"></span>Sesli okuma hazır değil</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="signoff">Özetleme tarayıcınızda, sunucuya veri gönderilmeden çalışır.</footer>
+</div>
+
+<script>
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('tr-TR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+// ---------- Türkçe durdurma kelimeleri ----------
+const stopWords = new Set(["ve","ile","bir","bu","şu","o","da","de","ki","mi","mu","mü","ama","fakat","ancak","için","gibi","çok","daha","en","ne","ya","ya da","veya","değil","olan","olarak","kadar","göre","sonra","önce","ise","diye","ise","her","tüm","bütün","hem","ise","şey","çünkü","böylece","yani","hatta","dahi","bile","ise","üzere","doğru","karşı","içinde","üzerinde","altında","arasında","biri","bazı","birçok","şöyle","öyle","nasıl","neden","niçin","acaba"]);
+
+function splitSentences(text){
+  return text
+    .replace(/\s+/g,' ')
+    .trim()
+    .split(/(?<=[.!?…])\s+(?=[A-ZÇĞİÖŞÜ0-9"“(])/)
+    .map(s=>s.trim())
+    .filter(s=>s.length>0);
+}
+
+function tokenizeWords(text){
+  return (text.toLowerCase()
+    .replace(/[çğıöşü]/g, c=>c) // keep tr chars
+    .match(/[a-zçğıöşü0-9]+/gi) || []);
+}
+
+function summarize(text, sentenceCount){
+  const sentences = splitSentences(text);
+  if(sentences.length === 0) return {summary:"", sentences:[], picked:[]};
+  if(sentences.length <= sentenceCount) return {summary: sentences.join(' '), sentences, picked: sentences.map((_,i)=>i)};
+
+  // word frequency
+  const freq = {};
+  sentences.forEach(s=>{
+    tokenizeWords(s).forEach(w=>{
+      if(w.length<3 || stopWords.has(w)) return;
+      freq[w] = (freq[w]||0)+1;
+    });
+  });
+  const maxFreq = Math.max(1, ...Object.values(freq));
+  Object.keys(freq).forEach(w=> freq[w] = freq[w]/maxFreq);
+
+  // score sentences: word freq + positional bonus (lead/end bias)
+  const scores = sentences.map((s,i)=>{
+    const words = tokenizeWords(s);
+    if(words.length===0) return 0;
+    let score = words.reduce((acc,w)=> acc + (freq[w]||0), 0) / Math.sqrt(words.length);
+    const posBonus = i===0 ? 0.35 : (i < sentences.length*0.15 ? 0.15 : 0);
+    return score + posBonus;
+  });
+
+  const ranked = scores.map((sc,i)=>({sc,i})).sort((a,b)=>b.sc-a.sc).slice(0,sentenceCount);
+  const picked = ranked.map(r=>r.i).sort((a,b)=>a-b);
+  const summary = picked.map(i=>sentences[i]).join(' ');
+  return {summary, sentences, picked};
+}
+
+const newsInput = document.getElementById('newsInput');
+const summaryBox = document.getElementById('summaryBox');
+const summarizeBtn = document.getElementById('summarizeBtn');
+const clearBtn = document.getElementById('clearBtn');
+const lengthSlider = document.getElementById('lengthSlider');
+const wordCount = document.getElementById('wordCount');
+const sentCount = document.getElementById('sentCount');
+const readTime = document.getElementById('readTime');
+
+function updateStats(){
+  const text = newsInput.value;
+  const words = tokenizeWords(text);
+  const sents = splitSentences(text);
+  wordCount.textContent = words.length;
+  sentCount.textContent = sents.length;
+  readTime.textContent = Math.max(1, Math.round(words.length/200)) + " dk";
+}
+newsInput.addEventListener('input', updateStats);
+
+let lastSummaryText = "";
+let fullSentences = [];
+let summarySentences = [];
+let currentMode = "summary"; // 'summary' | 'full'
+
+function renderReaderPanel(sentences){
+  if(!sentences || sentences.length === 0){
+    summaryBox.innerHTML = '<span class="placeholder">Özet burada görünecek. Soldaki kutuya bir haber yapıştırıp "Özetle" düğmesine basın.</span>';
+    return;
+  }
+  summaryBox.innerHTML = sentences.map((s,i)=>`<span class="rs" data-i="${i}">${s.replace(/</g,'&lt;')} </span>`).join('');
+}
+
+function doSummarize(){
+  const text = newsInput.value.trim();
+  fullSentences = splitSentences(text);
+  if(!text){
+    lastSummaryText = "";
+    summarySentences = [];
+    renderReaderPanel([]);
+    resetReaderState();
+    togglePlayback(false);
+    return;
+  }
+  const sentenceCount = parseInt(lengthSlider.value,10) + 1; // 2..6
+  const {summary, sentences, picked} = summarize(text, sentenceCount);
+  summarySentences = picked.length ? picked.map(i=>sentences[i]) : sentences;
+  lastSummaryText = summary;
+
+  currentMode = "summary";
+  setToggleActive("summary");
+  renderReaderPanel(summarySentences);
+  resetReaderState();
+  togglePlayback(summarySentences.length > 0);
+}
+
+summarizeBtn.addEventListener('click', doSummarize);
+clearBtn.addEventListener('click', ()=>{
+  newsInput.value = "";
+  updateStats();
+  fullSentences = [];
+  summarySentences = [];
+  lastSummaryText = "";
+  renderReaderPanel([]);
+  resetReaderState();
+  togglePlayback(false);
+  window.speechSynthesis && window.speechSynthesis.cancel();
+});
+
+// ---------- Kaynak seçici (Özet / Tam Metin) ----------
+const sourceToggle = document.getElementById('sourceToggle');
+function setToggleActive(mode){
+  sourceToggle.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.mode === mode));
+}
+sourceToggle.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const mode = btn.dataset.mode;
+  if(mode === currentMode) return;
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  currentMode = mode;
+  setToggleActive(mode);
+  const list = mode === 'summary' ? summarySentences : fullSentences;
+  renderReaderPanel(list);
+  resetReaderState();
+  togglePlayback(list.length > 0);
+});
+
+function activeSentences(){
+  return currentMode === 'summary' ? summarySentences : fullSentences;
+}
+
+// ---------- Sesli okuma (Web Speech API) — cümle sıralı, vurgulamalı ----------
+const voiceSelect = document.getElementById('voiceSelect');
+const previewBtn = document.getElementById('previewBtn');
+const rateSlider = document.getElementById('rateSlider');
+const rateVal = document.getElementById('rateVal');
+const volumeSlider = document.getElementById('volumeSlider');
+const playBtn = document.getElementById('playBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+const stopBtn = document.getElementById('stopBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const ttsStatus = document.getElementById('ttsStatus');
+const statusDot = document.getElementById('statusDot');
+const progressFill = document.getElementById('progressFill');
+const progressTrack = document.getElementById('progressTrack');
+const timeElapsed = document.getElementById('timeElapsed');
+const timeRemaining = document.getElementById('timeRemaining');
+const sentenceCounter = document.getElementById('sentenceCounter');
+
+let voices = [];
+let cursor = 0;          // hangi cümledeyiz
+let isSpeaking = false;
+let isPaused = false;
+let wordsPerSentence = [];
+
+function fmtTime(sec){
+  sec = Math.max(0, Math.round(sec));
+  const m = Math.floor(sec/60), s = sec%60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function estimateSeconds(sentences, rate){
+  const wordsPerMin = 165 * rate; // ortalama TR konuşma hızı yaklaşık değeri
+  const totalWords = sentences.reduce((a,s)=> a + tokenizeWords(s).length, 0);
+  return (totalWords / wordsPerMin) * 60;
+}
+
+function updateProgressUI(){
+  const sentences = activeSentences();
+  const n = sentences.length;
+  sentenceCounter.textContent = `Cümle ${n ? Math.min(cursor+1,n) : 0} / ${n}`;
+  const pct = n ? (cursor / n) * 100 : 0;
+  progressFill.style.width = pct + '%';
+
+  const rate = parseFloat(rateSlider.value);
+  const elapsedSec = estimateSeconds(sentences.slice(0, cursor), rate);
+  const remainingSec = estimateSeconds(sentences.slice(cursor), rate);
+  timeElapsed.textContent = fmtTime(elapsedSec);
+  timeRemaining.textContent = '-' + fmtTime(remainingSec);
+}
+
+function highlightCurrent(){
+  summaryBox.querySelectorAll('.rs').forEach(el=>{
+    const i = parseInt(el.dataset.i,10);
+    el.classList.toggle('current', i === cursor);
+    el.classList.toggle('done', i < cursor);
+  });
+  const cur = summaryBox.querySelector(`.rs[data-i="${cursor}"]`);
+  if(cur) cur.scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+
+function resetReaderState(){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  cursor = 0;
+  isSpeaking = false;
+  isPaused = false;
+  updateProgressUI();
+  highlightCurrent();
+  setStatus('idle', activeSentences().length ? 'Dinlemeye hazır' : 'Sesli okuma hazır değil');
+  prevBtn.disabled = true;
+  nextBtn.disabled = true;
+}
+
+function setStatus(state, label){
+  ttsStatus.textContent = '';
+  const dot = document.createElement('span');
+  dot.className = 'status-dot' + (state === 'live' ? ' live' : '');
+  ttsStatus.appendChild(dot);
+  ttsStatus.appendChild(document.createTextNode(label));
+}
+
+function togglePlayback(enabled){
+  playBtn.disabled = !enabled;
+  pauseBtn.disabled = true;
+  stopBtn.disabled = true;
+  prevBtn.disabled = true;
+  nextBtn.disabled = true;
+}
+
+function populateVoices(){
+  voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  voiceSelect.innerHTML = "";
+  if(voices.length === 0){
+    setStatus('idle', 'Sesler yükleniyor...');
+    return;
+  }
+  const sorted = [...voices].sort((a,b)=>{
+    const aTr = a.lang.toLowerCase().startsWith('tr') ? 0 : 1;
+    const bTr = b.lang.toLowerCase().startsWith('tr') ? 0 : 1;
+    return aTr - bTr;
+  });
+  sorted.forEach(v=>{
+    const opt = document.createElement('option');
+    opt.value = v.name;
+    opt.textContent = `${v.name} (${v.lang})${v.lang.toLowerCase().startsWith('tr') ? ' ★' : ''}`;
+    voiceSelect.appendChild(opt);
+  });
+  setStatus('idle', activeSentences().length ? 'Dinlemeye hazır' : 'Sesli okuma hazır');
+}
+
+if('speechSynthesis' in window){
+  populateVoices();
+  window.speechSynthesis.onvoiceschanged = populateVoices;
+} else {
+  setStatus('idle', 'Bu tarayıcı sesli okumayı desteklemiyor');
+  playBtn.disabled = true;
+  previewBtn.disabled = true;
+}
+
+function speakFrom(index){
+  const sentences = activeSentences();
+  if(index >= sentences.length){
+    isSpeaking = false;
+    setStatus('idle', 'Bitti');
+    cursor = sentences.length;
+    updateProgressUI();
+    highlightCurrent();
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+    stopBtn.disabled = true;
+    prevBtn.disabled = false;
+    nextBtn.disabled = true;
+    return;
+  }
+  cursor = index;
+  highlightCurrent();
+  updateProgressUI();
+
+  const u = new SpeechSynthesisUtterance(sentences[index]);
+  const chosen = voices.find(v=>v.name === voiceSelect.value);
+  if(chosen) u.voice = chosen;
+  u.lang = chosen ? chosen.lang : 'tr-TR';
+  u.rate = parseFloat(rateSlider.value);
+  u.volume = parseFloat(volumeSlider.value);
+
+  u.onstart = ()=>{
+    isSpeaking = true;
+    setStatus('live', 'Okunuyor...');
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+    stopBtn.disabled = false;
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index >= sentences.length - 1;
+  };
+  u.onend = ()=>{
+    if(!isSpeaking) return; // durdurulduysa devam etme
+    speakFrom(index + 1);
+  };
+  u.onerror = (e)=>{
+    if(e.error === 'interrupted' || e.error === 'canceled') return;
+    setStatus('idle', 'Bir hata oluştu');
+    togglePlayback(true);
+  };
+  window.speechSynthesis.speak(u);
+}
+
+playBtn.addEventListener('click', ()=>{
+  const sentences = activeSentences();
+  if(!sentences.length) return;
+  if(isPaused && window.speechSynthesis.paused){
+    window.speechSynthesis.resume();
+    isPaused = false;
+    setStatus('live', 'Okunuyor...');
+    pauseBtn.disabled = false;
+    playBtn.disabled = true;
+    return;
+  }
+  const startAt = cursor >= sentences.length ? 0 : cursor;
+  isSpeaking = true;
+  speakFrom(startAt);
+});
+
+pauseBtn.addEventListener('click', ()=>{
+  if(window.speechSynthesis.speaking && !window.speechSynthesis.paused){
+    window.speechSynthesis.pause();
+    isPaused = true;
+    setStatus('idle', 'Duraklatıldı');
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+  }
+});
+
+stopBtn.addEventListener('click', ()=>{
+  isSpeaking = false;
+  window.speechSynthesis.cancel();
+  isPaused = false;
+  cursor = 0;
+  updateProgressUI();
+  highlightCurrent();
+  setStatus('idle', 'Durduruldu');
+  togglePlayback(activeSentences().length > 0);
+});
+
+prevBtn.addEventListener('click', ()=>{
+  if(cursor > 0){
+    isSpeaking = true;
+    speakFrom(cursor - 1);
+  }
+});
+nextBtn.addEventListener('click', ()=>{
+  const sentences = activeSentences();
+  if(cursor < sentences.length - 1){
+    isSpeaking = true;
+    speakFrom(cursor + 1);
+  }
+});
+
+progressTrack.addEventListener('click', (e)=>{
+  const sentences = activeSentences();
+  if(!sentences.length) return;
+  const rect = progressTrack.getBoundingClientRect();
+  const pct = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+  const idx = Math.min(sentences.length - 1, Math.floor(pct * sentences.length));
+  const wasSpeaking = isSpeaking;
+  window.speechSynthesis.cancel();
+  if(wasSpeaking){
+    isSpeaking = true;
+    speakFrom(idx);
+  } else {
+    cursor = idx;
+    updateProgressUI();
+    highlightCurrent();
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx >= sentences.length - 1;
+  }
+});
+
+rateSlider.addEventListener('input', ()=>{
+  rateVal.textContent = parseFloat(rateSlider.value).toFixed(1) + '×';
+  updateProgressUI();
+});
+
+previewBtn.addEventListener('click', ()=>{
+  window.speechSynthesis.cancel();
+  const sample = "Merhaba, bu sesin nasıl duyulduğunu önizliyorsunuz.";
+  const u = new SpeechSynthesisUtterance(sample);
+  const chosen = voices.find(v=>v.name === voiceSelect.value);
+  if(chosen) u.voice = chosen;
+  u.lang = chosen ? chosen.lang : 'tr-TR';
+  u.rate = parseFloat(rateSlider.value);
+  u.volume = parseFloat(volumeSlider.value);
+  window.speechSynthesis.speak(u);
+});
+
+updateStats();
+resetReaderState();
+</script>
+</body>
+</html>
