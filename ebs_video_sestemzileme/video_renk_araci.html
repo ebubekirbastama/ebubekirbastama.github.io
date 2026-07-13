@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EBS Video Stüdyosu</title>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+<script>
+  if (location.protocol === "http:" || location.protocol === "https:") {
+    const coiScript = document.createElement("script");
+    coiScript.src = "coi-serviceworker.js";
+    coiScript.onerror = () => console.warn("coi-serviceworker.js yüklenemedi.");
+    document.head.appendChild(coiScript);
+  }
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  :root{
+    --bg: #101215;
+    --panel: #16191d;
+    --panel-2: #1d2126;
+    --line: #262b31;
+    --ink: #eef1f4;
+    --ink-dim: #9aa3ad;
+    --accent: #5ee6c4;
+    --accent-2: #ff8a5b;
+    --accent-warn: #ffce54;
+    --radius: 10px;
+    font-size: 16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background: radial-gradient(1200px 600px at 80% -10%, #1a2b28 0%, var(--bg) 55%) fixed;
+    color: var(--ink);
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+    min-height:100vh;
+  }
+  .brand{ font-family: 'Georgia', 'Times New Roman', serif; letter-spacing: .02em; }
+  .brand small{
+    display:block; font-family: 'Segoe UI', sans-serif; font-size:.62rem;
+    letter-spacing:.28em; text-transform:uppercase; color: var(--accent); margin-top:2px;
+  }
+  header.topbar{
+    border-bottom: 1px solid var(--line);
+    background: rgba(16,18,21,.85);
+    backdrop-filter: blur(6px);
+    position: sticky; top:0; z-index:20;
+  }
+  .privacy-pill{
+    font-size:.72rem; border:1px solid #2a4a41; background: rgba(94,230,196,.08);
+    color: var(--accent); border-radius: 999px; padding: .35rem .8rem;
+    display:inline-flex; align-items:center; gap:.4rem;
+  }
+  .privacy-pill svg{width:14px;height:14px;flex:none;}
+  .panel{ background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--line); border-radius: var(--radius); }
+  .panel-title{
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; color: var(--ink-dim);
+    margin-bottom: .9rem; display:flex; align-items:center; gap:.5rem;
+  }
+  .panel-title::after{ content:""; flex:1; height:1px; background: var(--line); }
+  .panel-title .badge-new{
+    font-size:.58rem; letter-spacing:.05em; background: rgba(255,138,91,.15); color: var(--accent-2);
+    border:1px solid rgba(255,138,91,.4); border-radius:999px; padding:.1rem .5rem; text-transform:none;
+  }
+  .stage-wrap{
+    background: linear-gradient(180deg, rgba(94,230,196,.04), transparent 30%), var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius); position: relative;
+    min-height: 420px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  #canvasOut{ max-width:100%; max-height: 64vh; display:block; border-radius:6px; }
+  .drop-zone{
+    width:100%; padding: 4rem 1rem; text-align:center; border: 1.5px dashed #33393f;
+    border-radius: var(--radius); color: var(--ink-dim); cursor:pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .drop-zone:hover, .drop-zone.dragover{ border-color: var(--accent); background: rgba(94,230,196,.04); }
+  .drop-zone .dz-icon{ color: var(--accent); margin-bottom:.6rem; }
+  .form-range::-webkit-slider-thumb{ background: var(--accent); }
+  .form-range::-moz-range-thumb{ background: var(--accent); }
+  .form-range{ accent-color: var(--accent); }
+  .slider-row{ margin-bottom: 1.1rem; }
+  .slider-row .lbl{ display:flex; justify-content:space-between; font-size:.82rem; color: var(--ink-dim); margin-bottom:.25rem; }
+  .slider-row .lbl .val{ color: var(--ink); font-variant-numeric: tabular-nums; }
+  .preset-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:.5rem; }
+  .preset-btn{
+    background: var(--panel-2); border:1px solid var(--line); color: var(--ink); border-radius: 8px;
+    padding: .6rem .3rem; font-size:.75rem; text-align:center; cursor:pointer;
+    transition: border-color .15s, transform .1s;
+  }
+  .preset-btn:hover{ border-color: var(--accent); transform: translateY(-1px); }
+  .preset-btn.active{ border-color: var(--accent); background: rgba(94,230,196,.08); color: var(--accent); }
+  .btn-accent{ background: var(--accent); border-color: var(--accent); color: #08110f; font-weight:600; }
+  .btn-accent:hover{ background:#7cf0d3; border-color:#7cf0d3; color:#08110f; }
+  .btn-outline-line{ border-color: var(--line); color: var(--ink-dim); }
+  .btn-outline-line:hover{ background: var(--panel-2); color: var(--ink); border-color: var(--line); }
+  .swatch{ width:34px; height:34px; border-radius:8px; border:1px solid var(--line); cursor:pointer; padding:0; }
+  footer{ color: var(--ink-dim); font-size:.78rem; }
+  .rec-dot{ width:8px;height:8px;border-radius:50%;background:#ff5c5c; display:inline-block; margin-right:.4rem; animation: pulse 1s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+  .accordion-button{ background: var(--panel-2); color: var(--ink); font-size:.85rem; }
+  .accordion-button:not(.collapsed){ background: rgba(94,230,196,.08); color: var(--accent); box-shadow:none; }
+  .accordion-button::after{ filter: invert(1) grayscale(1) brightness(1.6); }
+  .accordion-item{ background: var(--panel); border-color: var(--line); }
+  .accordion-body{ background: var(--panel); }
+  .toggle-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:.6rem; }
+  .toggle-row label{ font-size:.82rem; color: var(--ink-dim); }
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:#2a2f35; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<header class="topbar py-3">
+  <div class="container-fluid px-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="brand fs-4">Video Stüdyosu<small>tarayıcıda · yerel · sunucusuz</small></div>
+    <div class="privacy-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z"/></svg>
+      Videonuz hiçbir sunucuya yüklenmez — işlem yalnızca bu cihazda yapılır
+    </div>
+  </div>
+</header>
+
+<main class="container-fluid px-4 py-4">
+  <div class="row g-4">
+
+    <div class="col-lg-8">
+      <div class="panel p-3 mb-3">
+        <div class="panel-title">Kaynak Video</div>
+        <div id="dropZone" class="drop-zone">
+          <div class="dz-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 8.5l-5 3.5 5 3.5v-7z"/><rect x="2" y="6" width="15" height="12" rx="2"/></svg>
+          </div>
+          <div class="mb-1">Bir video dosyasını sürükleyip bırakın</div>
+          <div class="small">veya tıklayarak seçin — MP4, WebM, MOV desteklenir</div>
+          <input type="file" id="fileInput" accept="video/*" class="d-none">
+        </div>
+        <div id="stageArea" class="stage-wrap mt-3 d-none">
+          <canvas id="canvasOut"></canvas>
+        </div>
+        <video id="srcVideo" class="d-none" playsinline loop></video>
+      </div>
+
+      <div class="panel p-3 d-none" id="transportPanel">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <button id="playBtn" class="btn btn-accent btn-sm px-3">▶ Oynat</button>
+          <input type="range" id="seekBar" class="form-range flex-grow-1" min="0" max="100" value="0" style="min-width:180px;">
+          <span id="timeLbl" class="small text-secondary" style="min-width:90px;">00:00 / 00:00</span>
+          <div class="vr d-none d-md-block"></div>
+          <button id="resetBtn" class="btn btn-outline-line btn-sm">Sıfırla</button>
+          <button id="newFileBtn" class="btn btn-outline-line btn-sm">Yeni Video</button>
+        </div>
+        <div class="slider-row mt-3 mb-0">
+          <div class="lbl"><span>Oynatma Hızı</span><span class="val" id="speedVal">1.0x</span></div>
+          <input type="range" id="speedSlider" class="form-range" min="0.25" max="2" step="0.05" value="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4" style="max-height: 85vh; overflow-y:auto; padding-right:.3rem;">
+
+      <div class="panel p-3 mb-3">
+        <div class="panel-title">Hazır Filtreler</div>
+        <div class="preset-grid" id="presetGrid">
+          <div class="preset-btn active" data-preset="none">Orijinal</div>
+          <div class="preset-btn" data-preset="sepia">Sepya</div>
+          <div class="preset-btn" data-preset="bw">Siyah-Beyaz</div>
+          <div class="preset-btn" data-preset="negative">Negatif</div>
+          <div class="preset-btn" data-preset="vintage">Vintage</div>
+          <div class="preset-btn" data-preset="cool">Soğuk Ton</div>
+          <div class="preset-btn" data-preset="warm">Sıcak Ton</div>
+          <div class="preset-btn" data-preset="noir">Noir</div>
+          <div class="preset-btn" data-preset="dream">Rüya</div>
+          <div class="preset-btn" data-preset="edge">Kenar Çizimi</div>
+          <div class="preset-btn" data-preset="cartoon">Çizgi Film</div>
+          <div class="preset-btn" data-preset="thermal">Termal</div>
+        </div>
+      </div>
+
+      <div class="accordion" id="fxAccordion">
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accColor">Renk Ayarları</button>
+          </h2>
+          <div id="accColor" class="accordion-collapse collapse show" data-bs-parent="#fxAccordion">
+            <div class="accordion-body">
+              <div class="slider-row">
+                <div class="lbl"><span>Hue / Ton Kaydırma</span><span class="val" id="hueVal">0°</span></div>
+                <input type="range" id="hueSlider" class="form-range" min="-180" max="180" value="0">
+              </div>
+              <div class="slider-row">
+                <div class="lbl"><span>Parlaklık</span><span class="val" id="brightVal">100%</span></div>
+                <input type="range" id="brightSlider" class="form-range" min="0" max="200" value="100">
+              </div>
+              <div class="slider-row">
+                <div class="lbl"><span>Kontrast</span><span class="val" id="contrastVal">100%</span></div>
+                <input type="range" id="contrastSlider" class="form-range" min="0" max="200" value="100">
+              </div>
+              <div class="slider-row mb-0">
+                <div class="lbl"><span>Doygunluk</span><span class="val" id="satVal">100%</span></div>
+                <input type="range" id="satSlider" class="form-range" min="0" max="300" value="100">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accFx">Görsel Efektler</button>
+          </h2>
+          <div id="accFx" class="accordion-collapse collapse" data-bs-parent="#fxAccordion">
+            <div class="accordion-body">
+              <div class="slider-row">
+                <div class="lbl"><span>Bulanıklık (Blur)</span><span class="val" id="blurVal">0px</span></div>
+                <input type="range" id="blurSlider" class="form-range" min="0" max="15" step="0.5" value="0">
+              </div>
+              <div class="slider-row">
+                <div class="lbl"><span>Pikselleştir</span><span class="val" id="pixelVal">Kapalı</span></div>
+                <input type="range" id="pixelSlider" class="form-range" min="0" max="40" value="0">
+              </div>
+              <div class="slider-row">
+                <div class="lbl"><span>Vinyet</span><span class="val" id="vignetteVal">Kapalı</span></div>
+                <input type="range" id="vignetteSlider" class="form-range" min="0" max="100" value="0">
+              </div>
+              <div class="slider-row mb-0">
+                <div class="lbl"><span>Film Grenlisi</span><span class="val" id="grainVal">Kapalı</span></div>
+                <input type="range" id="grainSlider" class="form-range" min="0" max="100" value="0">
+              </div>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="mirrorToggle">
+                <label class="form-check-label small text-secondary" for="mirrorToggle">Ayna (yatay çevir)</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="sharpenToggle">
+                <label class="form-check-label small text-secondary" for="sharpenToggle">Netleştir (Sharpen)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accStab">
+              Video Sabitleme <span class="badge-new ms-2">titreme azaltma</span>
+            </button>
+          </h2>
+          <div id="accStab" class="accordion-collapse collapse" data-bs-parent="#fxAccordion">
+            <div class="accordion-body">
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="stabToggle">
+                <label class="form-check-label small text-secondary" for="stabToggle">Titreyen görüntüyü sabitle</label>
+              </div>
+              <p class="small text-secondary mb-0">Kare kare hareketi analiz ederek ani sarsıntıları yumuşatır ve görüntüyü hafifçe yakınlaştırıp ortalar. El sarsıntısı gibi küçük/orta titremeler için uygundur; çok sert kamera hareketlerini tamamen gideremeyebilir.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accAudio">
+              Ses <span class="badge-new ms-2">yükseltme</span>
+            </button>
+          </h2>
+          <div id="accAudio" class="accordion-collapse collapse" data-bs-parent="#fxAccordion">
+            <div class="accordion-body">
+              <div class="slider-row mb-2">
+                <div class="lbl"><span>Ses Seviyesi</span><span class="val" id="volumeVal">100%</span></div>
+                <input type="range" id="volumeSlider" class="form-range" min="0" max="300" value="100">
+              </div>
+              <p class="small text-secondary mb-0">%100 orijinal seviyedir. %100'ün üzeri sesi yükseltir; çok yüksek seviyelerde kırpılma (distortion) oluşabilir.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accChroma">Renk Değiştirme (Chroma Replace)</button>
+          </h2>
+          <div id="accChroma" class="accordion-collapse collapse" data-bs-parent="#fxAccordion">
+            <div class="accordion-body">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="chromaToggle">
+                <label class="form-check-label small text-secondary" for="chromaToggle">Belirli bir rengi başka renkle değiştir</label>
+              </div>
+              <div id="chromaControls" class="d-none">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div>
+                    <div class="small text-secondary mb-1">Hedef renk</div>
+                    <input type="color" id="chromaFrom" class="swatch" value="#2ea44f">
+                  </div>
+                  <div class="fs-5 text-secondary">→</div>
+                  <div>
+                    <div class="small text-secondary mb-1">Yeni renk</div>
+                    <input type="color" id="chromaTo" class="swatch" value="#ff5c8a">
+                  </div>
+                </div>
+                <div class="slider-row mb-0">
+                  <div class="lbl"><span>Renk Toleransı</span><span class="val" id="toleranceVal">40</span></div>
+                  <input type="range" id="toleranceSlider" class="form-range" min="1" max="120" value="40">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="panel p-3 mt-3">
+        <div class="panel-title">Dışa Aktar</div>
+        <p class="small text-secondary">Seçili filtre ve efektleri FFmpeg ile gerçek videoya uygulayıp MP4 formatında indirin.</p>
+        <button id="exportBtn" class="btn btn-accent w-100 mb-2" disabled>Videoyu Render Et ve İndir (MP4)</button>
+        <div id="exportStatus" class="small text-secondary text-center"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="container-fluid px-4 pb-4 text-center">
+  Tüm işlemler tarayıcınızda (Canvas + Web Audio API) yapılır; video dosyası cihazınızdan hiçbir zaman ayrılmaz.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const stageArea = document.getElementById('stageArea');
+  const transportPanel = document.getElementById('transportPanel');
+  const srcVideo = document.getElementById('srcVideo');
+  const canvas = document.getElementById('canvasOut');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const playBtn = document.getElementById('playBtn');
+  const seekBar = document.getElementById('seekBar');
+  const timeLbl = document.getElementById('timeLbl');
+  const resetBtn = document.getElementById('resetBtn');
+  const newFileBtn = document.getElementById('newFileBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const exportStatus = document.getElementById('exportStatus');
+  const speedSlider = document.getElementById('speedSlider');
+  const speedVal = document.getElementById('speedVal');
+
+  const hueSlider = document.getElementById('hueSlider');
+  const brightSlider = document.getElementById('brightSlider');
+  const contrastSlider = document.getElementById('contrastSlider');
+  const satSlider = document.getElementById('satSlider');
+  const hueVal = document.getElementById('hueVal');
+  const brightVal = document.getElementById('brightVal');
+  const contrastVal = document.getElementById('contrastVal');
+  const satVal = document.getElementById('satVal');
+
+  const blurSlider = document.getElementById('blurSlider');
+  const blurVal = document.getElementById('blurVal');
+  const pixelSlider = document.getElementById('pixelSlider');
+  const pixelVal = document.getElementById('pixelVal');
+  const vignetteSlider = document.getElementById('vignetteSlider');
+  const vignetteVal = document.getElementById('vignetteVal');
+  const grainSlider = document.getElementById('grainSlider');
+  const grainVal = document.getElementById('grainVal');
+  const mirrorToggle = document.getElementById('mirrorToggle');
+  const sharpenToggle = document.getElementById('sharpenToggle');
+
+  const stabToggle = document.getElementById('stabToggle');
+  const volumeSlider = document.getElementById('volumeSlider');
+  const volumeVal = document.getElementById('volumeVal');
+
+  const chromaToggle = document.getElementById('chromaToggle');
+  const chromaControls = document.getElementById('chromaControls');
+  const chromaFrom = document.getElementById('chromaFrom');
+  const chromaTo = document.getElementById('chromaTo');
+  const toleranceSlider = document.getElementById('toleranceSlider');
+  const toleranceVal = document.getElementById('toleranceVal');
+
+  let state = {
+    preset: 'none',
+    hue: 0, brightness: 100, contrast: 100, saturation: 100,
+    blur: 0, pixel: 0, vignette: 0, grain: 0, mirror: false, sharpen: false,
+    stabilize: false, volume: 100,
+    chromaOn: false, chromaFrom: hexToRgb('#2ea44f'), chromaTo: hexToRgb('#ff5c8a'), tolerance: 40
+  };
+  let rafId = null;
+  let objectUrl = null;
+  let selectedVideoFile = null;
+  let ffmpegInstance = null;
+
+  function hexToRgb(hex){
+    const v = hex.replace('#','');
+    return { r: parseInt(v.substring(0,2),16), g: parseInt(v.substring(2,4),16), b: parseInt(v.substring(4,6),16) };
+  }
+
+  // ---------- Web Audio: ses yükseltme ----------
+  let audioCtx = null, gainNode = null, mediaStreamDest = null, audioSourceNode = null;
+  function setupAudioGraph(){
+    if (audioSourceNode) return; // yalnızca bir kez bağlanabilir
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      audioSourceNode = audioCtx.createMediaElementSource(srcVideo);
+      gainNode = audioCtx.createGain();
+      gainNode.gain.value = state.volume / 100;
+      mediaStreamDest = audioCtx.createMediaStreamDestination();
+      audioSourceNode.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      gainNode.connect(mediaStreamDest);
+    } catch(e){
+      console.warn('Ses grafiği kurulamadı:', e);
+    }
+  }
+
+  // ---------- Dosya yükleme (yerel, sunucuya gitmez) ----------
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e => {
+    if (e.target.files && e.target.files[0]) loadFile(e.target.files[0]);
+  });
+
+  function loadFile(file){
+    if (!file.type.startsWith('video/')){ alert('Lütfen bir video dosyası seçin.'); return; }
+    selectedVideoFile = file;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file); // yalnızca yerel bellek referansı, ağ isteği yok
+    srcVideo.src = objectUrl;
+    prevSmallData = null; panX = panY = jitterX = jitterY = 0;
+    srcVideo.onloadedmetadata = () => {
+      canvas.width = srcVideo.videoWidth;
+      canvas.height = srcVideo.videoHeight;
+      dropZone.classList.add('d-none');
+      stageArea.classList.remove('d-none');
+      transportPanel.classList.remove('d-none');
+      exportBtn.disabled = false;
+      seekBar.max = srcVideo.duration;
+      updateTimeLabel();
+      setupAudioGraph();
+      drawFrame();
+    };
+  }
+
+  // Ekran güncelleme döngüsü: mümkünse gerçek video karesine bağlı
+  // requestVideoFrameCallback kullanılır (rAF'tan farklı olarak sekme
+  // arka plandayken de çalışmaya devam eder). Desteklenmiyorsa zamanlayıcıya düşer.
+  function scheduleFrame(callback){
+    if (srcVideo.requestVideoFrameCallback){
+      return srcVideo.requestVideoFrameCallback(callback);
+    }
+    return setTimeout(callback, 1000/30);
+  }
+  function cancelScheduledFrame(handle){
+    if (handle == null) return;
+    if (srcVideo.cancelVideoFrameCallback) { try { srcVideo.cancelVideoFrameCallback(handle); } catch(e){} }
+    else clearTimeout(handle);
+  }
+
+  newFileBtn.addEventListener('click', () => {
+    srcVideo.pause();
+    cancelScheduledFrame(rafId);
+    stageArea.classList.add('d-none');
+    transportPanel.classList.add('d-none');
+    dropZone.classList.remove('d-none');
+    fileInput.value = '';
+    exportBtn.disabled = true;
+  });
+
+  // ---------- Oynatma kontrolleri ----------
+  playBtn.addEventListener('click', () => {
+    setupAudioGraph();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if (srcVideo.paused){
+      srcVideo.play();
+      playBtn.textContent = '⏸ Duraklat';
+      loop();
+    } else {
+      srcVideo.pause();
+      playBtn.textContent = '▶ Oynat';
+      cancelScheduledFrame(rafId);
+    }
+  });
+
+  srcVideo.addEventListener('ended', () => { playBtn.textContent = '▶ Oynat'; cancelScheduledFrame(rafId); });
+
+  seekBar.addEventListener('input', () => { srcVideo.currentTime = parseFloat(seekBar.value); drawFrame(); });
+
+  speedSlider.addEventListener('input', () => {
+    srcVideo.playbackRate = parseFloat(speedSlider.value);
+    speedVal.textContent = parseFloat(speedSlider.value).toFixed(2) + 'x';
+  });
+
+  resetBtn.addEventListener('click', () => {
+    state = { preset:'none', hue:0, brightness:100, contrast:100, saturation:100,
+      blur:0, pixel:0, vignette:0, grain:0, mirror:false, sharpen:false,
+      stabilize:false, volume:100,
+      chromaOn:false, chromaFrom: hexToRgb('#2ea44f'), chromaTo: hexToRgb('#ff5c8a'), tolerance:40 };
+    hueSlider.value=0; brightSlider.value=100; contrastSlider.value=100; satSlider.value=100;
+    blurSlider.value=0; pixelSlider.value=0; vignetteSlider.value=0; grainSlider.value=0;
+    mirrorToggle.checked=false; sharpenToggle.checked=false; stabToggle.checked=false;
+    volumeSlider.value=100; speedSlider.value=1; srcVideo.playbackRate=1; speedVal.textContent='1.0x';
+    toleranceSlider.value=40; chromaToggle.checked=false; chromaControls.classList.add('d-none');
+    if (gainNode) gainNode.gain.value = 1;
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.preset-btn[data-preset="none"]').classList.add('active');
+    panX = panY = jitterX = jitterY = 0; prevSmallData = null;
+    syncLabels();
+    drawFrame();
+  });
+
+  function loop(){
+    if (!srcVideo.paused && !srcVideo.ended){
+      drawFrame();
+      seekBar.value = srcVideo.currentTime;
+      updateTimeLabel();
+      rafId = scheduleFrame(loop);
+    }
+  }
+
+  function fmtTime(t){
+    if (!isFinite(t)) return '00:00';
+    const m = Math.floor(t/60).toString().padStart(2,'0');
+    const s = Math.floor(t%60).toString().padStart(2,'0');
+    return m+':'+s;
+  }
+  function updateTimeLabel(){ timeLbl.textContent = fmtTime(srcVideo.currentTime) + ' / ' + fmtTime(srcVideo.duration); }
+
+  // ---------- Kontrol dinleyicileri ----------
+  document.getElementById('presetGrid').addEventListener('click', e => {
+    const btn = e.target.closest('.preset-btn');
+    if (!btn) return;
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.preset = btn.dataset.preset;
+    drawFrame();
+  });
+
+  hueSlider.addEventListener('input', () => { state.hue = +hueSlider.value; syncLabels(); drawFrame(); });
+  brightSlider.addEventListener('input', () => { state.brightness = +brightSlider.value; syncLabels(); drawFrame(); });
+  contrastSlider.addEventListener('input', () => { state.contrast = +contrastSlider.value; syncLabels(); drawFrame(); });
+  satSlider.addEventListener('input', () => { state.saturation = +satSlider.value; syncLabels(); drawFrame(); });
+
+  blurSlider.addEventListener('input', () => { state.blur = +blurSlider.value; syncLabels(); drawFrame(); });
+  pixelSlider.addEventListener('input', () => { state.pixel = +pixelSlider.value; syncLabels(); drawFrame(); });
+  vignetteSlider.addEventListener('input', () => { state.vignette = +vignetteSlider.value; syncLabels(); drawFrame(); });
+  grainSlider.addEventListener('input', () => { state.grain = +grainSlider.value; syncLabels(); drawFrame(); });
+  mirrorToggle.addEventListener('change', () => { state.mirror = mirrorToggle.checked; drawFrame(); });
+  sharpenToggle.addEventListener('change', () => { state.sharpen = sharpenToggle.checked; drawFrame(); });
+
+  stabToggle.addEventListener('change', () => {
+    state.stabilize = stabToggle.checked;
+    panX = panY = jitterX = jitterY = 0; prevSmallData = null;
+    drawFrame();
+  });
+
+  volumeSlider.addEventListener('input', () => {
+    state.volume = +volumeSlider.value;
+    volumeVal.textContent = state.volume + '%';
+    setupAudioGraph();
+    if (gainNode) gainNode.gain.value = state.volume / 100;
+  });
+
+  chromaToggle.addEventListener('change', () => {
+    state.chromaOn = chromaToggle.checked;
+    chromaControls.classList.toggle('d-none', !state.chromaOn);
+    drawFrame();
+  });
+  chromaFrom.addEventListener('input', () => { state.chromaFrom = hexToRgb(chromaFrom.value); drawFrame(); });
+  chromaTo.addEventListener('input', () => { state.chromaTo = hexToRgb(chromaTo.value); drawFrame(); });
+  toleranceSlider.addEventListener('input', () => { state.tolerance = +toleranceSlider.value; syncLabels(); drawFrame(); });
+
+  function syncLabels(){
+    hueVal.textContent = state.hue + '°';
+    brightVal.textContent = state.brightness + '%';
+    contrastVal.textContent = state.contrast + '%';
+    satVal.textContent = state.saturation + '%';
+    blurVal.textContent = state.blur + 'px';
+    pixelVal.textContent = state.pixel > 0 ? state.pixel : 'Kapalı';
+    vignetteVal.textContent = state.vignette > 0 ? state.vignette : 'Kapalı';
+    grainVal.textContent = state.grain > 0 ? state.grain : 'Kapalı';
+    toleranceVal.textContent = state.tolerance;
+    volumeVal.textContent = state.volume + '%';
+  }
+
+  function presetCssFilter(preset){
+    switch(preset){
+      case 'sepia': return 'sepia(0.75)';
+      case 'bw': return 'grayscale(1)';
+      case 'negative': return 'invert(1)';
+      case 'vintage': return 'sepia(0.35) contrast(0.92) saturate(0.85) brightness(1.05)';
+      case 'cool': return 'saturate(1.1) hue-rotate(15deg) brightness(1.02)';
+      case 'warm': return 'saturate(1.15) hue-rotate(-12deg) brightness(1.03)';
+      case 'noir': return 'grayscale(1) contrast(1.3) brightness(0.95)';
+      case 'dream': return 'saturate(1.3) contrast(0.9) brightness(1.1)';
+      case 'thermal': return 'grayscale(1) contrast(1.4) saturate(3) hue-rotate(280deg)';
+      case 'cartoon': return 'saturate(2) contrast(1.3)';
+      default: return '';
+    }
+  }
+
+  function buildFilterString(){
+    const parts = [];
+    const preset = presetCssFilter(state.preset);
+    if (preset) parts.push(preset);
+    parts.push('hue-rotate(' + state.hue + 'deg)');
+    parts.push('brightness(' + (state.brightness/100) + ')');
+    parts.push('contrast(' + (state.contrast/100) + ')');
+    parts.push('saturate(' + (state.saturation/100) + ')');
+    if (state.blur > 0) parts.push('blur(' + state.blur + 'px)');
+    return parts.join(' ');
+  }
+
+  // ---------- Hafif video sabitleme (titreşim azaltma) ----------
+  const stabW = 64, stabH = 36;
+  const stabCanvas = document.createElement('canvas');
+  stabCanvas.width = stabW; stabCanvas.height = stabH;
+  const stabCtx = stabCanvas.getContext('2d', { willReadFrequently: true });
+  let prevSmallData = null, panX = 0, panY = 0, jitterX = 0, jitterY = 0;
+  const STAB_SEARCH = 6, STAB_MAX_CORRECTION = 40;
+
+  function toGray(data){
+    const n = data.length / 4;
+    const gray = new Float32Array(n);
+    for (let i=0, p=0; i<data.length; i+=4, p++){
+      gray[p] = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
+    }
+    return gray;
+  }
+
+  function computeStabShift(){
+    stabCtx.drawImage(srcVideo, 0, 0, stabW, stabH);
+    const cur = toGray(stabCtx.getImageData(0,0,stabW,stabH).data);
+    let shiftX = 0, shiftY = 0;
+    if (prevSmallData){
+      let bestScore = Infinity, bestDx = 0, bestDy = 0;
+      for (let dy = -STAB_SEARCH; dy <= STAB_SEARCH; dy += 2){
+        for (let dx = -STAB_SEARCH; dx <= STAB_SEARCH; dx += 2){
+          let sad = 0, count = 0;
+          for (let y = STAB_SEARCH; y < stabH - STAB_SEARCH; y += 2){
+            for (let x = STAB_SEARCH; x < stabW - STAB_SEARCH; x += 2){
+              const a = cur[y*stabW + x];
+              const b = prevSmallData[(y+dy)*stabW + (x+dx)];
+              sad += Math.abs(a-b);
+              count++;
+            }
+          }
+          const score = sad / Math.max(1,count);
+          if (score < bestScore){ bestScore = score; bestDx = dx; bestDy = dy; }
+        }
+      }
+      shiftX = bestDx; shiftY = bestDy;
+    }
+    prevSmallData = cur;
+
+    const scaleX = canvas.width / stabW, scaleY = canvas.height / stabH;
+    const rawX = shiftX * scaleX, rawY = shiftY * scaleY;
+    panX = panX*0.85 + rawX*0.15;
+    panY = panY*0.85 + rawY*0.15;
+    jitterX = (jitterX + (rawX - panX)) * 0.9;
+    jitterY = (jitterY + (rawY - panY)) * 0.9;
+    jitterX = Math.max(-STAB_MAX_CORRECTION, Math.min(STAB_MAX_CORRECTION, jitterX));
+    jitterY = Math.max(-STAB_MAX_CORRECTION, Math.min(STAB_MAX_CORRECTION, jitterY));
+    return { x: -jitterX, y: -jitterY };
+  }
+
+  // ---------- Piksel tabanlı efektler ----------
+  function applyChromaReplace(){
+    const w = canvas.width, h = canvas.height;
+    const frame = ctx.getImageData(0,0,w,h);
+    const d = frame.data;
+    const fr = state.chromaFrom, to = state.chromaTo, tol = state.tolerance;
+    const tol2 = tol*tol;
+    for (let i=0; i<d.length; i+=4){
+      const dr = d[i]-fr.r, dg = d[i+1]-fr.g, db = d[i+2]-fr.b;
+      const distSq = dr*dr+dg*dg+db*db;
+      if (distSq <= tol2*3){
+        const t = 1 - Math.sqrt(distSq/(tol2*3));
+        d[i]   = d[i]   + (to.r - d[i])   * t;
+        d[i+1] = d[i+1] + (to.g - d[i+1]) * t;
+        d[i+2] = d[i+2] + (to.b - d[i+2]) * t;
+      }
+    }
+    ctx.putImageData(frame, 0, 0);
+  }
+
+  function applyPixelate(size){
+    const w = canvas.width, h = canvas.height;
+    const sw = Math.max(1, Math.floor(w/size)), sh = Math.max(1, Math.floor(h/size));
+    const prevSmoothing = ctx.imageSmoothingEnabled;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(canvas, 0, 0, w, h, 0, 0, sw, sh);
+    ctx.drawImage(canvas, 0, 0, sw, sh, 0, 0, w, h);
+    ctx.imageSmoothingEnabled = prevSmoothing;
+  }
+
+  function applyVignette(amount){
+    const w = canvas.width, h = canvas.height;
+    const grad = ctx.createRadialGradient(w/2, h/2, h*0.35, w/2, h/2, h*0.9);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,' + (amount/100*0.85) + ')');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,w,h);
+  }
+
+  function applyGrain(amount){
+    const w = canvas.width, h = canvas.height;
+    const frame = ctx.getImageData(0,0,w,h);
+    const d = frame.data;
+    const strength = amount * 0.9;
+    for (let i=0; i<d.length; i+=4){
+      const n = (Math.random()-0.5) * strength;
+      d[i] += n; d[i+1] += n; d[i+2] += n;
+    }
+    ctx.putImageData(frame,0,0);
+  }
+
+  function convolve3x3(kernel, factor, bias){
+    const w = canvas.width, h = canvas.height;
+    const src = ctx.getImageData(0,0,w,h);
+    const dst = ctx.createImageData(w,h);
+    const sd = src.data, dd = dst.data;
+    for (let y=0; y<h; y++){
+      for (let x=0; x<w; x++){
+        let r=0,g=0,b=0;
+        for (let ky=-1; ky<=1; ky++){
+          const yy = Math.min(h-1, Math.max(0, y+ky));
+          for (let kx=-1; kx<=1; kx++){
+            const xx = Math.min(w-1, Math.max(0, x+kx));
+            const idx = (yy*w+xx)*4;
+            const kv = kernel[(ky+1)*3+(kx+1)];
+            r += sd[idx]*kv; g += sd[idx+1]*kv; b += sd[idx+2]*kv;
+          }
+        }
+        const di = (y*w+x)*4;
+        dd[di]   = Math.min(255, Math.max(0, r*factor+bias));
+        dd[di+1] = Math.min(255, Math.max(0, g*factor+bias));
+        dd[di+2] = Math.min(255, Math.max(0, b*factor+bias));
+        dd[di+3] = sd[di+3];
+      }
+    }
+    ctx.putImageData(dst,0,0);
+  }
+
+  function applyEdgeDetect(){
+    const w = canvas.width, h = canvas.height;
+    const frame = ctx.getImageData(0,0,w,h);
+    const d = frame.data;
+    for (let i=0;i<d.length;i+=4){
+      const g = 0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+      d[i]=d[i+1]=d[i+2]=g;
+    }
+    ctx.putImageData(frame,0,0);
+    convolve3x3([-1,-1,-1,-1,8,-1,-1,-1,-1], 1, 0);
+  }
+
+  // ---------- Ana çizim fonksiyonu ----------
+  function drawFrame(){
+    if (!srcVideo.videoWidth) return;
+    const stab = state.stabilize ? computeStabShift() : { x:0, y:0 };
+    const zoom = state.stabilize ? 1.08 : 1;
+
+    ctx.save();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.translate(canvas.width/2, canvas.height/2);
+    if (state.mirror) ctx.scale(-1,1);
+    ctx.scale(zoom, zoom);
+    ctx.translate(-canvas.width/2 + stab.x, -canvas.height/2 + stab.y);
+    ctx.filter = buildFilterString();
+    ctx.drawImage(srcVideo, 0, 0, canvas.width, canvas.height);
+    ctx.filter = 'none';
+    ctx.restore();
+
+    if (state.preset === 'edge') applyEdgeDetect();
+    if (state.preset === 'cartoon'){ applyPixelate(6); convolve3x3([0,-1,0,-1,6,-1,0,-1,0], 0.7, 20); }
+    if (state.pixel > 1) applyPixelate(state.pixel);
+    if (state.sharpen) convolve3x3([0,-1,0,-1,5,-1,0,-1,0], 1, 0);
+    if (state.chromaOn) applyChromaReplace();
+    if (state.vignette > 0) applyVignette(state.vignette);
+    if (state.grain > 0) applyGrain(state.grain);
+  }
+
+  srcVideo.addEventListener('seeked', drawFrame);
+
+  // ---------- FFmpeg.wasm ile gerçek video render ----------
+  let isExporting = false;
+
+  function clamp(value, min, max){
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function ffNum(value, digits = 3){
+    return Number(value).toFixed(digits).replace(/\.?0+$/, '');
+  }
+
+  function getInputExtension(file){
+    const name = file && file.name ? file.name : 'video.mp4';
+    const parts = name.split('.');
+    const ext = parts.length > 1 ? parts.pop().toLowerCase().replace(/[^a-z0-9]/g, '') : 'mp4';
+    return ext || 'mp4';
+  }
+
+  function buildFFmpegVideoFilters(){
+    const filters = [];
+
+    switch(state.preset){
+      case 'sepia':
+        filters.push('colorchannelmixer=.393:.769:.189:0:.349:.686:.168:0:.272:.534:.131');
+        break;
+      case 'bw': filters.push('hue=s=0'); break;
+      case 'negative': filters.push('negate'); break;
+      case 'vintage':
+        filters.push('curves=vintage', 'eq=contrast=.94:brightness=.03:saturation=.88');
+        break;
+      case 'cool': filters.push('colorbalance=bs=.12:rs=-.05'); break;
+      case 'warm': filters.push('colorbalance=rs=.12:bs=-.06'); break;
+      case 'noir': filters.push('hue=s=0', 'eq=contrast=1.3:brightness=-.03'); break;
+      case 'dream': filters.push('eq=contrast=.9:brightness=.08:saturation=1.3', 'gblur=sigma=1.2'); break;
+      case 'edge': filters.push('edgedetect=mode=colormix:high=.2:low=.05'); break;
+      case 'cartoon': filters.push('eq=contrast=1.28:saturation=1.8', 'unsharp=5:5:1.1:5:5:0'); break;
+      case 'thermal': filters.push('hue=h=280:s=2.6', 'eq=contrast=1.35:saturation=2'); break;
+    }
+
+    if (state.hue !== 0) filters.push(`hue=h=${ffNum(state.hue, 1)}`);
+
+    const brightness = clamp((state.brightness - 100) / 100, -1, 1);
+    const contrast = clamp(state.contrast / 100, 0, 2);
+    const saturation = clamp(state.saturation / 100, 0, 3);
+    if (brightness !== 0 || contrast !== 1 || saturation !== 1){
+      filters.push(`eq=brightness=${ffNum(brightness)}:contrast=${ffNum(contrast)}:saturation=${ffNum(saturation)}`);
+    }
+
+    if (state.blur > 0) filters.push(`gblur=sigma=${ffNum(Math.max(.1, state.blur / 2), 2)}`);
+
+    if (state.pixel > 1){
+      const p = Math.max(2, Math.round(state.pixel));
+      filters.push(`scale=trunc(iw/${p}):trunc(ih/${p}):flags=neighbor`, `scale=iw*${p}:ih*${p}:flags=neighbor`);
+    }
+
+    if (state.mirror) filters.push('hflip');
+    if (state.sharpen) filters.push('unsharp=5:5:1.0:5:5:0');
+    if (state.stabilize) filters.push('deshake=rx=32:ry=32:edge=mirror');
+    if (state.vignette > 0){
+      const angle = 0.15 + (state.vignette / 100) * 0.85;
+      filters.push(`vignette=angle=${ffNum(angle, 3)}`);
+    }
+    if (state.grain > 0){
+      const noise = Math.round(2 + state.grain * .45);
+      filters.push(`noise=alls=${noise}:allf=t+u`);
+    }
+
+    // MP4/H.264 için genişlik ve yükseklik çift sayı olmalıdır.
+    filters.push('scale=trunc(iw/2)*2:trunc(ih/2)*2');
+    return filters.join(',');
+  }
+
+  function buildFFmpegAudioFilters(){
+    return `volume=${ffNum(clamp(state.volume / 100, 0, 3), 2)}`;
+  }
+
+  async function getFFmpeg(){
+    if (typeof SharedArrayBuffer === 'undefined' || !window.crossOriginIsolated){
+      throw new Error('FFmpeg render için sayfayı file:// ile değil HTTPS veya localhost üzerinden açın. coi-serviceworker.js dosyasını HTML ile aynı klasöre ekleyip sayfayı bir kez yenileyin.');
+    }
+    if (!window.FFmpeg || !window.FFmpeg.createFFmpeg){
+      throw new Error('FFmpeg.wasm yüklenemedi. İnternet/CDN bağlantısını kontrol edin.');
+    }
+    if (!ffmpegInstance){
+      const { createFFmpeg } = FFmpeg;
+      ffmpegInstance = createFFmpeg({
+        log: false,
+        progress: ({ ratio }) => {
+          const pct = Math.min(98, Math.max(1, Math.round((Number(ratio) || 0) * 100)));
+          exportStatus.innerHTML = '<span class="rec-dot"></span>Render alınıyor… %' + pct;
+        }
+      });
+    }
+    if (!ffmpegInstance.isLoaded()){
+      exportStatus.innerHTML = '<span class="rec-dot"></span>FFmpeg motoru yükleniyor…';
+      await ffmpegInstance.load();
+    }
+    return ffmpegInstance;
+  }
+
+  exportBtn.addEventListener('click', async () => {
+    if (isExporting || !selectedVideoFile) return;
+    isExporting = true;
+    exportBtn.disabled = true;
+    exportStatus.innerHTML = '<span class="rec-dot"></span>Video hazırlanıyor…';
+
+    const wasPlaying = !srcVideo.paused;
+    srcVideo.pause();
+    cancelScheduledFrame(rafId);
+
+    let inputName = '';
+    const outputName = 'islenmis-video.mp4';
+    try {
+      const ffmpeg = await getFFmpeg();
+      const { fetchFile } = FFmpeg;
+      const inputExt = getInputExtension(selectedVideoFile);
+      inputName = `input.${inputExt}`;
+
+      try { ffmpeg.FS('unlink', inputName); } catch(e) {}
+      try { ffmpeg.FS('unlink', outputName); } catch(e) {}
+
+      exportStatus.innerHTML = '<span class="rec-dot"></span>Video belleğe alınıyor…';
+      ffmpeg.FS('writeFile', inputName, await fetchFile(selectedVideoFile));
+
+      const videoFilters = buildFFmpegVideoFilters();
+      const audioFilters = buildFFmpegAudioFilters();
+      const args = [
+        '-i', inputName,
+        '-map', '0:v:0',
+        '-map', '0:a:0?',
+        '-vf', videoFilters,
+        '-af', audioFilters,
+        '-c:v', 'libx264',
+        '-preset', 'veryfast',
+        '-crf', '20',
+        '-pix_fmt', 'yuv420p',
+        '-c:a', 'aac',
+        '-b:a', '192k',
+        '-movflags', '+faststart',
+        '-shortest',
+        outputName
+      ];
+
+      await ffmpeg.run(...args);
+      exportStatus.innerHTML = '<span class="rec-dot"></span>Dosya hazırlanıyor…';
+
+      const data = ffmpeg.FS('readFile', outputName);
+      const blob = new Blob([data.buffer], { type: 'video/mp4' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'islenmis-video-' + new Date().toISOString().replace(/[:.]/g, '-') + '.mp4';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 15000);
+
+      const chromaNote = state.chromaOn ? ' Chroma renk değiştirme önizlemede uygulanır; bu FFmpeg sürümünde çıktıya eklenmedi.' : '';
+      exportStatus.textContent = 'Render tamamlandı — MP4 indirme başladı (' + (blob.size/1024/1024).toFixed(1) + ' MB).' + chromaNote;
+    } catch(err){
+      console.error(err);
+      exportStatus.textContent = 'Render başarısız: ' + (err && err.message ? err.message : String(err));
+    } finally {
+      try {
+        if (ffmpegInstance && inputName) ffmpegInstance.FS('unlink', inputName);
+      } catch(e) {}
+      try {
+        if (ffmpegInstance) ffmpegInstance.FS('unlink', outputName);
+      } catch(e) {}
+      isExporting = false;
+      exportBtn.disabled = false;
+      if (wasPlaying){
+        try { await srcVideo.play(); playBtn.textContent = '⏸ Duraklat'; loop(); } catch(e) {}
+      }
+    }
+  });
+
+  syncLabels();
+})();
+</script>
+</body>
+</html>
