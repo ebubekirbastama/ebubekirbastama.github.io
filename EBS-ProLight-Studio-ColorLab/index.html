@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131a">
+  <title>EBS ProLight Studio — Profesyonel Fotoğraf Düzenleyici</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .panel-heading.compact h5{margin-bottom:0;font-size:1rem}
+    .panel-heading.compact p{margin:0;font-size:.8rem;opacity:.7}
+    .lr-meta-bar{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:10px 0 12px;
+      margin-bottom:12px;
+      font-size:.86rem;
+      color:#d2d6dc;
+    }
+    .lr-meta-bar span{display:block;text-align:center;background:rgba(255,255,255,.03);padding:8px 6px;border-radius:10px}
+    .lr-edit-switches{display:flex;gap:8px;align-items:center;margin:10px 0 14px}
+    .lr-edit-switches .btn{padding:.35rem .7rem;font-size:.82rem}
+    .profile-block{margin-bottom:14px}
+    .profile-block .form-label{font-size:.82rem;color:#cbd5e1;margin-bottom:6px}
+    .histogram-card.large canvas{width:100%;height:110px;display:block}
+    .tool-section-toggle{
+      width:100%;display:flex;align-items:center;justify-content:space-between;
+      background:transparent;border:none;color:inherit;padding:14px 2px;font-weight:600;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .tool-section-toggle i{font-size:.85rem;opacity:.8}
+    .tool-section-body{padding:0 0 12px}
+    .tool-section-body .range-control:last-child{margin-bottom:0}
+    .empty-state small{opacity:.7}
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark app-navbar border-bottom">
+    <div class="container-fluid px-3">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <span class="brand-mark"><i class="bi bi-sun-fill"></i></span>
+        <span>
+          <strong>EBS ProLight Studio</strong>
+          <small class="d-block">Yerel çalışan fotoğraf düzenleyici</small>
+        </span>
+      </a>
+
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <button class="btn btn-sm btn-outline-light" id="undoBtn" title="Geri al (Ctrl+Z)" disabled>
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-light" id="redoBtn" title="Yinele (Ctrl+Y)" disabled>
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button class="btn btn-sm btn-primary" id="openBtn">
+          <i class="bi bi-folder2-open me-1"></i> Görsel Aç
+        </button>
+        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid app-shell">
+    <div class="row g-0 h-100">
+
+      <aside class="col-auto left-toolbar border-end">
+        <button class="tool-btn active" data-tool="adjust" title="Edit">
+          <i class="bi bi-sliders"></i><span>Edit</span>
+        </button>
+        <button class="tool-btn" data-tool="colorlab" title="Gelişmiş renk laboratuvarı">
+          <i class="bi bi-palette2"></i><span>Renk</span>
+        </button>
+        <button class="tool-btn" data-tool="brush" title="Yerel parlama fırçası">
+          <i class="bi bi-brush"></i><span>Fırça</span>
+        </button>
+        <button class="tool-btn" data-tool="transform" title="Döndür ve yansıt">
+          <i class="bi bi-crop"></i><span>Dönüş</span>
+        </button>
+        <button class="tool-btn" data-tool="export" title="Dışa aktar">
+          <i class="bi bi-download"></i><span>Aktar</span>
+        </button>
+      </aside>
+
+      <section class="col workspace">
+        <div class="workspace-topbar">
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-secondary" id="fitBtn">
+              <i class="bi bi-arrows-fullscreen me-1"></i>Sığdır
+            </button>
+
+            <div class="zoom-control">
+              <i class="bi bi-zoom-out"></i>
+              <input type="range" id="zoomRange" min="25" max="200" value="100" step="5">
+              <i class="bi bi-zoom-in"></i>
+              <span id="zoomValue">100%</span>
+            </div>
+
+            <div class="vr d-none d-md-block"></div>
+
+            <button class="btn btn-sm btn-outline-secondary" id="beforeHoldBtn" title="Basılı tutarak orijinali görüntüleyin">
+              <i class="bi bi-eye me-1"></i>Önce
+            </button>
+
+            <div class="compare-control">
+              <span>Karşılaştır</span>
+              <input type="range" id="compareRange" min="0" max="100" value="0">
+            </div>
+          </div>
+
+          <div class="status-pill" id="statusPill">
+            <span class="status-dot"></span>
+            <span id="statusText">Görsel bekleniyor</span>
+          </div>
+        </div>
+
+        <div class="canvas-scroller" id="canvasScroller">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon"><i class="bi bi-image"></i></div>
+            <h2>Fotoğrafınızı yükleyin</h2>
+            <p>Sağ panelde Lightroom benzeri gelişmiş düzenleme bölümleri eklendi. Düzenlemeye başlamak için görsel seçin.</p>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+              <button class="btn btn-primary" id="emptyOpenBtn">
+                <i class="bi bi-folder2-open me-2"></i>Bilgisayardan Seç
+              </button>
+            </div>
+            <small>Örnek / default görsel kaldırıldı. Görseller sunucuya gönderilmez; tüm işlemler cihazınızda yapılır.</small>
+          </div>
+
+          <div class="canvas-stage d-none" id="canvasStage">
+            <canvas id="displayCanvas"></canvas>
+            <div class="compare-line" id="compareLine"></div>
+            <div class="brush-cursor d-none" id="brushCursor"></div>
+          </div>
+        </div>
+
+        <div class="workspace-bottombar">
+          <div id="imageInfo">—</div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="legend-item"><span class="legend-swatch mask"></span>Parlama maskesi</span>
+            <span class="legend-item"><span class="legend-swatch gamut"></span>Gamut uyarısı</span>
+            <span class="legend-item"><kbd>Space</kbd> Önce/Sonra</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="col-auto right-panel border-start">
+        <div class="panel-scroll">
+
+          <section class="tool-panel active" id="panel-adjust">
+            <div class="panel-heading compact">
+              <div>
+                <h5>Edit</h5>
+                <p>Lightroom benzeri düzenleme paneli</p>
+              </div>
+              <button class="btn btn-sm btn-link text-secondary" id="resetAllBtn">Sıfırla</button>
+            </div>
+
+            <div class="histogram-card large">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Histogram</span>
+                <small>RGB</small>
+              </div>
+              <canvas id="histogramCanvas" width="320" height="110"></canvas>
+            </div>
+
+            <div class="lr-meta-bar" id="metaBar">
+              <span id="metaIso">ISO 100</span>
+              <span id="metaFocal">100-400@100 mm</span>
+              <span id="metaAperture">f/4,5</span>
+              <span id="metaShutter">1/1000s</span>
+            </div>
+
+            <div class="lr-edit-switches">
+              <button class="btn btn-sm btn-outline-secondary" id="autoToneBtn">Auto</button>
+              <button class="btn btn-sm btn-outline-secondary" id="bwModeBtn">B&amp;W</button>
+              <button class="btn btn-sm btn-outline-secondary" id="hdrModeBtn">HDR</button>
+            </div>
+
+            <div class="profile-block">
+              <label class="form-label" for="profileSelect">Profile</label>
+              <select class="form-select form-select-sm" id="profileSelect">
+                <option value="adobe-color" selected>Adobe Color</option>
+                <option value="adobe-landscape">Adobe Landscape</option>
+                <option value="adobe-portrait">Adobe Portrait</option>
+                <option value="adobe-vivid">Adobe Vivid</option>
+                <option value="mono">Monochrome</option>
+              </select>
+            </div>
+
+            <div class="accordion accordion-flush editor-accordion" id="adjustAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#lightCollapse">
+                    Light
+                  </button>
+                </h2>
+                <div id="lightCollapse" class="accordion-collapse collapse show">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="exposure">
+                      <div class="range-label"><span>Exposure</span><output>0.00</output></div>
+                      <input type="range" min="-2" max="2" value="0" step="0.01">
+                    </div>
+                    <div class="range-control" data-key="brightness">
+                      <div class="range-label"><span>Brightness</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="contrast">
+                      <div class="range-label"><span>Contrast</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="highlights">
+                      <div class="range-label"><span>Highlights</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="shadows">
+                      <div class="range-label"><span>Shadows</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="whites">
+                      <div class="range-label"><span>Whites</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="blacks">
+                      <div class="range-label"><span>Blacks</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colorCollapse">
+                    Color
+                  </button>
+                </h2>
+                <div id="colorCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="temperature">
+                      <div class="range-label"><span>Temp</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="tint">
+                      <div class="range-label"><span>Tint</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="vibrance">
+                      <div class="range-label"><span>Vibrance</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="saturation">
+                      <div class="range-label"><span>Saturation</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#effectsCollapse">
+                    Effects
+                  </button>
+                </h2>
+                <div id="effectsCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="texture">
+                      <div class="range-label"><span>Texture</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="clarity">
+                      <div class="range-label"><span>Clarity</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="dehaze">
+                      <div class="range-label"><span>Dehaze</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="vignette">
+                      <div class="range-label"><span>Vignette</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="grain">
+                      <div class="range-label"><span>Grain</span><output>0</output></div>
+                      <input type="range" min="0" max="100" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#curveCollapse">
+                    Curve
+                  </button>
+                </h2>
+                <div id="curveCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="small text-secondary mb-2">Temel tonal curve alanı. İstersen buraya sonra interaktif curve canvas ekleyebilirsin.</div>
+                    <canvas id="toneCurveCanvas" width="320" height="140" class="w-100 border rounded"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colorMixerCollapse">
+                    Color Mixer
+                  </button>
+                </h2>
+                <div id="colorMixerCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="redMix">
+                      <div class="range-label"><span>Red Hue</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="greenMix">
+                      <div class="range-label"><span>Green Hue</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="blueMix">
+                      <div class="range-label"><span>Blue Hue</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colorGradingCollapse">
+                    Color Grading
+                  </button>
+                </h2>
+                <div id="colorGradingCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="shadowsHue">
+                      <div class="range-label"><span>Shadows Hue</span><output>0°</output></div>
+                      <input type="range" min="0" max="360" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="midtonesHue">
+                      <div class="range-label"><span>Midtones Hue</span><output>0°</output></div>
+                      <input type="range" min="0" max="360" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="highlightsHue">
+                      <div class="range-label"><span>Highlights Hue</span><output>0°</output></div>
+                      <input type="range" min="0" max="360" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#detailCollapse">
+                    Detail
+                  </button>
+                </h2>
+                <div id="detailCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="sharpness">
+                      <div class="range-label"><span>Sharpness</span><output>0</output></div>
+                      <input type="range" min="0" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="noiseReduction">
+                      <div class="range-label"><span>Noise Reduction</span><output>0</output></div>
+                      <input type="range" min="0" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="colorNoiseReduction">
+                      <div class="range-label"><span>Color Noise</span><output>0</output></div>
+                      <input type="range" min="0" max="100" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#opticsCollapse">
+                    Optics
+                  </button>
+                </h2>
+                <div id="opticsCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="form-check form-switch mb-2">
+                      <input class="form-check-input" type="checkbox" id="removeCA">
+                      <label class="form-check-label" for="removeCA">Remove Chromatic Aberration</label>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="enableLensCorrections">
+                      <label class="form-check-label" for="enableLensCorrections">Enable Lens Corrections</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lensBlurCollapse">
+                    Lens Blur
+                  </button>
+                </h2>
+                <div id="lensBlurCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="lensBlurAmount">
+                      <div class="range-label"><span>Amount</span><output>0</output></div>
+                      <input type="range" min="0" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="lensBlurBokeh">
+                      <div class="range-label"><span>Bokeh Boost</span><output>0</output></div>
+                      <input type="range" min="0" max="100" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#calibrationCollapse">
+                    Calibration
+                  </button>
+                </h2>
+                <div id="calibrationCollapse" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="range-control" data-key="redPrimaryHue">
+                      <div class="range-label"><span>Red Primary Hue</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="greenPrimaryHue">
+                      <div class="range-label"><span>Green Primary Hue</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                    <div class="range-control" data-key="bluePrimaryHue">
+                      <div class="range-label"><span>Blue Primary Hue</span><output>0</output></div>
+                      <input type="range" min="-100" max="100" value="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="tool-panel" id="panel-colorlab">
+            <div class="panel-heading compact">
+              <div>
+                <h5>Renk Laboratuvarı</h5>
+                <p>HSL, LUT, grading, maskeler ve renk provası</p>
+              </div>
+              <button class="btn btn-sm btn-link text-secondary" id="resetColorLabBtn">Rengi Sıfırla</button>
+            </div>
+            <div id="colorLabContent"></div>
+          </section>
+
+          <section class="tool-panel" id="panel-brush">
+            <div class="panel-heading">
+              <div>
+                <h5>Parlama Fırçası</h5>
+                <p>Sadece sorunlu bölgeyi düzeltin</p>
+              </div>
+              <button class="btn btn-sm btn-link text-secondary" id="clearMaskBtn">Maskeyi Sil</button>
+            </div>
+
+            <div class="alert alert-info small">
+              <i class="bi bi-info-circle me-1"></i>
+              Fırçayla güneş veya ışık parlamasının üzerine boyayın. Kırmızı alan, düzeltmenin uygulanacağı maskedir.
+            </div>
+
+            <div class="segmented mb-3">
+              <button class="active" data-brush-mode="paint"><i class="bi bi-brush me-1"></i>Boya</button>
+              <button data-brush-mode="erase"><i class="bi bi-eraser me-1"></i>Sil</button>
+            </div>
+
+            <div class="range-control standalone">
+              <div class="range-label"><span>Fırça Boyutu</span><output id="brushSizeOutput">120 px</output></div>
+              <input id="brushSizeRange" type="range" min="20" max="500" value="120" step="1">
+            </div>
+            <div class="range-control standalone">
+              <div class="range-label"><span>Fırça Gücü</span><output id="brushOpacityOutput">45%</output></div>
+              <input id="brushOpacityRange" type="range" min="5" max="100" value="45" step="1">
+            </div>
+            <div class="range-control standalone">
+              <div class="range-label"><span>Yumuşaklık</span><output id="brushFeatherOutput">70%</output></div>
+              <input id="brushFeatherRange" type="range" min="0" max="95" value="70" step="1">
+            </div>
+          </section>
+
+          <section class="tool-panel" id="panel-transform">
+            <div class="panel-heading">
+              <div>
+                <h5>Dönüştür</h5>
+                <p>Döndürme, yansıtma ve oran</p>
+              </div>
+            </div>
+
+            <div class="transform-grid">
+              <button class="btn btn-outline-secondary" id="rotateLeftBtn"><i class="bi bi-arrow-counterclockwise"></i><span>Sola 90°</span></button>
+              <button class="btn btn-outline-secondary" id="rotateRightBtn"><i class="bi bi-arrow-clockwise"></i><span>Sağa 90°</span></button>
+              <button class="btn btn-outline-secondary" id="flipHBtn"><i class="bi bi-symmetry-vertical"></i><span>Yatay Çevir</span></button>
+              <button class="btn btn-outline-secondary" id="flipVBtn"><i class="bi bi-symmetry-horizontal"></i><span>Dikey Çevir</span></button>
+            </div>
+          </section>
+
+          <section class="tool-panel" id="panel-export">
+            <div class="panel-heading">
+              <div>
+                <h5>Dışa Aktar</h5>
+                <p>Tam çözünürlükte kaydedin</p>
+              </div>
+            </div>
+
+            <label class="form-label">Dosya Adı</label>
+            <input class="form-control" id="exportName" value="duzenlenmis-fotograf">
+
+            <label class="form-label mt-3">Biçim</label>
+            <select class="form-select" id="exportFormat">
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/png">PNG</option>
+              <option value="image/webp">WEBP</option>
+            </select>
+
+            <button class="btn btn-success btn-lg w-100 mt-3" id="exportBtn">
+              <i class="bi bi-download me-2"></i>Fotoğrafı Kaydet
+            </button>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="appToast" class="toast text-bg-dark border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastText">İşlem tamamlandı.</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
