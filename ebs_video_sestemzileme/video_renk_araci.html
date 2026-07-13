@@ -3,16 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EBS Video Stüdyosu</title>
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
-<script>
-  if (location.protocol === "http:" || location.protocol === "https:") {
-    const coiScript = document.createElement("script");
-    coiScript.src = "coi-serviceworker.js";
-    coiScript.onerror = () => console.warn("coi-serviceworker.js yüklenemedi.");
-    document.head.appendChild(coiScript);
-  }
-</script>
+<title>Video Stüdyosu</title>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
 <style>
   :root{
@@ -856,25 +849,33 @@
   }
 
   async function getFFmpeg(){
-    if (typeof SharedArrayBuffer === 'undefined' || !window.crossOriginIsolated){
-      throw new Error('FFmpeg render için sayfayı file:// ile değil HTTPS veya localhost üzerinden açın. coi-serviceworker.js dosyasını HTML ile aynı klasöre ekleyip sayfayı bir kez yenileyin.');
+    if (!window.FFmpegWASM || !window.FFmpegWASM.FFmpeg){
+      throw new Error('FFmpeg.wasm ana kütüphanesi yüklenemedi. İnternet/CDN bağlantısını kontrol edin.');
     }
-    if (!window.FFmpeg || !window.FFmpeg.createFFmpeg){
-      throw new Error('FFmpeg.wasm yüklenemedi. İnternet/CDN bağlantısını kontrol edin.');
+    if (!window.FFmpegUtil || !window.FFmpegUtil.toBlobURL){
+      throw new Error('FFmpeg yardımcı kütüphanesi yüklenemedi. İnternet/CDN bağlantısını kontrol edin.');
     }
+
     if (!ffmpegInstance){
-      const { createFFmpeg } = FFmpeg;
-      ffmpegInstance = createFFmpeg({
-        log: false,
-        progress: ({ ratio }) => {
-          const pct = Math.min(98, Math.max(1, Math.round((Number(ratio) || 0) * 100)));
-          exportStatus.innerHTML = '<span class="rec-dot"></span>Render alınıyor… %' + pct;
-        }
+      const { FFmpeg } = window.FFmpegWASM;
+      ffmpegInstance = new FFmpeg();
+      ffmpegInstance.on('progress', ({ progress }) => {
+        const pct = Math.min(98, Math.max(1, Math.round((Number(progress) || 0) * 100)));
+        exportStatus.innerHTML = '<span class="rec-dot"></span>Render alınıyor… %' + pct;
+      });
+      ffmpegInstance.on('log', ({ message }) => {
+        console.debug('[FFmpeg]', message);
       });
     }
-    if (!ffmpegInstance.isLoaded()){
+
+    if (!ffmpegInstance.loaded){
       exportStatus.innerHTML = '<span class="rec-dot"></span>FFmpeg motoru yükleniyor…';
-      await ffmpegInstance.load();
+      const { toBlobURL } = window.FFmpegUtil;
+      const coreBase = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+      await ffmpegInstance.load({
+        coreURL: await toBlobURL(coreBase + '/ffmpeg-core.js', 'text/javascript'),
+        wasmURL: await toBlobURL(coreBase + '/ffmpeg-core.wasm', 'application/wasm')
+      });
     }
     return ffmpegInstance;
   }
@@ -893,15 +894,15 @@
     const outputName = 'islenmis-video.mp4';
     try {
       const ffmpeg = await getFFmpeg();
-      const { fetchFile } = FFmpeg;
+      const { fetchFile } = window.FFmpegUtil;
       const inputExt = getInputExtension(selectedVideoFile);
       inputName = `input.${inputExt}`;
 
-      try { ffmpeg.FS('unlink', inputName); } catch(e) {}
-      try { ffmpeg.FS('unlink', outputName); } catch(e) {}
+      try { await ffmpeg.deleteFile(inputName); } catch(e) {}
+      try { await ffmpeg.deleteFile(outputName); } catch(e) {}
 
       exportStatus.innerHTML = '<span class="rec-dot"></span>Video belleğe alınıyor…';
-      ffmpeg.FS('writeFile', inputName, await fetchFile(selectedVideoFile));
+      await ffmpeg.writeFile(inputName, await fetchFile(selectedVideoFile));
 
       const videoFilters = buildFFmpegVideoFilters();
       const audioFilters = buildFFmpegAudioFilters();
@@ -922,10 +923,11 @@
         outputName
       ];
 
-      await ffmpeg.run(...args);
+      const exitCode = await ffmpeg.exec(args);
+      if (exitCode !== 0) throw new Error('FFmpeg render işlemi hata koduyla sonlandı: ' + exitCode);
       exportStatus.innerHTML = '<span class="rec-dot"></span>Dosya hazırlanıyor…';
 
-      const data = ffmpeg.FS('readFile', outputName);
+      const data = await ffmpeg.readFile(outputName);
       const blob = new Blob([data.buffer], { type: 'video/mp4' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -943,10 +945,10 @@
       exportStatus.textContent = 'Render başarısız: ' + (err && err.message ? err.message : String(err));
     } finally {
       try {
-        if (ffmpegInstance && inputName) ffmpegInstance.FS('unlink', inputName);
+        if (ffmpegInstance && inputName) await ffmpegInstance.deleteFile(inputName);
       } catch(e) {}
       try {
-        if (ffmpegInstance) ffmpegInstance.FS('unlink', outputName);
+        if (ffmpegInstance) await ffmpegInstance.deleteFile(outputName);
       } catch(e) {}
       isExporting = false;
       exportBtn.disabled = false;
