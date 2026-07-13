@@ -909,14 +909,19 @@
       const videoFilters = buildFFmpegVideoFilters();
       const audioFilters = buildFFmpegAudioFilters();
       const args = [
+        '-threads', '1',
+        '-filter_threads', '1',
+        '-filter_complex_threads', '1',
         '-i', inputName,
         '-map', '0:v:0',
         '-map', '0:a:0?',
         '-vf', videoFilters,
         '-af', audioFilters,
         '-c:v', 'libx264',
-        '-preset', 'veryfast',
-        '-crf', '20',
+        '-preset', 'ultrafast',
+        '-threads', '1',
+        '-x264-params', 'threads=1:lookahead_threads=1:sliced_threads=0',
+        '-crf', '21',
         '-pix_fmt', 'yuv420p',
         '-c:a', 'aac',
         '-b:a', '192k',
@@ -943,7 +948,7 @@
       exportStatus.textContent = 'Render tamamlandı — MP4 indirme başladı (' + (blob.size/1024/1024).toFixed(1) + ' MB).' + chromaNote;
     } catch(err){
       console.error(err);
-      exportStatus.textContent = 'Render başarısız: ' + (err && err.message ? err.message : String(err));
+      exportStatus.textContent = 'Render başarısız: ' + (err && err.message ? err.message : String(err)) + ' Tarayıcı önbelleğini temizleyip yeniden deneyin.';
     } finally {
       try {
         if (ffmpegInstance && inputName) ffmpegInstance.FS('unlink', inputName);
