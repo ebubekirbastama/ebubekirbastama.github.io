@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script src="./coi-serviceworker.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ücretsiz Online Video Kesme ve Bölüm Silme Aracı</title>
+<meta name="description"
+      content="Videolarınızı tarayıcıda yükleyin; saniye ve milisaniye hassasiyetinde kesin, istenmeyen bölümleri silin ve ücretsiz indirin.">
+
+<meta name="author" content="Ebubekir Bastama">
+<meta name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+<meta name="googlebot"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+<!-- OPEN GRAPH / FACEBOOK -->
+<meta property="og:locale" content="tr_TR">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ebubekir Bastama">
+
+<meta property="og:title"
+      content="Ücretsiz Online Video Kesme ve Bölüm Silme Aracı">
+
+<meta property="og:description"
+      content="Videolarınızı tarayıcı üzerinden kesin, istediğiniz bölümleri silin ve yeni videoyu ücretsiz indirin.">
+
+
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta property="og:image:alt"
+      content="Ücretsiz online video kesme ve bölüm silme aracı">
+
+<!-- X / TWITTER -->
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title"
+      content="Ücretsiz Online Video Kesme Aracı">
+
+<meta name="twitter:description"
+      content="Videolarınızı saniye ve milisaniye hassasiyetinde kesin veya istenmeyen bölümleri silin.">
+
+<meta name="twitter:image:alt"
+      content="Online video kesme ve bölüm silme aracı">
+
+<!-- TARAYICI -->
+<meta name="theme-color" content="#30375b">
+<meta name="application-name" content="Video Kesme Stüdyosu">
+
+<!-- YAPISAL VERİ: WEB UYGULAMASI -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "EBS MiliSaniye Video Kesme Stüdyosu",
+  "alternateName": "Online Video Kesme ve Bölüm Silme Aracı",
+  "description": "Tarayıcı üzerinden video kesme, klip çıkarma ve videodaki istenmeyen zaman aralıklarını silme uygulaması.",
+  "applicationCategory": "MultimediaApplication",
+  "applicationSubCategory": "Video Editing Application",
+  "operatingSystem": "Web Browser",
+  "browserRequirements": "JavaScript ve WebAssembly destekleyen güncel bir internet tarayıcısı gerektirir.",
+  "inLanguage": "tr-TR",
+  "isAccessibleForFree": true,
+  "author": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama",
+    "url": "https://www.ebubekirbastama.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama",
+    "url": "https://www.ebubekirbastama.com/"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY",
+    "availability": "https://schema.org/InStock"
+  },
+  "featureList": [
+    "Online video kesme",
+    "Belirli video aralıklarını silme",
+    "Milisaniye hassasiyetinde zaman seçimi",
+    "Birden fazla klip oluşturma",
+    "Tarayıcı üzerinden video işleme",
+    "Ücretsiz video indirme",
+    "Klavye kısayolları"
+  ]
+}
+</script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0b10;
+    --panel:#12141c;
+    --panel2:#171a24;
+    --border:#242838;
+    --accent:#6366f1;
+    --accent2:#8b5cf6;
+    --accent-glow: rgba(99,102,241,.35);
+    --danger:#ef4444;
+    --success:#22c55e;
+    --warning:#f59e0b;
+    --text:#e9eaf2;
+    --muted:#8a8fa3;
+  }
+  *{ font-family:'Inter',sans-serif; }
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(99,102,241,.12), transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(139,92,246,.10), transparent 40%),
+      #30375b;
+    color:var(--text);
+    min-height:100vh;
+  }
+  h3.title{
+    font-weight:800; letter-spacing:-.5px;
+    background:linear-gradient(90deg,#a5b4fc,#f0abfc);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .card{
+    background:linear-gradient(180deg, var(--panel2), var(--panel));
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.02);
+    backdrop-filter: blur(6px);
+  }
+  .step-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px;height:26px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    font-weight:700; font-size:.8rem; color:#fff;
+    box-shadow:0 0 12px var(--accent-glow);
+    margin-right:8px;
+  }
+  label.form-label{ font-weight:600; color:var(--text); }
+  video{
+    width:100%; background:#000; border-radius:12px;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
+    border:1px solid var(--border);
+  }
+  .form-control, .form-control:focus{
+    background:#0c0e15; border:1px solid var(--border); color:var(--text);
+    border-radius:10px;
+  }
+  .form-control:focus{ border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+  .form-control::file-selector-button{
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none;
+    padding:8px 14px; border-radius:8px; margin-right:12px; font-weight:600; transition:.2s;
+  }
+  .form-control::file-selector-button:hover{ filter:brightness(1.1); }
+
+  .btn{ border-radius:10px; font-weight:600; letter-spacing:.2px; transition:.2s all; border:none; }
+  .btn:active{ transform:scale(.96); }
+  .btn-grad{
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
+    box-shadow:0 4px 16px var(--accent-glow);
+  }
+  .btn-grad:hover{ filter:brightness(1.12); box-shadow:0 6px 22px var(--accent-glow); color:#fff; transform:translateY(-1px); }
+  .btn-grad:disabled{ opacity:.4; box-shadow:none; transform:none; }
+  .btn-outline-soft{
+    background:#171a24; color:var(--text); border:1px solid var(--border);
+  }
+  .btn-outline-soft:hover{ background:#1d2130; color:#fff; border-color:var(--accent); transform:translateY(-1px); }
+  .btn-danger-soft{ background:rgba(239,68,68,.12); color:#fca5a5; border:1px solid rgba(239,68,68,.3); }
+  .btn-danger-soft:hover{ background:rgba(239,68,68,.22); color:#fff; }
+  .btn-success-soft{ background:rgba(34,197,94,.12); color:#86efac; border:1px solid rgba(34,197,94,.3); }
+  .btn-success-soft:hover{ background:rgba(34,197,94,.22); color:#fff; }
+  .btn-warning-grad{
+    background:linear-gradient(135deg,#f59e0b,#f43f5e); color:#fff;
+    box-shadow:0 4px 16px rgba(245,158,11,.3);
+  }
+  .btn-warning-grad:hover{ filter:brightness(1.1); transform:translateY(-1px); color:#fff; }
+
+  #transcriptBox{
+    max-height:280px; overflow-y:auto; background:#0a0c13;
+    border:1px solid var(--border); border-radius:12px; padding:14px;
+    line-height:2.1; font-size:.98rem;
+  }
+  .word{ cursor:pointer; padding:2px 4px; border-radius:6px; transition:.15s; color:#c9cbdb; }
+  .word:hover{ background:#232841; color:#fff; }
+  .word.active{
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
+    box-shadow:0 0 14px var(--accent-glow);
+  }
+  .word.playing{
+    background:rgba(34,197,94,.25); color:#bbf7d0; box-shadow:0 0 10px rgba(34,197,94,.3);
+  }
+
+  .time-input{ width:88px; }
+  .time-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    background:#0c0e15; border:1px solid var(--border); border-radius:10px; padding:6px 10px;
+  }
+  .time-chip input{ background:transparent; border:none; color:var(--text); width:56px; text-align:center; outline:none; }
+  .time-chip .sep{ color:var(--muted); }
+  .time-chip .unit{ color:var(--muted); font-size:.72rem; }
+
+  .badge-soft{
+    background:#1d2130; border:1px solid var(--border); color:var(--muted);
+    border-radius:8px; padding:4px 10px; font-size:.78rem;
+  }
+
+  .cut-item, .remove-item{
+    background:#0c0e15; border:1px solid var(--border); border-radius:12px; padding:12px 14px;
+    margin-bottom:10px; transition:.2s;
+  }
+  .cut-item:hover, .remove-item:hover{ border-color:var(--accent); box-shadow:0 4px 20px rgba(0,0,0,.3); }
+  .cut-range{
+    font-family:'Inter',monospace; font-weight:700;
+    background:linear-gradient(90deg,#a5b4fc,#f0abfc); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  #recStatus.on{ color:var(--success); }
+  #recStatus.on::before{ content:'●'; animation:pulse 1s infinite; margin-right:5px; }
+  #recStatus.off{ color:var(--muted); }
+  #recStatus.off::before{ content:'●'; margin-right:5px; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+  .progress{ background:#0c0e15; border-radius:10px; overflow:hidden; }
+  .progress-bar{ background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+
+  ::-webkit-scrollbar{ width:8px; } ::-webkit-scrollbar-thumb{ background:#2d3348; border-radius:8px; }
+
+  .alert-soft{
+    background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.25); color:#fcd34d;
+    border-radius:12px;
+  }
+  .sub{ color:var(--muted); font-size:.88rem; }
+  .now-badge{
+    font-family:monospace; font-weight:700; font-size:1.05rem;
+    background:#0c0e15; border:1px solid var(--border); padding:4px 12px; border-radius:10px;
+    box-shadow:0 0 12px rgba(99,102,241,.15);
+  }
+  .shortcut-key{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:26px; padding:2px 7px; margin-left:7px;
+    border:1px solid #3b425a; border-bottom-width:2px; border-radius:6px;
+    background:#0a0c13; color:#c7d2fe; font:700 .68rem/1.2 monospace;
+    white-space:nowrap;
+  }
+  .shortcut-panel{ display:none; }
+  .shortcut-panel.show{ display:block; }
+  .shortcut-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); gap:8px 14px;
+  }
+  .shortcut-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:#0c0e15; border:1px solid var(--border); border-radius:9px; padding:8px 10px;
+  }
+  .shortcut-row kbd{
+    background:#202538; border:1px solid #3b425a; color:#e0e7ff;
+    border-radius:5px; padding:3px 7px; font:700 .72rem monospace;
+  }
+  #shortcutToast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(16px);
+    z-index:9999; opacity:0; pointer-events:none; transition:.18s;
+    background:#090b11; border:1px solid var(--accent); color:#fff;
+    border-radius:10px; padding:9px 14px; box-shadow:0 10px 35px rgba(0,0,0,.45);
+    font-size:.85rem;
+  }
+  #shortcutToast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .processing-lock{ opacity:.65; pointer-events:none; }
+  .status-error{ color:#fca5a5 !important; }
+  .status-success{ color:#86efac !important; }
+</style>
+</head>
+<body class="p-3 p-md-4">
+<div class="container-fluid" style="max-width:1150px;">
+  <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-1">
+    <div>
+      <h3 class="title mb-1">🎬 Video Kesme Stüdyosu</h3>
+      <p class="sub mb-0">Video yükle → yazıya dök → belirli saniyeleri sil ya da parça kes → indir.</p>
+    </div>
+    <button id="btnShortcutHelp" class="btn btn-outline-soft btn-sm" title="Klavye kısayollarını göster/gizle (F1)">⌨️ Kısayollar <span class="shortcut-key">F1</span></button>
+  </div>
+
+  <div id="shortcutPanel" class="card p-3 mb-3 shortcut-panel" aria-hidden="true">
+    <div class="shortcut-grid">
+      <div class="shortcut-row"><span>Video seç</span><kbd>Ctrl + O</kbd></div>
+      <div class="shortcut-row"><span>Oynat / duraklat</span><kbd>Boşluk</kbd></div>
+      <div class="shortcut-row"><span>Yazıya dökmeyi başlat</span><kbd>Ctrl + T</kbd></div>
+      <div class="shortcut-row"><span>Yazıya dökmeyi durdur</span><kbd>Ctrl + Shift + T</kbd></div>
+      <div class="shortcut-row"><span>Şu anı başlangıca al</span><kbd>Alt + B</kbd></div>
+      <div class="shortcut-row"><span>Şu anı bitişe al</span><kbd>Alt + E</kbd></div>
+      <div class="shortcut-row"><span>Kes ve Al listesine ekle</span><kbd>Alt + K</kbd></div>
+      <div class="shortcut-row"><span>Sil listesine ekle</span><kbd>Alt + S</kbd></div>
+      <div class="shortcut-row"><span>Tüm kesimleri indir</span><kbd>Ctrl + Alt + K</kbd></div>
+      <div class="shortcut-row"><span>Seçili bölümleri sil ve indir</span><kbd>Ctrl + Alt + S</kbd></div>
+      <div class="shortcut-row"><span>Kesim önizle</span><kbd>C → sıra no → Enter</kbd></div>
+      <div class="shortcut-row"><span>Tek kesimi indir</span><kbd>D → sıra no → Enter</kbd></div>
+      <div class="shortcut-row"><span>Kesimi listeden kaldır</span><kbd>X → sıra no → Enter</kbd></div>
+      <div class="shortcut-row"><span>Silme aralığını önizle</span><kbd>R → sıra no → Enter</kbd></div>
+      <div class="shortcut-row"><span>Silme aralığını kaldır</span><kbd>V → sıra no → Enter</kbd></div>
+      <div class="shortcut-row"><span>Oynatmayı / yazıya dökmeyi durdur</span><kbd>Esc</kbd></div>
+    </div>
+  </div>
+
+  <div class="card p-4 mb-3">
+    <label class="form-label"><span class="step-badge">1</span>Video Yükle</label>
+    <input type="file" id="videoInput" accept="video/*" class="form-control mb-3">
+    <video id="video" controls></video>
+    <div class="mt-3 d-flex gap-3 flex-wrap align-items-center">
+      <span class="badge-soft">Süre: <b id="durLabel">--</b></span>
+      <span class="now-badge">⏱ Şu an: <span id="curLabel">0.000</span> sn</span>
+    </div>
+  </div>
+
+  <div class="card p-4 mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <label class="form-label m-0"><span class="step-badge">2</span>Yazıya Dök (canlı)</label>
+      <div class="d-flex gap-2 align-items-center">
+        <button id="btnTranscribe" class="btn btn-grad btn-sm px-3">🎙️ Yazıya Dök <span class="shortcut-key">Ctrl+T</span></button>
+        <button id="btnStopTranscribe" class="btn btn-danger-soft btn-sm px-3" disabled>Durdur <span class="shortcut-key">Ctrl+Shift+T</span></button>
+        <span id="recStatus" class="off small ms-1">Kapalı</span>
+      </div>
+    </div>
+    <div class="alert alert-soft py-2 px-3 small mb-3">
+      Tarayıcı video dosyasının sesini doğrudan okuyamadığı için, hoparlörden çıkan ses <b>mikrofonla</b> dinlenerek yazıya dökülür (Chrome önerilir). Ses seviyesini açın ve sessiz bir ortamda kullanın. Kelimeler, video oynarken <b>anlık olarak</b> aşağıda belirir ve o an söylenen kelime yeşil renkte vurgulanır.
+    </div>
+    <div id="transcriptBox">
+      <span class="sub">Henüz metin yok. Video yükleyip "Yazıya Dök" butonuna basın.</span>
+    </div>
+    <div class="sub mt-2">💡 Bir kelimeye tıklarsan video o ana atlar ve zaman otomatik "Başlangıç" kutusuna yazılır.</div>
+  </div>
+
+  <div class="card p-4 mb-3">
+    <label class="form-label mb-3"><span class="step-badge">3</span>Zaman Aralığı Seç</label>
+    <div class="row g-3 align-items-end">
+      <div class="col-auto">
+        <div class="sub mb-1">Başlangıç</div>
+        <div class="time-chip">
+          <input type="number" id="startSec" min="0" value="0"><span class="unit">sn</span>
+          <span class="sep">.</span>
+          <input type="number" id="startMs" min="0" max="999" value="0"><span class="unit">ms</span>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="sub mb-1">Bitiş</div>
+        <div class="time-chip">
+          <input type="number" id="endSec" min="0" value="1"><span class="unit">sn</span>
+          <span class="sep">.</span>
+          <input type="number" id="endMs" min="0" max="999" value="0"><span class="unit">ms</span>
+        </div>
+      </div>
+      <div class="col-auto">
+        <button id="btnUseCurrent" class="btn btn-outline-soft btn-sm">📍 Şu anki zamanı başlangıca al <span class="shortcut-key">Alt+B</span></button>
+      </div>
+      <div class="col-auto">
+        <button id="btnUseCurrentEnd" class="btn btn-outline-soft btn-sm">📍 Şu anki zamanı bitişe al <span class="shortcut-key">Alt+E</span></button>
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-3 flex-wrap">
+      <button id="btnAddCut" class="btn btn-success-soft btn-sm px-3">✂️ Bu Aralığı "Kes ve Al" Listesine Ekle <span class="shortcut-key">Alt+K</span></button>
+      <button id="btnAddRemove" class="btn btn-danger-soft btn-sm px-3">🗑️ Bu Aralığı "Sil" Listesine Ekle <span class="shortcut-key">Alt+S</span></button>
+    </div>
+    <div class="sub mt-2">
+      Örnek: <span class="cut-range">başlangıç: 0.01 sn → bitiş: 0.522 sn</span> aralığını girip
+      <b>"Sil"</b> listesine eklersen, o bölüm videodan çıkarılıp geri kalanı birleştirilir.
+      <b>"Kes ve Al"</b> listesine eklersen, sadece o aralık ayrı bir klip olarak dışa aktarılır.
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <label class="form-label m-0">✂️ Kes ve Al Listesi</label>
+        </div>
+        <div id="cutsList"><span class="sub">Henüz eklenmedi.</span></div>
+        <button id="btnCutAll" class="btn btn-warning-grad btn-sm mt-2" disabled>Tümünü Kırp ve İndir <span class="shortcut-key">Ctrl+Alt+K</span></button>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <label class="form-label m-0">🗑️ Silinecek Bölümler</label>
+        </div>
+        <div id="removeList"><span class="sub">Henüz eklenmedi.</span></div>
+        <button id="btnApplyRemove" class="btn btn-warning-grad btn-sm mt-2" disabled>Bu Bölümleri Sil ve İndir <span class="shortcut-key">Ctrl+Alt+S</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-3 mt-3">
+    <div class="progress d-none" id="progWrap" style="height:8px;">
+      <div class="progress-bar" id="progBar" style="width:0%"></div>
+    </div>
+    <div id="ffmpegLog" class="sub mt-2 mb-0">Hazır.</div>
+  </div>
+
+</div>
+<div id="shortcutToast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const video = $('video');
+const videoInput = $('videoInput');
+const durLabel = $('durLabel');
+const curLabel = $('curLabel');
+const transcriptBox = $('transcriptBox');
+const recStatus = $('recStatus');
+const logEl = $('ffmpegLog');
+const progWrap = $('progWrap');
+const progBar = $('progBar');
+const shortcutPanel = $('shortcutPanel');
+const shortcutToast = $('shortcutToast');
+
+let videoFile = null;
+let videoObjectURL = null;
+let cuts = [];
+let removals = [];
+let transcriptWords = [];
+let previewStopHandler = null;
+let processing = false;
+let toastTimer = null;
+let sequenceMode = null;
+let sequenceDigits = '';
+let sequenceTimer = null;
+
+function showToast(message, timeout = 1700) {
+  clearTimeout(toastTimer);
+  shortcutToast.textContent = message;
+  shortcutToast.classList.add('show');
+  toastTimer = setTimeout(() => shortcutToast.classList.remove('show'), timeout);
+}
+
+function setStatus(message, type = '') {
+  logEl.textContent = message;
+  logEl.classList.remove('status-error', 'status-success');
+  if (type === 'error') logEl.classList.add('status-error');
+  if (type === 'success') logEl.classList.add('status-success');
+}
+
+function setProcessing(active, message = '') {
+  processing = active;
+  document.body.classList.toggle('processing-lock', false);
+  document.querySelectorAll('button').forEach((button) => {
+    if (button.id === 'btnShortcutHelp') return;
+    if (active) {
+      button.dataset.wasDisabled = button.disabled ? '1' : '0';
+      button.disabled = true;
+    } else if (button.dataset.wasDisabled === '0') {
+      button.disabled = false;
+      delete button.dataset.wasDisabled;
+    } else if (button.dataset.wasDisabled === '1') {
+      delete button.dataset.wasDisabled;
+    }
+  });
+  videoInput.disabled = active;
+  if (message) setStatus(message);
+  if (!active) updateActionButtons();
+}
+
+function updateActionButtons() {
+  if (processing) return;
+  $('btnCutAll').disabled = !videoFile || cuts.length === 0;
+  $('btnApplyRemove').disabled = !videoFile || removals.length === 0;
+  $('btnTranscribe').disabled = !videoFile || recognizing;
+  $('btnStopTranscribe').disabled = !recognizing;
+}
+
+function cleanPreviewListener() {
+  if (previewStopHandler) {
+    video.removeEventListener('timeupdate', previewStopHandler);
+    previewStopHandler = null;
+  }
+}
+
+function previewRange(range) {
+  if (!videoFile) return alert('Önce bir video yükleyin.');
+  cleanPreviewListener();
+  video.currentTime = Math.max(0, range.start);
+  video.play().catch(() => {});
+  previewStopHandler = () => {
+    if (video.currentTime >= range.end || video.ended) {
+      video.pause();
+      cleanPreviewListener();
+    }
+  };
+  video.addEventListener('timeupdate', previewStopHandler);
+}
+
+videoInput.addEventListener('change', (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  if (!file.type.startsWith('video/')) {
+    alert('Lütfen geçerli bir video dosyası seçin.');
+    videoInput.value = '';
+    return;
+  }
+  videoFile = file;
+  cuts = [];
+  removals = [];
+  renderCuts();
+  renderRemovals();
+  if (videoObjectURL) URL.revokeObjectURL(videoObjectURL);
+  videoObjectURL = URL.createObjectURL(file);
+  video.src = videoObjectURL;
+  setStatus(`Video yüklendi: ${file.name}`);
+  updateActionButtons();
+});
+
+video.addEventListener('loadedmetadata', () => {
+  durLabel.textContent = Number.isFinite(video.duration) ? `${video.duration.toFixed(3)} sn` : '--';
+  $('endSec').value = Math.max(1, Math.min(Math.floor(video.duration || 1), 10));
+  $('endMs').value = 0;
+});
+video.addEventListener('timeupdate', () => {
+  curLabel.textContent = video.currentTime.toFixed(3);
+  highlightCurrentWord();
+});
+
+function highlightCurrentWord() {
+  if (!transcriptWords.length) return;
+  const currentTime = video.currentTime;
+  let current = null;
+  for (const word of transcriptWords) {
+    if (word.time <= currentTime + 0.05) current = word;
+    else break;
+  }
+  transcriptWords.forEach((word) => word.el.classList.remove('playing'));
+  if (!current) return;
+  current.el.classList.add('playing');
+  const top = current.el.offsetTop;
+  if (top < transcriptBox.scrollTop || top > transcriptBox.scrollTop + transcriptBox.clientHeight - 30) {
+    transcriptBox.scrollTop = Math.max(0, top - 40);
+  }
+}
+
+let recognition = null;
+let recognizing = false;
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function startTranscribe() {
+  if (!videoFile) return alert('Önce bir video yükleyin.');
+  if (!SpeechRecognitionAPI) return alert('Bu tarayıcı konuşma tanımayı desteklemiyor. Chrome kullanın.');
+  if (recognizing) return;
+
+  transcriptWords = [];
+  transcriptBox.innerHTML = '';
+  video.currentTime = 0;
+  video.play().catch(() => {});
+
+  recognition = new SpeechRecognitionAPI();
+  recognition.lang = 'tr-TR';
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.onresult = (event) => {
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) addTranscriptChunk(event.results[i][0].transcript.trim(), video.currentTime);
+    }
+  };
+  recognition.onerror = (event) => console.warn('Tanıma hatası:', event.error);
+  recognition.onend = () => {
+    if (recognizing) {
+      try { recognition.start(); } catch (_) {}
+    }
+  };
+  try { recognition.start(); } catch (error) { return alert(error.message); }
+  recognizing = true;
+  recStatus.textContent = 'Dinleniyor...';
+  recStatus.className = 'on small ms-1';
+  updateActionButtons();
+  video.onended = stopTranscribe;
+}
+
+function stopTranscribe() {
+  recognizing = false;
+  if (recognition) {
+    try { recognition.stop(); } catch (_) {}
+  }
+  recStatus.textContent = 'Kapalı';
+  recStatus.className = 'off small ms-1';
+  updateActionButtons();
+}
+
+$('btnTranscribe').addEventListener('click', startTranscribe);
+$('btnStopTranscribe').addEventListener('click', stopTranscribe);
+
+function addTranscriptChunk(text, time) {
+  if (!text) return;
+  if (transcriptBox.querySelector('.sub')) transcriptBox.innerHTML = '';
+  text.split(/\s+/).filter(Boolean).forEach((wordText) => {
+    const span = document.createElement('span');
+    span.className = 'word';
+    span.textContent = `${wordText} `;
+    span.dataset.time = time.toFixed(3);
+    span.title = `Zaman: ${time.toFixed(3)} sn`;
+    span.addEventListener('click', () => {
+      document.querySelectorAll('.word.active').forEach((el) => el.classList.remove('active'));
+      span.classList.add('active');
+      video.currentTime = Number(span.dataset.time);
+      setTimeFields('start', video.currentTime);
+    });
+    transcriptBox.appendChild(span);
+    transcriptWords.push({ el: span, text: wordText, time });
+  });
+  transcriptBox.scrollTop = transcriptBox.scrollHeight;
+}
+
+function setTimeFields(prefix, time) {
+  const safe = Math.max(0, Number(time) || 0);
+  let sec = Math.floor(safe);
+  let ms = Math.round((safe - sec) * 1000);
+  if (ms >= 1000) { sec += 1; ms = 0; }
+  $(`${prefix}Sec`).value = sec;
+  $(`${prefix}Ms`).value = ms;
+}
+
+$('btnUseCurrent').addEventListener('click', () => setTimeFields('start', video.currentTime));
+$('btnUseCurrentEnd').addEventListener('click', () => setTimeFields('end', video.currentTime));
+
+function readTime(prefix) {
+  const sec = Math.max(0, Number.parseInt($(`${prefix}Sec`).value || '0', 10) || 0);
+  const ms = Math.max(0, Math.min(999, Number.parseInt($(`${prefix}Ms`).value || '0', 10) || 0));
+  return sec + ms / 1000;
+}
+
+function readRange() {
+  const start = readTime('start');
+  const end = readTime('end');
+  const duration = Number(video.duration);
+  if (!videoFile || !Number.isFinite(duration)) throw new Error('Önce videosu tamamen yükleyin.');
+  if (start < 0 || end <= start) throw new Error('Bitiş zamanı başlangıçtan büyük olmalı.');
+  if (start >= duration) throw new Error('Başlangıç zamanı video süresinden küçük olmalı.');
+  return { start, end: Math.min(end, duration) };
+}
+
+$('btnAddCut').addEventListener('click', () => {
+  try {
+    const range = readRange();
+    cuts.push({ ...range, id: crypto.randomUUID?.() || `${Date.now()}-${Math.random()}` });
+    renderCuts();
+    updateActionButtons();
+  } catch (error) { alert(error.message); }
+});
+
+$('btnAddRemove').addEventListener('click', () => {
+  try {
+    const range = readRange();
+    removals.push({ ...range, id: crypto.randomUUID?.() || `${Date.now()}-${Math.random()}` });
+    renderRemovals();
+    updateActionButtons();
+  } catch (error) { alert(error.message); }
+});
+
+function fmt(time) {
+  let sec = Math.floor(time);
+  let ms = Math.round((time - sec) * 1000);
+  if (ms >= 1000) { sec++; ms = 0; }
+  return `${sec}.${String(ms).padStart(3, '0')}sn`;
+}
+
+function renderCuts() {
+  const list = $('cutsList');
+  if (!cuts.length) {
+    list.innerHTML = '<span class="sub">Henüz eklenmedi.</span>';
+    updateActionButtons();
+    return;
+  }
+  list.innerHTML = '';
+  cuts.forEach((cut, index) => {
+    const itemNo = index + 1;
+    const div = document.createElement('div');
+    div.className = 'cut-item d-flex justify-content-between align-items-center flex-wrap gap-2';
+    div.innerHTML = `
+      <div>
+        <div class="cut-range">${itemNo}. başlangıç: ${fmt(cut.start)} → bitiş: ${fmt(cut.end)}</div>
+        <div class="sub">süre: ${(cut.end - cut.start).toFixed(3)} sn</div>
+      </div>
+      <div class="d-flex gap-1 flex-wrap">
+        <button class="btn btn-outline-soft btn-sm btn-preview" title="Kısayol: C, ${itemNo}, Enter">▶ Önizle <span class="shortcut-key">C${itemNo}↵</span></button>
+        <button class="btn btn-success-soft btn-sm btn-cut-single" title="Kısayol: D, ${itemNo}, Enter">İndir <span class="shortcut-key">D${itemNo}↵</span></button>
+        <button class="btn btn-danger-soft btn-sm btn-remove" title="Kısayol: X, ${itemNo}, Enter">Sil <span class="shortcut-key">X${itemNo}↵</span></button>
+      </div>`;
+    div.querySelector('.btn-preview').addEventListener('click', () => previewRange(cut));
+    div.querySelector('.btn-cut-single').addEventListener('click', () => extractClips([cut]));
+    div.querySelector('.btn-remove').addEventListener('click', () => {
+      cuts = cuts.filter((entry) => entry.id !== cut.id);
+      renderCuts();
+    });
+    list.appendChild(div);
+  });
+  updateActionButtons();
+}
+
+function renderRemovals() {
+  const list = $('removeList');
+  if (!removals.length) {
+    list.innerHTML = '<span class="sub">Henüz eklenmedi.</span>';
+    updateActionButtons();
+    return;
+  }
+  removals.sort((a, b) => a.start - b.start);
+  list.innerHTML = '';
+  removals.forEach((range, index) => {
+    const itemNo = index + 1;
+    const div = document.createElement('div');
+    div.className = 'remove-item d-flex justify-content-between align-items-center flex-wrap gap-2';
+    div.innerHTML = `
+      <div>
+        <div class="cut-range">${itemNo}. başlangıç: ${fmt(range.start)} → bitiş: ${fmt(range.end)}</div>
+        <div class="sub">silinecek süre: ${(range.end - range.start).toFixed(3)} sn</div>
+      </div>
+      <div class="d-flex gap-1 flex-wrap">
+        <button class="btn btn-outline-soft btn-sm btn-preview" title="Kısayol: R, ${itemNo}, Enter">▶ Önizle <span class="shortcut-key">R${itemNo}↵</span></button>
+        <button class="btn btn-danger-soft btn-sm btn-remove" title="Kısayol: V, ${itemNo}, Enter">Kaldır <span class="shortcut-key">V${itemNo}↵</span></button>
+      </div>`;
+    div.querySelector('.btn-preview').addEventListener('click', () => previewRange(range));
+    div.querySelector('.btn-remove').addEventListener('click', () => {
+      removals = removals.filter((entry) => entry.id !== range.id);
+      renderRemovals();
+    });
+    list.appendChild(div);
+  });
+  updateActionButtons();
+}
+
+$('btnCutAll').addEventListener('click', () => {
+  if (!cuts.length) return alert('Önce en az bir aralık ekleyin.');
+  extractClips([...cuts]);
+});
+$('btnApplyRemove').addEventListener('click', () => {
+  if (!removals.length) return alert('Önce silinecek en az bir aralık ekleyin.');
+  removeSegments([...removals]);
+});
+
+let ffmpeg = null;
+let ffmpegLoaded = false;
+let ffmpegLoadPromise = null;
+let classWorkerBlobURL = null;
+let ffmpegLogLines = [];
+const FFMPEG_PACKAGE_VERSION = '0.12.10';
+const FFMPEG_CORE_VERSION = '0.12.6';
+const FFMPEG_LOAD_TIMEOUT_MS = 120000;
+
+function withTimeout(promise, timeoutMs, message) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+async function createClassWorkerURL() {
+  if (classWorkerBlobURL) return classWorkerBlobURL;
+  const localURL = new URL('./ffmpeg-class-worker.js', window.location.href);
+  const response = await fetch(localURL, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`ffmpeg-class-worker.js bulunamadı (HTTP ${response.status}).`);
+  const source = await response.text();
+  if (!source.includes('FFMessageType') || !source.includes('self.onmessage')) {
+    throw new Error('ffmpeg-class-worker.js geçersiz veya sunucu dosya yerine HTML döndürüyor.');
+  }
+  classWorkerBlobURL = URL.createObjectURL(new Blob([source], { type: 'text/javascript' }));
+  return classWorkerBlobURL;
+}
+
+async function loadFFmpeg() {
+  if (ffmpegLoaded) return;
+  if (ffmpegLoadPromise) return ffmpegLoadPromise;
+  ffmpegLoadPromise = (async () => {
+    if (window.location.protocol === 'file:') throw new Error('Sayfayı HTTPS veya localhost üzerinden açın; file:// desteklenmez.');
+    progWrap.classList.remove('d-none');
+    progBar.style.width = '2%';
+    setStatus('FFmpeg kütüphanesi hazırlanıyor...');
+
+    const [{ FFmpeg }, { toBlobURL, fetchFile }] = await Promise.all([
+      import(`https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@${FFMPEG_PACKAGE_VERSION}/dist/esm/index.js`),
+      import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js')
+    ]);
+    window.__fetchFile = fetchFile;
+    ffmpeg = new FFmpeg();
+    ffmpeg.on('log', ({ message }) => {
+      if (!message) return;
+      ffmpegLogLines.push(message);
+      if (ffmpegLogLines.length > 80) ffmpegLogLines.shift();
+    });
+    ffmpeg.on('progress', ({ progress }) => {
+      progWrap.classList.remove('d-none');
+      if (Number.isFinite(progress)) progBar.style.width = `${Math.min(99, Math.max(3, Math.round(progress * 100)))}%`;
+    });
+
+    const canUseMultiThread = Boolean(window.crossOriginIsolated && typeof SharedArrayBuffer !== 'undefined');
+    const corePackage = canUseMultiThread ? '@ffmpeg/core-mt' : '@ffmpeg/core';
+    const baseURL = `https://cdn.jsdelivr.net/npm/${corePackage}@${FFMPEG_CORE_VERSION}/dist/esm`;
+    const classWorkerURL = await createClassWorkerURL();
+    const promises = [
+      toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+      toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
+    ];
+    if (canUseMultiThread) promises.push(toBlobURL(`${baseURL}/ffmpeg-core.worker.js`, 'text/javascript'));
+    const assets = await withTimeout(Promise.all(promises), FFMPEG_LOAD_TIMEOUT_MS, 'FFmpeg çekirdek dosyaları indirilemedi.');
+    const [coreURL, wasmURL, workerURL] = assets;
+    const config = { coreURL, wasmURL, classWorkerURL };
+    if (canUseMultiThread) config.workerURL = workerURL;
+    progBar.style.width = '60%';
+    setStatus('FFmpeg WebAssembly motoru başlatılıyor...');
+    await withTimeout(ffmpeg.load(config), FFMPEG_LOAD_TIMEOUT_MS, 'FFmpeg motoru 120 saniyede başlatılamadı.');
+    ffmpegLoaded = true;
+    progBar.style.width = '100%';
+    setStatus(`FFmpeg hazır ✅ ${canUseMultiThread ? 'Çoklu iş parçacığı' : 'Uyumluluk modu'}.`, 'success');
+  })();
+  try { await ffmpegLoadPromise; }
+  catch (error) {
+    ffmpegLoaded = false;
+    ffmpegLoadPromise = null;
+    try { ffmpeg?.terminate(); } catch (_) {}
+    ffmpeg = null;
+    throw error;
+  }
+}
+
+function getExt(name) {
+  const match = String(name || '').match(/\.[a-z0-9]+$/i);
+  return match ? match[0].toLowerCase() : '.mp4';
+}
+
+function safeBaseName(name) {
+  return String(name || 'video').replace(/\.[^.]+$/, '').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 50) || 'video';
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
+
+async function safeDeleteFFmpegFile(path) {
+  if (!ffmpeg || !path) return;
+  try { await ffmpeg.deleteFile(path); } catch (_) {}
+}
+
+function lastFfmpegError() {
+  const relevant = ffmpegLogLines.filter((line) => /error|invalid|failed|not found|unknown|cannot|no such|encoder/i.test(line));
+  return (relevant.at(-1) || ffmpegLogLines.at(-1) || '').slice(0, 280);
+}
+
+function encodingArgs(encoder, withAudio) {
+  const videoArgs = encoder === 'libx264'
+    ? ['-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23']
+    : ['-c:v', 'mpeg4', '-q:v', '4'];
+  return [
+    ...videoArgs,
+    '-pix_fmt', 'yuv420p',
+    ...(withAudio ? ['-c:a', 'aac', '-b:a', '128k'] : ['-an']),
+    '-movflags', '+faststart',
+    '-avoid_negative_ts', 'make_zero'
+  ];
+}
+
+async function executeFilterWithFallback({ inputName, outputName, audioFilter, videoOnlyFilter, statusPrefix }) {
+  const attempts = [
+    { encoder: 'libx264', withAudio: true, filter: audioFilter, label: 'H.264 + ses' },
+    { encoder: 'libx264', withAudio: false, filter: videoOnlyFilter, label: 'H.264 sessiz' },
+    { encoder: 'mpeg4', withAudio: true, filter: audioFilter, label: 'MPEG-4 + ses' },
+    { encoder: 'mpeg4', withAudio: false, filter: videoOnlyFilter, label: 'MPEG-4 sessiz' }
+  ];
+  let lastError = null;
+  for (const attempt of attempts) {
+    await safeDeleteFFmpegFile(outputName);
+    ffmpegLogLines = [];
+    setStatus(`${statusPrefix} (${attempt.label})...`);
+    const args = [
+      '-y', '-i', inputName,
+      '-filter_complex', attempt.filter,
+      '-map', '[outv]',
+      ...(attempt.withAudio ? ['-map', '[outa]'] : []),
+      ...encodingArgs(attempt.encoder, attempt.withAudio),
+      outputName
+    ];
+    try {
+      const exitCode = await ffmpeg.exec(args);
+      if (exitCode === 0) {
+        const out = await ffmpeg.readFile(outputName);
+        if (out instanceof Uint8Array && out.byteLength > 0) return out;
+        lastError = new Error('FFmpeg boş çıktı oluşturdu.');
+      } else {
+        lastError = new Error(`FFmpeg çıkış kodu ${exitCode}: ${lastFfmpegError()}`);
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw new Error(`Video oluşturulamadı. ${lastError?.message || lastFfmpegError() || 'Bilinmeyen FFmpeg hatası.'}`);
+}
+
+function clipFilters(start, end) {
+  const s = start.toFixed(6);
+  const e = end.toFixed(6);
+  const videoPart = `[0:v:0]trim=start=${s}:end=${e},setpts=PTS-STARTPTS,scale=trunc(iw/2)*2:trunc(ih/2)*2,setsar=1[outv]`;
+  const audioPart = `[0:a:0]atrim=start=${s}:end=${e},asetpts=PTS-STARTPTS[outa]`;
+  return { audio: `${videoPart};${audioPart}`, videoOnly: videoPart };
+}
+
+async function extractClips(list) {
+  if (!videoFile || processing) return;
+  const inputName = `clip_input_${Date.now()}${getExt(videoFile.name)}`;
+  const generated = [];
+  try {
+    setProcessing(true, 'Kesme işlemi hazırlanıyor...');
+    await loadFFmpeg();
+    progWrap.classList.remove('d-none');
+    progBar.style.width = '3%';
+    await ffmpeg.writeFile(inputName, await window.__fetchFile(videoFile));
+    const duration = Number(video.duration);
+    const normalized = list.map((entry) => ({
+      start: Math.max(0, Math.min(Number(entry.start) || 0, duration)),
+      end: Math.max(0, Math.min(Number(entry.end) || 0, duration))
+    })).filter((entry) => entry.end - entry.start > 0.001);
+    if (!normalized.length) throw new Error('Geçerli kesme aralığı bulunamadı.');
+
+    for (let i = 0; i < normalized.length; i++) {
+      const range = normalized[i];
+      const outputName = `clip_output_${Date.now()}_${i}.mp4`;
+      generated.push(outputName);
+      const filters = clipFilters(range.start, range.end);
+      const out = await executeFilterWithFallback({
+        inputName,
+        outputName,
+        audioFilter: filters.audio,
+        videoOnlyFilter: filters.videoOnly,
+        statusPrefix: `Kesim ${i + 1}/${normalized.length} yeniden kodlanıyor`
+      });
+      const downloadName = `${safeBaseName(videoFile.name)}_kesim_${i + 1}_${range.start.toFixed(3)}-${range.end.toFixed(3)}.mp4`;
+      downloadBlob(new Blob([out], { type: 'video/mp4' }), downloadName);
+      progBar.style.width = `${Math.round(((i + 1) / normalized.length) * 100)}%`;
+    }
+    setStatus(`${normalized.length} kesim başarıyla oluşturuldu ve indirildi ✅`, 'success');
+  } catch (error) {
+    console.error(error);
+    setStatus(`Kesme hatası: ${error.message}`, 'error');
+  } finally {
+    await safeDeleteFFmpegFile(inputName);
+    for (const name of generated) await safeDeleteFFmpegFile(name);
+    setProcessing(false);
+  }
+}
+
+function normalizeRemovalRanges(list, duration) {
+  const ranges = list.map(({ start, end }) => ({
+    start: Math.max(0, Math.min(Number(start) || 0, duration)),
+    end: Math.max(0, Math.min(Number(end) || 0, duration))
+  })).filter((range) => range.end - range.start > 0.001).sort((a, b) => a.start - b.start);
+  const merged = [];
+  for (const range of ranges) {
+    const last = merged.at(-1);
+    if (!last || range.start > last.end + 0.001) merged.push({ ...range });
+    else last.end = Math.max(last.end, range.end);
+  }
+  return merged;
+}
+
+function buildKeepRanges(removalRanges, duration) {
+  const keep = [];
+  let cursor = 0;
+  for (const range of removalRanges) {
+    if (range.start > cursor + 0.001) keep.push({ start: cursor, end: range.start });
+    cursor = Math.max(cursor, range.end);
+  }
+  if (cursor < duration - 0.001) keep.push({ start: cursor, end: duration });
+  return keep.filter((range) => range.end - range.start > 0.001);
+}
+
+function removalFilters(keepRanges) {
+  const videoFilters = [];
+  const audioFilters = [];
+  const videoLabels = [];
+  const audioLabels = [];
+  keepRanges.forEach((range, index) => {
+    const s = range.start.toFixed(6);
+    const e = range.end.toFixed(6);
+    if (keepRanges.length === 1) {
+      videoFilters.push(`[0:v:0]trim=start=${s}:end=${e},setpts=PTS-STARTPTS,scale=trunc(iw/2)*2:trunc(ih/2)*2,setsar=1[outv]`);
+      audioFilters.push(`[0:a:0]atrim=start=${s}:end=${e},asetpts=PTS-STARTPTS[outa]`);
+    } else {
+      videoFilters.push(`[0:v:0]trim=start=${s}:end=${e},setpts=PTS-STARTPTS,scale=trunc(iw/2)*2:trunc(ih/2)*2,setsar=1[v${index}]`);
+      audioFilters.push(`[0:a:0]atrim=start=${s}:end=${e},asetpts=PTS-STARTPTS[a${index}]`);
+      videoLabels.push(`[v${index}]`);
+      audioLabels.push(`[a${index}]`);
+    }
+  });
+  if (keepRanges.length > 1) {
+    videoFilters.push(`${videoLabels.join('')}concat=n=${keepRanges.length}:v=1:a=0[outv]`);
+    audioFilters.push(`${audioLabels.join('')}concat=n=${keepRanges.length}:v=0:a=1[outa]`);
+  }
+  return {
+    videoOnly: videoFilters.join(';'),
+    audio: [...videoFilters, ...audioFilters].join(';')
+  };
+}
+
+async function removeSegments(list) {
+  if (!videoFile || processing) return;
+  const inputName = `remove_input_${Date.now()}${getExt(videoFile.name)}`;
+  const outputName = `remove_output_${Date.now()}.mp4`;
+  try {
+    setProcessing(true, 'Silme işlemi hazırlanıyor...');
+    await loadFFmpeg();
+    progWrap.classList.remove('d-none');
+    progBar.style.width = '3%';
+    await ffmpeg.writeFile(inputName, await window.__fetchFile(videoFile));
+    const duration = Number(video.duration);
+    if (!Number.isFinite(duration) || duration <= 0) throw new Error('Video süresi okunamadı.');
+    const normalized = normalizeRemovalRanges(list, duration);
+    if (!normalized.length) throw new Error('Geçerli silme aralığı bulunamadı.');
+    const keepRanges = buildKeepRanges(normalized, duration);
+    if (!keepRanges.length) throw new Error('Seçilen aralıklar videonun tamamını siliyor.');
+    const filters = removalFilters(keepRanges);
+    const removedTotal = normalized.reduce((sum, range) => sum + range.end - range.start, 0);
+    const out = await executeFilterWithFallback({
+      inputName,
+      outputName,
+      audioFilter: filters.audio,
+      videoOnlyFilter: filters.videoOnly,
+      statusPrefix: `Toplam ${removedTotal.toFixed(3)} saniye siliniyor`
+    });
+    downloadBlob(new Blob([out], { type: 'video/mp4' }), `${safeBaseName(videoFile.name)}_silinmis.mp4`);
+    progBar.style.width = '100%';
+    setStatus(`Tamamlandı ✅ Toplam ${removedTotal.toFixed(3)} saniye videodan çıkarıldı.`, 'success');
+  } catch (error) {
+    console.error(error);
+    setStatus(`Silme hatası: ${error.message}`, 'error');
+  } finally {
+    await safeDeleteFFmpegFile(inputName);
+    await safeDeleteFFmpegFile(outputName);
+    setProcessing(false);
+  }
+}
+
+function toggleShortcutPanel() {
+  const show = !shortcutPanel.classList.contains('show');
+  shortcutPanel.classList.toggle('show', show);
+  shortcutPanel.setAttribute('aria-hidden', String(!show));
+}
+$('btnShortcutHelp').addEventListener('click', toggleShortcutPanel);
+
+function isTypingTarget(target) {
+  return target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || target?.isContentEditable;
+}
+
+function activateSequence(mode) {
+  sequenceMode = mode;
+  sequenceDigits = '';
+  clearTimeout(sequenceTimer);
+  const names = { C: 'Kesim önizleme', D: 'Kesim indirme', X: 'Kesim silme', R: 'Silme aralığı önizleme', V: 'Silme aralığı kaldırma' };
+  showToast(`${names[mode]}: sıra numarasını yazıp Enter tuşuna basın.`, 3000);
+  sequenceTimer = setTimeout(() => { sequenceMode = null; sequenceDigits = ''; }, 3000);
+}
+
+function runSequence(mode, index) {
+  const i = index - 1;
+  if (mode === 'C' && cuts[i]) previewRange(cuts[i]);
+  else if (mode === 'D' && cuts[i]) extractClips([cuts[i]]);
+  else if (mode === 'X' && cuts[i]) { cuts.splice(i, 1); renderCuts(); }
+  else if (mode === 'R' && removals[i]) previewRange(removals[i]);
+  else if (mode === 'V' && removals[i]) { removals.splice(i, 1); renderRemovals(); }
+  else showToast('Bu sıra numarasında kayıt bulunamadı.');
+}
+
+document.addEventListener('keydown', (event) => {
+  const key = event.key;
+  const typing = isTypingTarget(event.target);
+
+  if (key === 'F1') { event.preventDefault(); toggleShortcutPanel(); return; }
+  if (event.ctrlKey && !event.altKey && key.toLowerCase() === 'o') { event.preventDefault(); if (!processing) videoInput.click(); return; }
+  if (key === 'Escape') {
+    event.preventDefault();
+    cleanPreviewListener();
+    video.pause();
+    if (recognizing) stopTranscribe();
+    sequenceMode = null;
+    sequenceDigits = '';
+    showToast('Durduruldu.');
+    return;
+  }
+  if (typing) return;
+
+  if (sequenceMode && /^\d$/.test(key)) {
+    event.preventDefault();
+    if (!(sequenceDigits === '' && key === '0')) sequenceDigits += key;
+    clearTimeout(sequenceTimer);
+    showToast(`${sequenceMode}${sequenceDigits || '?'}: çalıştırmak için Enter`, 3000);
+    sequenceTimer = setTimeout(() => { sequenceMode = null; sequenceDigits = ''; }, 3000);
+    return;
+  }
+  if (sequenceMode && key === 'Enter') {
+    event.preventDefault();
+    const mode = sequenceMode;
+    const index = Number(sequenceDigits);
+    sequenceMode = null;
+    sequenceDigits = '';
+    clearTimeout(sequenceTimer);
+    if (Number.isInteger(index) && index > 0) runSequence(mode, index);
+    else showToast('Geçerli bir sıra numarası yazın.');
+    return;
+  }
+
+  const lower = key.toLowerCase();
+  if (!event.ctrlKey && !event.altKey && !event.shiftKey && ['c', 'd', 'x', 'r', 'v'].includes(lower)) {
+    event.preventDefault();
+    activateSequence(lower.toUpperCase());
+    return;
+  }
+  if (key === ' ') { event.preventDefault(); if (videoFile) video.paused ? video.play().catch(() => {}) : video.pause(); return; }
+  if (event.ctrlKey && !event.altKey && lower === 't') {
+    event.preventDefault();
+    event.shiftKey ? stopTranscribe() : startTranscribe();
+    return;
+  }
+  if (event.altKey && !event.ctrlKey && lower === 'b') { event.preventDefault(); $('btnUseCurrent').click(); return; }
+  if (event.altKey && !event.ctrlKey && lower === 'e') { event.preventDefault(); $('btnUseCurrentEnd').click(); return; }
+  if (event.altKey && !event.ctrlKey && lower === 'k') { event.preventDefault(); $('btnAddCut').click(); return; }
+  if (event.altKey && !event.ctrlKey && lower === 's') { event.preventDefault(); $('btnAddRemove').click(); return; }
+  if (event.ctrlKey && event.altKey && lower === 'k') { event.preventDefault(); if (!$('btnCutAll').disabled) $('btnCutAll').click(); return; }
+  if (event.ctrlKey && event.altKey && lower === 's') { event.preventDefault(); if (!$('btnApplyRemove').disabled) $('btnApplyRemove').click(); }
+});
+
+window.addEventListener('load', () => {
+  updateActionButtons();
+  setTimeout(() => {
+    if (window.location.protocol === 'file:') setStatus('Bu sayfayı HTTPS veya localhost üzerinden açın.', 'error');
+    else if (window.crossOriginIsolated) setStatus('Hazır. Güvenlik izolasyonu aktif ✅');
+    else setStatus('Hazır. FFmpeg gerektiğinde tek iş parçacıklı uyumluluk modunda açılacak.');
+  }, 400);
+});
+window.addEventListener('beforeunload', () => {
+  if (videoObjectURL) URL.revokeObjectURL(videoObjectURL);
+  if (classWorkerBlobURL) URL.revokeObjectURL(classWorkerBlobURL);
+});
+</script>
+</body>
+</html>
