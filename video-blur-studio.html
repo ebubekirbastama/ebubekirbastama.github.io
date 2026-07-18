@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>EBS Blur Studio Pro | AI Video Yüz Bulanıklaştırma ve Sansür Aracı</title>
+<meta name="theme-color" content="#0a0c10">
+<meta name="description" content="Yapay zeka destekli profesyonel video yüz bulanıklaştırma aracı. MP4 dışa aktarma, FFmpeg render, otomatik yüz takibi, manuel sansür, 4K video desteği ve tamamen tarayıcıda çalışan ücretsiz AI video editörü.">
+<meta name="keywords" content="video blur, yüz bulanıklaştırma, ai face blur, ffmpeg online, mp4 editor, video sansürleme, yüz gizleme, video editör, ai video editor, face tracking">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c10;
+    --panel:#12151b;
+    --panel-2:#171b23;
+    --line:#232833;
+    --ink:#e8ebf1;
+    --ink-dim:#8b93a3;
+    --accent:#2fe0c5;
+    --accent-dim:#1a7566;
+    --mark:#ff7a45;
+    --mark-dim:#7a3c22;
+    --danger:#ff5470;
+    --radius:10px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', system-ui, sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  ::selection{ background:var(--accent-dim); color:#fff; }
+
+  header{
+    padding:18px 24px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand-mark{
+    width:32px; height:32px; border-radius:8px;
+    background:
+      radial-gradient(circle at 35% 35%, var(--accent) 0 6px, transparent 6.5px),
+      radial-gradient(circle at 65% 65%, var(--accent) 0 6px, transparent 6.5px);
+    background-color: var(--panel-2);
+    border:1px solid var(--line);
+    filter: blur(0.3px);
+    position:relative;
+  }
+  .brand-mark::after{
+    content:"";
+    position:absolute; inset:0; border-radius:8px;
+    backdrop-filter: blur(1.5px);
+  }
+  .brand h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:18px;
+    letter-spacing:0.2px;
+  }
+  .brand span{
+    color:var(--ink-dim); font-size:12px; font-family:'JetBrains Mono', monospace;
+  }
+
+  main{
+    flex:1;
+    display:grid;
+    grid-template-columns: 1fr 320px;
+    gap:0;
+    min-height:0;
+  }
+  @media (max-width: 900px){
+    main{ grid-template-columns: 1fr; }
+    aside{ order:2; }
+    .stage{ order:1; }
+  }
+
+  @media (max-width: 640px){
+    header{ padding:14px 16px; }
+    header > span{ display:none; }
+    .stage{ padding:14px; gap:12px; }
+    aside{ padding:14px; gap:16px; }
+    footer{ padding:12px 16px; flex-direction:column-reverse; align-items:stretch; }
+    footer .primary{ width:100%; justify-content:center; padding:12px 14px; }
+    #resetLink{ text-align:center; }
+    .toolbar{ gap:6px; }
+    .toolbar .group{ flex:1; }
+    .toolbar .group button{ flex:1; justify-content:center; padding:9px 6px; font-size:12px; }
+    .toolbar .group button svg{ width:14px; height:14px; }
+    #detectBtn{ width:100%; justify-content:center; }
+    .canvas-wrap{ max-width:100%; }
+    #stageCanvas{ max-height:46vh; }
+    .brand h1{ font-size:16px; }
+    .dropzone{ padding:32px 14px; font-size:14px; }
+  }
+
+  .stage{
+    display:flex;
+    flex-direction:column;
+    padding:20px;
+    gap:14px;
+    min-width:0;
+    border-right:1px solid var(--line);
+  }
+  @media (max-width: 900px){ .stage{ border-right:none; border-bottom:1px solid var(--line); } }
+
+  .dropzone{
+    border:1.5px dashed var(--line);
+    border-radius:var(--radius);
+    padding:40px 20px;
+    text-align:center;
+    color:var(--ink-dim);
+    cursor:pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .dropzone:hover, .dropzone.drag{
+    border-color:var(--accent);
+    background:rgba(47,224,197,0.04);
+  }
+  .dropzone strong{ color:var(--ink); font-weight:600; }
+  .dropzone input{ display:none; }
+
+  .canvas-wrap{
+    position:relative;
+    width:100%;
+    max-width:560px;
+    margin:0 auto;
+    background:#000;
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--line);
+    display:none;
+    line-height:0;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+  }
+  .canvas-wrap.active{ display:block; }
+  #stageCanvas{
+    width:100%;
+    max-height:60vh;
+    height:auto;
+    display:block;
+    cursor:crosshair;
+    touch-action:none;
+    object-fit:contain;
+  }
+  .canvas-badge{
+    position:absolute; top:10px; left:10px;
+    background:rgba(10,12,16,0.75);
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:4px 9px;
+    border-radius:6px;
+    pointer-events:none;
+    backdrop-filter: blur(4px);
+  }
+
+  .toolbar{
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    width:100%; max-width:560px; margin:0 auto;
+  }
+  .toolbar .group{
+    display:flex; gap:4px; background:var(--panel); border:1px solid var(--line);
+    padding:4px; border-radius:var(--radius);
+  }
+  button{
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    padding:9px 13px;
+    border-radius:7px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:7px;
+    transition: border-color .12s, background .12s, color .12s, opacity .12s;
+    white-space:nowrap;
+  }
+  button:hover{ border-color:#3a4152; }
+  button:disabled{ opacity:0.35; cursor:not-allowed; }
+  button.tool{ background:transparent; border-color:transparent; }
+  button.tool.active{ background:var(--accent-dim); border-color:var(--accent); color:#fff; }
+  button.primary{ background:var(--accent); color:#04231d; border-color:var(--accent); font-weight:600; }
+  button.primary:hover{ filter:brightness(1.08); }
+  button.ghost{ background:transparent; }
+  button svg{ width:15px; height:15px; flex-shrink:0; }
+
+  .progress-row{
+    display:flex; align-items:center; gap:10px;
+    width:100%; max-width:560px; margin:0 auto;
+  }
+  #scrub{
+    flex:1;
+    accent-color: var(--accent);
+    height:4px;
+  }
+  .timecode{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+    min-width:96px;
+    text-align:right;
+  }
+
+  .status-bar{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+    display:flex; align-items:center; gap:8px;
+    min-height:18px;
+  }
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--ink-dim);
+    flex-shrink:0;
+  }
+  .dot.live{ background:var(--accent); box-shadow:0 0 0 3px rgba(47,224,197,0.15); }
+  .dot.busy{ background:var(--mark); box-shadow:0 0 0 3px rgba(255,122,69,0.15); animation:pulse 1s infinite; }
+  @keyframes pulse{ 50%{ opacity:0.4; } }
+
+  aside{
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    overflow-y:auto;
+  }
+  .panel-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.09em;
+    color:var(--ink-dim);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .panel-title .count{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--accent);
+  }
+  .empty-hint{
+    font-size:12.5px;
+    color:var(--ink-dim);
+    line-height:1.5;
+    padding:12px;
+    border:1px dashed var(--line);
+    border-radius:8px;
+  }
+  .target-list{ display:flex; flex-direction:column; gap:8px; }
+  .target-item{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 10px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+  .target-swatch{
+    width:34px; height:34px; border-radius:7px; flex-shrink:0;
+    background-size:cover; background-position:center;
+    border:1px solid var(--line);
+    position:relative;
+  }
+  .target-swatch.rect{ border-radius:6px; }
+  .target-swatch.circle{ border-radius:50%; }
+  .target-meta{ flex:1; min-width:0; }
+  .target-meta .name{ font-size:12.5px; font-weight:500; }
+  .target-meta .sub{ font-size:11px; color:var(--ink-dim); font-family:'JetBrains Mono', monospace; }
+  .target-actions{ display:flex; gap:6px; }
+  .icon-btn{
+    width:28px; height:28px; padding:0; justify-content:center;
+    background:transparent; border-color:transparent;
+  }
+  .icon-btn:hover{ background:var(--panel-2); border-color:var(--line); }
+  .icon-btn.on{ color:var(--accent); }
+  .icon-btn.danger:hover{ color:var(--danger); border-color:var(--danger); }
+
+  .slider-row{ display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--ink-dim); }
+  .slider-row input[type=range]{ flex:1; accent-color:var(--accent); }
+  .slider-row .val{ font-family:'JetBrains Mono', monospace; color:var(--ink); width:32px; text-align:right; }
+
+  footer{
+    padding:14px 24px;
+    border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:10px;
+  }
+  .export-link{
+    font-size:12.5px; color:var(--accent); text-decoration:none;
+  }
+  .export-link:hover{ text-decoration:underline; }
+
+  a.link-reset{
+    color:var(--ink-dim); text-decoration:underline; cursor:pointer; font-size:12.5px;
+  }
+
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+
+  .hint-shape{
+    display:flex; gap:6px; align-items:center; font-size:11.5px; color:var(--ink-dim);
+    padding:8px 10px; background:var(--panel); border:1px solid var(--line); border-radius:8px;
+  }
+
+/* EBS Blur Studio Pro supplied-design skin */
+:root{--bg:#081122;--panel:#111c32;--panel-2:#17243d;--line:rgba(181,197,225,.18);--ink:#f5f7ff;--ink-dim:#aeb8ce;--accent:#26f59b;--accent-dim:#0f7550;--mark:#4da3ff;--mark-dim:#234d7a;--danger:#ff6868;--radius:12px}
+body{background:radial-gradient(circle at top left,rgba(45,118,255,.16),transparent 38%),radial-gradient(circle at bottom right,rgba(38,245,155,.11),transparent 35%),linear-gradient(145deg,#081122,#101b34);padding:26px 18px;display:block}
+.ebs-shell{width:min(1500px,100%);margin:auto;background:rgba(12,20,38,.96);border:1px solid var(--line);border-radius:22px;box-shadow:0 28px 80px rgba(0,0,0,.48);overflow:hidden;backdrop-filter:blur(18px)}
+.ebs-topbar{min-height:64px;padding:14px 22px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:rgba(5,10,22,.98);border-bottom:1px solid var(--line)}
+.window-dots{display:flex;gap:7px}.window-dots i{width:12px;height:12px;border-radius:50%;display:block}.window-dots i:nth-child(1){background:#ff6258}.window-dots i:nth-child(2){background:#ffc248}.window-dots i:nth-child(3){background:#34d65c}
+.ebs-title{font-size:.78rem;font-weight:800;letter-spacing:1.25px;text-align:center;color:#d5dced}.ebs-title b{color:var(--accent)}
+.ebs-tabs{display:flex;gap:6px;padding:10px 16px 0;border-bottom:1px solid var(--line);background:rgba(5,10,22,.62)}
+.ebs-tab{border:0;border-radius:10px 10px 0 0;background:transparent;color:var(--ink-dim);font-weight:800;padding:12px 18px}.ebs-tab.active{color:var(--accent);background:rgba(38,245,155,.07);box-shadow:inset 0 -3px var(--accent)}
+header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{background:transparent;grid-template-columns:minmax(0,1fr) 360px}.stage{padding:24px 28px}.dropzone{background:linear-gradient(135deg,rgba(38,245,155,.08),rgba(77,163,255,.06));border-color:rgba(38,245,155,.52)}
+.canvas-wrap{max-width:760px;border-radius:16px;box-shadow:inset 0 0 32px rgba(0,0,0,.35),0 15px 35px rgba(0,0,0,.24)}.toolbar,.progress-row{max-width:760px}.target-item{box-shadow:0 10px 24px rgba(0,0,0,.16)}button.primary{background:linear-gradient(135deg,var(--accent),#54ffb4);box-shadow:0 7px 22px rgba(38,245,155,.24);border:0}footer{padding:18px 24px;background:rgba(5,10,22,.72)}
+.render-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.setting-box{padding:12px;background:#0e192d;border:1px solid var(--line);border-radius:11px}.setting-box label{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--ink-dim);margin-bottom:7px;text-transform:uppercase}.setting-box select{width:100%;min-height:38px;border:1px solid rgba(181,197,225,.28);border-radius:8px;background:#111e35;color:var(--ink);padding:7px 9px}.audio-note{margin-top:10px;font-size:12px;color:var(--ink-dim);line-height:1.45}.audio-note strong{color:var(--accent)}
+@media(max-width:900px){body{padding:10px 8px}.ebs-shell{border-radius:16px}.ebs-topbar{grid-template-columns:auto 1fr}.ebs-topbar>div:last-child{display:none}.ebs-title{text-align:right}.render-settings{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+
+<div class="ebs-shell">
+<div class="ebs-topbar"><div class="window-dots"><i></i><i></i><i></i></div><div class="ebs-title"><b>●</b> EBS BLUR STUDIO PRO v3.0 — AI + FFMPEG</div><div></div></div>
+<div class="ebs-tabs"><button class="ebs-tab active" type="button">ANA EKRAN</button><button class="ebs-tab" type="button" id="settingsJump">RENDER AYARLARI</button></div>
+<header>
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <div>
+      <h1>EBS Blur Studio AI</h1>
+    </div>
+  </div>
+  <span>tarayıcı içi yüz &amp; alan bulanıklaştırma — hiçbir şey sunucuya yüklenmez</span>
+</header>
+
+<main>
+  <div class="stage">
+
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" accept="video/*">
+      <strong>Video yüklemek için tıklayın</strong><br>
+      veya dosyayı buraya sürükleyin — MP4, WebM, MOV desteklenir
+    </div>
+
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="stageCanvas"></canvas>
+      <div class="canvas-badge" id="badge">hazır</div>
+    </div>
+
+    <div class="toolbar" id="mainToolbar" style="display:none;">
+      <div class="group">
+        <button class="tool active" id="toolSelect" data-tool="select" title="Yüz seç">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+          Yüz Seç
+        </button>
+        <button class="tool" id="toolRect" data-tool="rect" title="Kare alan işaretle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="14" rx="2"/></svg>
+          Kare Alan
+        </button>
+        <button class="tool" id="toolCircle" data-tool="circle" title="Yuvarlak alan işaretle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+          Yuvarlak Alan
+        </button>
+      </div>
+      <button id="detectBtn" class="ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6v6"/><path d="M22 3h-6v6"/><path d="M2 21h6v-6"/><path d="M22 21h-6v-6"/></svg>
+        Yüzleri Tara
+      </button>
+    </div>
+
+    <div class="progress-row" id="progressRow" style="display:none;">
+      <button id="playBtn" class="icon-btn" style="width:32px;height:32px;" title="Oynat / Duraklat">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button id="audioBtn" class="icon-btn on" style="width:32px;height:32px;" title="Sesi aç / kapat" aria-label="Sesi aç veya kapat">
+        <svg id="audioIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8 8 0 0 1 0 12"/></svg>
+      </button>
+      <input type="range" id="scrub" min="0" max="100" value="0" step="0.01">
+      <div class="timecode" id="timecode">00:00 / 00:00</div>
+    </div>
+
+    <div class="status-bar">
+      <div class="dot" id="statusDot"></div>
+      <span id="statusText">Başlamak için bir video yükleyin.</span>
+    </div>
+
+  </div>
+
+  <aside>
+    <div>
+      <div class="panel-title">Bulanıklaştırma Şiddeti</div>
+      <div class="slider-row" style="margin-top:10px;">
+        <span>Hafif</span>
+        <input type="range" id="blurAmount" min="6" max="40" value="18">
+        <span class="val" id="blurVal">18</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-title">Takip Edilen Yüzler <span class="count" id="faceCount">0</span></div>
+      <div id="faceList" class="target-list"></div>
+      <div class="empty-hint" id="faceEmptyHint">
+        "Yüzleri Tara" ile videodaki yüzleri tespit edin, ardından bulanıklaştırmak istediğiniz yüze görüntü üzerinde tıklayın. Kişi hareket etse bile takip edilir ve videonun sonuna kadar bulanıklaştırılır.
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-title">İşaretlenen Alanlar <span class="count" id="areaCount">0</span></div>
+      <div id="areaList" class="target-list"></div>
+      <div class="empty-hint" id="areaEmptyHint">
+        "Kare Alan" ya da "Yuvarlak Alan" aracıyla görüntü üzerinde sürükleyerek sabit bir bölge işaretleyin. Bu bölge, oluşturulduğu andan videonun sonuna kadar bulanık kalır.
+      </div>
+    </div>
+
+    <div id="renderSettings"><div class="panel-title">Render Ayarları</div><div class="render-settings">
+      <div class="setting-box"><label for="fpsSelect">FPS</label><select id="fpsSelect"><option value="25" selected>25 FPS</option><option value="30">30 FPS</option></select></div>
+      <div class="setting-box"><label for="crfSelect">CRF kalite</label><select id="crfSelect"><option value="18">18 — yüksek</option><option value="20" selected>20 — dengeli</option><option value="23">23 — küçük</option></select></div>
+      <div class="setting-box"><label for="presetSelect">Kodlama hızı</label><select id="presetSelect"><option value="ultrafast">Ultrafast</option><option value="veryfast" selected>Veryfast</option><option value="fast">Fast</option></select></div>
+      <div class="setting-box"><label for="audioBitrate">Ses kalitesi</label><select id="audioBitrate"><option value="128k">128 kbps</option><option value="192k" selected>192 kbps</option><option value="256k">256 kbps</option></select></div>
+    </div><div class="audio-note"><strong>Ses korunur:</strong> Kaynak videodaki ses FFmpeg tarafından AAC olarak MP4 çıktısına eklenir.</div></div>
+
+    <div class="hint-shape">
+      İpucu: Mobilde parmakla sürükleyerek de alan çizebilirsiniz.
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <a class="link-reset" id="resetLink">Videoyu değiştir</a>
+  <button class="primary" id="exportBtn" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+    FFmpeg CDN MP4 İşle ve İndir
+  </button>
+</footer>
+</div>
+
+<video id="srcVideo" style="display:none;" playsinline crossorigin="anonymous"></video>
+
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/dist/face-api.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  const MODEL_URL = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/model";
+
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const canvasWrap = document.getElementById('canvasWrap');
+  const canvas = document.getElementById('stageCanvas');
+  const ctx = canvas.getContext('2d');
+  const video = document.getElementById('srcVideo');
+  const badge = document.getElementById('badge');
+  const mainToolbar = document.getElementById('mainToolbar');
+  const progressRow = document.getElementById('progressRow');
+  const scrub = document.getElementById('scrub');
+  const timecode = document.getElementById('timecode');
+  const playBtn = document.getElementById('playBtn');
+  const playIcon = document.getElementById('playIcon');
+  const audioBtn = document.getElementById('audioBtn');
+  const audioIcon = document.getElementById('audioIcon');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+  const detectBtn = document.getElementById('detectBtn');
+  const faceList = document.getElementById('faceList');
+  const areaList = document.getElementById('areaList');
+  const faceCount = document.getElementById('faceCount');
+  const areaCount = document.getElementById('areaCount');
+  const faceEmptyHint = document.getElementById('faceEmptyHint');
+  const areaEmptyHint = document.getElementById('areaEmptyHint');
+  const exportBtn = document.getElementById('exportBtn');
+  const resetLink = document.getElementById('resetLink');
+  const blurAmount = document.getElementById('blurAmount');
+  const blurVal = document.getElementById('blurVal');
+  const fpsSelect=document.getElementById('fpsSelect'), crfSelect=document.getElementById('crfSelect'), presetSelect=document.getElementById('presetSelect'), audioBitrate=document.getElementById('audioBitrate');
+  document.getElementById('settingsJump')?.addEventListener('click',()=>document.getElementById('renderSettings')?.scrollIntoView({behavior:'smooth',block:'center'}));
+
+  let modelsReady = false;
+  let currentTool = 'select';
+  let faces = [];
+  let areas = [];
+  let nextId = 1;
+  let isDragging = false;
+  let dragStart = null;
+  let dragPreview = null;
+  let rafId = null;
+  let isExporting = false;
+  let videoDurationSec = 0;
+  let sourceFile = null;
+  let ffmpeg = null;
+  let ffmpegReady = false;
+
+  function setStatus(text, mode){
+    statusText.textContent = text;
+    statusDot.className = 'dot' + (mode ? ' ' + mode : '');
+  }
+
+  document.querySelectorAll('[data-tool]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('[data-tool]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTool = btn.dataset.tool;
+    });
+  });
+
+  blurAmount.addEventListener('input', ()=>{ blurVal.textContent = blurAmount.value; });
+
+  dropzone.addEventListener('click', ()=>fileInput.click());
+  dropzone.addEventListener('dragover', e=>{ e.preventDefault(); dropzone.classList.add('drag'); });
+  dropzone.addEventListener('dragleave', ()=>dropzone.classList.remove('drag'));
+  dropzone.addEventListener('drop', e=>{
+    e.preventDefault(); dropzone.classList.remove('drag');
+    if(e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e=>{
+    if(e.target.files[0]) loadFile(e.target.files[0]);
+  });
+
+  function loadFile(file){
+    sourceFile = file;
+    const url = URL.createObjectURL(file);
+    video.src = url;
+    video.load();
+    video.addEventListener('loadedmetadata', onVideoReady, { once:true });
+    setStatus('Video yükleniyor…', 'busy');
+  }
+
+  async function onVideoReady(){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    dropzone.style.display = 'none';
+    canvasWrap.classList.add('active');
+    mainToolbar.style.display = 'flex';
+    progressRow.style.display = 'flex';
+    exportBtn.disabled = false;
+
+
+    videoDurationSec = video.duration;
+    if(!isFinite(videoDurationSec) || videoDurationSec <= 0){
+      await new Promise(resolve=>{
+        const onSeeked = ()=>{
+          video.removeEventListener('seeked', onSeeked);
+          videoDurationSec = isFinite(video.duration) ? video.duration : 0;
+          video.currentTime = 0;
+          video.addEventListener('seeked', resolve, { once:true });
+        };
+        video.addEventListener('seeked', onSeeked, { once:true });
+        video.currentTime = 1e7;
+      });
+    }
+
+    scrub.max = videoDurationSec || 0;
+    updateTimecode();
+    drawFrame();
+    setStatus(modelsReady ? 'Video hazır. Yüzleri taramak için üstteki düğmeyi kullanın.' : 'Model yükleniyor…', modelsReady ? '' : 'busy');
+    loadModels();
+  }
+
+  async function loadModels(){
+    if(modelsReady) return;
+    try{
+
+      const tf = faceapi.tf;
+      let backendSet = false;
+      for(const backend of ['webgl','wasm','cpu']){
+        try{
+          await tf.setBackend(backend);
+          await tf.ready();
+          backendSet = true;
+          break;
+        }catch(e){
+          console.warn('Backend başarısız: '+backend, e);
+        }
+      }
+      if(!backendSet){ throw new Error('Hiçbir TensorFlow.js backend başlatılamadı'); }
+
+      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+      modelsReady = true;
+      setStatus('Video hazır. Yüzleri taramak için üstteki düğmeyi kullanın.', '');
+    }catch(err){
+      setStatus('Yüz modeli yüklenemedi. setup-vendor.php çalıştırın.', '');
+      console.error(err);
+    }
+  }
+
+  function fmtTime(s){
+    if(!isFinite(s)) s = 0;
+    const m = Math.floor(s/60), sec = Math.floor(s%60);
+    return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+  }
+  function updateTimecode(){
+    scrub.value = video.currentTime;
+    timecode.textContent = fmtTime(video.currentTime) + ' / ' + fmtTime(videoDurationSec);
+  }
+
+
+  function drawFrame(){
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    applyBlurRegions(ctx, video.currentTime);
+    drawOverlayMarkers();
+    if(dragPreview) drawDragPreview();
+  }
+
+  function applyBlurRegions(targetCtx, atTime){
+    const amt = parseInt(blurAmount.value, 10);
+    const all = faces.concat(areas);
+    all.forEach(item=>{
+      if(!item.active) return;
+      if(atTime < item.startTime) return;
+      if(item.lost) return;
+      const x = item.box.x * canvas.width;
+      const y = item.box.y * canvas.height;
+      const w = item.box.w * canvas.width;
+      const h = item.box.h * canvas.height;
+      targetCtx.save();
+      if(item.shape === 'circle'){
+        targetCtx.beginPath();
+        targetCtx.ellipse(x + w/2, y + h/2, w/2, h/2, 0, 0, Math.PI*2);
+        targetCtx.clip();
+      } else {
+        targetCtx.beginPath();
+        targetCtx.rect(x, y, w, h);
+        targetCtx.clip();
+      }
+      targetCtx.filter = `blur(${amt}px)`;
+      const pad = amt;
+      targetCtx.drawImage(video,
+        Math.max(0,(item.box.x*video.videoWidth)-pad), Math.max(0,(item.box.y*video.videoHeight)-pad),
+        item.box.w*video.videoWidth+pad*2, item.box.h*video.videoHeight+pad*2,
+        x-pad, y-pad, w+pad*2, h+pad*2
+      );
+      targetCtx.restore();
+    });
+  }
+
+  function drawOverlayMarkers(){
+    if(isExporting) return;
+    faces.forEach(f=>{
+      const x = f.box.x*canvas.width, y=f.box.y*canvas.height, w=f.box.w*canvas.width, h=f.box.h*canvas.height;
+      ctx.save();
+      ctx.strokeStyle = f.active ? '#2fe0c5' : 'rgba(139,147,163,0.6)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash(f.active ? [] : [5,4]);
+      if(f.shape==='circle'){
+        ctx.beginPath(); ctx.ellipse(x+w/2,y+h/2,w/2,h/2,0,0,Math.PI*2); ctx.stroke();
+      } else {
+        ctx.strokeRect(x,y,w,h);
+      }
+      ctx.restore();
+    });
+    areas.forEach(a=>{
+      const x = a.box.x*canvas.width, y=a.box.y*canvas.height, w=a.box.w*canvas.width, h=a.box.h*canvas.height;
+      ctx.save();
+      ctx.strokeStyle = a.active ? '#ff7a45' : 'rgba(139,147,163,0.6)';
+      ctx.lineWidth = 2;
+      if(a.shape==='circle'){
+        ctx.beginPath(); ctx.ellipse(x+w/2,y+h/2,w/2,h/2,0,0,Math.PI*2); ctx.stroke();
+      } else {
+        ctx.strokeRect(x,y,w,h);
+      }
+      ctx.restore();
+    });
+  }
+
+  function drawDragPreview(){
+    const {x,y,w,h,shape} = dragPreview;
+    ctx.save();
+    ctx.strokeStyle = '#ff7a45';
+    ctx.setLineDash([6,4]);
+    ctx.lineWidth = 2;
+    if(shape==='circle'){
+      ctx.beginPath(); ctx.ellipse(x+w/2,y+h/2,Math.abs(w)/2,Math.abs(h)/2,0,0,Math.PI*2); ctx.stroke();
+    } else {
+      ctx.strokeRect(x,y,w,h);
+    }
+    ctx.restore();
+  }
+
+  let isDetecting = false;
+  let previewFrameCounter = 0;
+  const PREVIEW_DETECT_EVERY = 4; // re-detect roughly every 4 preview frames
+  const DESCRIPTOR_MATCH_THRESHOLD = 0.55; // lower = stricter identity match
+  const MAX_MISSES_BEFORE_HIDE = 2; // hide blur after this many consecutive misses
+
+  async function trackFacesLive(){
+    if(isDetecting || !modelsReady || faces.length === 0) return;
+    isDetecting = true;
+    try{
+      const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 });
+      const dets = await faceapi.detectAllFaces(video, opts).withFaceLandmarks().withFaceDescriptors();
+      matchAndUpdateFaces(faces, dets);
+    }catch(e){ console.warn(e); }
+    isDetecting = false;
+  }
+
+
+  function matchAndUpdateFaces(list, dets){
+    if(!dets.length){
+      list.forEach(t=>{ t.missCount = (t.missCount||0) + 1; if(t.missCount > MAX_MISSES_BEFORE_HIDE) t.lost = true; });
+      return;
+    }
+    const claimed = new Set();
+    list.forEach(t=>{
+      if(!t.descriptor) return;
+      let best = null, bestDist = Infinity, bestIdx = -1;
+      dets.forEach((d, idx)=>{
+        if(claimed.has(idx)) return;
+        const dist = faceapi.euclideanDistance(t.descriptor, d.descriptor);
+        if(dist < bestDist){ bestDist = dist; best = d; bestIdx = idx; }
+      });
+      if(best && bestDist < DESCRIPTOR_MATCH_THRESHOLD){
+        claimed.add(bestIdx);
+        const box = best.detection.box;
+        const rel = {
+          x: box.x/video.videoWidth, y: box.y/video.videoHeight,
+          w: box.width/video.videoWidth, h: box.height/video.videoHeight
+        };
+        const padX = rel.w*0.18, padY = rel.h*0.22;
+        rel.x = Math.max(0, rel.x-padX/2); rel.y = Math.max(0, rel.y-padY/1.5);
+        rel.w = Math.min(1-rel.x, rel.w+padX); rel.h = Math.min(1-rel.y, rel.h+padY);
+        t.vel = { x:(rel.x - t.box.x), y:(rel.y - t.box.y) };
+        t.box = rel;
+        t.missCount = 0;
+        t.lost = false;
+      } else {
+        t.missCount = (t.missCount||0) + 1;
+        if(t.missCount > MAX_MISSES_BEFORE_HIDE){
+          t.lost = true;
+        } else if(t.vel){
+      
+          t.box.x += t.vel.x*0.3; t.box.y += t.vel.y*0.3;
+          t.vel.x *= 0.6; t.vel.y *= 0.6;
+        }
+      }
+    });
+  }
+
+  function loopPreview(){
+    drawFrame();
+    if(!video.paused && !video.ended){
+      updateTimecode();
+      previewFrameCounter++;
+      if(previewFrameCounter % PREVIEW_DETECT_EVERY === 0){
+        trackFacesLive();
+      }
+      rafId = requestAnimationFrame(loopPreview);
+    }
+  }
+
+  // --- Playback controls ---
+  video.muted = false;
+  video.volume = 1;
+  audioBtn.addEventListener('click', ()=>{
+    video.muted = !video.muted;
+    audioBtn.classList.toggle('on', !video.muted);
+    audioIcon.innerHTML = video.muted
+      ? '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 5"/><path d="m21 9-5 5"/>'
+      : '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8 8 0 0 1 0 12"/>';
+    setStatus(video.muted ? 'Önizleme sesi kapatıldı.' : 'Önizleme sesi açıldı.', '');
+  });
+
+  playBtn.addEventListener('click', ()=>{
+    if(video.paused){
+      video.play();
+      playIcon.innerHTML = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+      loopPreview();
+    } else {
+      video.pause();
+      playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+    }
+  });
+  video.addEventListener('ended', ()=>{
+    playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+  });
+  scrub.addEventListener('input', ()=>{
+    video.currentTime = parseFloat(scrub.value);
+  });
+  video.addEventListener('seeked', ()=>{
+    if(!isExporting){
+      updateTimecode();
+      if(video.paused){ trackFacesLive().then(drawFrame); } else { drawFrame(); }
+    }
+  });
+
+
+  function getCanvasPoint(evt){
+    const rect = canvas.getBoundingClientRect();
+    const cx = (evt.touches ? evt.touches[0].clientX : evt.clientX) - rect.left;
+    const cy = (evt.touches ? evt.touches[0].clientY : evt.clientY) - rect.top;
+    return {
+      x: (cx / rect.width) * canvas.width / canvas.width,   
+      xr: cx / rect.width,
+      yr: cy / rect.height
+    };
+  }
+
+  canvas.addEventListener('pointerdown', evt=>{
+    if(!video.duration) return;
+    const rect = canvas.getBoundingClientRect();
+    const xr = (evt.clientX - rect.left) / rect.width;
+    const yr = (evt.clientY - rect.top) / rect.height;
+
+    if(currentTool === 'select'){
+      const hit = faces.find(f=>{
+        return xr >= f.box.x && xr <= f.box.x+f.box.w && yr >= f.box.y && yr <= f.box.y+f.box.h;
+      });
+      if(hit){ hit.active = !hit.active; renderFaceList(); drawFrame(); }
+      return;
+    }
+    isDragging = true;
+    dragStart = {xr, yr};
+  });
+
+  canvas.addEventListener('pointermove', evt=>{
+    if(!isDragging) return;
+    const rect = canvas.getBoundingClientRect();
+    const xr = (evt.clientX - rect.left) / rect.width;
+    const yr = (evt.clientY - rect.top) / rect.height;
+    const x = Math.min(dragStart.xr, xr) * canvas.width;
+    const y = Math.min(dragStart.yr, yr) * canvas.height;
+    const w = Math.abs(xr - dragStart.xr) * canvas.width;
+    const h = Math.abs(yr - dragStart.yr) * canvas.height;
+    dragPreview = {x,y,w,h,shape: currentTool==='circle' ? 'circle' : 'rect'};
+    drawFrame();
+  });
+
+  window.addEventListener('pointerup', evt=>{
+    if(!isDragging) return;
+    isDragging = false;
+    if(dragPreview && dragPreview.w > 6 && dragPreview.h > 6){
+      areas.push({
+        id: nextId++,
+        box: {
+          x: dragPreview.x/canvas.width,
+          y: dragPreview.y/canvas.height,
+          w: dragPreview.w/canvas.width,
+          h: dragPreview.h/canvas.height
+        },
+        shape: dragPreview.shape,
+        active: true,
+        startTime: video.currentTime
+      });
+      renderAreaList();
+    }
+    dragPreview = null;
+    drawFrame();
+  });
+
+
+  detectBtn.addEventListener('click', async ()=>{
+    if(!modelsReady){ setStatus('Model henüz hazır değil, birkaç saniye bekleyin.', 'busy'); return; }
+    setStatus('Yüzler taranıyor…', 'busy');
+    detectBtn.disabled = true;
+    try{
+      const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 });
+      const detections = await faceapi.detectAllFaces(video, opts).withFaceLandmarks().withFaceDescriptors();
+      const startTime = video.currentTime;
+      detections.forEach(d=>{
+        const box = d.detection.box;
+        const rel = {
+          x: box.x/video.videoWidth,
+          y: box.y/video.videoHeight,
+          w: box.width/video.videoWidth,
+          h: box.height/video.videoHeight
+        };
+   
+        const padX = rel.w*0.18, padY = rel.h*0.22;
+        rel.x = Math.max(0, rel.x-padX/2); rel.y = Math.max(0, rel.y-padY/1.5);
+        rel.w = Math.min(1-rel.x, rel.w+padX); rel.h = Math.min(1-rel.y, rel.h+padY);
+
+       
+        const dup = faces.find(f=> Math.abs(f.box.x-rel.x)<0.03 && Math.abs(f.box.y-rel.y)<0.03);
+        if(!dup){
+          faces.push({ id: nextId++, box: rel, shape:'circle', active:false, startTime, vel:{x:0,y:0}, descriptor: d.descriptor, missCount:0, lost:false });
+        }
+      });
+      renderFaceList();
+      drawFrame();
+      setStatus(`${detections.length} yüz bulundu. Bulanıklaştırmak istediğiniz yüze tıklayın.`, '');
+    }catch(err){
+      console.error(err);
+      setStatus('Tarama sırasında hata oluştu.', '');
+    }
+    detectBtn.disabled = false;
+  });
+
+
+  function renderFaceList(){
+    faceList.innerHTML = '';
+    faceCount.textContent = faces.length;
+    faceEmptyHint.style.display = faces.length ? 'none' : 'block';
+    faces.forEach((f, idx)=>{
+      const row = document.createElement('div');
+      row.className = 'target-item';
+      row.innerHTML = `
+        <div class="target-swatch ${f.shape}" style="background:linear-gradient(135deg,#1a7566,#12151b);"></div>
+        <div class="target-meta">
+          <div class="name">Yüz ${idx+1}</div>
+          <div class="sub">${f.active ? 'bulanık • '+fmtTime(f.startTime)+'’den sona kadar' : 'pasif'}</div>
+        </div>
+        <div class="target-actions">
+          <button class="icon-btn ${f.active?'on':''}" data-action="toggle" data-id="${f.id}" title="Aç/Kapat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="icon-btn danger" data-action="delete" data-id="${f.id}" title="Sil">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>
+          </button>
+        </div>`;
+      faceList.appendChild(row);
+    });
+  }
+
+  function renderAreaList(){
+    areaList.innerHTML = '';
+    areaCount.textContent = areas.length;
+    areaEmptyHint.style.display = areas.length ? 'none' : 'block';
+    areas.forEach((a, idx)=>{
+      const row = document.createElement('div');
+      row.className = 'target-item';
+      row.innerHTML = `
+        <div class="target-swatch ${a.shape}" style="background:linear-gradient(135deg,#7a3c22,#12151b);"></div>
+        <div class="target-meta">
+          <div class="name">Alan ${idx+1} <span class="sub">(${a.shape==='circle'?'yuvarlak':'kare'})</span></div>
+          <div class="sub">${a.active ? fmtTime(a.startTime)+'’den sona kadar' : 'pasif'}</div>
+        </div>
+        <div class="target-actions">
+          <button class="icon-btn ${a.active?'on':''}" data-action="toggle-area" data-id="${a.id}" title="Aç/Kapat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="icon-btn danger" data-action="delete-area" data-id="${a.id}" title="Sil">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>
+          </button>
+        </div>`;
+      areaList.appendChild(row);
+    });
+  }
+
+  document.body.addEventListener('click', e=>{
+    const btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    const id = parseInt(btn.dataset.id, 10);
+    const action = btn.dataset.action;
+    if(action==='toggle'){ const f = faces.find(x=>x.id===id); f.active=!f.active; renderFaceList(); drawFrame(); }
+    if(action==='delete'){ faces = faces.filter(x=>x.id!==id); renderFaceList(); drawFrame(); }
+    if(action==='toggle-area'){ const a = areas.find(x=>x.id===id); a.active=!a.active; renderAreaList(); drawFrame(); }
+    if(action==='delete-area'){ areas = areas.filter(x=>x.id!==id); renderAreaList(); drawFrame(); }
+  });
+
+  resetLink.addEventListener('click', ()=>location.reload());
+
+
+  const FFMPEG_CDN = {
+    library: 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js',
+    classWorker: 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js',
+    core: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js',
+    wasm: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm'
+  };
+
+  let FFmpegClass = null;
+  let ffmpegWorkerBlobURL = null;
+
+  async function loadFFmpegModule(){
+    if(FFmpegClass) return FFmpegClass;
+    try{
+      const module = await import(FFMPEG_CDN.library);
+      if(typeof module.FFmpeg !== 'function'){
+        throw new Error('FFmpeg sınıfı ESM modülünde bulunamadı.');
+      }
+      FFmpegClass = module.FFmpeg;
+      return FFmpegClass;
+    }catch(error){
+      throw new Error(`FFmpeg ESM modülü yüklenemedi: ${error?.message || error}`);
+    }
+  }
+
+  function createModuleWorkerBridge(remoteWorkerURL){
+    if(ffmpegWorkerBlobURL) return ffmpegWorkerBlobURL;
+
+    const source = `import ${JSON.stringify(remoteWorkerURL)};`;
+    ffmpegWorkerBlobURL = URL.createObjectURL(
+      new Blob([source], { type: 'text/javascript' })
+    );
+    return ffmpegWorkerBlobURL;
+  }
+
+  async function toBlobURL(url, mimeType){
+    const response = await fetch(url, { mode:'cors', cache:'force-cache' });
+    if(!response.ok) throw new Error(`CDN dosyası alınamadı (${response.status}): ${url}`);
+    const bytes = await response.arrayBuffer();
+    return URL.createObjectURL(new Blob([bytes], {type:mimeType}));
+  }
+
+  async function loadFFmpegLibraries(){
+    if(FFmpegClass) return;
+    setStatus('FFmpeg ESM modülü CDN üzerinden yükleniyor…', 'busy');
+    await loadFFmpegModule();
+  }
+
+  async function ebsFetchFile(input){
+    if(input instanceof Uint8Array) return input;
+    if(input instanceof ArrayBuffer) return new Uint8Array(input);
+    if(input instanceof Blob) return new Uint8Array(await input.arrayBuffer());
+    if(typeof input === 'string'){
+      const response = await fetch(input);
+      if(!response.ok) throw new Error(`Dosya alınamadı (${response.status}): ${input}`);
+      return new Uint8Array(await response.arrayBuffer());
+    }
+    throw new TypeError('FFmpeg için desteklenmeyen dosya girdisi.');
+  }
+
+  async function ensureFFmpeg(){
+    if(ffmpegReady && ffmpeg) return ffmpeg;
+    await loadFFmpegLibraries();
+    setStatus('FFmpeg ESM çekirdeği CDN üzerinden hazırlanıyor…', 'busy');
+    const FFmpeg = await loadFFmpegModule();
+    ffmpeg = new FFmpeg();
+    ffmpeg.on('log', ({ message })=>console.log('[FFmpeg]', message));
+    ffmpeg.on('progress', ({ progress })=>{
+      if(!isExporting) return;
+      const pct = Math.max(0, Math.min(100, Math.round(progress * 100)));
+      badge.textContent = `kodlanıyor · %${pct}`;
+      setStatus(`FFmpeg MP4 kodluyor… %${pct}`, 'busy');
+    });
+
+
+    const [coreURL, wasmURL] = await Promise.all([
+      toBlobURL(FFMPEG_CDN.core, 'text/javascript'),
+      toBlobURL(FFMPEG_CDN.wasm, 'application/wasm')
+    ]);
+    const classWorkerURL = createModuleWorkerBridge(FFMPEG_CDN.classWorker);
+
+    await ffmpeg.load({ classWorkerURL, coreURL, wasmURL });
+    ffmpegReady = true;
+    return ffmpeg;
+  }
+
+  function seekVideo(time){
+    return new Promise((resolve, reject)=>{
+      const done = ()=>{ cleanup(); resolve(); };
+      const fail = ()=>{ cleanup(); reject(new Error('Video karesine erişilemedi.')); };
+      const cleanup = ()=>{
+        video.removeEventListener('seeked', done);
+        video.removeEventListener('error', fail);
+      };
+      video.addEventListener('seeked', done, {once:true});
+      video.addEventListener('error', fail, {once:true});
+      video.currentTime = Math.min(Math.max(0, time), videoDurationSec);
+    });
+  }
+
+  function canvasToJpegBytes(targetCanvas, quality=0.92){
+    return new Promise((resolve, reject)=>{
+      targetCanvas.toBlob(async blob=>{
+        if(!blob) return reject(new Error('Video karesi oluşturulamadı.'));
+        resolve(new Uint8Array(await blob.arrayBuffer()));
+      }, 'image/jpeg', quality);
+    });
+  }
+
+  function drawBlurredExportFrame(outCtx, outCanvas, tracked, activeAreas, atTime){
+    outCtx.filter = 'none';
+    outCtx.drawImage(video, 0, 0, outCanvas.width, outCanvas.height);
+    tracked.concat(activeAreas).forEach(item=>{
+      if(atTime < item.startTime || item.lost) return;
+      const x = item.box.x*outCanvas.width, y = item.box.y*outCanvas.height;
+      const w = item.box.w*outCanvas.width, h = item.box.h*outCanvas.height;
+      outCtx.save();
+      if(item.shape==='circle'){
+        outCtx.beginPath();
+        outCtx.ellipse(x+w/2,y+h/2,w/2,h/2,0,0,Math.PI*2);
+        outCtx.clip();
+      } else {
+        outCtx.beginPath(); outCtx.rect(x,y,w,h); outCtx.clip();
+      }
+      const amt = parseInt(blurAmount.value,10);
+      const pad = amt;
+      outCtx.filter = `blur(${amt}px)`;
+      outCtx.drawImage(video,
+        Math.max(0,item.box.x*video.videoWidth-pad),
+        Math.max(0,item.box.y*video.videoHeight-pad),
+        item.box.w*video.videoWidth+pad*2,
+        item.box.h*video.videoHeight+pad*2,
+        x-pad, y-pad, w+pad*2, h+pad*2
+      );
+      outCtx.restore();
+    });
+  }
+
+  exportBtn.addEventListener('click', async ()=>{
+    if(isExporting) return;
+    const activeFaces = faces.filter(f=>f.active);
+    const activeAreas = areas.filter(a=>a.active);
+    if(activeFaces.length===0 && activeAreas.length===0){
+      setStatus('Önce en az bir yüz seçin veya bir alan işaretleyin.', '');
+      return;
+    }
+    if(!sourceFile || !videoDurationSec || !isFinite(videoDurationSec)){
+      setStatus('Kaynak video veya video süresi okunamadı.', '');
+      return;
+    }
+
+    isExporting = true;
+    exportBtn.disabled = true;
+    detectBtn.disabled = true;
+    video.pause();
+
+    const fps = Number.parseInt(fpsSelect?.value || '25',10);
+    const totalFrames = Math.max(1, Math.ceil(videoDurationSec * fps));
+    const detectEvery = 4;
+    const frameFiles = [];
+    const originalName = sourceFile.name || 'source.mp4';
+    const extMatch = originalName.match(/\.([a-z0-9]+)$/i);
+    const inputName = `source.${extMatch ? extMatch[1].toLowerCase() : 'mp4'}`;
+    const outputName = 'EBS-Blur-AI-FFmpeg.mp4';
+    let tracked = activeFaces.map(f=>({ ...f, box:{...f.box}, vel:{x:0,y:0}, missCount:0, lost:false }));
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = canvas.width;
+    outCanvas.height = canvas.height;
+    const outCtx = outCanvas.getContext('2d', { alpha:false });
+
+    try{
+      const engine = await ensureFFmpeg();
+      await engine.writeFile(inputName, await ebsFetchFile(sourceFile));
+
+      setStatus(`AI kareleri hazırlanıyor… 0/${totalFrames}`, 'busy');
+      badge.textContent = 'kareler · %0';
+
+      for(let i=0; i<totalFrames; i++){
+        const atTime = Math.min(videoDurationSec - 0.001, i / fps);
+        await seekVideo(atTime);
+
+        if(activeFaces.length && i % detectEvery === 0 && modelsReady){
+          try{
+            const opts = new faceapi.TinyFaceDetectorOptions({ inputSize:320, scoreThreshold:0.5 });
+            const dets = await faceapi.detectAllFaces(video, opts).withFaceLandmarks().withFaceDescriptors();
+            matchAndUpdateFaces(tracked, dets);
+          }catch(e){ console.warn('Kare yüz tespiti atlandı:', e); }
+        }
+
+        drawBlurredExportFrame(outCtx, outCanvas, tracked, activeAreas, atTime);
+        const frameName = `frame_${String(i+1).padStart(6,'0')}.jpg`;
+        await engine.writeFile(frameName, await canvasToJpegBytes(outCanvas));
+        frameFiles.push(frameName);
+
+        const pct = Math.round(((i+1)/totalFrames)*100);
+        badge.textContent = `kareler · %${pct}`;
+        setStatus(`AI kareleri hazırlanıyor… ${i+1}/${totalFrames}`, 'busy');
+      }
+
+      badge.textContent = 'kodlanıyor · %0';
+      setStatus('FFmpeg H.264/AAC MP4 oluşturuyor…', 'busy');
+      await engine.exec([
+        '-framerate', String(fps),
+        '-i', 'frame_%06d.jpg',
+        '-i', inputName,
+        '-map', '0:v:0',
+        '-map', '1:a:0?',
+        '-c:v', 'libx264',
+        '-preset', presetSelect?.value || 'veryfast',
+        '-crf', crfSelect?.value || '20',
+        '-pix_fmt', 'yuv420p',
+        '-c:a', 'aac',
+        '-b:a', audioBitrate?.value || '192k',
+        '-ar', '48000',
+        '-ac', '2',
+        '-movflags', '+faststart',
+        '-shortest',
+        outputName
+      ]);
+
+      const data = await engine.readFile(outputName);
+      const blob = new Blob([data.buffer], {type:'video/mp4'});
+      if(!blob.size) throw new Error('FFmpeg boş MP4 çıktısı üretti.');
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = outputName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 30000);
+
+      badge.textContent = 'MP4 tamamlandı';
+      setStatus(`MP4 indirildi (${(blob.size/1024/1024).toFixed(1)} MB) — H.264 video ve varsa AAC ses.`, '');
+
+      await engine.deleteFile(outputName).catch(()=>{});
+      await engine.deleteFile(inputName).catch(()=>{});
+      for(const name of frameFiles) await engine.deleteFile(name).catch(()=>{});
+    }catch(err){
+      console.error('FFmpeg dışa aktarma hatası:', err);
+      badge.textContent = 'hata';
+      setStatus('FFmpeg MP4 dışa aktarma başarısız: ' + (err?.message || 'bilinmeyen hata'), '');
+      if(ffmpeg){
+        for(const name of frameFiles) await ffmpeg.deleteFile(name).catch(()=>{});
+        await ffmpeg.deleteFile(inputName).catch(()=>{});
+        await ffmpeg.deleteFile(outputName).catch(()=>{});
+      }
+    }finally{
+      isExporting = false;
+      exportBtn.disabled = false;
+      detectBtn.disabled = false;
+      await seekVideo(0).catch(()=>{});
+      drawFrame();
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
