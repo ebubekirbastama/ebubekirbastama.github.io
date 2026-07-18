@@ -190,60 +190,627 @@
 </dialog>
 
 <script>
-const $=s=>document.querySelector(s);
-const state={files:[],lang:localStorage.getItem('exif-lang')||'tr'};
-const T={
- tr:{title:'Elite EXIF Düzenleyici',subtitle:'Toplu metadata görüntüleme, temizleme ve yeniden yazma',install:'Uygulamayı Yükle',step1:'1. Görselleri ekleyin',dropInfo:'Birden fazla JPEG, PNG, WebP, TIFF veya HEIC dosyası seçebilirsiniz.',drop:'Dosyaları buraya bırakın veya seçin',limit:'Dosya başına en fazla 40 MB',clear:'Tümünü temizle',step2:'2. Metadata ayarları',settingsInfo:'Seçili tüm dosyalara uygulanacak bilgileri belirleyin.',artist:'Sanatçı / Yazar',copyright:'Telif hakkı',software:'Yazılım',description:'Açıklama',output:'TIFF/HEIC çıktısı',quality:'Dönüştürme kalitesi',date:'İşlem tarihini ekle',dateInfo:'Güncel tarih ve saat metadata içine yazılır.',strip:'Eski metadata ve GPS bilgisini temizle',stripInfo:'Yeni alanlar temiz bir metadata yapısına yazılır.',inspect:"Metadata'yı Görüntüle",process:'Toplu İşle ve İndir',what:'EXIF Metadata Düzenleyici Nedir?',whatText:'Bu araç fotoğraf ve görsellerde bulunan metadata bilgilerini görüntülemenizi, temizlemenizi ve yeniden yazmanızı sağlar. İşlemler cihazınızda gerçekleştirilir; dosyalar sunucuya yüklenmez.',formats:'Desteklenen Dosya Biçimleri',formatsText:'JPEG dosyalarında piksel verisi yeniden sıkıştırılmadan EXIF alanları değiştirilir. PNG dosyalarına metin metadata blokları, WebP dosyalarına EXIF bloğu eklenir. TIFF ve HEIC dosyaları tarayıcı desteğine göre JPEG veya PNG biçimine dönüştürülerek işlenir.',privacy:'Gizlilik ve Güvenlik',privacyText:'Dosyalarınız tarayıcınızdan ayrılmaz. Araç, standart metadata alanlarını yönetir; C2PA Content Credentials, görünmez filigran veya üretim kaynağı doğrulama sistemlerini kaldırmayı amaçlamaz.',fields:'Değiştirilen Bilgiler',metaTitle:'Metadata Görüntüleyici',file:'Dosya',group:'Grup',field:'Alan',value:'Değer'},
- en:{title:'Elite EXIF Editor',subtitle:'Batch metadata viewer, cleaner and writer',install:'Install App',step1:'1. Add images',dropInfo:'Select multiple JPEG, PNG, WebP, TIFF or HEIC files.',drop:'Drop files here or browse',limit:'Maximum 40 MB per file',clear:'Clear all',step2:'2. Metadata settings',settingsInfo:'Define the information that will be applied to all selected files.',artist:'Artist / Author',copyright:'Copyright',software:'Software',description:'Description',output:'TIFF/HEIC output',quality:'Conversion quality',date:'Add processing date',dateInfo:'Writes the current date and time into metadata.',strip:'Remove old metadata and GPS',stripInfo:'New fields are written into a clean metadata structure.',inspect:'View Metadata',process:'Process and Download All',what:'What is an EXIF Metadata Editor?',whatText:'This tool lets you view, remove and rewrite metadata embedded in photos and images. Processing happens on your device; files are not uploaded to a server.',formats:'Supported File Formats',formatsText:'JPEG EXIF is changed without recompressing pixels. PNG receives text metadata chunks and WebP receives an EXIF chunk. TIFF and HEIC are converted to JPEG or PNG depending on browser support.',privacy:'Privacy and Security',privacyText:'Your files never leave the browser. The tool manages standard metadata and is not designed to remove C2PA Content Credentials, invisible watermarks or source verification systems.',fields:'Modified Fields',metaTitle:'Metadata Viewer',file:'File',group:'Group',field:'Field',value:'Value'}
+const $ = s => document.querySelector(s);
+const state = {
+    files: [],
+    lang: localStorage.getItem('exif-lang') || 'tr'
 };
-function applyLang(){document.documentElement.lang=state.lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(T[state.lang][k])el.textContent=T[state.lang][k]});$('#langBtn').textContent=state.lang==='tr'?'EN':'TR';render()}
-$('#langBtn').onclick=()=>{state.lang=state.lang==='tr'?'en':'tr';localStorage.setItem('exif-lang',state.lang);applyLang()};
-const savedTheme=localStorage.getItem('exif-theme')||matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';
-document.documentElement.dataset.theme=savedTheme;
-function themeIcon(){ $('#themeBtn').textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙' } themeIcon();
-$('#themeBtn').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('exif-theme',n);themeIcon()};
+const T = {
+    tr: {
+        title: 'Elite EXIF Düzenleyici',
+        subtitle: 'Toplu metadata görüntüleme, temizleme ve yeniden yazma',
+        install: 'Uygulamayı Yükle',
+        step1: '1. Görselleri ekleyin',
+        dropInfo: 'Birden fazla JPEG, PNG, WebP, TIFF veya HEIC dosyası seçebilirsiniz.',
+        drop: 'Dosyaları buraya bırakın veya seçin',
+        limit: 'Dosya başına en fazla 40 MB',
+        clear: 'Tümünü temizle',
+        step2: '2. Metadata ayarları',
+        settingsInfo: 'Seçili tüm dosyalara uygulanacak bilgileri belirleyin.',
+        artist: 'Sanatçı / Yazar',
+        copyright: 'Telif hakkı',
+        software: 'Yazılım',
+        description: 'Açıklama',
+        output: 'TIFF/HEIC çıktısı',
+        quality: 'Dönüştürme kalitesi',
+        date: 'İşlem tarihini ekle',
+        dateInfo: 'Güncel tarih ve saat metadata içine yazılır.',
+        strip: 'Eski metadata ve GPS bilgisini temizle',
+        stripInfo: 'Yeni alanlar temiz bir metadata yapısına yazılır.',
+        inspect: "Metadata'yı Görüntüle",
+        process: 'Toplu İşle ve İndir',
+        what: 'EXIF Metadata Düzenleyici Nedir?',
+        whatText: 'Bu araç fotoğraf ve görsellerde bulunan metadata bilgilerini görüntülemenizi, temizlemenizi ve yeniden yazmanızı sağlar. İşlemler cihazınızda gerçekleştirilir; dosyalar sunucuya yüklenmez.',
+        formats: 'Desteklenen Dosya Biçimleri',
+        formatsText: 'JPEG dosyalarında piksel verisi yeniden sıkıştırılmadan EXIF alanları değiştirilir. PNG dosyalarına metin metadata blokları, WebP dosyalarına EXIF bloğu eklenir. TIFF ve HEIC dosyaları tarayıcı desteğine göre JPEG veya PNG biçimine dönüştürülerek işlenir.',
+        privacy: 'Gizlilik ve Güvenlik',
+        privacyText: 'Dosyalarınız tarayıcınızdan ayrılmaz. Araç, standart metadata alanlarını yönetir; C2PA Content Credentials, görünmez filigran veya üretim kaynağı doğrulama sistemlerini kaldırmayı amaçlamaz.',
+        fields: 'Değiştirilen Bilgiler',
+        metaTitle: 'Metadata Görüntüleyici',
+        file: 'Dosya',
+        group: 'Grup',
+        field: 'Alan',
+        value: 'Değer'
+    },
+    en: {
+        title: 'Elite EXIF Editor',
+        subtitle: 'Batch metadata viewer, cleaner and writer',
+        install: 'Install App',
+        step1: '1. Add images',
+        dropInfo: 'Select multiple JPEG, PNG, WebP, TIFF or HEIC files.',
+        drop: 'Drop files here or browse',
+        limit: 'Maximum 40 MB per file',
+        clear: 'Clear all',
+        step2: '2. Metadata settings',
+        settingsInfo: 'Define the information that will be applied to all selected files.',
+        artist: 'Artist / Author',
+        copyright: 'Copyright',
+        software: 'Software',
+        description: 'Description',
+        output: 'TIFF/HEIC output',
+        quality: 'Conversion quality',
+        date: 'Add processing date',
+        dateInfo: 'Writes the current date and time into metadata.',
+        strip: 'Remove old metadata and GPS',
+        stripInfo: 'New fields are written into a clean metadata structure.',
+        inspect: 'View Metadata',
+        process: 'Process and Download All',
+        what: 'What is an EXIF Metadata Editor?',
+        whatText: 'This tool lets you view, remove and rewrite metadata embedded in photos and images. Processing happens on your device; files are not uploaded to a server.',
+        formats: 'Supported File Formats',
+        formatsText: 'JPEG EXIF is changed without recompressing pixels. PNG receives text metadata chunks and WebP receives an EXIF chunk. TIFF and HEIC are converted to JPEG or PNG depending on browser support.',
+        privacy: 'Privacy and Security',
+        privacyText: 'Your files never leave the browser. The tool manages standard metadata and is not designed to remove C2PA Content Credentials, invisible watermarks or source verification systems.',
+        fields: 'Modified Fields',
+        metaTitle: 'Metadata Viewer',
+        file: 'File',
+        group: 'Group',
+        field: 'Field',
+        value: 'Value'
+    }
+};
 
-const mimeOk=f=>/\.(jpe?g|png|webp|tiff?|heic|heif)$/i.test(f.name)||['image/jpeg','image/png','image/webp','image/tiff','image/heic','image/heif'].includes(f.type);
-function fmt(n){const u=['B','KB','MB','GB'];if(!n)return'0 B';const i=Math.floor(Math.log(n)/Math.log(1024));return (n/1024**i).toFixed(i?2:0)+' '+u[i]}
-function status(msg,type='ok'){const e=$('#status');e.className='status show '+type;e.textContent=msg}
-function addFiles(list){for(const f of list){if(!mimeOk(f)){status(`${f.name}: desteklenmeyen biçim / unsupported format`,'err');continue}if(f.size>40*1024*1024){status(`${f.name}: 40 MB sınırı aşıldı`,'err');continue}if(!state.files.some(x=>x.name===f.name&&x.size===f.size&&x.lastModified===f.lastModified))state.files.push(f)}render()}
-function render(){const box=$('#fileList');box.innerHTML='';state.files.forEach((f,i)=>{const url=URL.createObjectURL(f);const row=document.createElement('div');row.className='file';row.innerHTML=`<img class="thumb" alt="" src="${url}"><div><div class="fname">${esc(f.name)}</div><div class="fmeta">${fmt(f.size)} · ${esc(f.type||'unknown')}</div></div><button class="btn remove" data-i="${i}">✕</button>`;row.querySelector('img').onload=()=>URL.revokeObjectURL(url);row.querySelector('img').onerror=e=>{e.target.style.visibility='hidden';URL.revokeObjectURL(url)};box.appendChild(row)});box.querySelectorAll('.remove').forEach(b=>b.onclick=()=>{state.files.splice(+b.dataset.i,1);render()});$('#countText').textContent=state.lang==='tr'?`${state.files.length} dosya`:`${state.files.length} files`}
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-$('#fileInput').onchange=e=>addFiles(e.target.files);
-const dz=$('#dropZone');['dragenter','dragover'].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
-$('#clearBtn').onclick=()=>{state.files=[];render();$('#status').className='status'};
+function applyLang() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.dataset.i18n;
+        if (T[state.lang][k]) el.textContent = T[state.lang][k]
+    });
+    $('#langBtn').textContent = state.lang === 'tr' ? 'EN' : 'TR';
+    render()
+}
+$('#langBtn').onclick = () => {
+    state.lang = state.lang === 'tr' ? 'en' : 'tr';
+    localStorage.setItem('exif-lang', state.lang);
+    applyLang()
+};
+const savedTheme =
+    localStorage.getItem('exif-theme') ||
+    (
+        matchMedia('(prefers-color-scheme: light)').matches ?
+        'light' :
+        'dark'
+    );
+document.documentElement.dataset.theme = savedTheme;
 
-function loadScript(src,id){return new Promise((res,rej)=>{if(document.getElementById(id))return res();const s=document.createElement('script');s.id=id;s.src=src;s.async=true;s.onload=res;s.onerror=()=>rej(new Error('Kütüphane yüklenemedi: '+src));document.head.appendChild(s)})}
-async function piexif(){await loadScript('https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js','piexif-lib')}
-async function utif(){await loadScript('https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js','utif-lib')}
-async function heic(){await loadScript('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js','heic-lib')}
+function themeIcon() {
+    $('#themeBtn').textContent = document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙'
+}
+themeIcon();
+$('#themeBtn').onclick = () => {
+    const n = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = n;
+    localStorage.setItem('exif-theme', n);
+    themeIcon()
+};
 
-function arrBufToDataURL(buf,mime){const bytes=new Uint8Array(buf);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return `data:${mime};base64,${btoa(bin)}`}
-function dataURLToBlob(url){const [h,b]=url.split(',');const mime=h.match(/:(.*?);/)[1];const bin=atob(b);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime})}
-function dt(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}:${p(d.getMonth()+1)}:${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`}
-function ascii(s){return String(s||'').normalize('NFKD').replace(/[^\x20-\x7E]/g,'').trim()}
-function settings(){return{artist:$('#artist').value.trim()||'Ebubekir Bastama',copyright:$('#copyright').value.trim(),software:$('#software').value.trim(),description:$('#description').value.trim(),date:$('#addDate').checked?dt():null}}
-async function exifBytes(){await piexif();const s=settings(),z={},e={};z[piexif.ImageIFD.Artist]=ascii(s.artist);z[piexif.ImageIFD.Copyright]=ascii(s.copyright);z[piexif.ImageIFD.Software]=ascii(s.software);z[piexif.ImageIFD.ImageDescription]=ascii(s.description);if(s.date){z[piexif.ImageIFD.DateTime]=s.date;e[piexif.ExifIFD.DateTimeOriginal]=s.date;e[piexif.ExifIFD.DateTimeDigitized]=s.date}if(s.description)e[piexif.ExifIFD.UserComment]='ASCII\0\0\0'+ascii(s.description);return piexif.dump({'0th':z,'Exif':e,'GPS':{},'Interop':{},'1st':{},thumbnail:null})}
-async function processJpeg(f){await piexif();const data=arrBufToDataURL(await f.arrayBuffer(),'image/jpeg');return dataURLToBlob(piexif.insert(await exifBytes(),data))}
-function crc32(bytes){let c=0xffffffff;for(const b of bytes){c^=b;for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return(c^0xffffffff)>>>0}
-function chunk(type,data){const t=new TextEncoder().encode(type),out=new Uint8Array(12+data.length),v=new DataView(out.buffer);v.setUint32(0,data.length);out.set(t,4);out.set(data,8);const crcInput=new Uint8Array(4+data.length);crcInput.set(t);crcInput.set(data,4);v.setUint32(8+data.length,crc32(crcInput));return out}
-async function processPng(f){const original=new Uint8Array(await f.arrayBuffer()),sig=original.slice(0,8),s=settings(),texts=[['Author',s.artist],['Copyright',s.copyright],['Software',s.software],['Description',s.description],['DateTime',s.date||'']].filter(x=>x[1]);let p=8,parts=[sig],inserted=false;while(p<original.length){const len=new DataView(original.buffer,original.byteOffset+p,4).getUint32(0),type=new TextDecoder().decode(original.slice(p+4,p+8)),end=p+12+len;if(!inserted&&type==='IEND'){for(const [k,v] of texts)parts.push(chunk('tEXt',new TextEncoder().encode(k+'\0'+v)));inserted=true}if(!['tEXt','zTXt','iTXt','eXIf'].includes(type))parts.push(original.slice(p,end));p=end}return new Blob(parts,{type:'image/png'})}
-function le32(a,o){return a[o]|a[o+1]<<8|a[o+2]<<16|a[o+3]<<24}
-async function processWebp(f){const a=new Uint8Array(await f.arrayBuffer());if(String.fromCharCode(...a.slice(0,4))!=='RIFF'||String.fromCharCode(...a.slice(8,12))!=='WEBP')throw Error('Geçersiz WebP');const ex=new TextEncoder().encode(await exifBytes());const payload=ex.slice(6);const chunks=[];let p=12;while(p+8<=a.length){const type=String.fromCharCode(...a.slice(p,p+4)),len=le32(a,p+4)>>>0,end=p+8+len+(len%2);if(type!=='EXIF')chunks.push(a.slice(p,end));p=end}const exChunk=new Uint8Array(8+payload.length+(payload.length%2));exChunk.set(new TextEncoder().encode('EXIF'));new DataView(exChunk.buffer).setUint32(4,payload.length,true);exChunk.set(payload,8);chunks.push(exChunk);const size=4+chunks.reduce((n,c)=>n+c.length,0),out=new Uint8Array(8+size);out.set(new TextEncoder().encode('RIFF'));new DataView(out.buffer).setUint32(4,size,true);out.set(new TextEncoder().encode('WEBP'),8);let q=12;for(const c of chunks){out.set(c,q);q+=c.length}return new Blob([out],{type:'image/webp'})}
-async function decodeToCanvas(f){let blob=f;if(/heic|heif/i.test(f.type)||/\.(heic|heif)$/i.test(f.name)){await heic();blob=await heic2any({blob:f,toType:'image/jpeg',quality:+$('#quality').value});if(Array.isArray(blob))blob=blob[0]}else if(/tiff/i.test(f.type)||/\.tiff?$/i.test(f.name)){await utif();const buf=await f.arrayBuffer(),ifds=UTIF.decode(buf);UTIF.decodeImage(buf,ifds[0]);const rgba=UTIF.toRGBA8(ifds[0]),c=document.createElement('canvas');c.width=ifds[0].width;c.height=ifds[0].height;c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba),c.width,c.height),0,0);return c}const bmp=await createImageBitmap(blob);const c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;c.getContext('2d').drawImage(bmp,0,0);bmp.close();return c}
-async function processConverted(f){const c=await decodeToCanvas(f),fmt=$('#convertFormat').value,mime=fmt==='png'?'image/png':'image/jpeg',blob=await new Promise(r=>c.toBlob(r,mime,+$('#quality').value));return fmt==='jpeg'?processJpeg(new File([blob],'x.jpg',{type:'image/jpeg'})):processPng(new File([blob],'x.png',{type:'image/png'}))}
-async function processOne(f){const n=f.name.toLowerCase();if(/\.jpe?g$/.test(n)||f.type==='image/jpeg')return[await processJpeg(f),'jpg'];if(/\.png$/.test(n)||f.type==='image/png')return[await processPng(f),'png'];if(/\.webp$/.test(n)||f.type==='image/webp')return[await processWebp(f),'webp'];return[await processConverted(f),$('#convertFormat').value==='png'?'png':'jpg']}
-function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
-$('#processBtn').onclick=async()=>{if(!state.files.length)return status(state.lang==='tr'?'Önce dosya ekleyin.':'Add files first.','err');$('#processBtn').disabled=true;let ok=0;for(let i=0;i<state.files.length;i++){const f=state.files[i];status(`${i+1}/${state.files.length}: ${f.name}`);try{const [blob,ext]=await processOne(f),base=f.name.replace(/\.[^.]+$/,'');download(blob,`${base}_metadata_duzenlenmis.${ext}`);ok++}catch(e){console.error(e);status(`${f.name}: ${e.message}`,'err')}}$('#processBtn').disabled=false;status(state.lang==='tr'?`${ok} dosya işlendi.`:`${ok} files processed.`,'ok')};
+const mimeOk = f => /\.(jpe?g|png|webp|tiff?|heic|heif)$/i.test(f.name) || ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/heic', 'image/heif'].includes(f.type);
 
-const tags={0x010e:'ImageDescription',0x0131:'Software',0x0132:'DateTime',0x013b:'Artist',0x8298:'Copyright',0x9003:'DateTimeOriginal',0x9004:'DateTimeDigitized',0x9286:'UserComment'};
-async function inspectFile(f){const rows=[['File','Name',f.name],['File','Type',f.type||'unknown'],['File','Size',fmt(f.size)],['File','LastModified',new Date(f.lastModified).toLocaleString()]];if(f.type==='image/jpeg'||/\.jpe?g$/i.test(f.name)){try{await piexif();const d=piexif.load(arrBufToDataURL(await f.arrayBuffer(),'image/jpeg'));for(const g of ['0th','Exif','GPS','1st'])for(const [k,v] of Object.entries(d[g]||{}))rows.push([g,tags[k]||k,Array.isArray(v)?v.join(', '):String(v).replace(/\0/g,'')])}catch(e){rows.push(['EXIF','Status','No readable EXIF'])}}else rows.push(['Metadata','Status','Basic file information shown. Format-specific metadata viewer is limited in browsers.']);return rows}
-$('#inspectAllBtn').onclick=async()=>{if(!state.files.length)return status(state.lang==='tr'?'Önce dosya ekleyin.':'Add files first.','err');const body=$('#metaBody');body.innerHTML='';for(const f of state.files){for(const [g,k,v] of await inspectFile(f)){const tr=document.createElement('tr');tr.innerHTML=`<td>${esc(f.name)}</td><td>${esc(g)}</td><td>${esc(k)}</td><td>${esc(v)}</td>`;body.appendChild(tr)}}$('#metaDialog').showModal()};
-$('#closeDialog').onclick=()=>$('#metaDialog').close();
+function fmt(n) {
+    const u = ['B', 'KB', 'MB', 'GB'];
+    if (!n) return '0 B';
+    const i = Math.floor(Math.log(n) / Math.log(1024));
+    return (n / 1024 ** i).toFixed(i ? 2 : 0) + ' ' + u[i]
+}
 
-let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true};
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
-$('#year').textContent=new Date().getFullYear();applyLang();
+function status(msg, type = 'ok') {
+    const e = $('#status');
+    e.className = 'status show ' + type;
+    e.textContent = msg
+}
+
+function addFiles(list) {
+    for (const f of list) {
+        if (!mimeOk(f)) {
+            status(`${f.name}: desteklenmeyen biçim / unsupported format`, 'err');
+            continue
+        }
+        if (f.size > 40 * 1024 * 1024) {
+            status(`${f.name}: 40 MB sınırı aşıldı`, 'err');
+            continue
+        }
+        if (!state.files.some(x => x.name === f.name && x.size === f.size && x.lastModified === f.lastModified)) state.files.push(f)
+    }
+    render()
+}
+
+function render() {
+    const box = $('#fileList');
+    box.innerHTML = '';
+    state.files.forEach((f, i) => {
+        const url = URL.createObjectURL(f);
+        const row = document.createElement('div');
+        row.className = 'file';
+        row.innerHTML = `<img class="thumb" alt="" src="${url}"><div><div class="fname">${esc(f.name)}</div><div class="fmeta">${fmt(f.size)} · ${esc(f.type||'unknown')}</div></div><button class="btn remove" data-i="${i}">✕</button>`;
+        row.querySelector('img').onload = () => URL.revokeObjectURL(url);
+        row.querySelector('img').onerror = e => {
+            e.target.style.visibility = 'hidden';
+            URL.revokeObjectURL(url)
+        };
+        box.appendChild(row)
+    });
+    box.querySelectorAll('.remove').forEach(b => b.onclick = () => {
+        state.files.splice(+b.dataset.i, 1);
+        render()
+    });
+    $('#countText').textContent = state.lang === 'tr' ? `${state.files.length} dosya` : `${state.files.length} files`
+}
+
+function esc(s) {
+    return String(s).replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    } [m]))
+}
+$('#fileInput').onchange = e => addFiles(e.target.files);
+const dz = $('#dropZone');
+['dragenter', 'dragover'].forEach(x => dz.addEventListener(x, e => {
+    e.preventDefault();
+    dz.classList.add('drag')
+}));
+['dragleave', 'drop'].forEach(x => dz.addEventListener(x, e => {
+    e.preventDefault();
+    dz.classList.remove('drag')
+}));
+dz.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+$('#clearBtn').onclick = () => {
+    state.files = [];
+    render();
+    $('#status').className = 'status'
+};
+
+const scriptPromises = new Map();
+
+function loadScript(src, id, globalName) {
+    if (globalName && window[globalName]) {
+        return Promise.resolve(window[globalName]);
+    }
+
+    if (scriptPromises.has(id)) {
+        return scriptPromises.get(id);
+    }
+
+    const promise = new Promise((resolve, reject) => {
+        let script = document.getElementById(id);
+
+        const loaded = () => {
+            if (!globalName || window[globalName]) {
+                resolve(globalName ? window[globalName] : true);
+            } else {
+                reject(new Error(`${globalName} kütüphanesi yüklenemedi.`));
+            }
+        };
+
+        const failed = () => {
+            scriptPromises.delete(id);
+            reject(new Error('Kütüphane yüklenemedi: ' + src));
+        };
+
+        if (script) {
+            if (globalName && window[globalName]) {
+                resolve(window[globalName]);
+                return;
+            }
+        
+            script.addEventListener('load', loaded, { once: true });
+            script.addEventListener('error', failed, { once: true });
+            return;
+        }
+
+        script = document.createElement('script');
+        script.id = id;
+        script.src = src;
+        script.async = true;
+        script.onload = loaded;
+        script.onerror = failed;
+        document.head.appendChild(script);
+    });
+
+    scriptPromises.set(id, promise);
+    return promise;
+}
+
+function loadPiexif() {
+    return loadScript(
+        'https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js',
+        'piexif-lib',
+        'piexif'
+    );
+}
+
+function loadUtif() {
+    return loadScript(
+        'https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js',
+        'utif-lib',
+        'UTIF'
+    );
+}
+
+function loadHeic() {
+    return loadScript(
+        'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js',
+        'heic-lib',
+        'heic2any'
+    );
+}
+
+function arrBufToDataURL(buf, mime) {
+    const bytes = new Uint8Array(buf);
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    return `data:${mime};base64,${btoa(bin)}`
+}
+
+function dataURLToBlob(url) {
+    const [h, b] = url.split(',');
+    const mime = h.match(/:(.*?);/)[1];
+    const bin = atob(b);
+    const a = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+    return new Blob([a], {
+        type: mime
+    })
+}
+
+function dt() {
+    const d = new Date(),
+        p = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}:${p(d.getMonth()+1)}:${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
+}
+
+function ascii(s) {
+    return String(s || '').normalize('NFKD').replace(/[^\x20-\x7E]/g, '').trim()
+}
+
+function settings() {
+    return {
+        artist: $('#artist').value.trim() || 'Ebubekir Bastama',
+        copyright: $('#copyright').value.trim(),
+        software: $('#software').value.trim(),
+        description: $('#description').value.trim(),
+        date: $('#addDate').checked ? dt() : null
+    }
+}
+async function exifBytes() {
+    const px = await loadPiexif();
+    const s = settings();
+    const zeroth = {};
+    const exif = {};
+
+    zeroth[px.ImageIFD.Artist] = ascii(s.artist);
+    zeroth[px.ImageIFD.Copyright] = ascii(s.copyright);
+    zeroth[px.ImageIFD.Software] = ascii(s.software);
+    zeroth[px.ImageIFD.ImageDescription] = ascii(s.description);
+
+    if (s.date) {
+        zeroth[px.ImageIFD.DateTime] = s.date;
+        exif[px.ExifIFD.DateTimeOriginal] = s.date;
+        exif[px.ExifIFD.DateTimeDigitized] = s.date;
+    }
+
+    if (s.description) {
+        exif[px.ExifIFD.UserComment] =
+            'ASCII\0\0\0' + ascii(s.description);
+    }
+
+    return px.dump({
+        '0th': zeroth,
+        'Exif': exif,
+        'GPS': {},
+        'Interop': {},
+        '1st': {},
+        thumbnail: null
+    });
+}
+async function processJpeg(file) {
+    const px = await loadPiexif();
+
+    const dataUrl = arrBufToDataURL(
+        await file.arrayBuffer(),
+        'image/jpeg'
+    );
+
+    const exifData = await exifBytes();
+    const output = px.insert(exifData, dataUrl);
+
+    return dataURLToBlob(output);
+}
+
+function crc32(bytes) {
+    let c = 0xffffffff;
+    for (const b of bytes) {
+        c ^= b;
+        for (let k = 0; k < 8; k++) c = (c >>> 1) ^ ((c & 1) ? 0xedb88320 : 0)
+    }
+    return (c ^ 0xffffffff) >>> 0
+}
+
+function chunk(type, data) {
+    const t = new TextEncoder().encode(type),
+        out = new Uint8Array(12 + data.length),
+        v = new DataView(out.buffer);
+    v.setUint32(0, data.length);
+    out.set(t, 4);
+    out.set(data, 8);
+    const crcInput = new Uint8Array(4 + data.length);
+    crcInput.set(t);
+    crcInput.set(data, 4);
+    v.setUint32(8 + data.length, crc32(crcInput));
+    return out
+}
+async function processPng(f) {
+    const original = new Uint8Array(await f.arrayBuffer()),
+        sig = original.slice(0, 8),
+        s = settings(),
+        texts = [
+            ['Author', s.artist],
+            ['Copyright', s.copyright],
+            ['Software', s.software],
+            ['Description', s.description],
+            ['DateTime', s.date || '']
+        ].filter(x => x[1]);
+    let p = 8,
+        parts = [sig],
+        inserted = false;
+    while (p < original.length) {
+        const len = new DataView(original.buffer, original.byteOffset + p, 4).getUint32(0),
+            type = new TextDecoder().decode(original.slice(p + 4, p + 8)),
+            end = p + 12 + len;
+        if (!inserted && type === 'IEND') {
+            for (const [k, v] of texts) parts.push(chunk('tEXt', new TextEncoder().encode(k + '\0' + v)));
+            inserted = true
+        }
+        if (!['tEXt', 'zTXt', 'iTXt', 'eXIf'].includes(type)) parts.push(original.slice(p, end));
+        p = end
+    }
+    return new Blob(parts, {
+        type: 'image/png'
+    })
+}
+
+function le32(a, o) {
+    return a[o] | a[o + 1] << 8 | a[o + 2] << 16 | a[o + 3] << 24
+}
+async function processWebp(f) {
+    const a = new Uint8Array(await f.arrayBuffer());
+    if (String.fromCharCode(...a.slice(0, 4)) !== 'RIFF' || String.fromCharCode(...a.slice(8, 12)) !== 'WEBP') throw Error('Geçersiz WebP');
+    const ex = new TextEncoder().encode(await exifBytes());
+    const payload = ex.slice(6);
+    const chunks = [];
+    let p = 12;
+    while (p + 8 <= a.length) {
+        const type = String.fromCharCode(...a.slice(p, p + 4)),
+            len = le32(a, p + 4) >>> 0,
+            end = p + 8 + len + (len % 2);
+        if (type !== 'EXIF') chunks.push(a.slice(p, end));
+        p = end
+    }
+    const exChunk = new Uint8Array(8 + payload.length + (payload.length % 2));
+    exChunk.set(new TextEncoder().encode('EXIF'));
+    new DataView(exChunk.buffer).setUint32(4, payload.length, true);
+    exChunk.set(payload, 8);
+    chunks.push(exChunk);
+    const size = 4 + chunks.reduce((n, c) => n + c.length, 0),
+        out = new Uint8Array(8 + size);
+    out.set(new TextEncoder().encode('RIFF'));
+    new DataView(out.buffer).setUint32(4, size, true);
+    out.set(new TextEncoder().encode('WEBP'), 8);
+    let q = 12;
+    for (const c of chunks) {
+        out.set(c, q);
+        q += c.length
+    }
+    return new Blob([out], {
+        type: 'image/webp'
+    })
+}
+async function decodeToCanvas(f) {
+    let blob = f;
+    if (/heic|heif/i.test(f.type) || /\.(heic|heif)$/i.test(f.name)) {
+        const heic2anyLib = await loadHeic();
+        blob = await heic2anyLib({
+            blob: f,
+            toType: 'image/jpeg',
+            quality: +$('#quality').value
+        });
+        if (Array.isArray(blob)) blob = blob[0]
+    } else if (/tiff/i.test(f.type) || /\.tiff?$/i.test(f.name)) {
+        const utifLib = await loadUtif();
+        const buf = await f.arrayBuffer();
+        const ifds = utifLib.decode(buf);
+
+        if (!ifds.length) {
+            throw new Error('TIFF görüntüsü çözülemedi.');
+        }
+
+        utifLib.decodeImage(buf, ifds[0]);
+        const rgba = utifLib.toRGBA8(ifds[0]);
+        const c = document.createElement('canvas');
+        c.width = ifds[0].width;
+        c.height = ifds[0].height;
+        c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba), c.width, c.height), 0, 0);
+        return c
+    }
+    const bmp = await createImageBitmap(blob);
+    const c = document.createElement('canvas');
+    c.width = bmp.width;
+    c.height = bmp.height;
+    const ctx = c.getContext('2d');
+    
+    if (!ctx) {
+        bmp.close();
+        throw new Error('Canvas bağlamı oluşturulamadı.');
+    }
+    
+    ctx.drawImage(bmp, 0, 0);
+    bmp.close();
+    
+    return c;
+}
+async function processConverted(f) {
+    const c = await decodeToCanvas(f),
+        fmt = $('#convertFormat').value,
+        mime = fmt === 'png' ? 'image/png' : 'image/jpeg',
+        blob = await new Promise((resolve, reject) => {
+            c.toBlob(
+                result => {
+                    if (result) {
+                        resolve(result);
+                    } else {
+                        reject(new Error('Görsel çıktısı oluşturulamadı.'));
+                    }
+                },
+                mime,
+                Number($('#quality').value)
+            );
+        });
+    return fmt === 'jpeg' ? processJpeg(new File([blob], 'x.jpg', {
+        type: 'image/jpeg'
+    })) : processPng(new File([blob], 'x.png', {
+        type: 'image/png'
+    }))
+}
+async function processOne(f) {
+    const n = f.name.toLowerCase();
+    if (/\.jpe?g$/.test(n) || f.type === 'image/jpeg') return [await processJpeg(f), 'jpg'];
+    if (/\.png$/.test(n) || f.type === 'image/png') return [await processPng(f), 'png'];
+    if (/\.webp$/.test(n) || f.type === 'image/webp') return [await processWebp(f), 'webp'];
+    return [await processConverted(f), $('#convertFormat').value === 'png' ? 'png' : 'jpg']
+}
+
+function download(blob, name) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000)
+}
+$('#processBtn').onclick = async () => {
+    if (!state.files.length) return status(state.lang === 'tr' ? 'Önce dosya ekleyin.' : 'Add files first.', 'err');
+    $('#processBtn').disabled = true;
+    let ok = 0;
+    for (let i = 0; i < state.files.length; i++) {
+        const f = state.files[i];
+        status(`${i+1}/${state.files.length}: ${f.name}`);
+        try {
+            const [blob, ext] = await processOne(f), base = f.name.replace(/\.[^.]+$/, '');
+            download(blob, `${base}_metadata_duzenlenmis.${ext}`);
+            ok++
+        } catch (e) {
+            console.error(e);
+            status(`${f.name}: ${e.message}`, 'err')
+        }
+    }
+    $('#processBtn').disabled = false;
+    status(state.lang === 'tr' ? `${ok} dosya işlendi.` : `${ok} files processed.`, 'ok')
+};
+
+const tags = {
+    0x010e: 'ImageDescription',
+    0x0131: 'Software',
+    0x0132: 'DateTime',
+    0x013b: 'Artist',
+    0x8298: 'Copyright',
+    0x9003: 'DateTimeOriginal',
+    0x9004: 'DateTimeDigitized',
+    0x9286: 'UserComment'
+};
+async function inspectFile(f) {
+    const rows = [
+        ['File', 'Name', f.name],
+        ['File', 'Type', f.type || 'unknown'],
+        ['File', 'Size', fmt(f.size)],
+        ['File', 'LastModified', new Date(f.lastModified).toLocaleString()]
+    ];
+    if (f.type === 'image/jpeg' || /\.jpe?g$/i.test(f.name)) {
+        try {
+            const px = await loadPiexif();
+
+            const dataUrl = arrBufToDataURL(
+                await f.arrayBuffer(),
+                'image/jpeg'
+            );
+
+            const d = px.load(dataUrl);
+
+            for (const g of ['0th', 'Exif', 'GPS', '1st']) {
+                for (const [k, v] of Object.entries(d[g] || {})) {
+                    rows.push([
+                        g,
+                        tags[k] || k,
+                        Array.isArray(v) ?
+                        v.join(', ') :
+                        String(v).replace(/\0/g, '')
+                    ]);
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            rows.push([
+                'EXIF',
+                'Status',
+                error.message || 'EXIF okunamadı'
+            ]);
+        }
+    } else rows.push(['Metadata', 'Status', 'Basic file information shown. Format-specific metadata viewer is limited in browsers.']);
+    return rows
+}
+$('#inspectAllBtn').onclick = async () => {
+    if (!state.files.length) return status(state.lang === 'tr' ? 'Önce dosya ekleyin.' : 'Add files first.', 'err');
+    const body = $('#metaBody');
+    body.innerHTML = '';
+    for (const f of state.files) {
+        for (const [g, k, v] of await inspectFile(f)) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${esc(f.name)}</td><td>${esc(g)}</td><td>${esc(k)}</td><td>${esc(v)}</td>`;
+            body.appendChild(tr)
+        }
+    }
+    $('#metaDialog').showModal()
+};
+$('#closeDialog').onclick = () => $('#metaDialog').close();
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    $('#installBtn').hidden = false
+});
+$('#installBtn').onclick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    $('#installBtn').hidden = true
+};
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+$('#year').textContent = new Date().getFullYear();
+applyLang();
 </script>
 </body>
 </html>
