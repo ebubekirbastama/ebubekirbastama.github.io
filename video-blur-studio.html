@@ -378,6 +378,18 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6v6"/><path d="M22 3h-6v6"/><path d="M2 21h6v-6"/><path d="M22 21h-6v-6"/></svg>
         Yüzleri Tara
       </button>
+      <button id="detectObjectBtn" class="ghost" title="İnsan, araç, telefon, çanta ve diğer nesneleri bul">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h8v8H8z"/></svg>
+        Nesneleri Tara
+      </button>
+      <button id="detectTextBtn" class="ghost" title="Videodaki yazı ve altyazı bölgelerini bul">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M9 6v12m6-12v12M6 18h12"/></svg>
+        Yazıları Tara
+      </button>
+      <button id="subtitleBandBtn" class="ghost" title="Alt bölümdeki altyazı bandını hızlıca seç">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M6 15h12M8 18h8"/></svg>
+        Alt Yazı Bandı
+      </button>
     </div>
 
     <div class="progress-row" id="progressRow" style="display:none;">
@@ -417,7 +429,15 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
     </div>
 
     <div>
-      <div class="panel-title">İşaretlenen Alanlar <span class="count" id="areaCount">0</span></div>
+      <div class="panel-title">Takip Edilen Nesneler <span class="count" id="objectCount">0</span></div>
+      <div id="objectList" class="target-list"></div>
+      <div class="empty-hint" id="objectEmptyHint">
+        “Nesneleri Tara” ile insan, otomobil, telefon, çanta, mikrofon ve benzeri nesneleri bulun. Görüntüde nesneye tıklayarak sansürü açın; sistem hareketi kareler boyunca takip eder.
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-title">İşaretlenen Alanlar ve Yazılar <span class="count" id="areaCount">0</span></div>
       <div id="areaList" class="target-list"></div>
       <div class="empty-hint" id="areaEmptyHint">
         "Kare Alan" ya da "Yuvarlak Alan" aracıyla görüntü üzerinde sürükleyerek sabit bir bölge işaretleyin. Bu bölge, oluşturulduğu andan videonun sonuna kadar bulanık kalır.
@@ -448,6 +468,8 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
 
 <video id="srcVideo" style="display:none;" playsinline crossorigin="anonymous"></video>
 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/dist/face-api.js"></script>
 <script>
 (function(){
@@ -473,11 +495,17 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
   const statusDot = document.getElementById('statusDot');
   const statusText = document.getElementById('statusText');
   const detectBtn = document.getElementById('detectBtn');
+  const detectObjectBtn = document.getElementById('detectObjectBtn');
+  const detectTextBtn = document.getElementById('detectTextBtn');
+  const subtitleBandBtn = document.getElementById('subtitleBandBtn');
   const faceList = document.getElementById('faceList');
+  const objectList = document.getElementById('objectList');
   const areaList = document.getElementById('areaList');
   const faceCount = document.getElementById('faceCount');
+  const objectCount = document.getElementById('objectCount');
   const areaCount = document.getElementById('areaCount');
   const faceEmptyHint = document.getElementById('faceEmptyHint');
+  const objectEmptyHint = document.getElementById('objectEmptyHint');
   const areaEmptyHint = document.getElementById('areaEmptyHint');
   const exportBtn = document.getElementById('exportBtn');
   const resetLink = document.getElementById('resetLink');
@@ -489,7 +517,10 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
   let modelsReady = false;
   let currentTool = 'select';
   let faces = [];
+  let objects = [];
   let areas = [];
+  let objectModel = null;
+  let objectModelLoading = false;
   let nextId = 1;
   let isDragging = false;
   let dragStart = null;
@@ -565,6 +596,7 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
     drawFrame();
     setStatus(modelsReady ? 'Video hazır. Yüzleri taramak için üstteki düğmeyi kullanın.' : 'Model yükleniyor…', modelsReady ? '' : 'busy');
     loadModels();
+    loadObjectModel();
   }
 
   async function loadModels(){
@@ -596,6 +628,20 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
     }
   }
 
+  async function loadObjectModel(){
+    if(objectModel || objectModelLoading) return objectModel;
+    objectModelLoading = true;
+    try{
+      if(!window.cocoSsd) throw new Error('COCO-SSD kütüphanesi bulunamadı');
+      objectModel = await window.cocoSsd.load({base:'lite_mobilenet_v2'});
+      return objectModel;
+    }catch(err){
+      console.error('Nesne modeli yüklenemedi:', err);
+      setStatus('Nesne modeli yüklenemedi; yüz ve manuel alan araçları kullanılabilir.', '');
+      return null;
+    }finally{ objectModelLoading = false; }
+  }
+
   function fmtTime(s){
     if(!isFinite(s)) s = 0;
     const m = Math.floor(s/60), sec = Math.floor(s%60);
@@ -616,7 +662,7 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
 
   function applyBlurRegions(targetCtx, atTime){
     const amt = parseInt(blurAmount.value, 10);
-    const all = faces.concat(areas);
+    const all = faces.concat(objects, areas);
     all.forEach(item=>{
       if(!item.active) return;
       if(atTime < item.startTime) return;
@@ -659,6 +705,20 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
       } else {
         ctx.strokeRect(x,y,w,h);
       }
+      ctx.restore();
+    });
+    objects.forEach(o=>{
+      const x=o.box.x*canvas.width, y=o.box.y*canvas.height, w=o.box.w*canvas.width, h=o.box.h*canvas.height;
+      ctx.save();
+      ctx.strokeStyle = o.active ? '#4da3ff' : 'rgba(139,147,163,0.6)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash(o.active ? [] : [5,4]);
+      ctx.strokeRect(x,y,w,h);
+      ctx.fillStyle = 'rgba(5,10,22,.78)';
+      ctx.fillRect(x, Math.max(0,y-22), Math.min(w,150), 20);
+      ctx.fillStyle = '#fff';
+      ctx.font = '12px Inter, sans-serif';
+      ctx.fillText(`${o.label} %${Math.round((o.score||0)*100)}`, x+5, Math.max(13,y-7));
       ctx.restore();
     });
     areas.forEach(a=>{
@@ -748,6 +808,55 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
     });
   }
 
+  function iou(a,b){
+    const x1=Math.max(a.x,b.x), y1=Math.max(a.y,b.y);
+    const x2=Math.min(a.x+a.w,b.x+b.w), y2=Math.min(a.y+a.h,b.y+b.h);
+    const inter=Math.max(0,x2-x1)*Math.max(0,y2-y1);
+    const union=a.w*a.h+b.w*b.h-inter;
+    return union>0 ? inter/union : 0;
+  }
+
+  function predictionBox(pred){
+    const [x,y,w,h]=pred.bbox;
+    const padX=w*.08, padY=h*.08;
+    return {x:Math.max(0,(x-padX)/video.videoWidth), y:Math.max(0,(y-padY)/video.videoHeight), w:Math.min(1,(w+padX*2)/video.videoWidth), h:Math.min(1,(h+padY*2)/video.videoHeight)};
+  }
+
+  function matchAndUpdateObjects(list,preds){
+    const claimed=new Set();
+    list.forEach(t=>{
+      let best=null,bestScore=0,bestIdx=-1;
+      preds.forEach((p,idx)=>{
+        if(claimed.has(idx) || p.class!==t.label) return;
+        const b=predictionBox(p);
+        const score=iou(t.box,b);
+        if(score>bestScore){bestScore=score;best={p,b};bestIdx=idx;}
+      });
+      if(best && bestScore>.12){
+        claimed.add(bestIdx);
+        const alpha=.62;
+        t.vel={x:best.b.x-t.box.x,y:best.b.y-t.box.y};
+        t.box={x:t.box.x*(1-alpha)+best.b.x*alpha,y:t.box.y*(1-alpha)+best.b.y*alpha,w:t.box.w*(1-alpha)+best.b.w*alpha,h:t.box.h*(1-alpha)+best.b.h*alpha};
+        t.score=best.p.score; t.missCount=0; t.lost=false;
+      }else{
+        t.missCount=(t.missCount||0)+1;
+        if(t.missCount>4)t.lost=true;
+        else if(t.vel){t.box.x+=t.vel.x*.25;t.box.y+=t.vel.y*.25;}
+      }
+    });
+  }
+
+  let isObjectDetecting=false;
+  async function trackObjectsLive(){
+    if(isObjectDetecting || !objectModel || objects.length===0) return;
+    isObjectDetecting=true;
+    try{
+      const preds=await objectModel.detect(video,20,.38);
+      matchAndUpdateObjects(objects,preds);
+    }catch(e){console.warn('Canlı nesne takibi:',e);}
+    isObjectDetecting=false;
+  }
+
   function loopPreview(){
     drawFrame();
     if(!video.paused && !video.ended){
@@ -755,6 +864,7 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
       previewFrameCounter++;
       if(previewFrameCounter % PREVIEW_DETECT_EVERY === 0){
         trackFacesLive();
+        trackObjectsLive();
       }
       rafId = requestAnimationFrame(loopPreview);
     }
@@ -791,7 +901,7 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
   video.addEventListener('seeked', ()=>{
     if(!isExporting){
       updateTimecode();
-      if(video.paused){ trackFacesLive().then(drawFrame); } else { drawFrame(); }
+      if(video.paused){ Promise.all([trackFacesLive(), trackObjectsLive()]).then(drawFrame); } else { drawFrame(); }
     }
   });
 
@@ -817,7 +927,9 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
       const hit = faces.find(f=>{
         return xr >= f.box.x && xr <= f.box.x+f.box.w && yr >= f.box.y && yr <= f.box.y+f.box.h;
       });
-      if(hit){ hit.active = !hit.active; renderFaceList(); drawFrame(); }
+      if(hit){ hit.active = !hit.active; renderFaceList(); drawFrame(); return; }
+      const objectHit = objects.find(o=>xr>=o.box.x && xr<=o.box.x+o.box.w && yr>=o.box.y && yr<=o.box.y+o.box.h);
+      if(objectHit){ objectHit.active=!objectHit.active; renderObjectList(); drawFrame(); }
       return;
     }
     isDragging = true;
@@ -851,6 +963,8 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
         },
         shape: dragPreview.shape,
         active: true,
+        kind: 'manual',
+        name: 'Manuel alan',
         startTime: video.currentTime
       });
       renderAreaList();
@@ -898,6 +1012,59 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
   });
 
 
+  detectObjectBtn.addEventListener('click', async()=>{
+    const model=await loadObjectModel();
+    if(!model){setStatus('Nesne modeli hazır değil.','');return;}
+    detectObjectBtn.disabled=true; setStatus('Nesneler yapay zekâ ile taranıyor…','busy');
+    try{
+      const preds=await model.detect(video,30,.38);
+      preds.forEach(pred=>{
+        const box=predictionBox(pred);
+        const dup=objects.find(o=>o.label===pred.class && iou(o.box,box)>.55);
+        if(!dup) objects.push({id:nextId++,label:pred.class,score:pred.score,box,shape:'rect',active:false,startTime:video.currentTime,missCount:0,lost:false,vel:{x:0,y:0}});
+      });
+      renderObjectList(); drawFrame();
+      setStatus(`${preds.length} nesne bulundu. Sansürlemek istediğiniz nesneye tıklayın.`,'');
+    }catch(err){console.error(err);setStatus('Nesne taraması sırasında hata oluştu.','');}
+    detectObjectBtn.disabled=false;
+  });
+
+  subtitleBandBtn.addEventListener('click',()=>{
+    areas.push({id:nextId++,box:{x:.04,y:.72,w:.92,h:.24},shape:'rect',active:true,kind:'subtitle',name:'Alt yazı bandı',startTime:video.currentTime});
+    renderAreaList();drawFrame();setStatus('Alt yazı bandı seçildi. Kenarları hassas ayarlamak için manuel kare alan da ekleyebilirsiniz.','');
+  });
+
+  detectTextBtn.addEventListener('click',async()=>{
+    detectTextBtn.disabled=true; setStatus('Yazı ve altyazı bölgeleri taranıyor…','busy');
+    try{
+      if('TextDetector' in window){
+        const detector=new TextDetector();
+        const found=await detector.detect(canvas);
+        found.forEach(t=>{
+          const b=t.boundingBox;
+          areas.push({id:nextId++,box:{x:b.x/canvas.width,y:b.y/canvas.height,w:b.width/canvas.width,h:b.height/canvas.height},shape:'rect',active:true,kind:'text',name:(t.rawValue||'Algılanan yazı').slice(0,36),startTime:video.currentTime});
+        });
+        setStatus(`${found.length} yazı bölgesi bulundu ve seçildi.`,'');
+      }else{
+        areas.push({id:nextId++,box:{x:.04,y:.70,w:.92,h:.27},shape:'rect',active:true,kind:'subtitle',name:'Otomatik alt yazı bölgesi',startTime:video.currentTime});
+        setStatus('Tarayıcı metin algılamayı desteklemedi; olası alt yazı bandı otomatik seçildi.','');
+      }
+      renderAreaList();drawFrame();
+    }catch(err){console.error(err);setStatus('Yazı taraması başarısız; alt yazı bandını manuel seçebilirsiniz.','');}
+    detectTextBtn.disabled=false;
+  });
+
+  function renderObjectList(){
+    objectList.innerHTML=''; objectCount.textContent=objects.length; objectEmptyHint.style.display=objects.length?'none':'block';
+    objects.forEach((o,idx)=>{
+      const row=document.createElement('div'); row.className='target-item';
+      row.innerHTML=`<div class="target-swatch rect" style="background:linear-gradient(135deg,#234d7a,#12151b);"></div>
+      <div class="target-meta"><div class="name">${o.label} ${idx+1}</div><div class="sub">${o.active?'takip + bulanık • '+fmtTime(o.startTime)+'’den sona':'pasif'} • güven %${Math.round((o.score||0)*100)}</div></div>
+      <div class="target-actions"><button class="icon-btn ${o.active?'on':''}" data-action="toggle-object" data-id="${o.id}" title="Aç/Kapat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="icon-btn danger" data-action="delete-object" data-id="${o.id}" title="Sil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg></button></div>`;
+      objectList.appendChild(row);
+    });
+  }
+
   function renderFaceList(){
     faceList.innerHTML = '';
     faceCount.textContent = faces.length;
@@ -933,7 +1100,7 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
       row.innerHTML = `
         <div class="target-swatch ${a.shape}" style="background:linear-gradient(135deg,#7a3c22,#12151b);"></div>
         <div class="target-meta">
-          <div class="name">Alan ${idx+1} <span class="sub">(${a.shape==='circle'?'yuvarlak':'kare'})</span></div>
+          <div class="name">${a.name || ('Alan '+(idx+1))} <span class="sub">(${a.shape==='circle'?'yuvarlak':'kare'})</span></div>
           <div class="sub">${a.active ? fmtTime(a.startTime)+'’den sona kadar' : 'pasif'}</div>
         </div>
         <div class="target-actions">
@@ -955,6 +1122,8 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
     const action = btn.dataset.action;
     if(action==='toggle'){ const f = faces.find(x=>x.id===id); f.active=!f.active; renderFaceList(); drawFrame(); }
     if(action==='delete'){ faces = faces.filter(x=>x.id!==id); renderFaceList(); drawFrame(); }
+    if(action==='toggle-object'){ const o=objects.find(x=>x.id===id); o.active=!o.active; renderObjectList(); drawFrame(); }
+    if(action==='delete-object'){ objects=objects.filter(x=>x.id!==id); renderObjectList(); drawFrame(); }
     if(action==='toggle-area'){ const a = areas.find(x=>x.id===id); a.active=!a.active; renderAreaList(); drawFrame(); }
     if(action==='delete-area'){ areas = areas.filter(x=>x.id!==id); renderAreaList(); drawFrame(); }
   });
@@ -1070,10 +1239,10 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
     });
   }
 
-  function drawBlurredExportFrame(outCtx, outCanvas, tracked, activeAreas, atTime){
+  function drawBlurredExportFrame(outCtx, outCanvas, trackedFaces, trackedObjects, activeAreas, atTime){
     outCtx.filter = 'none';
     outCtx.drawImage(video, 0, 0, outCanvas.width, outCanvas.height);
-    tracked.concat(activeAreas).forEach(item=>{
+    trackedFaces.concat(trackedObjects, activeAreas).forEach(item=>{
       if(atTime < item.startTime || item.lost) return;
       const x = item.box.x*outCanvas.width, y = item.box.y*outCanvas.height;
       const w = item.box.w*outCanvas.width, h = item.box.h*outCanvas.height;
@@ -1102,8 +1271,9 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
   exportBtn.addEventListener('click', async ()=>{
     if(isExporting) return;
     const activeFaces = faces.filter(f=>f.active);
+    const activeObjects = objects.filter(o=>o.active);
     const activeAreas = areas.filter(a=>a.active);
-    if(activeFaces.length===0 && activeAreas.length===0){
+    if(activeFaces.length===0 && activeObjects.length===0 && activeAreas.length===0){
       setStatus('Önce en az bir yüz seçin veya bir alan işaretleyin.', '');
       return;
     }
@@ -1125,7 +1295,8 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
     const extMatch = originalName.match(/\.([a-z0-9]+)$/i);
     const inputName = `source.${extMatch ? extMatch[1].toLowerCase() : 'mp4'}`;
     const outputName = 'EBS-Blur-AI-FFmpeg.mp4';
-    let tracked = activeFaces.map(f=>({ ...f, box:{...f.box}, vel:{x:0,y:0}, missCount:0, lost:false }));
+    let trackedFaces = activeFaces.map(f=>({ ...f, box:{...f.box}, vel:{x:0,y:0}, missCount:0, lost:false }));
+    let trackedObjects = activeObjects.map(o=>({ ...o, box:{...o.box}, vel:{x:0,y:0}, missCount:0, lost:false }));
     const outCanvas = document.createElement('canvas');
     outCanvas.width = canvas.width;
     outCanvas.height = canvas.height;
@@ -1146,11 +1317,17 @@ header{padding:18px 24px;background:transparent}.brand h1{font-size:19px}main{ba
           try{
             const opts = new faceapi.TinyFaceDetectorOptions({ inputSize:320, scoreThreshold:0.5 });
             const dets = await faceapi.detectAllFaces(video, opts).withFaceLandmarks().withFaceDescriptors();
-            matchAndUpdateFaces(tracked, dets);
+            matchAndUpdateFaces(trackedFaces, dets);
           }catch(e){ console.warn('Kare yüz tespiti atlandı:', e); }
         }
+        if(activeObjects.length && i % detectEvery === 0 && objectModel){
+          try{
+            const preds=await objectModel.detect(video,30,.35);
+            matchAndUpdateObjects(trackedObjects,preds);
+          }catch(e){console.warn('Kare nesne tespiti atlandı:',e);}
+        }
 
-        drawBlurredExportFrame(outCtx, outCanvas, tracked, activeAreas, atTime);
+        drawBlurredExportFrame(outCtx, outCanvas, trackedFaces, trackedObjects, activeAreas, atTime);
         const frameName = `frame_${String(i+1).padStart(6,'0')}.jpg`;
         await engine.writeFile(frameName, await canvasToJpegBytes(outCanvas));
         frameFiles.push(frameName);
