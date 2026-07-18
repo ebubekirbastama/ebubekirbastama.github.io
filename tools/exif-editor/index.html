@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="color-scheme" content="dark light">
+  <title>Online EXIF Düzenleyici | Ebubekir Bastama</title>
+  <meta name="description" content="JPEG, PNG, WebP, TIFF ve HEIC dosyalarının metadata bilgilerini görüntüleyin, temizleyin ve toplu düzenleyin. Tarayıcı içinde çalışan ücretsiz EXIF aracı.">
+  <meta name="keywords" content="EXIF düzenleyici, metadata düzenleme, JPEG EXIF, PNG metadata, WebP EXIF, HEIC dönüştürme, TIFF metadata, toplu EXIF düzenleme">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <link rel="canonical" href="https://www.ebubekirbastama.com.tr/tools/exif-editor/">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:title" content="Online EXIF Düzenleyici | Ebubekir Bastama">
+  <meta property="og:description" content="Fotoğrafların metadata bilgilerini görüntüleyin, temizleyin ve toplu olarak düzenleyin.">
+  <meta property="og:url" content="https://www.ebubekirbastama.com.tr/tools/exif-editor/">
+  <meta property="og:site_name" content="Ebubekir Bastama">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Online EXIF Düzenleyici">
+  <meta name="twitter:description" content="Tarayıcı içinde çalışan toplu metadata düzenleme aracı.">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Online EXIF Düzenleyici",
+    "url":"https://www.ebubekirbastama.com.tr/tools/exif-editor/",
+    "applicationCategory":"MultimediaApplication",
+    "operatingSystem":"Any",
+    "browserRequirements":"JavaScript etkin olmalıdır.",
+    "inLanguage":["tr","en"],
+    "author":{"@type":"Person","name":"Ebubekir Bastama"},
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"},
+    "featureList":[
+      "Toplu metadata düzenleme",
+      "JPEG EXIF düzenleme",
+      "PNG metadata yazma",
+      "WebP EXIF yazma",
+      "TIFF ve HEIC dönüştürme",
+      "Çevrimdışı PWA desteği"
+    ]
+  }
+  </script>
+  <style>
+    :root{
+      --bg:#08101f;--bg2:#101a31;--panel:rgba(18,27,50,.88);--panel2:#18233d;
+      --text:#eef4ff;--muted:#9ba9c7;--line:rgba(255,255,255,.11);
+      --accent:#7f9cff;--accent2:#55dbc4;--danger:#ff6d7f;--ok:#61dfbd;
+      --shadow:0 24px 70px rgba(0,0,0,.34);--r:22px
+    }
+    :root[data-theme="light"]{
+      --bg:#eef3fb;--bg2:#f8fbff;--panel:rgba(255,255,255,.92);--panel2:#edf2fa;
+      --text:#17213a;--muted:#60708f;--line:rgba(30,50,90,.13);
+      --accent:#496cf1;--accent2:#0da991;--danger:#d43f59;--ok:#078a72;
+      --shadow:0 24px 70px rgba(31,54,98,.14)
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+      color:var(--text);background:
+      radial-gradient(circle at 10% 0%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 35%),
+      radial-gradient(circle at 95% 12%,color-mix(in srgb,var(--accent2) 18%,transparent),transparent 32%),
+      linear-gradient(145deg,var(--bg),var(--bg2));padding:24px
+    }
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:1240px;margin:auto}
+    .top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:22px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;font-weight:900;color:#061019;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 14px 30px color-mix(in srgb,var(--accent) 28%,transparent)}
+    h1{font-size:clamp(1.45rem,3vw,2.35rem);margin:0;letter-spacing:-.045em}
+    .sub{color:var(--muted);font-size:.94rem;margin-top:5px}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .iconbtn,.btn{border:1px solid var(--line);color:var(--text);background:color-mix(in srgb,var(--panel) 94%,transparent);border-radius:14px;padding:11px 14px}
+    .btn.primary{border:0;color:#061019;font-weight:850;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .btn.danger{color:var(--danger)}
+    .grid{display:grid;grid-template-columns:1.12fr .88fr;gap:20px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:blur(16px);overflow:hidden}
+    .head{padding:21px 21px 0}.head h2{font-size:1.08rem;margin:0 0 6px}.head p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.55}
+    .drop{margin:20px;border:1.5px dashed color-mix(in srgb,var(--accent) 55%,transparent);border-radius:20px;min-height:220px;
+      display:grid;place-items:center;text-align:center;padding:25px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 8%,transparent),color-mix(in srgb,var(--accent2) 4%,transparent));transition:.2s}
+    .drop.drag{transform:translateY(-2px);border-color:var(--accent2);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent2) 20%,transparent)}
+    .drop input{display:none}.drop .big{font-size:42px}.drop strong{display:block;margin:10px 0 5px}.drop small{color:var(--muted)}
+    .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:0 20px 16px;flex-wrap:wrap}
+    .count{color:var(--muted);font-size:.88rem}
+    .files{padding:0 20px 20px;display:grid;gap:11px;max-height:510px;overflow:auto}
+    .file{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:11px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--panel2) 70%,transparent)}
+    .thumb{width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--bg)}
+    .fname{font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fmeta{color:var(--muted);font-size:.82rem;margin-top:4px}
+    .tag{font-size:.72rem;padding:5px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+    .form{padding:20px;display:grid;gap:15px}
+    label.field{display:grid;gap:7px;font-size:.88rem;font-weight:700}
+    input[type=text],textarea,select{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px 13px;background:color-mix(in srgb,var(--panel2) 65%,transparent);color:var(--text);outline:none}
+    input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)}
+    textarea{min-height:82px;resize:vertical}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .switch{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:13px;border:1px solid var(--line);border-radius:15px;background:color-mix(in srgb,var(--panel2) 50%,transparent)}
+    .switch b{font-size:.88rem}.switch span{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
+    .switch input{width:20px;height:20px;accent-color:var(--accent)}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .status{display:none;margin:0 20px 20px;padding:12px 14px;border-radius:14px;font-size:.88rem;line-height:1.5}
+    .status.show{display:block}.status.ok{border:1px solid color-mix(in srgb,var(--ok) 40%,transparent);background:color-mix(in srgb,var(--ok) 10%,transparent)}
+    .status.err{border:1px solid color-mix(in srgb,var(--danger) 40%,transparent);background:color-mix(in srgb,var(--danger) 10%,transparent)}
+    dialog{width:min(960px,calc(100% - 28px));max-height:86vh;border:1px solid var(--line);border-radius:22px;padding:0;background:var(--panel);color:var(--text);box-shadow:var(--shadow)}
+    dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(5px)}
+    .modalhead{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}
+    .tablewrap{overflow:auto;max-height:68vh;padding:15px 20px 20px}
+    table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}th{position:sticky;top:0;background:var(--panel)}
+    .seo{margin-top:22px;padding:30px}.seo h2{margin-top:25px}.seo p,.seo li{color:var(--muted);line-height:1.75}.seo h2:first-child{margin-top:0}
+    footer{text-align:center;color:var(--muted);font-size:.83rem;padding:26px 0 10px}
+    .noscript{max-width:900px;margin:30px auto;padding:20px;background:#fff3cd;color:#533f03;border-radius:12px}
+    @media(max-width:880px){body{padding:14px}.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.row2,.actions{grid-template-columns:1fr}.file{grid-template-columns:48px 1fr}.thumb{width:48px;height:48px}.file .remove{grid-column:2}}
+  </style>
+</head>
+<body>
+<noscript><div class="noscript">Bu araç JavaScript gerektirir. Lütfen tarayıcınızda JavaScript'i etkinleştirin.</div></noscript>
+<main class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">EX</div>
+      <div><h1 data-i18n="title">Elite EXIF Düzenleyici</h1><div class="sub" data-i18n="subtitle">Toplu metadata görüntüleme, temizleme ve yeniden yazma</div></div>
+    </div>
+    <div class="top-actions">
+      <button class="iconbtn" id="langBtn" aria-label="Dil değiştir">EN</button>
+      <button class="iconbtn" id="themeBtn" aria-label="Tema değiştir">☀️</button>
+      <button class="iconbtn" id="installBtn" hidden data-i18n="install">Uygulamayı Yükle</button>
+    </div>
+  </header>
+
+  <section class="grid">
+    <article class="card">
+      <div class="head"><h2 data-i18n="step1">1. Görselleri ekleyin</h2><p data-i18n="dropInfo">Birden fazla JPEG, PNG, WebP, TIFF veya HEIC dosyası seçebilirsiniz.</p></div>
+      <label class="drop" id="dropZone">
+        <input id="fileInput" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.tif,.tiff,.heic,.heif,image/jpeg,image/png,image/webp,image/tiff,image/heic,image/heif">
+        <div><div class="big">🖼️</div><strong data-i18n="drop">Dosyaları buraya bırakın veya seçin</strong><small data-i18n="limit">Dosya başına en fazla 40 MB</small></div>
+      </label>
+      <div class="toolbar">
+        <div class="count" id="countText">0 dosya</div>
+        <button class="btn danger" id="clearBtn" data-i18n="clear">Tümünü temizle</button>
+      </div>
+      <div class="files" id="fileList"></div>
+      <div class="status" id="status"></div>
+    </article>
+
+    <aside class="card">
+      <div class="head"><h2 data-i18n="step2">2. Metadata ayarları</h2><p data-i18n="settingsInfo">Seçili tüm dosyalara uygulanacak bilgileri belirleyin.</p></div>
+      <div class="form">
+        <label class="field"><span data-i18n="artist">Sanatçı / Yazar</span><input id="artist" type="text" value="Ebubekir Bastama"></label>
+        <label class="field"><span data-i18n="copyright">Telif hakkı</span><input id="copyright" type="text" value="© Ebubekir Bastama"></label>
+        <label class="field"><span data-i18n="software">Yazılım</span><input id="software" type="text" value="Elite EXIF Editor"></label>
+        <label class="field"><span data-i18n="description">Açıklama</span><textarea id="description">Ebubekir Bastama tarafından düzenlenmiştir.</textarea></label>
+        <div class="row2">
+          <label class="field"><span data-i18n="output">TIFF/HEIC çıktısı</span><select id="convertFormat"><option value="jpeg">JPEG</option><option value="png">PNG</option></select></label>
+          <label class="field"><span data-i18n="quality">Dönüştürme kalitesi</span><select id="quality"><option value="1">100%</option><option value=".98" selected>98%</option><option value=".95">95%</option></select></label>
+        </div>
+        <label class="switch"><div><b data-i18n="date">İşlem tarihini ekle</b><span data-i18n="dateInfo">Güncel tarih ve saat metadata içine yazılır.</span></div><input id="addDate" type="checkbox" checked></label>
+        <label class="switch"><div><b data-i18n="strip">Eski metadata ve GPS bilgisini temizle</b><span data-i18n="stripInfo">Yeni alanlar temiz bir metadata yapısına yazılır.</span></div><input type="checkbox" checked disabled></label>
+        <div class="actions">
+          <button class="btn" id="inspectAllBtn" data-i18n="inspect">Metadata'yı Görüntüle</button>
+          <button class="btn primary" id="processBtn" data-i18n="process">Toplu İşle ve İndir</button>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="card seo">
+    <h2 data-i18n="what">EXIF Metadata Düzenleyici Nedir?</h2>
+    <p data-i18n="whatText">Bu araç fotoğraf ve görsellerde bulunan metadata bilgilerini görüntülemenizi, temizlemenizi ve yeniden yazmanızı sağlar. İşlemler cihazınızda gerçekleştirilir; dosyalar sunucuya yüklenmez.</p>
+    <h2 data-i18n="formats">Desteklenen Dosya Biçimleri</h2>
+    <p data-i18n="formatsText">JPEG dosyalarında piksel verisi yeniden sıkıştırılmadan EXIF alanları değiştirilir. PNG dosyalarına metin metadata blokları, WebP dosyalarına EXIF bloğu eklenir. TIFF ve HEIC dosyaları tarayıcı desteğine göre JPEG veya PNG biçimine dönüştürülerek işlenir.</p>
+    <h2 data-i18n="privacy">Gizlilik ve Güvenlik</h2>
+    <p data-i18n="privacyText">Dosyalarınız tarayıcınızdan ayrılmaz. Araç, standart metadata alanlarını yönetir; C2PA Content Credentials, görünmez filigran veya üretim kaynağı doğrulama sistemlerini kaldırmayı amaçlamaz.</p>
+    <h2 data-i18n="fields">Değiştirilen Bilgiler</h2>
+    <ul>
+      <li>Artist / Author</li><li>Copyright</li><li>Software</li><li>Description</li><li>User Comment</li><li>DateTime</li><li>DateTimeOriginal</li><li>DateTimeDigitized</li><li>GPS temizleme</li>
+    </ul>
+  </section>
+  <footer>© <span id="year"></span> Ebubekir Bastama · <a href="https://www.ebubekirbastama.com.tr" style="color:inherit">ebubekirbastama.com.tr</a></footer>
+</main>
+
+<dialog id="metaDialog">
+  <div class="modalhead"><strong data-i18n="metaTitle">Metadata Görüntüleyici</strong><button class="iconbtn" id="closeDialog">✕</button></div>
+  <div class="tablewrap"><table><thead><tr><th data-i18n="file">Dosya</th><th data-i18n="group">Grup</th><th data-i18n="field">Alan</th><th data-i18n="value">Değer</th></tr></thead><tbody id="metaBody"></tbody></table></div>
+</dialog>
+
+<script>
+const $=s=>document.querySelector(s);
+const state={files:[],lang:localStorage.getItem('exif-lang')||'tr'};
+const T={
+ tr:{title:'Elite EXIF Düzenleyici',subtitle:'Toplu metadata görüntüleme, temizleme ve yeniden yazma',install:'Uygulamayı Yükle',step1:'1. Görselleri ekleyin',dropInfo:'Birden fazla JPEG, PNG, WebP, TIFF veya HEIC dosyası seçebilirsiniz.',drop:'Dosyaları buraya bırakın veya seçin',limit:'Dosya başına en fazla 40 MB',clear:'Tümünü temizle',step2:'2. Metadata ayarları',settingsInfo:'Seçili tüm dosyalara uygulanacak bilgileri belirleyin.',artist:'Sanatçı / Yazar',copyright:'Telif hakkı',software:'Yazılım',description:'Açıklama',output:'TIFF/HEIC çıktısı',quality:'Dönüştürme kalitesi',date:'İşlem tarihini ekle',dateInfo:'Güncel tarih ve saat metadata içine yazılır.',strip:'Eski metadata ve GPS bilgisini temizle',stripInfo:'Yeni alanlar temiz bir metadata yapısına yazılır.',inspect:"Metadata'yı Görüntüle",process:'Toplu İşle ve İndir',what:'EXIF Metadata Düzenleyici Nedir?',whatText:'Bu araç fotoğraf ve görsellerde bulunan metadata bilgilerini görüntülemenizi, temizlemenizi ve yeniden yazmanızı sağlar. İşlemler cihazınızda gerçekleştirilir; dosyalar sunucuya yüklenmez.',formats:'Desteklenen Dosya Biçimleri',formatsText:'JPEG dosyalarında piksel verisi yeniden sıkıştırılmadan EXIF alanları değiştirilir. PNG dosyalarına metin metadata blokları, WebP dosyalarına EXIF bloğu eklenir. TIFF ve HEIC dosyaları tarayıcı desteğine göre JPEG veya PNG biçimine dönüştürülerek işlenir.',privacy:'Gizlilik ve Güvenlik',privacyText:'Dosyalarınız tarayıcınızdan ayrılmaz. Araç, standart metadata alanlarını yönetir; C2PA Content Credentials, görünmez filigran veya üretim kaynağı doğrulama sistemlerini kaldırmayı amaçlamaz.',fields:'Değiştirilen Bilgiler',metaTitle:'Metadata Görüntüleyici',file:'Dosya',group:'Grup',field:'Alan',value:'Değer'},
+ en:{title:'Elite EXIF Editor',subtitle:'Batch metadata viewer, cleaner and writer',install:'Install App',step1:'1. Add images',dropInfo:'Select multiple JPEG, PNG, WebP, TIFF or HEIC files.',drop:'Drop files here or browse',limit:'Maximum 40 MB per file',clear:'Clear all',step2:'2. Metadata settings',settingsInfo:'Define the information that will be applied to all selected files.',artist:'Artist / Author',copyright:'Copyright',software:'Software',description:'Description',output:'TIFF/HEIC output',quality:'Conversion quality',date:'Add processing date',dateInfo:'Writes the current date and time into metadata.',strip:'Remove old metadata and GPS',stripInfo:'New fields are written into a clean metadata structure.',inspect:'View Metadata',process:'Process and Download All',what:'What is an EXIF Metadata Editor?',whatText:'This tool lets you view, remove and rewrite metadata embedded in photos and images. Processing happens on your device; files are not uploaded to a server.',formats:'Supported File Formats',formatsText:'JPEG EXIF is changed without recompressing pixels. PNG receives text metadata chunks and WebP receives an EXIF chunk. TIFF and HEIC are converted to JPEG or PNG depending on browser support.',privacy:'Privacy and Security',privacyText:'Your files never leave the browser. The tool manages standard metadata and is not designed to remove C2PA Content Credentials, invisible watermarks or source verification systems.',fields:'Modified Fields',metaTitle:'Metadata Viewer',file:'File',group:'Group',field:'Field',value:'Value'}
+};
+function applyLang(){document.documentElement.lang=state.lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(T[state.lang][k])el.textContent=T[state.lang][k]});$('#langBtn').textContent=state.lang==='tr'?'EN':'TR';render()}
+$('#langBtn').onclick=()=>{state.lang=state.lang==='tr'?'en':'tr';localStorage.setItem('exif-lang',state.lang);applyLang()};
+const savedTheme=localStorage.getItem('exif-theme')||matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';
+document.documentElement.dataset.theme=savedTheme;
+function themeIcon(){ $('#themeBtn').textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙' } themeIcon();
+$('#themeBtn').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem('exif-theme',n);themeIcon()};
+
+const mimeOk=f=>/\.(jpe?g|png|webp|tiff?|heic|heif)$/i.test(f.name)||['image/jpeg','image/png','image/webp','image/tiff','image/heic','image/heif'].includes(f.type);
+function fmt(n){const u=['B','KB','MB','GB'];if(!n)return'0 B';const i=Math.floor(Math.log(n)/Math.log(1024));return (n/1024**i).toFixed(i?2:0)+' '+u[i]}
+function status(msg,type='ok'){const e=$('#status');e.className='status show '+type;e.textContent=msg}
+function addFiles(list){for(const f of list){if(!mimeOk(f)){status(`${f.name}: desteklenmeyen biçim / unsupported format`,'err');continue}if(f.size>40*1024*1024){status(`${f.name}: 40 MB sınırı aşıldı`,'err');continue}if(!state.files.some(x=>x.name===f.name&&x.size===f.size&&x.lastModified===f.lastModified))state.files.push(f)}render()}
+function render(){const box=$('#fileList');box.innerHTML='';state.files.forEach((f,i)=>{const url=URL.createObjectURL(f);const row=document.createElement('div');row.className='file';row.innerHTML=`<img class="thumb" alt="" src="${url}"><div><div class="fname">${esc(f.name)}</div><div class="fmeta">${fmt(f.size)} · ${esc(f.type||'unknown')}</div></div><button class="btn remove" data-i="${i}">✕</button>`;row.querySelector('img').onload=()=>URL.revokeObjectURL(url);row.querySelector('img').onerror=e=>{e.target.style.visibility='hidden';URL.revokeObjectURL(url)};box.appendChild(row)});box.querySelectorAll('.remove').forEach(b=>b.onclick=()=>{state.files.splice(+b.dataset.i,1);render()});$('#countText').textContent=state.lang==='tr'?`${state.files.length} dosya`:`${state.files.length} files`}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+$('#fileInput').onchange=e=>addFiles(e.target.files);
+const dz=$('#dropZone');['dragenter','dragover'].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+$('#clearBtn').onclick=()=>{state.files=[];render();$('#status').className='status'};
+
+function loadScript(src,id){return new Promise((res,rej)=>{if(document.getElementById(id))return res();const s=document.createElement('script');s.id=id;s.src=src;s.async=true;s.onload=res;s.onerror=()=>rej(new Error('Kütüphane yüklenemedi: '+src));document.head.appendChild(s)})}
+async function piexif(){await loadScript('https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js','piexif-lib')}
+async function utif(){await loadScript('https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js','utif-lib')}
+async function heic(){await loadScript('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js','heic-lib')}
+
+function arrBufToDataURL(buf,mime){const bytes=new Uint8Array(buf);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return `data:${mime};base64,${btoa(bin)}`}
+function dataURLToBlob(url){const [h,b]=url.split(',');const mime=h.match(/:(.*?);/)[1];const bin=atob(b);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime})}
+function dt(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}:${p(d.getMonth()+1)}:${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`}
+function ascii(s){return String(s||'').normalize('NFKD').replace(/[^\x20-\x7E]/g,'').trim()}
+function settings(){return{artist:$('#artist').value.trim()||'Ebubekir Bastama',copyright:$('#copyright').value.trim(),software:$('#software').value.trim(),description:$('#description').value.trim(),date:$('#addDate').checked?dt():null}}
+async function exifBytes(){await piexif();const s=settings(),z={},e={};z[piexif.ImageIFD.Artist]=ascii(s.artist);z[piexif.ImageIFD.Copyright]=ascii(s.copyright);z[piexif.ImageIFD.Software]=ascii(s.software);z[piexif.ImageIFD.ImageDescription]=ascii(s.description);if(s.date){z[piexif.ImageIFD.DateTime]=s.date;e[piexif.ExifIFD.DateTimeOriginal]=s.date;e[piexif.ExifIFD.DateTimeDigitized]=s.date}if(s.description)e[piexif.ExifIFD.UserComment]='ASCII\0\0\0'+ascii(s.description);return piexif.dump({'0th':z,'Exif':e,'GPS':{},'Interop':{},'1st':{},thumbnail:null})}
+async function processJpeg(f){await piexif();const data=arrBufToDataURL(await f.arrayBuffer(),'image/jpeg');return dataURLToBlob(piexif.insert(await exifBytes(),data))}
+function crc32(bytes){let c=0xffffffff;for(const b of bytes){c^=b;for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return(c^0xffffffff)>>>0}
+function chunk(type,data){const t=new TextEncoder().encode(type),out=new Uint8Array(12+data.length),v=new DataView(out.buffer);v.setUint32(0,data.length);out.set(t,4);out.set(data,8);const crcInput=new Uint8Array(4+data.length);crcInput.set(t);crcInput.set(data,4);v.setUint32(8+data.length,crc32(crcInput));return out}
+async function processPng(f){const original=new Uint8Array(await f.arrayBuffer()),sig=original.slice(0,8),s=settings(),texts=[['Author',s.artist],['Copyright',s.copyright],['Software',s.software],['Description',s.description],['DateTime',s.date||'']].filter(x=>x[1]);let p=8,parts=[sig],inserted=false;while(p<original.length){const len=new DataView(original.buffer,original.byteOffset+p,4).getUint32(0),type=new TextDecoder().decode(original.slice(p+4,p+8)),end=p+12+len;if(!inserted&&type==='IEND'){for(const [k,v] of texts)parts.push(chunk('tEXt',new TextEncoder().encode(k+'\0'+v)));inserted=true}if(!['tEXt','zTXt','iTXt','eXIf'].includes(type))parts.push(original.slice(p,end));p=end}return new Blob(parts,{type:'image/png'})}
+function le32(a,o){return a[o]|a[o+1]<<8|a[o+2]<<16|a[o+3]<<24}
+async function processWebp(f){const a=new Uint8Array(await f.arrayBuffer());if(String.fromCharCode(...a.slice(0,4))!=='RIFF'||String.fromCharCode(...a.slice(8,12))!=='WEBP')throw Error('Geçersiz WebP');const ex=new TextEncoder().encode(await exifBytes());const payload=ex.slice(6);const chunks=[];let p=12;while(p+8<=a.length){const type=String.fromCharCode(...a.slice(p,p+4)),len=le32(a,p+4)>>>0,end=p+8+len+(len%2);if(type!=='EXIF')chunks.push(a.slice(p,end));p=end}const exChunk=new Uint8Array(8+payload.length+(payload.length%2));exChunk.set(new TextEncoder().encode('EXIF'));new DataView(exChunk.buffer).setUint32(4,payload.length,true);exChunk.set(payload,8);chunks.push(exChunk);const size=4+chunks.reduce((n,c)=>n+c.length,0),out=new Uint8Array(8+size);out.set(new TextEncoder().encode('RIFF'));new DataView(out.buffer).setUint32(4,size,true);out.set(new TextEncoder().encode('WEBP'),8);let q=12;for(const c of chunks){out.set(c,q);q+=c.length}return new Blob([out],{type:'image/webp'})}
+async function decodeToCanvas(f){let blob=f;if(/heic|heif/i.test(f.type)||/\.(heic|heif)$/i.test(f.name)){await heic();blob=await heic2any({blob:f,toType:'image/jpeg',quality:+$('#quality').value});if(Array.isArray(blob))blob=blob[0]}else if(/tiff/i.test(f.type)||/\.tiff?$/i.test(f.name)){await utif();const buf=await f.arrayBuffer(),ifds=UTIF.decode(buf);UTIF.decodeImage(buf,ifds[0]);const rgba=UTIF.toRGBA8(ifds[0]),c=document.createElement('canvas');c.width=ifds[0].width;c.height=ifds[0].height;c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba),c.width,c.height),0,0);return c}const bmp=await createImageBitmap(blob);const c=document.createElement('canvas');c.width=bmp.width;c.height=bmp.height;c.getContext('2d').drawImage(bmp,0,0);bmp.close();return c}
+async function processConverted(f){const c=await decodeToCanvas(f),fmt=$('#convertFormat').value,mime=fmt==='png'?'image/png':'image/jpeg',blob=await new Promise(r=>c.toBlob(r,mime,+$('#quality').value));return fmt==='jpeg'?processJpeg(new File([blob],'x.jpg',{type:'image/jpeg'})):processPng(new File([blob],'x.png',{type:'image/png'}))}
+async function processOne(f){const n=f.name.toLowerCase();if(/\.jpe?g$/.test(n)||f.type==='image/jpeg')return[await processJpeg(f),'jpg'];if(/\.png$/.test(n)||f.type==='image/png')return[await processPng(f),'png'];if(/\.webp$/.test(n)||f.type==='image/webp')return[await processWebp(f),'webp'];return[await processConverted(f),$('#convertFormat').value==='png'?'png':'jpg']}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+$('#processBtn').onclick=async()=>{if(!state.files.length)return status(state.lang==='tr'?'Önce dosya ekleyin.':'Add files first.','err');$('#processBtn').disabled=true;let ok=0;for(let i=0;i<state.files.length;i++){const f=state.files[i];status(`${i+1}/${state.files.length}: ${f.name}`);try{const [blob,ext]=await processOne(f),base=f.name.replace(/\.[^.]+$/,'');download(blob,`${base}_metadata_duzenlenmis.${ext}`);ok++}catch(e){console.error(e);status(`${f.name}: ${e.message}`,'err')}}$('#processBtn').disabled=false;status(state.lang==='tr'?`${ok} dosya işlendi.`:`${ok} files processed.`,'ok')};
+
+const tags={0x010e:'ImageDescription',0x0131:'Software',0x0132:'DateTime',0x013b:'Artist',0x8298:'Copyright',0x9003:'DateTimeOriginal',0x9004:'DateTimeDigitized',0x9286:'UserComment'};
+async function inspectFile(f){const rows=[['File','Name',f.name],['File','Type',f.type||'unknown'],['File','Size',fmt(f.size)],['File','LastModified',new Date(f.lastModified).toLocaleString()]];if(f.type==='image/jpeg'||/\.jpe?g$/i.test(f.name)){try{await piexif();const d=piexif.load(arrBufToDataURL(await f.arrayBuffer(),'image/jpeg'));for(const g of ['0th','Exif','GPS','1st'])for(const [k,v] of Object.entries(d[g]||{}))rows.push([g,tags[k]||k,Array.isArray(v)?v.join(', '):String(v).replace(/\0/g,'')])}catch(e){rows.push(['EXIF','Status','No readable EXIF'])}}else rows.push(['Metadata','Status','Basic file information shown. Format-specific metadata viewer is limited in browsers.']);return rows}
+$('#inspectAllBtn').onclick=async()=>{if(!state.files.length)return status(state.lang==='tr'?'Önce dosya ekleyin.':'Add files first.','err');const body=$('#metaBody');body.innerHTML='';for(const f of state.files){for(const [g,k,v] of await inspectFile(f)){const tr=document.createElement('tr');tr.innerHTML=`<td>${esc(f.name)}</td><td>${esc(g)}</td><td>${esc(k)}</td><td>${esc(v)}</td>`;body.appendChild(tr)}}$('#metaDialog').showModal()};
+$('#closeDialog').onclick=()=>$('#metaDialog').close();
+
+let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true};
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
+$('#year').textContent=new Date().getFullYear();applyLang();
+</script>
+</body>
+</html>
