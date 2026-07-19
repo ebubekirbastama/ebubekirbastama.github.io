@@ -1,0 +1,47 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Satış Ekranı</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="sales"><div class="app-shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">ES</div><div><strong data-business>EBS Stok</strong><small>JSON tabanlı yerel sistem</small></div></div>
+  <nav class="nav">
+    <a href="index.html" data-page="dashboard">🏠 Gösterge Paneli</a>
+    <a href="urunler.html" data-page="products">📦 Stok Takibi</a>
+    <a href="satis.html" data-page="sales">🧾 Satış Ekranı</a>
+    <a href="raporlar.html" data-page="reports">📊 Raporlama</a>
+    <a href="veresiye.html" data-page="credits">📒 Veresiye Yönetimi</a>
+    <a href="ayarlar.html" data-page="settings">⚙️ Ayarlar / Kullanıcılar</a>
+  </nav>
+  <div class="sidebar-footer">Veriler bu cihazın tarayıcısında tutulur.<br>Buluta otomatik gönderilmez.</div>
+</aside>
+<main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:10px"><button id="mobileMenu" class="mobile-menu">☰</button><h1>Dokunmatik Satış Ekranı</h1></div>
+ <div class="topbar-actions"><span id="saveBadge" class="badge desktop-only"></span><button id="exportBtn" class="btn btn-secondary">JSON Yedekle</button><label class="btn btn-primary">JSON Yükle<input id="importInput" type="file" accept=".json,application/json" hidden></label></div>
+</header>
+<section class="content">
+<div class="sale-layout">
+ <div class="card pos-card">
+  <div class="section-title"><h2>Aktif Sepet</h2><button id="newCustomer" class="btn btn-secondary">+ İkinci Müşteri</button></div>
+  <div id="customerTabs" class="customer-tabs"></div>
+  <div class="scan-row"><input id="saleBarcode" autofocus placeholder="Barkod okutun veya yazın"><button id="scanSale" class="btn btn-secondary">📷</button><button id="addBarcode" class="btn btn-primary">Ekle</button><button id="priceCheck" class="btn btn-warning price-btn">Fiyat Gör</button></div>
+  <div id="scannerBox" class="scanner-box"><video id="scannerVideo" playsinline></video><button id="stopScanner" class="btn btn-danger btn-block">Kamerayı Kapat</button></div>
+  <div id="cartList" class="cart-list"></div>
+  <h3>Hızlı Ürünler</h3><div id="touchProducts" class="touch-products"></div>
+ </div>
+ <div class="grid">
+  <div class="total-box">
+   <div class="total-row"><span>Ara Toplam</span><strong id="subtotal">₺0</strong></div>
+   <div class="total-row"><span>KDV Dahil Pay</span><strong id="vatTotal">₺0</strong></div>
+   <div class="total-row grand"><span>Toplam</span><span id="grandTotal">₺0</span></div>
+  </div>
+  <div class="card">
+   <h3>Ödeme Yöntemi</h3><div class="pay-tabs"><button class="active" data-pay="Nakit">Nakit</button><button data-pay="Kredi Kartı">Kredi</button><button data-pay="Veresiye">Veresiye</button></div>
+   <div class="form-group" style="margin-top:14px"><label>Verilen Para</label><input id="givenMoney" type="number" min="0" step=".01"></div>
+   <div class="total-row"><span>Para Üstü</span><strong id="changeMoney">₺0</strong></div>
+   <div id="creditFields" class="grid" style="display:none">
+      <div class="form-group"><label>Kayıtlı Müşteri</label><select id="creditCustomerSelect"><option value="">Yeni / kayıtlı olmayan müşteri</option></select></div>
+      <div class="form-group"><label>Müşteri Adı</label><input id="creditName"></div>
+      <div class="form-group"><label>Telefon</label><input id="creditPhone"></div>
+    </div>
+   <button id="completeSale" class="btn btn-success btn-block" style="margin-top:14px;padding:16px">Satışı Tamamla</button>
+  </div>
+ </div>
+</div></section></main></div><div id="toast" class="toast"></div><script src="assets/app.js"></script></body></html>

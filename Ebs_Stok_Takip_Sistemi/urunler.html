@@ -1,0 +1,39 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stok Takibi</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="products"><div class="app-shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">ES</div><div><strong data-business>EBS Stok</strong><small>JSON tabanlı yerel sistem</small></div></div>
+  <nav class="nav">
+    <a href="index.html" data-page="dashboard">🏠 Gösterge Paneli</a>
+    <a href="urunler.html" data-page="products">📦 Stok Takibi</a>
+    <a href="satis.html" data-page="sales">🧾 Satış Ekranı</a>
+    <a href="raporlar.html" data-page="reports">📊 Raporlama</a>
+    <a href="veresiye.html" data-page="credits">📒 Veresiye Yönetimi</a>
+    <a href="ayarlar.html" data-page="settings">⚙️ Ayarlar / Kullanıcılar</a>
+  </nav>
+  <div class="sidebar-footer">Veriler bu cihazın tarayıcısında tutulur.<br>Buluta otomatik gönderilmez.</div>
+</aside>
+<main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:10px"><button id="mobileMenu" class="mobile-menu">☰</button><h1>Stok Takibi</h1></div>
+ <div class="topbar-actions"><span id="saveBadge" class="badge desktop-only"></span><button id="exportBtn" class="btn btn-secondary">JSON Yedekle</button><label class="btn btn-primary">JSON Yükle<input id="importInput" type="file" accept=".json,application/json" hidden></label></div>
+</header>
+<section class="content">
+<div class="card"><div class="toolbar"><input id="productSearch" class="grow" placeholder="Ürün, barkod, marka veya cins ara..."><button id="openProductModal" class="btn btn-primary">+ Yeni Ürün</button></div>
+<div class="table-wrap"><table><thead><tr><th>Resim</th><th>Ürün / Barkod</th><th>Marka</th><th>Cins</th><th>Alış</th><th>Satış</th><th>Stok</th><th>KDV</th><th>Kayıt</th><th>İşlem</th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
+</section></main></div>
+<div id="productModal" class="modal-backdrop"><div class="modal"><div class="modal-head"><h3 id="productModalTitle">Yeni Ürün</h3><button id="closeProductModal" class="icon-btn">×</button></div>
+<form id="productForm" class="form-grid">
+ <div class="form-group"><label>Barkod</label><div style="display:flex;gap:8px"><input id="barcode" required><button type="button" id="scanProduct" class="btn btn-secondary">📷</button></div></div>
+ <div class="form-group"><label>Ürün Adı</label><input id="name" required></div>
+ <div class="form-group"><label>Alış Fiyatı</label><input id="purchasePrice" type="number" min="0" step=".01" required></div>
+ <div class="form-group"><label>Satış Fiyatı</label><input id="salePrice" type="number" min="0" step=".01" required></div>
+ <div class="form-group"><label>Stok Adedi</label><input id="stock" type="number" min="0" required></div>
+ <div class="form-group"><label>Ürün Tarihi / SKT</label><input id="productDate" type="date"></div>
+ <div class="form-group"><label>Marka</label><input id="brand"></div>
+ <div class="form-group"><label>Ürün Cinsi</label><input id="category" placeholder="Gıda, Tekel, Meşrubat..."></div>
+ <div class="form-group"><label>KDV (%)</label><input id="vat" type="number" min="0" max="100" value="20"></div>
+ <div class="form-group"><label>Ürün Resmi</label><input id="productImage" type="file" accept="image/*"></div>
+ <div class="form-group full"><img id="imagePreview" class="image-preview" alt="Önizleme"></div>
+ <div class="form-group full"><button class="btn btn-primary btn-block">Ürünü Kaydet</button></div>
+</form>
+<div id="scannerBox" class="scanner-box"><video id="scannerVideo" playsinline></video><button id="stopScanner" class="btn btn-danger btn-block" type="button">Kamerayı Kapat</button></div>
+</div></div><div id="toast" class="toast"></div><script src="assets/app.js"></script></body></html>

@@ -1,0 +1,29 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Raporlar</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="reports"><div class="app-shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">ES</div><div><strong data-business>EBS Stok</strong><small>JSON tabanlı yerel sistem</small></div></div>
+  <nav class="nav">
+    <a href="index.html" data-page="dashboard">🏠 Gösterge Paneli</a>
+    <a href="urunler.html" data-page="products">📦 Stok Takibi</a>
+    <a href="satis.html" data-page="sales">🧾 Satış Ekranı</a>
+    <a href="raporlar.html" data-page="reports">📊 Raporlama</a>
+    <a href="veresiye.html" data-page="credits">📒 Veresiye Yönetimi</a>
+    <a href="ayarlar.html" data-page="settings">⚙️ Ayarlar / Kullanıcılar</a>
+  </nav>
+  <div class="sidebar-footer">Veriler bu cihazın tarayıcısında tutulur.<br>Buluta otomatik gönderilmez.</div>
+</aside>
+<main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:10px"><button id="mobileMenu" class="mobile-menu">☰</button><h1>Detaylı Raporlama</h1></div>
+ <div class="topbar-actions"><span id="saveBadge" class="badge desktop-only"></span><button id="exportBtn" class="btn btn-secondary">JSON Yedekle</button><label class="btn btn-primary">JSON Yükle<input id="importInput" type="file" accept=".json,application/json" hidden></label></div>
+</header>
+<section class="content">
+<div class="card"><div class="toolbar"><input id="reportStart" type="date"><input id="reportEnd" type="date"><select id="reportBrand"></select><select id="reportCategory"></select><select id="reportPayment"><option value="">Tüm ödemeler</option><option>Nakit</option><option>Kredi Kartı</option><option>Veresiye</option></select><button id="allDates" class="btn btn-secondary">Tüm Tarihler</button></div></div>
+<div class="grid grid-4" style="margin-top:18px">
+ <div class="card metric"><div><div class="label">Ciro</div><div class="value" id="rRevenue"></div></div></div>
+ <div class="card metric"><div><div class="label">Satılan Adet</div><div class="value" id="rCount"></div></div></div>
+ <div class="card metric"><div><div class="label">Fiş Sayısı</div><div class="value" id="rTickets"></div></div></div>
+ <div class="card metric"><div><div class="label">Ortalama Sepet</div><div class="value" id="rAverage"></div></div></div>
+</div>
+<div class="card" style="margin-top:18px"><div class="section-title"><h3>Saatlere Göre Satış</h3><span class="muted">00–23</span></div><div id="hourChart" class="chart-bars"></div></div>
+<div class="card" style="margin-top:34px"><div class="section-title"><h3>Satış Detayları</h3></div><div class="table-wrap"><table><thead><tr><th>Tarih / Saat</th><th>Ürün</th><th>Marka</th><th>Cins</th><th>Adet</th><th>Tutar</th><th>Ödeme</th></tr></thead><tbody id="reportRows"></tbody></table></div></div>
+</section></main></div><div id="toast" class="toast"></div><script src="assets/app.js"></script></body></html>

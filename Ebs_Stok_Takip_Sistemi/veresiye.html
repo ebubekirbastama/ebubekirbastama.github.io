@@ -1,0 +1,68 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Veresiye Yönetimi</title><link rel="stylesheet" href="assets/styles.css"></head>
+<body data-page="credits"><div class="app-shell"><aside class="sidebar">
+  <div class="brand"><div class="brand-mark">ES</div><div><strong data-business>EBS Stok</strong><small>JSON tabanlı yerel sistem</small></div></div>
+  <nav class="nav">
+    <a href="index.html" data-page="dashboard">🏠 Gösterge Paneli</a>
+    <a href="urunler.html" data-page="products">📦 Stok Takibi</a>
+    <a href="satis.html" data-page="sales">🧾 Satış Ekranı</a>
+    <a href="raporlar.html" data-page="reports">📊 Raporlama</a>
+    <a href="veresiye.html" data-page="credits">📒 Veresiye Yönetimi</a>
+    <a href="ayarlar.html" data-page="settings">⚙️ Ayarlar / Kullanıcılar</a>
+  </nav>
+  <div class="sidebar-footer">Veriler bu cihazın tarayıcısında tutulur.<br>Buluta otomatik gönderilmez.</div>
+</aside><main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:10px"><button id="mobileMenu" class="mobile-menu">☰</button><h1>Veresiye Yönetimi</h1></div>
+ <div class="topbar-actions"><span id="saveBadge" class="badge desktop-only"></span><button id="exportBtn" class="btn btn-secondary">JSON Yedekle</button><label class="btn btn-primary">JSON Yükle<input id="importInput" type="file" accept=".json,application/json" hidden></label></div>
+</header><section class="content">
+<div class="grid grid-4">
+ <div class="card metric"><div><div class="label">Toplam Müşteri</div><div class="value" id="creditMetricCustomers">0</div></div><div class="metric-icon">👥</div></div>
+ <div class="card metric"><div><div class="label">Borçlu Müşteri</div><div class="value" id="creditMetricDebtors">0</div></div><div class="metric-icon">📒</div></div>
+ <div class="card metric"><div><div class="label">Toplam Alacak</div><div class="value" id="creditMetricDebt">₺0</div></div><div class="metric-icon">💳</div></div>
+ <div class="card metric"><div><div class="label">Toplam Tahsilat</div><div class="value" id="creditMetricPaid">₺0</div></div><div class="metric-icon">✅</div></div>
+</div>
+
+<div class="card" style="margin-top:18px">
+ <div class="toolbar"><input id="creditSearch" class="grow" placeholder="Müşteri adı, telefon, adres veya not ara..."><button id="openCreditCustomerModal" class="btn btn-primary">+ Veresiye Müşterisi Ekle</button></div>
+ <div class="table-wrap"><table><thead><tr><th>Müşteri</th><th>Adres</th><th>Toplam Alış</th><th>Tahsilat</th><th>Kalan Borç</th><th>Kayıt</th><th>İşlem</th></tr></thead><tbody id="creditCustomersBody"></tbody></table></div>
+</div>
+
+<div class="card" style="margin-top:18px">
+ <div class="section-title"><h3>Son Veresiye Hareketleri</h3><span class="muted">Borç ve tahsilatlar</span></div>
+ <div class="table-wrap"><table><thead><tr><th>Tarih / Saat</th><th>Müşteri</th><th>Hareket</th><th>Tutar</th><th>Açıklama</th></tr></thead><tbody id="creditMovementsBody"></tbody></table></div>
+</div>
+</section></main></div>
+
+<div id="creditCustomerModal" class="modal-backdrop"><div class="modal">
+ <div class="modal-head"><h3 id="creditCustomerModalTitle">Yeni Veresiye Müşterisi</h3><button id="closeCreditCustomerModal" class="icon-btn">×</button></div>
+ <form id="creditCustomerForm" class="form-grid">
+  <div class="form-group"><label>Müşteri Adı</label><input id="creditCustomerName" required></div>
+  <div class="form-group"><label>Telefon</label><input id="creditCustomerPhone"></div>
+  <div class="form-group full"><label>Adres</label><textarea id="creditCustomerAddress" rows="3"></textarea></div>
+  <div class="form-group full"><label>Not</label><textarea id="creditCustomerNote" rows="3" placeholder="Müşteri hakkında özel not..."></textarea></div>
+  <div class="form-group full"><button class="btn btn-primary btn-block">Müşteriyi Kaydet</button></div>
+ </form>
+</div></div>
+
+<div id="creditPaymentModal" class="modal-backdrop"><div class="modal">
+ <div class="modal-head"><h3>Tahsilat Kaydı</h3><button id="closeCreditPaymentModal" class="icon-btn">×</button></div>
+ <p><strong id="paymentCustomerName"></strong> · Güncel borç: <strong id="paymentCurrentDebt"></strong></p>
+ <form id="creditPaymentForm" class="form-grid">
+  <input id="paymentCustomerId" type="hidden">
+  <div class="form-group"><label>Tahsilat Tutarı</label><input id="paymentAmount" type="number" min=".01" step=".01" required></div>
+  <div class="form-group"><label>Ödeme Yöntemi</label><select id="paymentMethod"><option>Nakit</option><option>Kredi Kartı</option><option>Havale / EFT</option></select></div>
+  <div class="form-group full"><label>Açıklama</label><textarea id="paymentNote" rows="3"></textarea></div>
+  <div class="form-group full"><button class="btn btn-success btn-block">Tahsilatı Kaydet</button></div>
+ </form>
+</div></div>
+
+<div id="creditDetailModal" class="modal-backdrop"><div class="modal" style="width:min(1100px,100%)">
+ <div class="modal-head"><h3 id="creditDetailTitle">Hesap Detayı</h3><button id="closeCreditDetailModal" class="icon-btn">×</button></div>
+ <div id="creditDetailInfo"></div>
+ <h3>Alınan Ürünler</h3>
+ <div class="table-wrap"><table><thead><tr><th>Tarih</th><th>Ürün</th><th>Barkod</th><th>Marka</th><th>Cins</th><th>Adet</th><th>Birim Fiyat</th><th>Toplam</th></tr></thead><tbody id="creditDetailSales"></tbody></table></div>
+ <h3 style="margin-top:22px">Tahsilatlar</h3>
+ <div class="table-wrap"><table><thead><tr><th>Tarih</th><th>Tutar</th><th>Yöntem</th><th>Açıklama</th><th>İşlem</th></tr></thead><tbody id="creditDetailPayments"></tbody></table></div>
+</div></div>
+
+<div id="toast" class="toast"></div><script src="assets/app.js"></script></body></html>

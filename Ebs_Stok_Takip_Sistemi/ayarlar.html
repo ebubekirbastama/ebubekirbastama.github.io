@@ -1,0 +1,27 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ayarlar</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="settings"><div class="app-shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">ES</div><div><strong data-business>EBS Stok</strong><small>JSON tabanlı yerel sistem</small></div></div>
+  <nav class="nav">
+    <a href="index.html" data-page="dashboard">🏠 Gösterge Paneli</a>
+    <a href="urunler.html" data-page="products">📦 Stok Takibi</a>
+    <a href="satis.html" data-page="sales">🧾 Satış Ekranı</a>
+    <a href="raporlar.html" data-page="reports">📊 Raporlama</a>
+    <a href="veresiye.html" data-page="credits">📒 Veresiye Yönetimi</a>
+    <a href="ayarlar.html" data-page="settings">⚙️ Ayarlar / Kullanıcılar</a>
+  </nav>
+  <div class="sidebar-footer">Veriler bu cihazın tarayıcısında tutulur.<br>Buluta otomatik gönderilmez.</div>
+</aside>
+<main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:10px"><button id="mobileMenu" class="mobile-menu">☰</button><h1>Ayarlar ve Kullanıcılar</h1></div>
+ <div class="topbar-actions"><span id="saveBadge" class="badge desktop-only"></span><button id="exportBtn" class="btn btn-secondary">JSON Yedekle</button><label class="btn btn-primary">JSON Yükle<input id="importInput" type="file" accept=".json,application/json" hidden></label></div>
+</header>
+<section class="content">
+<div class="grid grid-2">
+ <div class="card"><div class="section-title"><h3>İşletme Ayarları</h3></div><form id="settingsForm" class="grid">
+  <div class="form-group"><label>İşletme Adı</label><input id="businessName" required></div><div class="form-group"><label>Kritik Stok Sınırı</label><input id="lowStock" type="number" min="0"></div><button class="btn btn-primary">Ayarları Kaydet</button></form>
+ </div>
+ <div class="card"><div class="section-title"><h3>Veri Güvenliği</h3></div><p class="muted">Veriler yalnızca bu tarayıcıda saklanır. Tarayıcı verileri silinirse kayıtlar kaybolabilir; düzenli JSON yedeği alın.</p><div class="grid"><button id="resetBtn" class="btn btn-danger">Tüm Yerel Verileri Sıfırla</button></div></div>
+</div>
+<div class="card" style="margin-top:18px"><div class="section-title"><h3>Kullanıcılar</h3></div><form id="userForm" class="toolbar"><input id="userName" class="grow" placeholder="Ad Soyad" required><select id="userRole"><option value="admin">Yönetici</option><option value="cashier">Kasiyer</option><option value="viewer">Rapor Görüntüleyici</option></select><button class="btn btn-primary">Kullanıcı Ekle</button></form><div class="table-wrap"><table><thead><tr><th>Kullanıcı</th><th>Rol</th><th>Kayıt Tarihi</th><th>İşlem</th></tr></thead><tbody id="usersBody"></tbody></table></div></div>
+</section></main></div><div id="toast" class="toast"></div><script src="assets/app.js"></script></body></html>
