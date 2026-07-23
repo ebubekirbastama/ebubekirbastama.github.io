@@ -5,3 +5,18 @@
 
 .reference-box{border:1px solid #315746;background:#102019;padding:12px;border-radius:9px}.reference-grid{margin:8px 0}.reference-grid button{width:100%;margin-top:6px}.disabled-link{pointer-events:none;opacity:.4}.output-ok{color:var(--green)!important}.output-error{color:var(--warn)!important}
 #previewCanvas{width:100%;height:auto;max-height:560px;object-fit:contain;background:#000;display:block}.source-video{position:absolute;width:1px;height:1px;opacity:.001;pointer-events:none}.playerbar{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin-top:10px}.playerbar input{width:100%;accent-color:var(--green)}#timeText{font-size:11px;color:var(--dim);font-family:monospace}.reference-grid input[readonly]{color:var(--green)}@media(max-width:520px){.playerbar{grid-template-columns:1fr}.playerbar .button{width:100%}}
+
+/* V5.1 çoklu zaman aralığı */
+.multi-range-box .range-name-label{display:flex;flex-direction:column;gap:7px;margin-top:10px;font-size:13px;color:var(--muted)}
+.multi-range-box .range-name-label input{width:100%;box-sizing:border-box;background:#111821;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px}
+.range-actions{margin-top:9px}.range-actions .button{flex:1}
+.range-list{display:grid;gap:8px;margin-top:12px}
+.range-empty{border:1px dashed var(--line);border-radius:10px;padding:12px;text-align:center;color:var(--muted);font-size:13px}
+.range-item{border:1px solid var(--line);border-radius:11px;padding:10px;background:#111821}
+.range-item.active{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.range-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.range-item-title{font-weight:700;font-size:13px}.range-item-time{display:block;color:var(--accent);font-size:12px;margin-top:3px}
+.range-item-summary{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.45;word-break:break-word}
+.range-item-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.range-item-actions button{padding:6px 9px;font-size:11px}
+.range-index{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 5px;border-radius:12px;background:var(--accent);color:#06130d;font-weight:800;font-size:11px}
+@media(max-width:620px){.range-actions{flex-direction:column}.range-item-head{align-items:center}}
