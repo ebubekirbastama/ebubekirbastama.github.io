@@ -18,25 +18,25 @@
 <meta property="og:title" content="Vidagrade Studio | AI Destekli GPU Video Color Grading">
 <meta property="og:description" content="GPU hızlandırmalı profesyonel video renk düzenleme, referans kare Color Match, AI destekli renk düzeltme ve yüksek kaliteli video dışa aktarma.">
 
-
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Vidagrade Studio">
 <meta name="twitter:description" content="GPU hızlandırmalı AI destekli video renk düzenleme ve Color Match sistemi.">
 
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vidagrade Studio">
-
 <meta name="mobile-web-app-capable" content="yes">
 
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-  <link rel="stylesheet" href="style.css?v=5.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=7.0">
 
-  <script type="application/ld+json">
+<script type="application/ld+json">
 {
   "@context":"https://schema.org",
   "@type":"SoftwareApplication",
@@ -45,118 +45,194 @@
   "operatingSystem":"Windows, macOS, Linux, Android, iOS",
   "browserRequirements":"HTML5, WebGL, JavaScript",
   "description":"GPU hızlandırmalı AI destekli profesyonel video renk düzenleme ve Color Match uygulaması.",
-  "offers":{
-    "@type":"Offer",
-    "price":"0",
-    "priceCurrency":"USD"
-  },
-  "featureList":[
-    "GPU Video Rendering",
-    "AI Color Match",
-    "Reference Frame Matching",
-    "Video Color Grading",
-    "Brightness & Contrast",
-    "Temperature & Tint",
-    "LUT Support",
-    "AV1 Playback",
-    "H.264 Export",
-    "Web Video Editor"
-  ]
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+  "featureList":["GPU Video Rendering","AI Color Match","Reference Frame Matching","Video Color Grading","Brightness & Contrast","Temperature & Tint","LUT Support","AV1 Playback","H.264 Export","Web Video Editor"]
 }
 </script>
 </head>
 <body>
-<header>
-  <div class="brand"><span class="mark"></span><h1>Vidagrade</h1><small>GPU video renk & ses stüdyosu</small></div>
-  <div class="status"><span id="statusDot"></span><b id="statusText">GPU hazırlanıyor</b></div>
-</header>
-<main>
-  <section>
-    <div class="card">
-      <h2>Kaynak / Önizleme</h2>
-      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Video seç">
-        <strong>Video seç veya sürükle</strong><span>MP4, MOV, WEBM · AV1 dahil tarayıcının açabildiği videolar</span>
-        <input id="fileInput" type="file" accept="video/*">
-      </div>
-      <div id="previewWrap" class="preview hidden">
-        <div id="darkBadge" class="badge hidden">Koyu görüntü algılandı</div>
-        <canvas id="previewCanvas" width="720" height="1280"></canvas>
-        <video id="video" playsinline preload="metadata" class="source-video"></video>
-        <div class="playerbar">
-          <button id="playBtn" class="button" type="button">Oynat</button>
-          <input id="seek" type="range" min="0" max="1000" value="0">
-          <span id="timeText">00:00 / 00:00</span>
+<div class="app-shell">
+<div class="app-window">
+
+  <div class="titlebar">
+    <div class="brand"><span class="mark"></span><b>Vidagrade Studio</b></div>
+    <div class="status"><span id="statusDot"></span><b id="statusText">GPU hazırlanıyor</b></div>
+    <div class="winctrls">
+      <button type="button" class="wc" id="wcMin" aria-label="Simge durumuna küçült"></button>
+      <button type="button" class="wc" id="wcMax" aria-label="Büyüt"></button>
+      <button type="button" class="wc wc-close" id="wcClose" aria-label="Kapat"></button>
+    </div>
+  </div>
+
+  <div class="workspace">
+
+    <!-- SOL PANEL -->
+    <aside class="panel panel-left">
+      <div class="card">
+        <h2>Referans Kare</h2>
+        <label class="field-label">Referans Zamanı (sn)</label>
+        <div class="row row-tight">
+          <input id="referenceTime" type="number" min="0" step="0.01" value="0" class="ref-time-input">
+          <button id="useCurrentTime" type="button" class="button">Mevcut Zamanı Al</button>
         </div>
-        <div class="meta" id="fileMeta"></div>
-      </div>
-    </div>
-    <div class="card">
-      <h2>Parlaklık dağılımı</h2>
-      <canvas id="scope" width="900" height="180"></canvas>
-      <div class="legend"><span>KOYU</span><span>ORTA TON</span><span>PARLAK</span></div>
-      <p class="hint" id="analysisHint">Histogram, oynatılan kareden GPU önizlemesiyle birlikte güncellenir.</p>
-    </div>
-    <div id="resultCard" class="card hidden">
-      <h2>Dışa aktarılan video</h2>
-      <video id="outputVideo" controls playsinline></video>
-      <div class="meta" id="outputMeta"></div>
-      <div class="row"><a id="downloadLink" class="button primary disabled-link" download="vidagrade-export.webm">Videoyu indir</a></div>
-    </div>
-  </section>
-  <aside class="card controls">
-    <h2>Renk & Ses</h2>
-    <div class="presets">
-      <button data-preset="auto">Otomatik</button><button data-preset="cinematic">Sinematik</button>
-      <button data-preset="vivid">Canlı</button><button data-preset="warm">Sıcak</button><button data-preset="reset">Sıfırla</button>
-    </div>
-    <div class="group reference-box">
-      <div class="group-title">Referans kareyle gerçek renk eşleme</div>
-      <div class="quality reference-grid">
-        <label>Referans zamanı (sn)<input id="referenceTime" type="number" min="0" step="0.01" value="0"></label>
-        <label>Oynatıcı zamanı<button id="useCurrentTime" type="button" class="button">Mevcut zamanı al</button></label>
-      </div>
-      <div class="quality reference-grid">
-        <label>Eşleme gücü
-          <select id="matchStrength"><option value="0.35">Hafif</option><option value="0.65" selected>Dengeli</option><option value="1">Tam</option></select>
-        </label>
-        <label>Durum<input id="referenceState" value="Referans seçilmedi" readonly></label>
-      </div>
-      <div class="row"><button id="applyReference" type="button" class="button primary" disabled>Bu kareyi tüm videoya referans yap</button><button id="clearReference" type="button" class="button" disabled>Referansı kaldır</button></div>
-      <p class="hint" id="referenceHint">Seçilen karenin parlaklık, kontrast ve RGB dengesini çıkarır; sonraki kareleri bu hedefe dinamik olarak yaklaştırır.</p>
-    </div>
-    <div id="sliders"></div>
-    <div class="group multi-range-box">
-      <div class="group-title">Uygulama alanı</div>
-      <div class="quality"><label>Renk düzeltmesini uygula<select id="applyMode"><option value="full" selected>Videonun tamamına</option><option value="multi">Birden fazla zaman aralığına</option></select></label></div>
-      <div id="rangeFields" class="hidden">
-        <div class="quality">
-          <label>Başlangıç (sn)<input id="rangeStart" type="number" min="0" step="0.01" value="0"></label>
-          <label>Bitiş (sn)<input id="rangeEnd" type="number" min="0" step="0.01" value="0"></label>
+        <div class="ref-thumb" id="refThumb"><canvas id="refThumbCanvas"></canvas><span class="ref-thumb-empty">Kare önizlemesi yok</span></div>
+        <button id="applyReference" type="button" class="button primary full" disabled>Bu Kareyi Referans Yap</button>
+        <div class="field-row">
+          <label class="field-label">Eşleme Gücü</label>
+          <select id="matchStrength"><option value="0.35">Hafif</option><option value="0.65" selected>Dengeli (0.65)</option><option value="1">Tam</option></select>
         </div>
-        <div class="row range-actions">
-          <button id="useRangeStart" type="button" class="button">Oynatıcıyı başlangıç yap</button>
-          <button id="useRangeEnd" type="button" class="button">Oynatıcıyı bitiş yap</button>
+        <div class="field-row status-row">
+          <span class="field-label">Durum:</span>
+          <input id="referenceState" value="Referans seçilmedi" readonly class="status-inline">
         </div>
-        <label class="range-name-label">Aralık adı<input id="rangeName" type="text" maxlength="40" placeholder="Örn. Açılış, karanlık bölüm"></label>
-        <div class="row">
-          <button id="saveRange" type="button" class="button primary" disabled>Mevcut ayarlarla aralık ekle</button>
-          <button id="cancelRangeEdit" type="button" class="button hidden">Düzenlemeyi iptal et</button>
+        <button id="clearReference" type="button" class="button danger full" disabled>Referansı Kaldır</button>
+      </div>
+
+      <div class="card">
+        <h2>Renk &amp; Ses Ayarları</h2>
+        <div id="sliders"></div>
+        <div class="presets" aria-label="Renk ön ayarları">
+          <button type="button" class="preset-btn preset-auto" data-preset="auto"><span class="preset-icon">✦</span><span><b>Otomatik</b><small>Akıllı dengeleme</small></span></button>
+          <button type="button" class="preset-btn preset-cinematic" data-preset="cinematic"><span class="preset-icon">◈</span><span><b>Sinematik</b><small>Film kontrastı</small></span></button>
+          <button type="button" class="preset-btn preset-vivid" data-preset="vivid"><span class="preset-icon">✺</span><span><b>Canlı</b><small>Güçlü renkler</small></span></button>
+          <button type="button" class="preset-btn preset-warm" data-preset="warm"><span class="preset-icon">☀</span><span><b>Sıcak</b><small>Altın tonlar</small></span></button>
+          <button type="button" class="preset-btn preset-reset" data-preset="reset"><span class="preset-icon">↺</span><span><b>Sıfırla</b><small>Orijinale dön</small></span></button>
         </div>
-        <p class="hint">Slider ve referans kare ayarlarının o anki hali bu aralığa kaydedilir. Kesişen aralıklarda listede daha sonra bulunan aralık önceliklidir.</p>
+      </div>
+
+      <div class="card">
+        <h2>LUT</h2>
+        <select id="lutSelect" aria-label="Yüklü LUT"><option value="">LUT yüklenmedi</option></select><div id="lutStatus" class="lut-status"><span class="lut-status-dot"></span><span>Henüz LUT seçilmedi</span></div>
+        <div class="row row-tight" style="margin-top:9px">
+          <button id="lutLoadBtn" type="button" class="button full">.cube Dosyası Yükle</button>
+          <input id="lutInput" type="file" accept=".cube" class="hidden">
+        </div>
+        <button id="lutClearBtn" type="button" class="button danger full" disabled style="margin-top:8px">LUT'u Kaldır</button>
+        <div class="slider" style="margin-top:14px">
+          <label>Yoğunluk<output id="o-lutStrength">1.00</output></label>
+          <input id="lutStrength" type="range" min="0" max="100" value="100">
+        </div>
+      </div>
+    </aside>
+
+    <!-- ORTA PANEL -->
+    <section class="panel-center">
+
+      <div class="card preview-card">
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Video seç">
+          <strong>Video seç veya sürükle</strong><span>MP4, MOV, WEBM · AV1 dahil tarayıcının açabildiği videolar</span>
+          <input id="fileInput" type="file" accept="video/*">
+        </div>
+
+        <div id="previewWrap" class="preview hidden">
+          <div id="darkBadge" class="badge hidden">Koyu görüntü algılandı</div>
+
+          <div class="compare-stage" id="compareStage">
+            <canvas id="previewCanvas" width="1280" height="720"></canvas>
+            <canvas id="beforeCanvas" width="1280" height="720"></canvas>
+            <div class="compare-tag compare-tag-l">Önce</div>
+            <div class="compare-tag compare-tag-r">Sonra</div>
+            <div class="compare-handle" id="compareHandle"><span class="ch-line"></span><span class="ch-knob">◂▸</span></div>
+          </div>
+
+          <video id="video" playsinline preload="metadata" class="source-video"></video>
+
+          <div class="player-bar">
+            <div class="pb-transport">
+              <button id="btnPrev" type="button" class="pb-icon" title="5sn geri">⏮</button>
+              <button id="playBtn" type="button" class="pb-icon pb-play" title="Oynat/Duraklat">▶</button>
+              <button id="btnNext" type="button" class="pb-icon" title="5sn ileri">⏭</button>
+              <button id="btnLoop" type="button" class="pb-icon" title="Döngü">⟲</button>
+            </div>
+            <input id="seek" type="range" min="0" max="1000" value="0">
+            <span id="timeText">00:00 / 00:00</span>
+            <div class="pb-right">
+              <button id="btnMute" type="button" class="pb-icon" title="Sessiz">🔊</button>
+              <button id="btnFullscreen" type="button" class="pb-icon" title="Tam ekran">⤢</button>
+            </div>
+          </div>
+
+          <div class="filmstrip" id="filmstrip"></div>
+          <div class="meta" id="fileMeta"></div>
+        </div>
+
+        <div id="resultCard" class="card hidden" style="margin-top:16px">
+          <h2>Dışa Aktarılan Video</h2>
+          <video id="outputVideo" controls playsinline></video>
+          <div class="meta" id="outputMeta"></div>
+          <div class="row"><a id="downloadLink" class="button primary disabled-link" download="vidagrade-export.webm">Videoyu indir</a></div>
+        </div>
+      </div>
+
+      <div class="card apply-area">
+        <div class="apply-head">
+          <h2 style="margin:0">Uygulama Alanı</h2>
+          <div class="row row-tight">
+            <select id="applyMode"><option value="full">Videonun Tamamı</option><option value="multi" selected>Birden Fazla Zaman Aralığı</option></select>
+            <button id="toggleRangeForm" type="button" class="button primary">+ Aralık Ekle</button>
+          </div>
+        </div>
+
+        <div id="rangeFields" class="range-form hidden">
+          <div class="quality">
+            <label>Başlangıç (sn)<input id="rangeStart" type="number" min="0" step="0.01" value="0"></label>
+            <label>Bitiş (sn)<input id="rangeEnd" type="number" min="0" step="0.01" value="0"></label>
+          </div>
+          <div class="row range-actions">
+            <button id="useRangeStart" type="button" class="button">Oynatıcıyı başlangıç yap</button>
+            <button id="useRangeEnd" type="button" class="button">Oynatıcıyı bitiş yap</button>
+          </div>
+          <label class="range-name-label">Aralık adı<input id="rangeName" type="text" maxlength="40" placeholder="Örn. Açılış, karanlık bölüm"></label>
+          <div class="row">
+            <button id="saveRange" type="button" class="button primary" disabled>Mevcut ayarlarla aralık ekle</button>
+            <button id="cancelRangeEdit" type="button" class="button hidden">Düzenlemeyi iptal et</button>
+          </div>
+          <p class="hint">Slider ve referans kare ayarlarının o anki hali bu aralığa kaydedilir. Kesişen aralıklarda listede daha sonra bulunan aralık önceliklidir.</p>
+        </div>
+        <p class="hint" id="rangeHint">Her zaman aralığı kendi renk ve referans ayarını kullanır; boş bölümler orijinal kalır.</p>
         <div id="rangeList" class="range-list"><div class="range-empty">Henüz zaman aralığı eklenmedi.</div></div>
       </div>
-      <p class="hint" id="rangeHint">Renk ayarları videonun tamamına uygulanır.</p>
-    </div>
-    <div class="quality">
-      <label>Çıktı kalitesi<select id="quality"><option value="12000000">Yüksek</option><option value="7000000" selected>Dengeli</option><option value="3500000">Küçük dosya</option></select></label>
-      <label>Kare hızı<select id="fps"><option value="30" selected>30 FPS</option><option value="25">25 FPS</option><option value="24">24 FPS</option></select></label>
-    </div>
-    <div class="row"><button id="exportBtn" class="button primary" disabled>GPU ile işle ve dışa aktar</button><button id="cancelBtn" class="button danger hidden">İptal</button><button id="resetBtn" class="button">Sıfırla</button></div>
-    <div id="progressWrap" class="progress hidden"><div id="progressBar"></div></div>
-    <pre id="log"></pre>
-  </aside>
-</main>
-<footer>İşlemler tarayıcı ve ekran kartı içinde yapılır. Dosyalar sunucuya gönderilmez.</footer>
-<script src="app.js?v=5.1"></script>
+
+      <div class="card">
+        <h2>Parlaklık Dağılımı</h2>
+        <canvas id="scope" width="900" height="180"></canvas>
+        <div class="legend"><span>KOYU</span><span>ORTA TON</span><span>PARLAK</span></div>
+        <p class="hint" id="analysisHint">Histogram, oynatılan kareden GPU önizlemesiyle birlikte güncellenir.</p>
+      </div>
+    </section>
+
+    <!-- SAĞ PANEL -->
+    <aside class="panel panel-right">
+      <div class="card">
+        <h2>Çıktı Ayarları</h2>
+        <label class="field-label">Kalite</label>
+        <select id="quality"><option value="12000000">Yüksek (12 Mbps)</option><option value="7000000" selected>Dengeli (7 Mbps)</option><option value="3500000">Küçük dosya (3.5 Mbps)</option></select>
+        <label class="field-label" style="margin-top:12px">Kare Hızı</label>
+        <select id="fps"><option value="30" selected>30 FPS</option><option value="25">25 FPS</option><option value="24">24 FPS</option></select>
+        <label class="field-label" style="margin-top:12px">Format</label>
+        <select id="format"><option value="mp4">MP4 (H.264)</option><option value="webm">WebM (VP9)</option></select>
+        <button id="exportBtn" class="button primary full" style="margin-top:16px" disabled>GPU ile İşle ve Dışa Aktar</button>
+        <button id="resetBtn" class="button full" style="margin-top:8px">Sıfırla</button>
+      </div>
+
+      <div id="progressCard" class="card progress-card hidden">
+        <div class="progress-head"><span>İşleniyor...</span><b id="progressPct">0%</b></div>
+        <div class="progress"><div id="progressBar"></div></div>
+        <p class="hint" id="etaText">Tahmini süre: --:--</p>
+        <button id="cancelBtn" class="button danger full hidden" style="margin-top:8px">⟲ İptal</button>
+      </div>
+
+      <div class="card log-card">
+        <h2>Günlük</h2>
+        <pre id="log"></pre>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer>İşlemler tarayıcı ve ekran kartı içinde yapılır. Dosyalar sunucuya gönderilmez.</footer>
+</div>
+</div>
+<script src="app.js?v=7.0"></script>
 </body>
 </html>
