@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <title>Vidagrade Studio V5 GPU</title>
+  <link rel="stylesheet" href="style.css?v=5.0">
+</head>
+<body>
+<header>
+  <div class="brand"><span class="mark"></span><h1>Vidagrade</h1><small>GPU video renk & ses stüdyosu</small></div>
+  <div class="status"><span id="statusDot"></span><b id="statusText">GPU hazırlanıyor</b></div>
+</header>
+<main>
+  <section>
+    <div class="card">
+      <h2>Kaynak / Önizleme</h2>
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Video seç">
+        <strong>Video seç veya sürükle</strong><span>MP4, MOV, WEBM · AV1 dahil tarayıcının açabildiği videolar</span>
+        <input id="fileInput" type="file" accept="video/*">
+      </div>
+      <div id="previewWrap" class="preview hidden">
+        <div id="darkBadge" class="badge hidden">Koyu görüntü algılandı</div>
+        <canvas id="previewCanvas" width="720" height="1280"></canvas>
+        <video id="video" playsinline preload="metadata" class="source-video"></video>
+        <div class="playerbar">
+          <button id="playBtn" class="button" type="button">Oynat</button>
+          <input id="seek" type="range" min="0" max="1000" value="0">
+          <span id="timeText">00:00 / 00:00</span>
+        </div>
+        <div class="meta" id="fileMeta"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Parlaklık dağılımı</h2>
+      <canvas id="scope" width="900" height="180"></canvas>
+      <div class="legend"><span>KOYU</span><span>ORTA TON</span><span>PARLAK</span></div>
+      <p class="hint" id="analysisHint">Histogram, oynatılan kareden GPU önizlemesiyle birlikte güncellenir.</p>
+    </div>
+    <div id="resultCard" class="card hidden">
+      <h2>Dışa aktarılan video</h2>
+      <video id="outputVideo" controls playsinline></video>
+      <div class="meta" id="outputMeta"></div>
+      <div class="row"><a id="downloadLink" class="button primary disabled-link" download="vidagrade-export.webm">Videoyu indir</a></div>
+    </div>
+  </section>
+  <aside class="card controls">
+    <h2>Renk & Ses</h2>
+    <div class="presets">
+      <button data-preset="auto">Otomatik</button><button data-preset="cinematic">Sinematik</button>
+      <button data-preset="vivid">Canlı</button><button data-preset="warm">Sıcak</button><button data-preset="reset">Sıfırla</button>
+    </div>
+    <div class="group reference-box">
+      <div class="group-title">Referans kareyle gerçek renk eşleme</div>
+      <div class="quality reference-grid">
+        <label>Referans zamanı (sn)<input id="referenceTime" type="number" min="0" step="0.01" value="0"></label>
+        <label>Oynatıcı zamanı<button id="useCurrentTime" type="button" class="button">Mevcut zamanı al</button></label>
+      </div>
+      <div class="quality reference-grid">
+        <label>Eşleme gücü
+          <select id="matchStrength"><option value="0.35">Hafif</option><option value="0.65" selected>Dengeli</option><option value="1">Tam</option></select>
+        </label>
+        <label>Durum<input id="referenceState" value="Referans seçilmedi" readonly></label>
+      </div>
+      <div class="row"><button id="applyReference" type="button" class="button primary" disabled>Bu kareyi tüm videoya referans yap</button><button id="clearReference" type="button" class="button" disabled>Referansı kaldır</button></div>
+      <p class="hint" id="referenceHint">Seçilen karenin parlaklık, kontrast ve RGB dengesini çıkarır; sonraki kareleri bu hedefe dinamik olarak yaklaştırır.</p>
+    </div>
+    <div id="sliders"></div>
+    <div class="group">
+      <div class="group-title">Uygulama alanı</div>
+      <div class="quality"><label>Renk düzeltmesini uygula<select id="applyMode"><option value="full" selected>Videonun tamamına</option><option value="range">Yalnızca zaman aralığına</option></select></label></div>
+      <div id="rangeFields" class="quality hidden"><label>Başlangıç (sn)<input id="rangeStart" type="number" min="0" step="0.1" value="0"></label><label>Bitiş (sn)<input id="rangeEnd" type="number" min="0" step="0.1" value="0"></label></div>
+      <p class="hint" id="rangeHint">Renk ayarları videonun tamamına uygulanır.</p>
+    </div>
+    <div class="quality">
+      <label>Çıktı kalitesi<select id="quality"><option value="12000000">Yüksek</option><option value="7000000" selected>Dengeli</option><option value="3500000">Küçük dosya</option></select></label>
+      <label>Kare hızı<select id="fps"><option value="30" selected>30 FPS</option><option value="25">25 FPS</option><option value="24">24 FPS</option></select></label>
+    </div>
+    <div class="row"><button id="exportBtn" class="button primary" disabled>GPU ile işle ve dışa aktar</button><button id="cancelBtn" class="button danger hidden">İptal</button><button id="resetBtn" class="button">Sıfırla</button></div>
+    <div id="progressWrap" class="progress hidden"><div id="progressBar"></div></div>
+    <pre id="log"></pre>
+  </aside>
+</main>
+<footer>İşlemler tarayıcı ve ekran kartı içinde yapılır. Dosyalar sunucuya gönderilmez.</footer>
+<script src="app.js?v=5.0"></script>
+</body>
+</html>
