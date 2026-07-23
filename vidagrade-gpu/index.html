@@ -125,10 +125,26 @@
       <p class="hint" id="referenceHint">Seçilen karenin parlaklık, kontrast ve RGB dengesini çıkarır; sonraki kareleri bu hedefe dinamik olarak yaklaştırır.</p>
     </div>
     <div id="sliders"></div>
-    <div class="group">
+    <div class="group multi-range-box">
       <div class="group-title">Uygulama alanı</div>
-      <div class="quality"><label>Renk düzeltmesini uygula<select id="applyMode"><option value="full" selected>Videonun tamamına</option><option value="range">Yalnızca zaman aralığına</option></select></label></div>
-      <div id="rangeFields" class="quality hidden"><label>Başlangıç (sn)<input id="rangeStart" type="number" min="0" step="0.1" value="0"></label><label>Bitiş (sn)<input id="rangeEnd" type="number" min="0" step="0.1" value="0"></label></div>
+      <div class="quality"><label>Renk düzeltmesini uygula<select id="applyMode"><option value="full" selected>Videonun tamamına</option><option value="multi">Birden fazla zaman aralığına</option></select></label></div>
+      <div id="rangeFields" class="hidden">
+        <div class="quality">
+          <label>Başlangıç (sn)<input id="rangeStart" type="number" min="0" step="0.01" value="0"></label>
+          <label>Bitiş (sn)<input id="rangeEnd" type="number" min="0" step="0.01" value="0"></label>
+        </div>
+        <div class="row range-actions">
+          <button id="useRangeStart" type="button" class="button">Oynatıcıyı başlangıç yap</button>
+          <button id="useRangeEnd" type="button" class="button">Oynatıcıyı bitiş yap</button>
+        </div>
+        <label class="range-name-label">Aralık adı<input id="rangeName" type="text" maxlength="40" placeholder="Örn. Açılış, karanlık bölüm"></label>
+        <div class="row">
+          <button id="saveRange" type="button" class="button primary" disabled>Mevcut ayarlarla aralık ekle</button>
+          <button id="cancelRangeEdit" type="button" class="button hidden">Düzenlemeyi iptal et</button>
+        </div>
+        <p class="hint">Slider ve referans kare ayarlarının o anki hali bu aralığa kaydedilir. Kesişen aralıklarda listede daha sonra bulunan aralık önceliklidir.</p>
+        <div id="rangeList" class="range-list"><div class="range-empty">Henüz zaman aralığı eklenmedi.</div></div>
+      </div>
       <p class="hint" id="rangeHint">Renk ayarları videonun tamamına uygulanır.</p>
     </div>
     <div class="quality">
@@ -141,6 +157,6 @@
   </aside>
 </main>
 <footer>İşlemler tarayıcı ve ekran kartı içinde yapılır. Dosyalar sunucuya gönderilmez.</footer>
-<script src="app.js?v=5.0"></script>
+<script src="app.js?v=5.1"></script>
 </body>
 </html>
