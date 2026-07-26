@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Görsel Bölme Aracı | Fotoğraf Kesme ve ZIP İndirme</title>
+<meta name="description" content="Ücretsiz online görsel bölme aracıyla fotoğrafları elle veya otomatik ızgara yöntemiyle kesin, orijinal kalitede PNG olarak hazırlayın ve tüm parçaları ZIP halinde indirin.">
+<meta name="keywords" content="görsel bölme, fotoğraf bölme, resim kesme, online görsel kesme, fotoğraf parçalama, görsel kırpma, ızgara görsel bölme, png kesme, zip indirme">
+<meta name="author" content="Ebubekir Baştama">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="theme-color" content="#0d1117">
+<meta name="application-name" content="Görsel Bölme Aracı">
+<link rel="canonical" href="https://ebubekirbastama.com.tr/gorsel-bolme-araci.html">
+<link rel="alternate" hreflang="tr-TR" href="https://ebubekirbastama.com.tr/gorsel-bolme-araci.html">
+<link rel="alternate" hreflang="x-default" href="https://ebubekirbastama.com.tr/gorsel-bolme-araci.html">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Ebubekir Baştama">
+<meta property="og:title" content="Online Görsel Bölme Aracı | Fotoğraf Kesme ve ZIP İndirme">
+<meta property="og:description" content="Fotoğrafları elle veya otomatik ızgara yöntemiyle bölün, orijinal kalitede PNG parçalar oluşturun ve ZIP olarak indirin.">
+<meta property="og:url" content="https://ebubekirbastama.com.tr/gorsel-bolme-araci.html">
+<meta property="og:image" content="https://ebubekirbastama.com.tr/assets/images/gorsel-bolme-araci-og.jpg">
+<meta property="og:image:alt" content="Online Görsel Bölme Aracı ekran görüntüsü">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Online Görsel Bölme Aracı">
+<meta name="twitter:description" content="Görsellerinizi elle veya otomatik ızgara ile bölün ve parçaları ZIP olarak indirin.">
+<meta name="twitter:image" content="https://ebubekirbastama.com.tr/assets/images/gorsel-bolme-araci-og.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Online Görsel Bölme Aracı",
+  "url": "https://ebubekirbastama.com.tr/gorsel-bolme-araci.html",
+  "description": "Fotoğrafları elle veya otomatik ızgara yöntemiyle parçalara ayıran, PNG ve ZIP çıktısı sunan ücretsiz web aracı.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+  "browserRequirements": "JavaScript destekleyen güncel bir web tarayıcısı",
+  "inLanguage": "tr-TR",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Ebubekir Baştama",
+    "url": "https://ebubekirbastama.com.tr/"
+  },
+  "featureList": [
+    "Elle görsel kesme",
+    "Otomatik ızgara ile bölme",
+    "Kare, oval ve serbest kesim",
+    "Orijinal çözünürlükte PNG çıktısı",
+    "Toplu ZIP indirme"
+  ]
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+<style>
+:root{
+  --bg-ebs:#0d1117;
+  --panel-ebs:#161b22;
+  --panel2-ebs:#1c2230;
+  --border-ebs:#2a3241;
+  --accent-ebs:#e6342f;
+  --accent2-ebs:#1f4fd1;
+  --text-ebs:#eef1f6;
+  --muted-ebs:#8b95a5;
+  --radius-ebs:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:radial-gradient(circle at 20% 0%,#141a24,var(--bg-ebs) 60%);
+  color:var(--text-ebs);
+  font-family:'Segoe UI',Arial,sans-serif;
+  min-height:100vh;
+  padding:40px 20px;
+}
+.wrapEbs{
+  max-width:1300px;
+  margin:0 auto;
+}
+.headerEbs{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:32px;
+}
+.logoMarkEbs{
+  width:46px;height:46px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent-ebs),#8f1512);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:20px;color:#fff;
+  box-shadow:0 8px 20px rgba(230,52,47,0.35);
+}
+.titleBoxEbs h1{
+  font-size:26px;font-weight:800;letter-spacing:0.3px;
+}
+.titleBoxEbs span{
+  color:var(--muted-ebs);font-size:13px;
+}
+.gridLayoutEbs{
+  display:grid;
+  grid-template-columns:300px 1fr 300px;
+  gap:22px;
+}
+@media(max-width:1150px){
+  .gridLayoutEbs{grid-template-columns:1fr;}
+}
+.panelEbs{
+  background:var(--panel-ebs);
+  border:1px solid var(--border-ebs);
+  border-radius:var(--radius-ebs);
+  padding:20px;
+}
+.panelEbs + .panelEbs{margin-top:20px;}
+.panelTitleEbs{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--muted-ebs);
+  margin-bottom:14px;
+  font-weight:700;
+}
+.dropZoneEbs{
+  border:2px dashed var(--border-ebs);
+  border-radius:12px;
+  padding:28px 16px;
+  text-align:center;
+  cursor:pointer;
+  transition:0.25s;
+  background:var(--panel2-ebs);
+}
+.dropZoneEbs.dragOverEbs{
+  border-color:var(--accent-ebs);
+  background:rgba(230,52,47,0.08);
+}
+.dropZoneEbs p{
+  font-size:13px;color:var(--muted-ebs);margin-top:8px;
+}
+.dropZoneEbs strong{color:var(--text-ebs);}
+.uploadIconEbs{
+  width:38px;height:38px;margin:0 auto;
+  border-radius:10px;
+  background:var(--accent2-ebs);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:18px;font-weight:700;
+}
+input[type=file]{display:none;}
+.btnEbs{
+  width:100%;
+  padding:11px 14px;
+  border:none;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.2s;
+  margin-top:10px;
+}
+.btnPrimaryEbs{
+  background:linear-gradient(135deg,var(--accent-ebs),#a91d18);
+  color:#fff;
+}
+.btnPrimaryEbs:hover{filter:brightness(1.08);}
+.btnSecondaryEbs{
+  background:var(--panel2-ebs);
+  color:var(--text-ebs);
+  border:1px solid var(--border-ebs);
+}
+.btnSecondaryEbs:hover{border-color:var(--accent2-ebs);}
+.btnDangerEbs{
+  background:transparent;
+  color:var(--accent-ebs);
+  border:1px solid rgba(230,52,47,0.4);
+}
+.btnEbs:disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+}
+.btnRowEbs{
+  display:flex;
+  gap:8px;
+}
+.btnRowEbs .btnEbs{margin-top:0;}
+.modeTabsEbs{
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+}
+.modeTabEbs{
+  flex:1;
+  text-align:center;
+  padding:10px 6px;
+  border-radius:8px;
+  border:1px solid var(--border-ebs);
+  background:var(--panel2-ebs);
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted-ebs);
+  cursor:pointer;
+}
+.modeTabEbs.activeEbs{
+  border-color:var(--accent2-ebs);
+  color:var(--text-ebs);
+  background:rgba(31,79,209,0.15);
+}
+.fieldRowEbs{
+  display:flex;
+  gap:12px;
+  margin-bottom:14px;
+}
+.fieldGroupEbs{flex:1;}
+.fieldGroupEbs label{
+  display:block;
+  font-size:11px;
+  color:var(--muted-ebs);
+  margin-bottom:6px;
+  font-weight:600;
+}
+.fieldGroupEbs input[type=number]{
+  width:100%;
+  background:var(--panel2-ebs);
+  border:1px solid var(--border-ebs);
+  border-radius:8px;
+  color:var(--text-ebs);
+  padding:9px 10px;
+  font-size:13px;
+}
+.shapeGridEbs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.shapeOptionEbs{
+  border:1px solid var(--border-ebs);
+  background:var(--panel2-ebs);
+  border-radius:10px;
+  padding:12px 6px;
+  text-align:center;
+  cursor:pointer;
+  transition:0.2s;
+}
+.shapeOptionEbs.activeEbs{
+  border-color:var(--accent-ebs);
+  background:rgba(230,52,47,0.12);
+}
+.shapeOptionEbs .shapeIconEbs{
+  width:26px;height:26px;
+  margin:0 auto 8px;
+  background:var(--accent2-ebs);
+}
+.shapeOptionEbs[data-shape="square"] .shapeIconEbs{border-radius:4px;}
+.shapeOptionEbs[data-shape="oval"] .shapeIconEbs{border-radius:50%;}
+.shapeOptionEbs[data-shape="custom"] .shapeIconEbs{border-radius:0 50% 50% 50%;}
+.shapeOptionEbs span{
+  font-size:11px;font-weight:600;color:var(--muted-ebs);
+}
+.shapeOptionEbs.activeEbs span{color:var(--text-ebs);}
+.qualityNoteEbs{
+  font-size:11px;
+  color:var(--muted-ebs);
+  line-height:1.6;
+  padding:12px;
+  background:var(--panel2-ebs);
+  border-radius:8px;
+  border:1px solid var(--border-ebs);
+  margin-bottom:12px;
+}
+.qualityNoteEbs b{color:var(--text-ebs);}
+.previewAreaEbs{
+  min-height:560px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:14px;
+}
+.emptyStateEbs{
+  color:var(--muted-ebs);
+  text-align:center;
+  font-size:14px;
+  line-height:1.7;
+}
+.canvasHolderEbs{
+  overflow:auto;
+  max-width:100%;
+  border-radius:10px;
+  border:1px solid var(--border-ebs);
+  position:relative;
+  line-height:0;
+}
+#stageCanvasEbs{
+  display:block;
+}
+.helperTextEbs{
+  font-size:12px;
+  color:var(--muted-ebs);
+  text-align:center;
+}
+.nudgeGridEbs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin-top:10px;
+}
+.nudgeBtnEbs{
+  background:var(--panel2-ebs);
+  border:1px solid var(--border-ebs);
+  color:var(--text-ebs);
+  border-radius:8px;
+  padding:10px 0;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:700;
+}
+.nudgeBtnEbs:hover{border-color:var(--accent2-ebs);}
+.nudgeBtnEbs:disabled{opacity:0.3;cursor:not-allowed;}
+.sizeAdjustEbs{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--panel2-ebs);
+  border:1px solid var(--border-ebs);
+  border-radius:8px;
+  padding:6px;
+}
+.sizeAdjustEbs span{
+  flex:1;
+  text-align:center;
+  font-size:11px;
+  color:var(--muted-ebs);
+  font-weight:600;
+}
+.sizeAdjustEbs button{
+  width:28px;height:28px;
+  border-radius:6px;
+  border:1px solid var(--border-ebs);
+  background:var(--bg-ebs);
+  color:var(--text-ebs);
+  cursor:pointer;
+  font-weight:700;
+}
+.sizeAdjustEbs button:disabled{opacity:0.3;cursor:not-allowed;}
+.resultsListEbs{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:520px;
+  overflow-y:auto;
+}
+.resultItemEbs{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--panel2-ebs);
+  border:1px solid var(--border-ebs);
+  border-radius:10px;
+  padding:8px;
+  cursor:pointer;
+}
+.resultItemEbs.selectedEbs{
+  border-color:var(--accent-ebs);
+}
+.resultItemEbs canvas{
+  width:52px;height:52px;
+  border-radius:6px;
+  background:#0a0e14;
+  flex-shrink:0;
+}
+.resultItemEbs .infoEbs{
+  flex:1;
+  font-size:11px;
+  color:var(--muted-ebs);
+  overflow:hidden;
+}
+.resultItemEbs .infoEbs strong{
+  display:block;
+  color:var(--text-ebs);
+  font-size:12px;
+  margin-bottom:2px;
+}
+.resultItemEbs .removeEbs{
+  border:none;
+  background:transparent;
+  color:var(--accent-ebs);
+  cursor:pointer;
+  font-size:16px;
+  font-weight:700;
+  padding:4px 8px;
+}
+.statusBarEbs{
+  font-size:12px;
+  color:var(--muted-ebs);
+  margin-top:10px;
+  text-align:center;
+}
+.emptyResultsEbs{
+  color:var(--muted-ebs);
+  font-size:12px;
+  text-align:center;
+  padding:20px 10px;
+}
+
+.seoIntroEbs{
+  max-width:900px;
+  margin:-16px 0 28px 62px;
+  color:var(--muted-ebs);
+  font-size:14px;
+  line-height:1.7;
+}
+.seoIntroEbs strong{color:var(--text-ebs);}
+.footerEbs{
+  margin-top:28px;
+  padding:18px 20px;
+  border-top:1px solid var(--border-ebs);
+  color:var(--muted-ebs);
+  font-size:12px;
+  line-height:1.7;
+  text-align:center;
+}
+.footerEbs a{color:var(--text-ebs);text-decoration:none;}
+.footerEbs a:hover{text-decoration:underline;}
+@media(max-width:700px){.seoIntroEbs{margin:-16px 0 24px 0;}}
+</style>
+</head>
+<body>
+<div class="wrapEbs">
+  <div class="headerEbs">
+    <div class="logoMarkEbs">GB</div>
+    <div class="titleBoxEbs">
+      <h1>Görsel Bölme Sistemi</h1>
+      <span>ebubekirbastama.com.tr &middot; orijinal kalite korumalı kesim &middot; zip indirme</span>
+    </div>
+  </div>
+
+  <p class="seoIntroEbs"><strong>Online Görsel Bölme Aracı</strong>, fotoğraf ve tasarımlarınızı tarayıcı üzerinden kare, oval veya serbest biçimde kesmenizi sağlar. Elle seçim yapabilir, görseli satır ve sütunlara otomatik bölebilir, hazırlanan parçaları orijinal çözünürlükte PNG dosyaları olarak tek bir ZIP arşivinde indirebilirsiniz.</p>
+
+  <div class="gridLayoutEbs">
+    <div>
+      <div class="panelEbs">
+        <div class="panelTitleEbs">Görsel Yükle</div>
+        <div class="dropZoneEbs" id="dropZoneEbs">
+          <div class="uploadIconEbs">&#8593;</div>
+          <p><strong>Dosya sürükleyin</strong> veya tıklayın</p>
+        </div>
+        <input type="file" id="fileInputEbs" accept="image/*">
+        <button class="btnEbs btnSecondaryEbs" id="chooseBtnEbs">Bilgisayardan Seç</button>
+      </div>
+
+      <div class="panelEbs">
+        <div class="panelTitleEbs">Kesim Modu</div>
+        <div class="modeTabsEbs">
+          <div class="modeTabEbs activeEbs" data-mode="manual">Elle Seç</div>
+          <div class="modeTabEbs" data-mode="grid">Otomatik Izgara</div>
+        </div>
+        <div id="gridFieldsEbs" style="display:none;">
+          <div class="fieldRowEbs">
+            <div class="fieldGroupEbs">
+              <label>Satır Sayısı</label>
+              <input type="number" id="rowInputEbs" min="1" max="20" value="4">
+            </div>
+            <div class="fieldGroupEbs">
+              <label>Sütun Sayısı</label>
+              <input type="number" id="colInputEbs" min="1" max="20" value="5">
+            </div>
+          </div>
+          <button class="btnEbs btnSecondaryEbs" id="generateGridBtnEbs" disabled>Izgarayı Oluştur</button>
+        </div>
+        <div id="manualHelperEbs" class="helperTextEbs" style="margin-top:6px;">Görsel üzerinde fare ile sürükleyerek seçim yapın</div>
+      </div>
+
+      <div class="panelEbs">
+        <div class="panelTitleEbs">Sabit Kutu Boyutu</div>
+        <div class="fieldRowEbs">
+          <div class="fieldGroupEbs">
+            <label>Genişlik (px)</label>
+            <input type="number" id="fixedWidthEbs" min="1" value="300">
+          </div>
+          <div class="fieldGroupEbs">
+            <label>Yükseklik (px)</label>
+            <input type="number" id="fixedHeightEbs" min="1" value="500">
+          </div>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted-ebs);font-weight:600;cursor:pointer;">
+          <input type="checkbox" id="useFixedSizeEbs" style="width:16px;height:16px;">
+          Sabit boyutu kullan
+        </label>
+        <div class="helperTextEbs" style="margin-top:8px;">Aktifken görsele tıkladığınız noktaya bu boyutta kutu yerleşir</div>
+        <button class="btnEbs btnSecondaryEbs" id="applyFixedToSelectedEbs">Seçili Kesime Uygula</button>
+      </div>
+
+      <div class="panelEbs">
+        <div class="panelTitleEbs">Kesim Şekli</div>
+        <div class="shapeGridEbs" id="shapeGridEbs">
+          <div class="shapeOptionEbs activeEbs" data-shape="square">
+            <div class="shapeIconEbs"></div>
+            <span>Kare</span>
+          </div>
+          <div class="shapeOptionEbs" data-shape="oval">
+            <div class="shapeIconEbs"></div>
+            <span>Oval</span>
+          </div>
+          <div class="shapeOptionEbs" data-shape="custom">
+            <div class="shapeIconEbs"></div>
+            <span>Serbest</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panelEbs">
+        <div class="qualityNoteEbs">
+          <b>Kalite Garantisi:</b> Kesim orijinal çözünürlükten yapılır, küçültme/büyütme uygulanmaz.
+        </div>
+        <button class="btnEbs btnDangerEbs" id="clearAllBtnEbs">Tüm Kesimleri Temizle</button>
+        <button class="btnEbs btnPrimaryEbs" id="downloadBtnEbs" disabled>ZIP Olarak İndir</button>
+        <div class="statusBarEbs" id="statusBarEbs">Henüz görsel yüklenmedi</div>
+      </div>
+    </div>
+
+    <div class="panelEbs previewAreaEbs" id="previewAreaEbs">
+      <div class="emptyStateEbs" id="emptyStateEbs">Önizleme burada görünecek</div>
+    </div>
+
+    <div>
+      <div class="panelEbs">
+        <div class="panelTitleEbs">Konum ve Boyut Ayarı</div>
+        <div class="btnRowEbs">
+          <button class="btnEbs btnSecondaryEbs" id="selectAllBtnEbs">Tümünü Seç</button>
+          <button class="btnEbs btnSecondaryEbs" id="deselectBtnEbs">Seçimi Kaldır</button>
+        </div>
+        <div class="fieldGroupEbs" style="margin-top:14px;">
+          <label>Kaydırma Adımı (px)</label>
+          <input type="number" id="nudgeStepEbs" min="1" max="100" value="4">
+        </div>
+        <div class="nudgeGridEbs">
+          <div></div>
+          <button class="nudgeBtnEbs" id="nudgeUpEbs" disabled>&#8593;</button>
+          <div></div>
+          <button class="nudgeBtnEbs" id="nudgeLeftEbs" disabled>&#8592;</button>
+          <button class="nudgeBtnEbs" id="nudgeCenterEbs" disabled>&#9679;</button>
+          <button class="nudgeBtnEbs" id="nudgeRightEbs" disabled>&#8594;</button>
+          <div></div>
+          <button class="nudgeBtnEbs" id="nudgeDownEbs" disabled>&#8595;</button>
+          <div></div>
+        </div>
+        <div class="fieldRowEbs" style="margin-top:16px;">
+          <div class="fieldGroupEbs">
+            <label>Genişlik</label>
+            <div class="sizeAdjustEbs">
+              <button id="widthMinusEbs" disabled>-</button>
+              <span id="widthValueEbs">-</span>
+              <button id="widthPlusEbs" disabled>+</button>
+            </div>
+          </div>
+          <div class="fieldGroupEbs">
+            <label>Yükseklik</label>
+            <div class="sizeAdjustEbs">
+              <button id="heightMinusEbs" disabled>-</button>
+              <span id="heightValueEbs">-</span>
+              <button id="heightPlusEbs" disabled>+</button>
+            </div>
+          </div>
+        </div>
+        <div class="statusBarEbs" id="selectionStatusEbs">Seçim yok &middot; kesime tıklayın veya sürükleyin</div>
+      </div>
+
+      <div class="panelEbs">
+        <div class="panelTitleEbs">Kesimler (<span id="resultCountEbs">0</span>)</div>
+        <div class="resultsListEbs" id="resultsListEbs">
+          <div class="emptyResultsEbs">Henüz kesim yapılmadı</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footerEbs">
+    <p>Bu araç, yüklediğiniz görselleri doğrudan tarayıcınızda işler. Görselleriniz sunucuya gönderilmez.</p>
+    <p><a href="https://ebubekirbastama.com.tr/">ebubekirbastama.com.tr</a> &middot; Online görsel bölme ve fotoğraf kesme aracı</p>
+  </footer>
+</div>
+
+<noscript>Bu görsel bölme aracını kullanabilmek için tarayıcınızda JavaScript'i etkinleştirmeniz gerekir.</noscript>
+<script>
+const fileInputEbs = document.getElementById('fileInputEbs');
+const dropZoneEbs = document.getElementById('dropZoneEbs');
+const chooseBtnEbs = document.getElementById('chooseBtnEbs');
+const rowInputEbs = document.getElementById('rowInputEbs');
+const colInputEbs = document.getElementById('colInputEbs');
+const generateGridBtnEbs = document.getElementById('generateGridBtnEbs');
+const gridFieldsEbs = document.getElementById('gridFieldsEbs');
+const manualHelperEbs = document.getElementById('manualHelperEbs');
+const fixedWidthEbs = document.getElementById('fixedWidthEbs');
+const fixedHeightEbs = document.getElementById('fixedHeightEbs');
+const useFixedSizeEbs = document.getElementById('useFixedSizeEbs');
+const applyFixedToSelectedEbs = document.getElementById('applyFixedToSelectedEbs');
+const modeTabsEbs = document.querySelectorAll('.modeTabEbs');
+const shapeGridEbs = document.getElementById('shapeGridEbs');
+const downloadBtnEbs = document.getElementById('downloadBtnEbs');
+const clearAllBtnEbs = document.getElementById('clearAllBtnEbs');
+const previewAreaEbs = document.getElementById('previewAreaEbs');
+const resultsListEbs = document.getElementById('resultsListEbs');
+const resultCountEbs = document.getElementById('resultCountEbs');
+const statusBarEbs = document.getElementById('statusBarEbs');
+const selectionStatusEbs = document.getElementById('selectionStatusEbs');
+
+const selectAllBtnEbs = document.getElementById('selectAllBtnEbs');
+const deselectBtnEbs = document.getElementById('deselectBtnEbs');
+const nudgeStepEbs = document.getElementById('nudgeStepEbs');
+const nudgeUpEbs = document.getElementById('nudgeUpEbs');
+const nudgeDownEbs = document.getElementById('nudgeDownEbs');
+const nudgeLeftEbs = document.getElementById('nudgeLeftEbs');
+const nudgeRightEbs = document.getElementById('nudgeRightEbs');
+const nudgeCenterEbs = document.getElementById('nudgeCenterEbs');
+const widthMinusEbs = document.getElementById('widthMinusEbs');
+const widthPlusEbs = document.getElementById('widthPlusEbs');
+const heightMinusEbs = document.getElementById('heightMinusEbs');
+const heightPlusEbs = document.getElementById('heightPlusEbs');
+const widthValueEbs = document.getElementById('widthValueEbs');
+const heightValueEbs = document.getElementById('heightValueEbs');
+
+let imageObjEbs = null;
+let scaleNaturalEbs = 1;
+let shapeModeEbs = 'square';
+let cropModeEbs = 'manual';
+let stageCanvasEbs = null;
+let stageCtxEbs = null;
+let displayWidthEbs = 0;
+let displayHeightEbs = 0;
+
+let interactionEbs = null;
+let dragStartEbs = { x: 0, y: 0 };
+let dragCurrentEbs = { x: 0, y: 0 };
+let freehandPointsEbs = [];
+
+let cropListEbs = [];
+let cropIdCounterEbs = 1;
+
+const HANDLE_SIZE_EBS = 9;
+
+function setStatusEbs(msg){
+  statusBarEbs.textContent = msg;
+}
+
+chooseBtnEbs.addEventListener('click', () => fileInputEbs.click());
+dropZoneEbs.addEventListener('click', () => fileInputEbs.click());
+
+dropZoneEbs.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZoneEbs.classList.add('dragOverEbs');
+});
+dropZoneEbs.addEventListener('dragleave', () => {
+  dropZoneEbs.classList.remove('dragOverEbs');
+});
+dropZoneEbs.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZoneEbs.classList.remove('dragOverEbs');
+  if(e.dataTransfer.files && e.dataTransfer.files[0]){
+    handleFileEbs(e.dataTransfer.files[0]);
+  }
+});
+fileInputEbs.addEventListener('change', (e) => {
+  if(e.target.files && e.target.files[0]){
+    handleFileEbs(e.target.files[0]);
+  }
+});
+
+function handleFileEbs(file){
+  if(!file.type.startsWith('image/')){
+    setStatusEbs('Lütfen geçerli bir görsel dosyası seçin');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      imageObjEbs = img;
+      cropListEbs = [];
+      renderResultsEbs();
+      updateSelectionPanelEbs();
+      downloadBtnEbs.disabled = true;
+      generateGridBtnEbs.disabled = false;
+      setStatusEbs('Görsel yüklendi: ' + file.name + ' (' + img.width + 'x' + img.height + ')');
+      buildStageEbs();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function buildStageEbs(){
+  previewAreaEbs.innerHTML = '';
+  const holder = document.createElement('div');
+  holder.className = 'canvasHolderEbs';
+  stageCanvasEbs = document.createElement('canvas');
+  stageCanvasEbs.id = 'stageCanvasEbs';
+  const maxW = 720;
+  const scaleDisplay = Math.min(1, maxW / imageObjEbs.width);
+  displayWidthEbs = Math.round(imageObjEbs.width * scaleDisplay);
+  displayHeightEbs = Math.round(imageObjEbs.height * scaleDisplay);
+  stageCanvasEbs.width = displayWidthEbs;
+  stageCanvasEbs.height = displayHeightEbs;
+  scaleNaturalEbs = imageObjEbs.width / displayWidthEbs;
+  stageCtxEbs = stageCanvasEbs.getContext('2d');
+  holder.appendChild(stageCanvasEbs);
+  previewAreaEbs.appendChild(holder);
+  redrawStageEbs();
+  attachStageEventsEbs();
+}
+
+function clampEbs(v, min, max){
+  return Math.max(min, Math.min(max, v));
+}
+
+function getItemBoundsEbs(item){
+  return { x: item.dx, y: item.dy, w: item.dw, h: item.dh };
+}
+
+function getHandlePointsEbs(item){
+  const b = getItemBoundsEbs(item);
+  return {
+    nw: { x: b.x, y: b.y },
+    ne: { x: b.x + b.w, y: b.y },
+    sw: { x: b.x, y: b.y + b.h },
+    se: { x: b.x + b.w, y: b.y + b.h }
+  };
+}
+
+function redrawStageEbs(){
+  if(!stageCtxEbs) return;
+  stageCtxEbs.clearRect(0, 0, displayWidthEbs, displayHeightEbs);
+  stageCtxEbs.drawImage(imageObjEbs, 0, 0, displayWidthEbs, displayHeightEbs);
+  stageCtxEbs.lineWidth = 2;
+  cropListEbs.filter(i => !i.selected).forEach(item => {
+    drawOutlineEbs(item);
+  });
+  cropListEbs.filter(i => i.selected).forEach(item => {
+    drawOutlineEbs(item);
+  });
+
+  const selected = cropListEbs.filter(i => i.selected);
+  if(selected.length === 1 && selected[0].shape !== 'custom'){
+    const handles = getHandlePointsEbs(selected[0]);
+    stageCtxEbs.fillStyle = '#e6342f';
+    Object.values(handles).forEach(p => {
+      stageCtxEbs.fillRect(p.x - HANDLE_SIZE_EBS/2, p.y - HANDLE_SIZE_EBS/2, HANDLE_SIZE_EBS, HANDLE_SIZE_EBS);
+    });
+  }
+
+  if(interactionEbs && interactionEbs.type === 'draw'){
+    stageCtxEbs.strokeStyle = '#e6342f';
+    if(shapeModeEbs === 'custom'){
+      stageCtxEbs.beginPath();
+      freehandPointsEbs.forEach((p, i) => {
+        if(i === 0) stageCtxEbs.moveTo(p.x, p.y);
+        else stageCtxEbs.lineTo(p.x, p.y);
+      });
+      stageCtxEbs.stroke();
+    } else {
+      const rect = computeRectFromDragEbs(dragStartEbs, dragCurrentEbs, shapeModeEbs === 'square');
+      stageCtxEbs.beginPath();
+      if(shapeModeEbs === 'oval'){
+        stageCtxEbs.ellipse(rect.x + rect.w/2, rect.y + rect.h/2, rect.w/2, rect.h/2, 0, 0, Math.PI*2);
+      } else {
+        stageCtxEbs.rect(rect.x, rect.y, rect.w, rect.h);
+      }
+      stageCtxEbs.stroke();
+    }
+  }
+}
+
+function computeRectFromDragEbs(start, current, forceSquare){
+  const rawDx = current.x - start.x;
+  const rawDy = current.y - start.y;
+  if(forceSquare){
+    const size = Math.max(Math.abs(rawDx), Math.abs(rawDy));
+    const dirX = rawDx < 0 ? -1 : 1;
+    const dirY = rawDy < 0 ? -1 : 1;
+    const x = dirX < 0 ? start.x - size : start.x;
+    const y = dirY < 0 ? start.y - size : start.y;
+    return { x: x, y: y, w: size, h: size };
+  }
+  const x = Math.min(start.x, current.x);
+  const y = Math.min(start.y, current.y);
+  return { x: x, y: y, w: Math.abs(rawDx), h: Math.abs(rawDy) };
+}
+
+function drawOutlineEbs(item){
+  stageCtxEbs.strokeStyle = item.selected ? '#e6342f' : '#1f4fd1';
+  stageCtxEbs.beginPath();
+  if(item.shape === 'oval'){
+    stageCtxEbs.ellipse(item.dx + item.dw/2, item.dy + item.dh/2, item.dw/2, item.dh/2, 0, 0, Math.PI*2);
+  } else if(item.shape === 'custom'){
+    item.displayPoints.forEach((p, i) => {
+      if(i === 0) stageCtxEbs.moveTo(p.x, p.y);
+      else stageCtxEbs.lineTo(p.x, p.y);
+    });
+    stageCtxEbs.closePath();
+  } else {
+    stageCtxEbs.rect(item.dx, item.dy, item.dw, item.dh);
+  }
+  stageCtxEbs.stroke();
+}
+
+function getCanvasPosEbs(e){
+  const rect = stageCanvasEbs.getBoundingClientRect();
+  const scaleX = stageCanvasEbs.width / rect.width;
+  const scaleY = stageCanvasEbs.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: clampEbs((clientX - rect.left) * scaleX, 0, displayWidthEbs),
+    y: clampEbs((clientY - rect.top) * scaleY, 0, displayHeightEbs)
+  };
+}
+
+function hitTestHandleEbs(item, pos){
+  const handles = getHandlePointsEbs(item);
+  for(const key in handles){
+    const p = handles[key];
+    if(Math.abs(pos.x - p.x) <= HANDLE_SIZE_EBS && Math.abs(pos.y - p.y) <= HANDLE_SIZE_EBS){
+      return key;
+    }
+  }
+  return null;
+}
+
+function hitTestBodyEbs(pos){
+  for(let i = cropListEbs.length - 1; i >= 0; i--){
+    const item = cropListEbs[i];
+    if(pos.x >= item.dx && pos.x <= item.dx + item.dw && pos.y >= item.dy && pos.y <= item.dy + item.dh){
+      return item;
+    }
+  }
+  return null;
+}
+
+function attachStageEventsEbs(){
+  stageCanvasEbs.addEventListener('mousedown', onStageDownEbs);
+  stageCanvasEbs.addEventListener('mousemove', onStageMoveEbs);
+  stageCanvasEbs.addEventListener('mouseup', onStageUpEbs);
+  stageCanvasEbs.addEventListener('mouseleave', onStageUpEbs);
+}
+
+function onStageDownEbs(e){
+  if(!imageObjEbs) return;
+  const pos = getCanvasPosEbs(e);
+  const selected = cropListEbs.filter(i => i.selected);
+
+  if(selected.length === 1 && selected[0].shape !== 'custom'){
+    const handleKey = hitTestHandleEbs(selected[0], pos);
+    if(handleKey){
+      interactionEbs = {
+        type: 'resize',
+        item: selected[0],
+        handle: handleKey,
+        anchor: computeAnchorEbs(selected[0], handleKey)
+      };
+      return;
+    }
+  }
+
+  const hitItem = hitTestBodyEbs(pos);
+  if(hitItem){
+    if(e.shiftKey){
+      hitItem.selected = !hitItem.selected;
+    } else if(!hitItem.selected){
+      cropListEbs.forEach(i => i.selected = false);
+      hitItem.selected = true;
+    }
+    const moveTargets = cropListEbs.filter(i => i.selected);
+    interactionEbs = {
+      type: 'move',
+      start: pos,
+      targets: moveTargets.map(i => ({ item: i, origDx: i.dx, origDy: i.dy }))
+    };
+    updateSelectionPanelEbs();
+    redrawStageEbs();
+    return;
+  }
+
+  if(!e.shiftKey){
+    cropListEbs.forEach(i => i.selected = false);
+  }
+  updateSelectionPanelEbs();
+
+  if(cropModeEbs === 'manual'){
+    if(useFixedSizeEbs.checked && shapeModeEbs !== 'custom'){
+      placeFixedBoxEbs(pos);
+      return;
+    }
+    interactionEbs = { type: 'draw' };
+    dragStartEbs = pos;
+    dragCurrentEbs = pos;
+    freehandPointsEbs = [pos];
+  }
+  redrawStageEbs();
+}
+
+function placeFixedBoxEbs(pos){
+  const fw = Math.max(1, parseInt(fixedWidthEbs.value) || 1);
+  const fh = Math.max(1, parseInt(fixedHeightEbs.value) || 1);
+  let dw = fw / scaleNaturalEbs;
+  let dh = fh / scaleNaturalEbs;
+  dw = Math.min(dw, displayWidthEbs);
+  dh = Math.min(dh, displayHeightEbs);
+  let dx = pos.x - dw / 2;
+  let dy = pos.y - dh / 2;
+  dx = clampEbs(dx, 0, displayWidthEbs - dw);
+  dy = clampEbs(dy, 0, displayHeightEbs - dh);
+  addCropItemEbs(dx, dy, dw, dh, shapeModeEbs, null);
+  redrawStageEbs();
+}
+
+function computeAnchorEbs(item, handleKey){
+  if(handleKey === 'se') return { x: item.dx, y: item.dy };
+  if(handleKey === 'nw') return { x: item.dx + item.dw, y: item.dy + item.dh };
+  if(handleKey === 'ne') return { x: item.dx, y: item.dy + item.dh };
+  return { x: item.dx + item.dw, y: item.dy };
+}
+
+function onStageMoveEbs(e){
+  if(!interactionEbs) return;
+  const pos = getCanvasPosEbs(e);
+
+  if(interactionEbs.type === 'draw'){
+    dragCurrentEbs = pos;
+    if(shapeModeEbs === 'custom'){
+      freehandPointsEbs.push(pos);
+    }
+    redrawStageEbs();
+    return;
+  }
+
+  if(interactionEbs.type === 'move'){
+    const dx = pos.x - interactionEbs.start.x;
+    const dy = pos.y - interactionEbs.start.y;
+    interactionEbs.targets.forEach(t => {
+      let newDx = t.origDx + dx;
+      let newDy = t.origDy + dy;
+      newDx = clampEbs(newDx, 0, displayWidthEbs - t.item.dw);
+      newDy = clampEbs(newDy, 0, displayHeightEbs - t.item.dh);
+      if(t.item.shape === 'custom'){
+        const shiftX = newDx - t.item.dx;
+        const shiftY = newDy - t.item.dy;
+        t.item.displayPoints = t.item.displayPoints.map(p => ({ x: p.x + shiftX, y: p.y + shiftY }));
+      }
+      t.item.dx = newDx;
+      t.item.dy = newDy;
+    });
+    redrawStageEbs();
+    return;
+  }
+
+  if(interactionEbs.type === 'resize'){
+    const item = interactionEbs.item;
+    const anchor = interactionEbs.anchor;
+    let rawDw = pos.x - anchor.x;
+    let rawDh = pos.y - anchor.y;
+    if(item.shape === 'square'){
+      const size = Math.max(Math.abs(rawDw), Math.abs(rawDh));
+      rawDw = rawDw < 0 ? -size : size;
+      rawDh = rawDh < 0 ? -size : size;
+    }
+    const newDx = rawDw < 0 ? anchor.x + rawDw : anchor.x;
+    const newDy = rawDh < 0 ? anchor.y + rawDh : anchor.y;
+    const newDw = Math.max(10, Math.abs(rawDw));
+    const newDh = Math.max(10, Math.abs(rawDh));
+    item.dx = clampEbs(newDx, 0, displayWidthEbs);
+    item.dy = clampEbs(newDy, 0, displayHeightEbs);
+    item.dw = Math.min(newDw, displayWidthEbs - item.dx);
+    item.dh = Math.min(newDh, displayHeightEbs - item.dy);
+    redrawStageEbs();
+    updateSelectionPanelEbs();
+  }
+}
+
+function onStageUpEbs(){
+  if(!interactionEbs) return;
+  if(interactionEbs.type === 'draw'){
+    finalizeSelectionEbs();
+  } else {
+    renderResultsEbs();
+  }
+  interactionEbs = null;
+  redrawStageEbs();
+}
+
+function finalizeSelectionEbs(){
+  let dx, dy, dw, dh, displayPoints = null;
+  if(shapeModeEbs === 'custom'){
+    if(freehandPointsEbs.length < 4) return;
+    const xs = freehandPointsEbs.map(p => p.x);
+    const ys = freehandPointsEbs.map(p => p.y);
+    dx = Math.min(...xs);
+    dy = Math.min(...ys);
+    dw = Math.max(...xs) - dx;
+    dh = Math.max(...ys) - dy;
+    if(dw < 6 || dh < 6) return;
+    displayPoints = freehandPointsEbs.slice();
+  } else {
+    const rect = computeRectFromDragEbs(dragStartEbs, dragCurrentEbs, shapeModeEbs === 'square');
+    dx = clampEbs(rect.x, 0, displayWidthEbs);
+    dy = clampEbs(rect.y, 0, displayHeightEbs);
+    dw = Math.min(rect.w, displayWidthEbs - dx);
+    dh = Math.min(rect.h, displayHeightEbs - dy);
+    if(dw < 6 || dh < 6) return;
+  }
+  addCropItemEbs(dx, dy, dw, dh, shapeModeEbs, displayPoints);
+}
+
+function addCropItemEbs(dx, dy, dw, dh, shape, displayPoints){
+  const item = {
+    id: cropIdCounterEbs++,
+    dx, dy, dw, dh,
+    shape,
+    displayPoints,
+    selected: false
+  };
+  cropListEbs.push(item);
+  renderResultsEbs();
+  downloadBtnEbs.disabled = cropListEbs.length === 0;
+  setStatusEbs(cropListEbs.length + ' kesim eklendi');
+}
+
+function renderCropCanvasEbs(item){
+  const nx = item.dx * scaleNaturalEbs;
+  const ny = item.dy * scaleNaturalEbs;
+  const nw = Math.max(1, Math.round(item.dw * scaleNaturalEbs));
+  const nh = Math.max(1, Math.round(item.dh * scaleNaturalEbs));
+
+  const out = document.createElement('canvas');
+  out.width = nw;
+  out.height = nh;
+  const ctx = out.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.save();
+  ctx.beginPath();
+  if(item.shape === 'oval'){
+    ctx.ellipse(nw/2, nh/2, nw/2, nh/2, 0, 0, Math.PI*2);
+  } else if(item.shape === 'custom'){
+    item.displayPoints.forEach((p, i) => {
+      const px = (p.x - item.dx) * scaleNaturalEbs;
+      const py = (p.y - item.dy) * scaleNaturalEbs;
+      if(i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+  } else {
+    ctx.rect(0, 0, nw, nh);
+  }
+  ctx.clip();
+  ctx.drawImage(imageObjEbs, nx, ny, nw, nh, 0, 0, nw, nh);
+  ctx.restore();
+  return { canvas: out, width: nw, height: nh };
+}
+
+function renderResultsEbs(){
+  resultsListEbs.innerHTML = '';
+  resultCountEbs.textContent = cropListEbs.length;
+  if(cropListEbs.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'emptyResultsEbs';
+    empty.textContent = 'Henüz kesim yapılmadı';
+    resultsListEbs.appendChild(empty);
+    return;
+  }
+  cropListEbs.forEach((item, index) => {
+    const rendered = renderCropCanvasEbs(item);
+    const row = document.createElement('div');
+    row.className = 'resultItemEbs' + (item.selected ? ' selectedEbs' : '');
+
+    const thumb = document.createElement('canvas');
+    thumb.width = 52;
+    thumb.height = 52;
+    thumb.getContext('2d').drawImage(rendered.canvas, 0, 0, 52, 52);
+    row.appendChild(thumb);
+
+    const info = document.createElement('div');
+    info.className = 'infoEbs';
+    const shapeLabel = item.shape === 'square' ? 'Kare' : (item.shape === 'oval' ? 'Oval' : 'Serbest');
+    info.innerHTML = '<strong>kesim_' + (index + 1) + '_ebs.png</strong>' + shapeLabel + ' &middot; ' + rendered.width + 'x' + rendered.height + ' px';
+    row.appendChild(info);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'removeEbs';
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      cropListEbs = cropListEbs.filter(c => c.id !== item.id);
+      renderResultsEbs();
+      redrawStageEbs();
+      updateSelectionPanelEbs();
+      downloadBtnEbs.disabled = cropListEbs.length === 0;
+    });
+    row.appendChild(removeBtn);
+
+    row.addEventListener('click', () => {
+      cropListEbs.forEach(i => i.selected = (i.id === item.id));
+      renderResultsEbs();
+      redrawStageEbs();
+      updateSelectionPanelEbs();
+    });
+
+    resultsListEbs.appendChild(row);
+  });
+}
+
+function updateSelectionPanelEbs(){
+  const selected = cropListEbs.filter(i => i.selected);
+  const hasSelection = selected.length > 0;
+  [nudgeUpEbs, nudgeDownEbs, nudgeLeftEbs, nudgeRightEbs, nudgeCenterEbs].forEach(b => b.disabled = !hasSelection);
+
+  const canResize = selected.length === 1;
+  [widthMinusEbs, widthPlusEbs, heightMinusEbs, heightPlusEbs].forEach(b => b.disabled = !canResize);
+
+  if(canResize){
+    widthValueEbs.textContent = Math.round(selected[0].dw * scaleNaturalEbs) + 'px';
+    heightValueEbs.textContent = Math.round(selected[0].dh * scaleNaturalEbs) + 'px';
+  } else {
+    widthValueEbs.textContent = '-';
+    heightValueEbs.textContent = '-';
+  }
+
+  if(selected.length === 0){
+    selectionStatusEbs.textContent = 'Seçim yok · kesime tıklayın veya sürükleyin';
+  } else if(selected.length === 1){
+    selectionStatusEbs.textContent = '1 kesim seçili';
+  } else {
+    selectionStatusEbs.textContent = selected.length + ' kesim seçili (toplu taşıma aktif)';
+  }
+}
+
+function nudgeSelectedEbs(dx, dy){
+  const step = parseInt(nudgeStepEbs.value) || 1;
+  const selected = cropListEbs.filter(i => i.selected);
+  selected.forEach(item => {
+    const newDx = clampEbs(item.dx + dx * step, 0, displayWidthEbs - item.dw);
+    const newDy = clampEbs(item.dy + dy * step, 0, displayHeightEbs - item.dh);
+    if(item.shape === 'custom'){
+      const shiftX = newDx - item.dx;
+      const shiftY = newDy - item.dy;
+      item.displayPoints = item.displayPoints.map(p => ({ x: p.x + shiftX, y: p.y + shiftY }));
+    }
+    item.dx = newDx;
+    item.dy = newDy;
+  });
+  redrawStageEbs();
+  renderResultsEbs();
+}
+
+nudgeUpEbs.addEventListener('click', () => nudgeSelectedEbs(0, -1));
+nudgeDownEbs.addEventListener('click', () => nudgeSelectedEbs(0, 1));
+nudgeLeftEbs.addEventListener('click', () => nudgeSelectedEbs(-1, 0));
+nudgeRightEbs.addEventListener('click', () => nudgeSelectedEbs(1, 0));
+nudgeCenterEbs.addEventListener('click', () => {
+  const selected = cropListEbs.filter(i => i.selected);
+  selected.forEach(item => {
+    item.dx = clampEbs((displayWidthEbs - item.dw) / 2, 0, displayWidthEbs - item.dw);
+    item.dy = clampEbs((displayHeightEbs - item.dh) / 2, 0, displayHeightEbs - item.dh);
+  });
+  redrawStageEbs();
+  renderResultsEbs();
+});
+
+function resizeSelectedEbs(dwStep, dhStep){
+  const selected = cropListEbs.filter(i => i.selected);
+  if(selected.length !== 1) return;
+  const item = selected[0];
+  const step = parseInt(nudgeStepEbs.value) || 1;
+  let newDw = item.dw + dwStep * step;
+  let newDh = item.dh + dhStep * step;
+  if(item.shape === 'square'){
+    const combinedStep = (dwStep !== 0 ? dwStep : dhStep) * step;
+    newDw = item.dw + combinedStep;
+    newDh = item.dh + combinedStep;
+  }
+  item.dw = clampEbs(newDw, 10, displayWidthEbs - item.dx);
+  item.dh = clampEbs(newDh, 10, displayHeightEbs - item.dy);
+  redrawStageEbs();
+  renderResultsEbs();
+  updateSelectionPanelEbs();
+}
+
+widthPlusEbs.addEventListener('click', () => resizeSelectedEbs(1, 0));
+widthMinusEbs.addEventListener('click', () => resizeSelectedEbs(-1, 0));
+heightPlusEbs.addEventListener('click', () => resizeSelectedEbs(0, 1));
+heightMinusEbs.addEventListener('click', () => resizeSelectedEbs(0, -1));
+
+applyFixedToSelectedEbs.addEventListener('click', () => {
+  const selected = cropListEbs.filter(i => i.selected);
+  if(selected.length === 0){
+    setStatusEbs('Önce bir kesim seçin');
+    return;
+  }
+  const fw = Math.max(1, parseInt(fixedWidthEbs.value) || 1);
+  const fh = Math.max(1, parseInt(fixedHeightEbs.value) || 1);
+  const dw = Math.min(fw / scaleNaturalEbs, displayWidthEbs);
+  const dh = Math.min(fh / scaleNaturalEbs, displayHeightEbs);
+  selected.forEach(item => {
+    if(item.shape === 'custom') return;
+    item.dw = dw;
+    item.dh = dh;
+    item.dx = clampEbs(item.dx, 0, displayWidthEbs - dw);
+    item.dy = clampEbs(item.dy, 0, displayHeightEbs - dh);
+  });
+  redrawStageEbs();
+  renderResultsEbs();
+  updateSelectionPanelEbs();
+  setStatusEbs(selected.length + ' kesime ' + fw + 'x' + fh + ' boyutu uygulandı');
+});
+
+selectAllBtnEbs.addEventListener('click', () => {
+  cropListEbs.forEach(i => i.selected = true);
+  renderResultsEbs();
+  redrawStageEbs();
+  updateSelectionPanelEbs();
+});
+deselectBtnEbs.addEventListener('click', () => {
+  cropListEbs.forEach(i => i.selected = false);
+  renderResultsEbs();
+  redrawStageEbs();
+  updateSelectionPanelEbs();
+});
+
+shapeGridEbs.addEventListener('click', (e) => {
+  const opt = e.target.closest('.shapeOptionEbs');
+  if(!opt) return;
+  document.querySelectorAll('.shapeOptionEbs').forEach(o => o.classList.remove('activeEbs'));
+  opt.classList.add('activeEbs');
+  shapeModeEbs = opt.dataset.shape;
+});
+
+modeTabsEbs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    modeTabsEbs.forEach(t => t.classList.remove('activeEbs'));
+    tab.classList.add('activeEbs');
+    cropModeEbs = tab.dataset.mode;
+    gridFieldsEbs.style.display = cropModeEbs === 'grid' ? 'block' : 'none';
+    manualHelperEbs.style.display = cropModeEbs === 'manual' ? 'block' : 'none';
+  });
+});
+
+generateGridBtnEbs.addEventListener('click', () => {
+  if(!imageObjEbs) return;
+  const rows = Math.max(1, parseInt(rowInputEbs.value) || 1);
+  const cols = Math.max(1, parseInt(colInputEbs.value) || 1);
+  const cellW = displayWidthEbs / cols;
+  const cellH = displayHeightEbs / rows;
+  for(let r = 0; r < rows; r++){
+    for(let c = 0; c < cols; c++){
+      addCropItemEbs(c * cellW, r * cellH, cellW, cellH, shapeModeEbs, null);
+    }
+  }
+  redrawStageEbs();
+});
+
+clearAllBtnEbs.addEventListener('click', () => {
+  cropListEbs = [];
+  renderResultsEbs();
+  redrawStageEbs();
+  updateSelectionPanelEbs();
+  downloadBtnEbs.disabled = true;
+  setStatusEbs('Tüm kesimler temizlendi');
+});
+
+downloadBtnEbs.addEventListener('click', async () => {
+  if(cropListEbs.length === 0) return;
+  setStatusEbs('ZIP hazırlanıyor...');
+  const zip = new JSZip();
+  cropListEbs.forEach((item, index) => {
+    const rendered = renderCropCanvasEbs(item);
+    const dataUrl = rendered.canvas.toDataURL('image/png');
+    const base64Data = dataUrl.split(',')[1];
+    zip.file('kesim_' + (index + 1) + '_ebs.png', base64Data, { base64: true });
+  });
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'gorsel_kesimleri_ebs.zip';
+  link.click();
+  setStatusEbs('ZIP indirildi');
+});
+</script>
+</body>
+</html>
