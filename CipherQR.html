@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EBS CipherQR — Temassız, Uçtan Uca Şifreli QR Veri ve Dosya Aktarımı</title>
+<meta name="description" content="CipherQR, internet veya Bluetooth kullanmadan ekran ve kamera arasında AES-256-GCM ile şifrelenmiş güvenli metin ve dosya aktarımı sağlayan air-gapped web aracıdır.">
+<meta name="keywords" content="cipherqr, şifreli qr aktarım, temassız veri transferi, air-gapped dosya paylaşımı, aes-256 şifreleme, çevrimdışı qr kod, güvenli mesajlaşma">
+<meta name="author" content="Ebubekir Bastama">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ebubekirbastama.com.tr/">
+
+<!-- Open Graph / Sosyal Medya Paylaşım Etiketleri (Facebook, LinkedIn, WhatsApp) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ebubekirbastama.com.tr/">
+<meta property="og:title" content="CipherQR — Temassız, Uçtan Uca Şifreli QR Veri ve Dosya Aktarımı">
+<meta property="og:description" content="İnternet izi bırakmadan, AES-256-GCM şifrelemesiyle ekran ve kamera üzerinden güvenli metin ve dosya transferi yapın.">
+
+
+<!-- Twitter Card Etiketleri -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://ebubekirbastama.com.tr/">
+<meta name="twitter:title" content="CipherQR — Temassız Şifreli Aktarım">
+<meta name="twitter:description" content="İnternetsiz, sıfır ağ iziyle AES-256-GCM şifreli QR veri aktarım aracı.">
+
+
+<!-- Mobil ve Tema Renkleri -->
+<meta name="theme-color" content="#0a0c10">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CipherQR",
+  "operatingSystem": "All",
+  "applicationCategory": "SecurityApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY"
+  },
+  "description": "İnternet veya Bluetooth kullanmadan ekran ve kamera arasında AES-256-GCM ile şifrelenmiş güvenli metin ve dosya aktarımı sağlayan web aracı.",
+  "author": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama",
+    "url": "https://ebubekirbastama.com.tr/"
+  }
+}
+</script>
+<script>
+/* Offline QR encoder bundle derived from qrcode-terminal's bundled QRCode implementation.
+   No network access is used at runtime. */
+(function(global){
+  'use strict';
+  const modules = {
+'./QRMode': function(require,module,exports){
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+},
+'./QRMath': function(require,module,exports){
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+},
+'./QRPolynomial': function(require,module,exports){
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+},
+'./QRErrorCorrectLevel': function(require,module,exports){
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+},
+'./QRMaskPattern': function(require,module,exports){
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+},
+'./QRUtil': function(require,module,exports){
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+},
+'./QR8bitByte': function(require,module,exports){
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+},
+'./QRBitBuffer': function(require,module,exports){
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+},
+'./QRRSBlock': function(require,module,exports){
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+},
+'./index': function(require,module,exports){
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+}
+  };
+  const cache = {};
+  function req(id){
+    if (id === './QRCode') id = './index';
+    if (cache[id]) return cache[id].exports;
+    const fn = modules[id];
+    if (!fn) throw new Error('Offline QR modülü bulunamadı: ' + id);
+    const module = {exports:{}};
+    cache[id]=module;
+    fn(req,module,module.exports);
+    return module.exports;
+  }
+  const QRCodeCore = req('./index');
+  const Levels = req('./QRErrorCorrectLevel');
+  global.OfflineQR = {
+    matrix(text, level){
+      const lvl = Levels[(level || 'M').toUpperCase()] || Levels.M;
+      const qr = new QRCodeCore(-1, lvl);
+      qr.addData(String(text));
+      qr.make();
+      return {modules: qr.modules, count: qr.getModuleCount()};
+    },
+    drawCanvas(container, text, size, level){
+      const result = this.matrix(text, level || 'M');
+      const quiet = 4;
+      const cells = result.count + quiet * 2;
+      const canvas = document.createElement('canvas');
+      const px = Math.max(1, Math.floor((size || 340) / cells));
+      const actual = px * cells;
+      canvas.width = actual;
+      canvas.height = actual;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0,0,actual,actual);
+      ctx.fillStyle = '#000000';
+      for (let r=0;r<result.count;r++){
+        for (let c=0;c<result.count;c++){
+          if (result.modules[r][c]) ctx.fillRect((c+quiet)*px,(r+quiet)*px,px,px);
+        }
+      }
+      container.innerHTML='';
+      container.appendChild(canvas);
+      return canvas;
+    }
+  };
+})(window);
+</script>
+
+<style>
+  :root{
+    --bg:#0a0c10;
+    --bg-grid: rgba(255,255,255,0.02);
+    --panel:#12151c;
+    --panel-2:#181c25;
+    --border:#242938;
+    --border-soft:#1c202c;
+    --text:#e7eaf0;
+    --text-dim:#8b93a3;
+    --text-faint:#565e6f;
+    --accent:#3ee8c8;
+    --accent-dim:#1f6f63;
+    --accent-2:#8b7cff;
+    --warn:#f5b942;
+    --danger:#ff5d6c;
+    --radius:14px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+    --display: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(62,232,200,0.07), transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(139,124,255,0.07), transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100%;
+  }
+
+  .bg-grid{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size:34px 34px;
+    mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+  }
+
+  .shell{
+    position:relative; z-index:1;
+    max-width:560px;
+    margin:0 auto;
+    min-height:100vh;
+    padding:24px 18px 60px;
+    display:flex; flex-direction:column;
+  }
+
+  /* ---------- header ---------- */
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:28px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand-mark{
+    width:34px; height:34px; border-radius:9px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{ width:18px; height:18px; }
+  .brand-name{
+    font-family:var(--display); font-weight:700; font-size:17px;
+    letter-spacing:0.01em;
+  }
+  .brand-name span{ color:var(--accent); }
+  .brand-sub{
+    font-family:var(--mono); font-size:10.5px; color:var(--text-faint);
+    letter-spacing:0.06em; text-transform:uppercase; margin-top:1px;
+  }
+
+  .fingerprint-chip{
+    display:flex; align-items:center; gap:7px;
+    background:var(--panel-2); border:1px solid var(--border);
+    border-radius:999px; padding:6px 12px;
+    font-family:var(--mono); font-size:11px; color:var(--text-dim);
+  }
+  .fingerprint-dot{
+    width:6px; height:6px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 8px var(--accent);
+    animation:pulse-dot 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+  .icon-btn{
+    background:transparent; border:1px solid var(--border);
+    color:var(--text-dim); border-radius:10px; padding:8px 10px;
+    font-family:var(--mono); font-size:11px; cursor:pointer;
+    transition:border-color .15s, color .15s;
+  }
+  .icon-btn:hover{ border-color:var(--accent-dim); color:var(--accent); }
+
+  /* ---------- cards ---------- */
+  .card{
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+  }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent);
+    display:flex; align-items:center; gap:8px; margin-bottom:10px;
+  }
+  .eyebrow::before{
+    content:''; width:14px; height:1px; background:var(--accent);
+  }
+
+  h1.hero-title{
+    font-family:var(--display); font-weight:700; font-size:26px;
+    line-height:1.15; margin:0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  p.hero-desc{
+    font-family:var(--body); font-size:14px; line-height:1.55;
+    color:var(--text-dim); margin:0 0 22px;
+  }
+
+  label.field-label{
+    display:block; font-family:var(--mono); font-size:11px;
+    color:var(--text-faint); letter-spacing:0.04em; margin-bottom:7px;
+    text-transform:uppercase;
+  }
+
+  input[type="password"], input[type="text"], textarea{
+    width:100%;
+    background:#0d0f15;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 14px;
+    color:var(--text);
+    font-family:var(--body);
+    font-size:14.5px;
+    outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input::placeholder, textarea::placeholder{ color:var(--text-faint); }
+  input:focus, textarea:focus{
+    border-color:var(--accent-dim);
+    box-shadow:0 0 0 3px rgba(62,232,200,0.12);
+  }
+  textarea{ resize:vertical; min-height:96px; font-family:var(--body); line-height:1.5; }
+
+  .field-gap{ margin-bottom:16px; }
+
+  .btn{
+    width:100%;
+    border:none; border-radius:11px;
+    padding:14px 18px;
+    font-family:var(--display); font-weight:600; font-size:14.5px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .12s, filter .15s, opacity .15s;
+  }
+  .btn:active{ transform:scale(0.98); }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .btn-primary{
+    background:linear-gradient(135deg, var(--accent), #2bc9ac);
+    color:#04211c;
+  }
+  .btn-primary:hover:not(:disabled){ filter:brightness(1.08); }
+
+  .btn-ghost{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text);
+  }
+  .btn-ghost:hover:not(:disabled){ border-color:var(--accent-dim); }
+
+  .btn-danger{
+    background:rgba(255,93,108,0.12);
+    border:1px solid rgba(255,93,108,0.3);
+    color:var(--danger);
+  }
+
+  .btn-row{ display:flex; gap:10px; }
+  .btn-row .btn{ flex:1; }
+
+  .error-text{
+    font-family:var(--mono); font-size:12px; color:var(--danger);
+    margin-top:10px; line-height:1.5;
+  }
+
+  .hint{
+    font-family:var(--body); font-size:12.5px; color:var(--text-faint);
+    line-height:1.5; margin-top:14px;
+  }
+
+  /* ---------- segmented control ---------- */
+  .segmented{
+    display:flex; background:var(--panel-2);
+    border:1px solid var(--border); border-radius:12px;
+    padding:4px; margin-bottom:20px;
+  }
+  .segmented button{
+    flex:1; background:transparent; border:none; border-radius:9px;
+    padding:10px 0; font-family:var(--display); font-weight:600; font-size:13.5px;
+    color:var(--text-dim); cursor:pointer; transition:all .15s;
+  }
+  .segmented button.active{
+    background:linear-gradient(135deg, rgba(62,232,200,0.18), rgba(139,124,255,0.14));
+    color:var(--text);
+    box-shadow:inset 0 0 0 1px rgba(62,232,200,0.35);
+  }
+
+  /* ---------- tabs content ---------- */
+  .screen{ display:none; }
+  .screen.visible{ display:block; }
+
+  .divider{
+    height:1px; background:var(--border-soft); margin:22px 0;
+  }
+
+  .file-drop{
+    border:1.5px dashed var(--border);
+    border-radius:12px; padding:22px;
+    text-align:center; cursor:pointer;
+    transition:border-color .15s, background .15s;
+    font-family:var(--body); font-size:13.5px; color:var(--text-dim);
+  }
+  .file-drop:hover{ border-color:var(--accent-dim); background:rgba(62,232,200,0.04); }
+  .file-drop svg{ width:22px; height:22px; margin-bottom:8px; color:var(--accent); }
+  .file-drop .fname{ font-family:var(--mono); font-size:12.5px; color:var(--text); margin-top:6px; word-break:break-all; }
+
+  /* ---------- QR stage ---------- */
+  .qr-stage{
+    position:relative;
+    border-radius:16px;
+    background:#0d0f15;
+    border:1px solid var(--border);
+    padding:20px;
+    display:flex; flex-direction:column; align-items:center;
+    overflow:hidden;
+  }
+  .qr-stage::before{
+    content:'';
+    position:absolute; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+    top:0; opacity:0;
+  }
+  .qr-stage.scanning::before{
+    opacity:1;
+    animation:scan-sweep 2.1s linear infinite;
+  }
+  @keyframes scan-sweep{
+    0%{ top:6%; opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ top:94%; opacity:0; }
+  }
+
+  #qrCanvasWrap{
+    width:100%; max-width:420px; aspect-ratio:1/1;
+    border-radius:10px; overflow:hidden;
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #qrCanvasWrap canvas, #qrCanvasWrap img{ width:100% !important; height:100% !important; display:block; }
+
+  .frame-counter{
+    font-family:var(--mono); font-size:12px; color:var(--accent);
+    margin-top:14px; letter-spacing:0.03em;
+  }
+
+  /* ---------- packet grid (signature element) ---------- */
+  .packet-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(9px, 1fr));
+    gap:4px; width:100%; margin-top:16px;
+    max-width:420px;
+  }
+  .packet-cell{
+    aspect-ratio:1/1; border-radius:2px;
+    background:var(--border-soft);
+    transition:background .2s, box-shadow .2s;
+  }
+  .packet-cell.done{
+    background:var(--accent);
+    box-shadow:0 0 6px rgba(62,232,200,0.6);
+  }
+  .packet-cell.current{
+    background:var(--accent-2);
+    box-shadow:0 0 8px rgba(139,124,255,0.7);
+  }
+
+  .qr-controls{
+    display:flex; gap:10px; margin-top:18px; width:100%;
+  }
+
+  input[type=range]{
+    width:100%; accent-color:var(--accent);
+  }
+  .speed-row{
+    display:flex; align-items:center; gap:10px;
+    margin-top:14px; width:100%;
+  }
+  .speed-row span{ font-family:var(--mono); font-size:11px; color:var(--text-faint); white-space:nowrap; }
+
+  /* ---------- camera / receive ---------- */
+  .camera-wrap{
+    position:relative;
+    border-radius:14px; overflow:hidden;
+    border:1px solid var(--border);
+    background:#000;
+    aspect-ratio:3/4;
+    max-height:420px;
+  }
+  .camera-wrap video{
+    width:100%; height:100%; object-fit:cover;
+    display:block;
+  }
+  .camera-frame-guide{
+    position:absolute; inset:12%;
+    border:2px solid rgba(62,232,200,0.55);
+    border-radius:14px;
+    pointer-events:none;
+  }
+  .camera-placeholder{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:100%; color:var(--text-faint); font-family:var(--mono); font-size:12px; gap:10px; text-align:center; padding:20px;
+  }
+
+  /* ---------- status rows ---------- */
+  .status-block{
+    display:flex; align-items:center; gap:10px;
+    background:var(--panel-2); border:1px solid var(--border-soft);
+    border-radius:10px; padding:12px 14px; margin-top:14px;
+    font-family:var(--mono); font-size:12.5px; color:var(--text-dim);
+  }
+  .status-dot{
+    width:7px; height:7px; border-radius:50%; background:var(--text-faint); flex-shrink:0;
+  }
+  .status-block.active .status-dot{ background:var(--accent); box-shadow:0 0 8px var(--accent); animation:pulse-dot 1.6s infinite; }
+  .status-block.ok .status-dot{ background:var(--accent); }
+  .status-block.err{ border-color:rgba(255,93,108,0.3); color:var(--danger); }
+  .status-block.err .status-dot{ background:var(--danger); }
+
+  .result-card{
+    margin-top:16px; padding:16px; border-radius:12px;
+    background:rgba(62,232,200,0.06); border:1px solid rgba(62,232,200,0.25);
+  }
+  .result-card .result-label{
+    font-family:var(--mono); font-size:10.5px; color:var(--accent);
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;
+  }
+  .result-card .result-text{
+    font-family:var(--body); font-size:14px; line-height:1.5; white-space:pre-wrap; word-break:break-word;
+  }
+
+  footer.note{
+    margin-top:auto; padding-top:32px;
+    font-family:var(--mono); font-size:10.5px; color:var(--text-faint);
+    line-height:1.7; text-align:center;
+  }
+
+  @media (max-width:400px){
+    .shell{ padding:18px 14px 40px; }
+    h1.hero-title{ font-size:22px; }
+  }
+
+  .vault-icon{
+    width:46px; height:46px; border-radius:12px;
+    background:linear-gradient(135deg, rgba(62,232,200,0.15), rgba(139,124,255,0.15));
+    border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px;
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="shell">
+
+  <!-- ============ HEADER ============ -->
+  <header class="top" id="topHeader" style="display:none;">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6l-8-4z" stroke="#04211c" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Cipher<span>QR</span></div>
+        <div class="brand-sub">Temassız · Uçtan Uca Şifreli</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div class="fingerprint-chip" id="fingerprintChip" title="Parola parmak izi — karşı tarafla sözlü doğrulayın">
+        <span class="fingerprint-dot"></span><span id="fingerprintText">------</span>
+      </div>
+      <button class="icon-btn" id="lockBtn">Kilitle</button>
+    </div>
+  </header>
+
+  <!-- ============ VAULT GATE ============ -->
+  <div id="vaultGate">
+    <div class="card">
+      <div class="vault-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6l-8-4z" stroke="#3ee8c8" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="eyebrow">Kasa Kilitli</div>
+      <h1 class="hero-title">Görsel kanal.<br>Sıfır ağ izi.</h1>
+      <p class="hero-desc">
+        Veri hiç internete, Wi-Fi'a ya da Bluetooth'a çıkmaz — yalnızca ekran ve kamera arasında,
+        AES-256-GCM ile şifrelenmiş QR kareleri olarak akar. Bir oturum parolası belirleyin;
+        karşı taraf da aynısını bilmeden hiçbir şey çözemez.
+      </p>
+
+      <div class="field-gap">
+        <label class="field-label">Oturum Parolası</label>
+        <input type="password" id="pwInput" placeholder="En az 6 karakter">
+      </div>
+      <div class="field-gap">
+        <label class="field-label">Parolayı Doğrula</label>
+        <input type="password" id="pwConfirm" placeholder="Tekrar girin">
+      </div>
+
+      <button class="btn btn-primary" id="unlockBtn">Kasayı Aç</button>
+      <div class="error-text" id="vaultError" style="display:none;"></div>
+
+      <div class="hint">
+        Parola hiçbir yere gönderilmez veya kaydedilmez — yalnızca bu sekmede, bu oturum boyunca
+        tarayıcı belleğinde tutulur. Kilidi açtıktan sonra üstte beliren <strong>parmak izini</strong>
+        karşı tarafla sözlü karşılaştırarak aynı parolayı yazdığınızı teyit edebilirsiniz.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN APP ============ -->
+  <div id="mainApp" style="display:none;">
+
+    <div class="segmented">
+      <button class="active" id="tabSendBtn">Gönder</button>
+      <button id="tabRecvBtn">Al</button>
+    </div>
+
+    <!-- ---------- SEND SCREEN ---------- -->
+    <div class="screen visible" id="sendScreen">
+      <div class="card" id="sendComposeCard">
+        <div class="eyebrow">Şifreli Yük Hazırla</div>
+        <h1 class="hero-title" style="font-size:20px;">Ne göndermek istiyorsun?</h1>
+
+        <div class="field-gap" style="margin-top:18px;">
+          <label class="field-label">Metin</label>
+          <textarea id="textInput" placeholder="Göndermek istediğin mesajı yaz..."></textarea>
+        </div>
+        <button class="btn btn-primary" id="sendTextBtn">Metni Şifrele ve QR Üret</button>
+
+        <div class="divider"></div>
+
+        <label class="field-label">veya Dosya</label>
+        <div class="file-drop" id="fileDrop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+          <div>Dosya seçmek için dokun</div>
+          <div class="fname" id="fileName"></div>
+        </div>
+        <input type="file" id="fileInput" style="display:none;">
+        <button class="btn btn-primary" id="sendFileBtn" style="margin-top:14px; display:none;">Dosyayı Şifrele ve QR Üret</button>
+
+        <div class="error-text" id="sendError" style="display:none;"></div>
+        <div class="hint">Önerilen üst sınır: ~500 KB. Her kare ~180 bayt taşır; büyük dosyalarda kare sayısı artar ve tarama süresi uzar.</div>
+      </div>
+
+      <!-- QR playback -->
+      <div class="card" id="sendQrCard" style="display:none; margin-top:16px;">
+        <div class="eyebrow">Yayında</div>
+        <div class="qr-stage scanning" id="qrStage">
+          <div id="qrCanvasWrap"></div>
+          <div class="frame-counter" id="frameCounter">Kare 1 / 1</div>
+          <div class="packet-grid" id="packetGridSend"></div>
+        </div>
+
+        <div class="speed-row">
+          <span>HIZLI</span>
+          <input type="range" id="speedSlider" min="300" max="1400" step="50" value="800">
+          <span>YAVAŞ</span>
+        </div>
+
+        <div class="qr-controls">
+          <button class="btn btn-ghost" id="pauseBtn">Duraklat</button>
+          <button class="btn btn-danger" id="stopSendBtn">Bitir</button>
+        </div>
+
+        <div class="hint">Karşı taraf "Al" sekmesinden taramayı başlatsın. Kareler döngü halinde tekrarlanır;
+        kaçırılan bir kare bir sonraki turda yakalanır.</div>
+      </div>
+    </div>
+
+    <!-- ---------- RECEIVE SCREEN ---------- -->
+    <div class="screen" id="recvScreen">
+      <div class="card">
+        <div class="eyebrow">Karşı Taraf</div>
+        <h1 class="hero-title" style="font-size:20px;">Kamerayı QR'a doğrult.</h1>
+
+        <button class="btn btn-primary" id="startScanBtn">Taramayı Başlat</button>
+
+        <div class="camera-wrap" id="cameraWrap" style="display:none; margin-top:16px;">
+          <video id="video" autoplay playsinline muted></video>
+          <div class="camera-frame-guide"></div>
+        </div>
+        <canvas id="scanCanvas" style="display:none;"></canvas>
+
+        <div class="packet-grid" id="packetGridRecv"></div>
+
+        <div class="status-block" id="recvStatus">
+          <span class="status-dot"></span>
+          <span id="recvStatusText">Taramaya başlamak için butona basın.</span>
+        </div>
+
+        <div class="result-card" id="recvResultCard" style="display:none;">
+          <div class="result-label" id="recvResultLabel">Çözülen Metin</div>
+          <div class="result-text" id="recvResultText"></div>
+        </div>
+
+        <div class="btn-row" style="margin-top:14px;">
+          <button class="btn btn-ghost" id="resetScanBtn">Sıfırla</button>
+          <button class="btn btn-danger" id="stopScanBtn" style="display:none;">Taramayı Durdur</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="note">
+    CipherQR · AES-256-GCM + PBKDF2 (150.000 iterasyon) · Tüm şifreleme cihazında, tarayıcının
+    yerleşik Web Crypto API'siyle yapılır — QR üretimi ve tarama için CDN/internet kullanılmaz.
+  </footer>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // ================= CRYPTO =================
+  const enc = new TextEncoder();
+  const dec = new TextDecoder();
+
+  async function deriveKey(password, salt) {
+    const baseKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: 150000, hash: 'SHA-256' },
+      baseKey,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  async function encryptPayload(plainBytes, password) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await deriveKey(password, salt);
+    const cipherBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plainBytes);
+    const cipherBytes = new Uint8Array(cipherBuf);
+    const out = new Uint8Array(salt.length + iv.length + cipherBytes.length);
+    out.set(salt, 0);
+    out.set(iv, salt.length);
+    out.set(cipherBytes, salt.length + iv.length);
+    return out;
+  }
+
+  async function decryptPayload(fullBytes, password) {
+    const salt = fullBytes.slice(0, 16);
+    const iv = fullBytes.slice(16, 28);
+    const cipherBytes = fullBytes.slice(28);
+    const key = await deriveKey(password, salt);
+    const plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipherBytes);
+    return new Uint8Array(plainBuf);
+  }
+
+  async function fingerprintOf(password) {
+    if (!password) return '------';
+    const digest = await crypto.subtle.digest('SHA-256', enc.encode('cipherqr-fp:' + password));
+    const bytes = new Uint8Array(digest);
+    return Array.from(bytes.slice(0, 4)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+  }
+
+  // ================= BASE64 HELPERS =================
+  function bytesToB64(bytes) {
+    let bin = '';
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function b64ToBytes(b64) {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+
+  // ================= PAYLOAD FRAMING (TYPE + TEXT/FILE) =================
+  const TYPE_TEXT = 0x00, TYPE_FILE = 0x01;
+
+  function buildTextPayload(text) {
+    const textBytes = enc.encode(text);
+    const out = new Uint8Array(1 + textBytes.length);
+    out[0] = TYPE_TEXT;
+    out.set(textBytes, 1);
+    return out;
+  }
+
+  function buildFilePayload(name, bytes) {
+    const nameBytes = enc.encode(name).slice(0, 255);
+    const out = new Uint8Array(2 + nameBytes.length + bytes.length);
+    out[0] = TYPE_FILE;
+    out[1] = nameBytes.length;
+    out.set(nameBytes, 2);
+    out.set(bytes, 2 + nameBytes.length);
+    return out;
+  }
+
+  function parsePayload(bytes) {
+    if (bytes[0] === TYPE_TEXT) {
+      return { type: 'text', text: dec.decode(bytes.slice(1)) };
+    } else if (bytes[0] === TYPE_FILE) {
+      const nameLen = bytes[1];
+      const name = dec.decode(bytes.slice(2, 2 + nameLen));
+      const data = bytes.slice(2 + nameLen);
+      return { type: 'file', name, data };
+    }
+    throw new Error('Bilinmeyen paket tipi.');
+  }
+
+  // ================= QR FRAMING (chunking protocol) =================
+  const CHUNK_BYTES = 80; // Ekrandan telefon kamerasına daha kolay okunması için düşük yoğunluk // Daha seyrek QR: telefon kamerasında çok daha güvenilir
+  const PREFIX = 'CQR1';
+
+  function toFrames(encryptedBytes) {
+    const msgId = Math.floor(Math.random() * 0xffff).toString(16).padStart(4, '0');
+    const total = Math.ceil(encryptedBytes.length / CHUNK_BYTES);
+    const frames = [];
+    for (let i = 0; i < total; i++) {
+      const chunk = encryptedBytes.slice(i * CHUNK_BYTES, (i + 1) * CHUNK_BYTES);
+      frames.push(`${PREFIX}|${msgId}|${i}|${total}|${bytesToB64(chunk)}`);
+    }
+    return frames;
+  }
+
+  function parseFrame(content) {
+    const parts = content.split('|');
+    if (parts.length !== 5 || parts[0] !== PREFIX) return null;
+    try {
+      return {
+        msgId: parts[1],
+        index: parseInt(parts[2], 10),
+        total: parseInt(parts[3], 10),
+        bytes: b64ToBytes(parts[4])
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ================= STATE =================
+  let sessionPassword = '';
+
+  // ================= VAULT GATE =================
+  const pwInput = document.getElementById('pwInput');
+  const pwConfirm = document.getElementById('pwConfirm');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const vaultError = document.getElementById('vaultError');
+  const vaultGate = document.getElementById('vaultGate');
+  const mainApp = document.getElementById('mainApp');
+  const topHeader = document.getElementById('topHeader');
+  const fingerprintText = document.getElementById('fingerprintText');
+  const lockBtn = document.getElementById('lockBtn');
+
+  unlockBtn.addEventListener('click', async () => {
+    const p1 = pwInput.value, p2 = pwConfirm.value;
+    vaultError.style.display = 'none';
+    if (p1.length < 6) {
+      vaultError.textContent = 'Parola en az 6 karakter olmalı.';
+      vaultError.style.display = 'block';
+      return;
+    }
+    if (p1 !== p2) {
+      vaultError.textContent = 'Parolalar birbiriyle uyuşmuyor.';
+      vaultError.style.display = 'block';
+      return;
+    }
+    sessionPassword = p1;
+    fingerprintText.textContent = await fingerprintOf(sessionPassword);
+    vaultGate.style.display = 'none';
+    topHeader.style.display = 'flex';
+    mainApp.style.display = 'block';
+  });
+
+  lockBtn.addEventListener('click', () => {
+    sessionPassword = '';
+    pwInput.value = ''; pwConfirm.value = '';
+    stopSlideshow();
+    stopScanning();
+    mainApp.style.display = 'none';
+    topHeader.style.display = 'none';
+    vaultGate.style.display = 'block';
+  });
+
+  // ================= TABS =================
+  const tabSendBtn = document.getElementById('tabSendBtn');
+  const tabRecvBtn = document.getElementById('tabRecvBtn');
+  const sendScreen = document.getElementById('sendScreen');
+  const recvScreen = document.getElementById('recvScreen');
+
+  tabSendBtn.addEventListener('click', () => {
+    tabSendBtn.classList.add('active'); tabRecvBtn.classList.remove('active');
+    sendScreen.classList.add('visible'); recvScreen.classList.remove('visible');
+    stopScanning();
+  });
+  tabRecvBtn.addEventListener('click', () => {
+    tabRecvBtn.classList.add('active'); tabSendBtn.classList.remove('active');
+    recvScreen.classList.add('visible'); sendScreen.classList.remove('visible');
+    stopSlideshow();
+  });
+
+  // ================= SEND: text/file input =================
+  const textInput = document.getElementById('textInput');
+  const sendTextBtn = document.getElementById('sendTextBtn');
+  const fileDrop = document.getElementById('fileDrop');
+  const fileInput = document.getElementById('fileInput');
+  const fileNameEl = document.getElementById('fileName');
+  const sendFileBtn = document.getElementById('sendFileBtn');
+  const sendError = document.getElementById('sendError');
+  const sendComposeCard = document.getElementById('sendComposeCard');
+  const sendQrCard = document.getElementById('sendQrCard');
+
+  let selectedFile = null;
+
+  fileDrop.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files[0];
+    if (!f) return;
+    selectedFile = f;
+    fileNameEl.textContent = `${f.name} (${Math.round(f.size / 1024)} KB)`;
+    sendFileBtn.style.display = 'block';
+  });
+
+  function showSendError(msg) {
+    sendError.textContent = msg;
+    sendError.style.display = 'block';
+  }
+
+  sendTextBtn.addEventListener('click', async () => {
+    sendError.style.display = 'none';
+    if (!textInput.value.trim()) { showSendError('Lütfen bir metin girin.'); return; }
+    await beginSlideshow(buildTextPayload(textInput.value));
+  });
+
+  sendFileBtn.addEventListener('click', async () => {
+    sendError.style.display = 'none';
+    if (!selectedFile) return;
+    if (selectedFile.size > 500 * 1024) {
+      showSendError('Bu dosya QR yöntemi için çok büyük (>500 KB). Daha küçük bir dosya seçin — her ~180 bayt bir kare demektir.');
+      return;
+    }
+    const buf = await selectedFile.arrayBuffer();
+    await beginSlideshow(buildFilePayload(selectedFile.name, new Uint8Array(buf)));
+  });
+
+  // ================= SEND: QR slideshow =================
+  const qrCanvasWrap = document.getElementById('qrCanvasWrap');
+  const frameCounter = document.getElementById('frameCounter');
+  const packetGridSend = document.getElementById('packetGridSend');
+  const speedSlider = document.getElementById('speedSlider');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const stopSendBtn = document.getElementById('stopSendBtn');
+
+  let frames = [];
+  let frameIndex = 0;
+  let slideshowTimer = null;
+  let isPlaying = false;
+
+  async function beginSlideshow(payloadBytes) {
+    try {
+      const encrypted = await encryptPayload(payloadBytes, sessionPassword);
+      frames = toFrames(encrypted);
+      frameIndex = 0;
+      isPlaying = true;
+
+      buildPacketGrid(packetGridSend, frames.length);
+      sendComposeCard.style.display = 'none';
+      sendQrCard.style.display = 'block';
+      pauseBtn.textContent = 'Duraklat';
+
+      await renderCurrentFrame();
+      scheduleNextFrame();
+    } catch (e) {
+      stopSlideshow();
+      showSendError('QR oluşturma/şifreleme hatası: ' + e.message);
+    }
+  }
+
+  function buildPacketGrid(container, count) {
+    container.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'packet-cell';
+      container.appendChild(cell);
+    }
+  }
+
+  async function renderCurrentFrame() {
+    qrCanvasWrap.innerHTML = '';
+    if (!window.OfflineQR) throw new Error('Yerel QR motoru başlatılamadı.');
+    try {
+      OfflineQR.drawCanvas(qrCanvasWrap, frames[frameIndex], 420, 'L');
+    } catch (e) {
+      throw new Error('QR üretilemedi: ' + (e && e.message ? e.message : e));
+    }
+    frameCounter.textContent = `Kare ${frameIndex + 1} / ${frames.length}`;
+    const cells = packetGridSend.children;
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].classList.toggle('current', i === frameIndex);
+      cells[i].classList.toggle('done', true);
+    }
+  }
+
+  function scheduleNextFrame() {
+    clearTimeout(slideshowTimer);
+    if (!isPlaying) return;
+    slideshowTimer = setTimeout(async () => {
+      frameIndex = (frameIndex + 1) % frames.length;
+      await renderCurrentFrame();
+      scheduleNextFrame();
+    }, parseInt(speedSlider.value, 10));
+  }
+
+  pauseBtn.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    pauseBtn.textContent = isPlaying ? 'Duraklat' : 'Devam Et';
+    if (isPlaying) scheduleNextFrame();
+    else clearTimeout(slideshowTimer);
+  });
+
+  function stopSlideshow() {
+    isPlaying = false;
+    clearTimeout(slideshowTimer);
+    frames = []; frameIndex = 0;
+    sendQrCard.style.display = 'none';
+    sendComposeCard.style.display = 'block';
+    textInput.value = '';
+    selectedFile = null;
+    fileNameEl.textContent = '';
+    sendFileBtn.style.display = 'none';
+  }
+
+  stopSendBtn.addEventListener('click', stopSlideshow);
+
+  // ================= RECEIVE: camera scan =================
+  const startScanBtn = document.getElementById('startScanBtn');
+  const stopScanBtn = document.getElementById('stopScanBtn');
+  const resetScanBtn = document.getElementById('resetScanBtn');
+  const cameraWrap = document.getElementById('cameraWrap');
+  const video = document.getElementById('video');
+  const scanCanvas = document.getElementById('scanCanvas');
+  const packetGridRecv = document.getElementById('packetGridRecv');
+  const recvStatus = document.getElementById('recvStatus');
+  const recvStatusText = document.getElementById('recvStatusText');
+  const recvResultCard = document.getElementById('recvResultCard');
+  const recvResultLabel = document.getElementById('recvResultLabel');
+  const recvResultText = document.getElementById('recvResultText');
+
+  let mediaStream = null;
+  let scanRAF = null;
+  let scanning = false;
+  let currentMsgId = null;
+  let expectedTotal = 0;
+  let collected = new Map();
+  let lastScanAt = 0;
+  let lastSeenRaw = '';
+  let lastSeenAt = 0;
+  let barcodeDetector = null;
+  let detectorBusy = false;
+
+  function setStatus(text, mode) {
+    recvStatusText.textContent = text;
+    recvStatus.className = 'status-block' + (mode ? ' ' + mode : '');
+  }
+
+  function resetCollection() {
+    currentMsgId = null; expectedTotal = 0; collected.clear();
+    packetGridRecv.innerHTML = '';
+    recvResultCard.style.display = 'none';
+  }
+
+  resetScanBtn.addEventListener('click', () => {
+    resetCollection();
+    setStatus('Sıfırlandı. Taramaya devam edebilirsiniz.', '');
+  });
+
+  startScanBtn.addEventListener('click', async () => {
+    try {
+      if (!('BarcodeDetector' in window)) {
+        throw new Error("Bu tarayıcı yerleşik QR tarama API'sini (BarcodeDetector) desteklemiyor. Android Chrome/Edge güncel sürümünü kullanın.");
+      }
+      if (!barcodeDetector) {
+        barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] });
+      }
+      mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 }, focusMode: { ideal: 'continuous' } } });
+      video.srcObject = mediaStream;
+      await video.play();
+      cameraWrap.style.display = 'block';
+      startScanBtn.style.display = 'none';
+      stopScanBtn.style.display = 'block';
+      resetCollection();
+      scanning = true;
+      setStatus('Taranıyor (yerleşik QR motoru)... QR kodunu yeşil çerçevenin ortasına alın.', 'active');
+      scanLoop();
+    } catch (e) {
+      setStatus('Kamera erişimi reddedildi veya kullanılamıyor: ' + e.message, 'err');
+    }
+  });
+
+  function stopScanning() {
+    scanning = false;
+    if (scanRAF) cancelAnimationFrame(scanRAF);
+    if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+    cameraWrap.style.display = 'none';
+    startScanBtn.style.display = 'block';
+    stopScanBtn.style.display = 'none';
+  }
+  stopScanBtn.addEventListener('click', () => { stopScanning(); setStatus('Tarama durduruldu.', ''); });
+
+  async function detectQRRobust() {
+    // 1) Önce doğrudan video karesini tara. Android Chrome'da en güvenilir yol budur.
+    try {
+      const direct = await barcodeDetector.detect(video);
+      if (direct && direct.length) return direct;
+    } catch (_) {}
+
+    // 2) Tam kamera görüntüsünü canvas üzerinden tara.
+    const vw = video.videoWidth, vh = video.videoHeight;
+    const maxDim = 1600;
+    const scale = Math.min(1, maxDim / Math.max(vw, vh));
+    scanCanvas.width = Math.max(1, Math.round(vw * scale));
+    scanCanvas.height = Math.max(1, Math.round(vh * scale));
+    const ctx = scanCanvas.getContext('2d', { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(video, 0, 0, scanCanvas.width, scanCanvas.height);
+    try {
+      const full = await barcodeDetector.detect(scanCanvas);
+      if (full && full.length) return full;
+    } catch (_) {}
+
+    // 3) Ortadaki alanı büyütüp tekrar tara. Ekrandaki QR kadrajın merkezindeyse çok yardımcı olur.
+    const sw = Math.floor(scanCanvas.width * 0.72);
+    const sh = Math.floor(scanCanvas.height * 0.72);
+    const sx = Math.floor((scanCanvas.width - sw) / 2);
+    const sy = Math.floor((scanCanvas.height - sh) / 2);
+    const tmp = document.createElement('canvas');
+    tmp.width = 1200;
+    tmp.height = 1200;
+    const tctx = tmp.getContext('2d', { willReadFrequently: true });
+    tctx.imageSmoothingEnabled = false;
+    tctx.fillStyle = '#fff'; tctx.fillRect(0,0,tmp.width,tmp.height);
+    tctx.drawImage(scanCanvas, sx, sy, sw, sh, 0, 0, tmp.width, tmp.height);
+    try { return await barcodeDetector.detect(tmp); } catch (_) { return []; }
+  }
+
+  function scanLoop(now = 0) {
+    if (!scanning) return;
+    if (now - lastScanAt >= 140 && video.readyState === video.HAVE_ENOUGH_DATA && !detectorBusy) {
+      lastScanAt = now;
+      detectorBusy = true;
+      detectQRRobust().then(codes => {
+        if (!scanning || !codes || !codes.length) return;
+        const raw = codes[0].rawValue || '';
+        if (raw && (raw !== lastSeenRaw || (performance.now() - lastSeenAt) > 300)) {
+          lastSeenRaw = raw;
+          lastSeenAt = performance.now();
+          setStatus('QR bulundu, paket doğrulanıyor...', 'active');
+          handleScannedContent(raw);
+        }
+      }).catch(err => {
+        if (scanning) setStatus('QR tarama hatası: ' + (err && err.message ? err.message : err), 'err');
+      }).finally(() => { detectorBusy = false; });
+    }
+    scanRAF = requestAnimationFrame(scanLoop);
+  }
+
+  async function handleScannedContent(content) {
+    const frame = parseFrame(content);
+    if (!frame) {
+      setStatus('QR görüldü ancak CipherQR paketi değil.', 'err');
+      return;
+    }
+
+    if (currentMsgId !== null && currentMsgId !== frame.msgId) {
+      resetCollection();
+    }
+    if (currentMsgId === null) {
+      currentMsgId = frame.msgId;
+      expectedTotal = frame.total;
+      buildPacketGrid(packetGridRecv, frame.total);
+    }
+    if (!collected.has(frame.index)) {
+      collected.set(frame.index, frame.bytes);
+      const cells = packetGridRecv.children;
+      if (cells[frame.index]) cells[frame.index].classList.add('done');
+    }
+    setStatus(`Parça alınıyor: ${collected.size} / ${expectedTotal}`, 'active');
+
+    if (collected.size >= expectedTotal) {
+      scanning = false;
+      try {
+        let totalLen = 0;
+        for (let i = 0; i < expectedTotal; i++) totalLen += collected.get(i).length;
+        const full = new Uint8Array(totalLen);
+        let offset = 0;
+        for (let i = 0; i < expectedTotal; i++) {
+          const c = collected.get(i);
+          full.set(c, offset);
+          offset += c.length;
+        }
+        const plaintext = await decryptPayload(full, sessionPassword);
+        const decoded = parsePayload(plaintext);
+
+        if (decoded.type === 'text') {
+          recvResultLabel.textContent = 'Çözülen Metin';
+          recvResultText.textContent = decoded.text;
+          recvResultCard.style.display = 'block';
+          setStatus('Metin başarıyla alındı ve çözüldü.', 'ok');
+        } else {
+          recvResultLabel.textContent = 'Alınan Dosya';
+          recvResultText.innerHTML = '';
+          const blob = new Blob([decoded.data]);
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url; link.download = decoded.name;
+          link.textContent = `⬇ ${decoded.name} (${Math.round(decoded.data.length / 1024)} KB) indir`;
+          link.style.color = '#3ee8c8';
+          recvResultText.appendChild(link);
+          recvResultCard.style.display = 'block';
+          setStatus('Dosya başarıyla alındı ve çözüldü.', 'ok');
+        }
+        stopScanning();
+      } catch (e) {
+        setStatus('Şifre çözülemedi: yanlış parola veya bozuk veri. Sıfırlayıp tekrar deneyin.', 'err');
+        resetCollection();
+        scanning = true;
+        scanLoop();
+      }
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
