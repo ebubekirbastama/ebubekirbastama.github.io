@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.ebubekirbastama.com.tr/Ebs_Kutuphane_Otomasyonu/sitemap.xml
