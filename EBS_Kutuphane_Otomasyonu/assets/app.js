@@ -1,6 +1,7 @@
 'use strict';
-const VERSION='1.3.0';
+const VERSION='1.4.0';
 const DB_KEY='ebs_library_db_v3';
+const BOOK_LIBRARY_FILE='1000-turkce-kitap.json';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=(p='id')=>`${p}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
 const today=()=>new Date().toISOString().slice(0,10);
@@ -77,7 +78,7 @@ const pages={
 
 function listPage(type){if(type==='catalog'){
  const rows=db.books.map(b=>`<tr><td><strong>${esc(b.title)}</strong><div class="muted">${esc(b.isbn||'ISBN yok')}</div></td><td>${esc(b.author)}</td><td>${esc(b.category)}</td><td>${esc(b.barcode)}</td><td>${esc(b.shelf)}</td><td>${b.available}/${b.copies}</td><td>${badge(b.status||'Aktif',b.status==='Aktif'?'green':'orange')}</td><td><button class="btn ghost small edit-book" data-id="${b.id}">Düzenle</button> <button class="btn danger small del-book" data-id="${b.id}">Sil</button></td></tr>`).join('');
- return `<div class="card"><div class="toolbar"><input class="input search" id="bookSearch" placeholder="Başlık, yazar, ISBN, barkod, kategori ara..."><button class="btn" id="addBook">＋ Kitap Ekle</button><label class="btn secondary file-btn">⬆ CSV ile Kitap Ekle<input id="bookCsvInput" type="file" accept=".csv,text/csv"></label><a class="btn ghost" href="ornek-kitap-import.csv" download>Örnek CSV</a><button class="btn secondary" id="exportBooks">CSV Aktar</button></div><p class="muted"><strong>${db.books.length.toLocaleString('tr-TR')}</strong> katalog kaydı. CSV içe aktarmada eksik barkod otomatik üretilir; aynı ISBN veya barkoda sahip kayıtlar atlanır.</p>${table(['Eser','Yazar','Kategori','Barkod','Raf','Müsait','Durum','İşlem'],rows)}</div>`}
+ return `<div class="card"><div class="toolbar"><input class="input search" id="bookSearch" placeholder="Başlık, yazar, ISBN, barkod, kategori ara..."><button class="btn" id="addBook">＋ Kitap Ekle</button><button class="btn success" id="importReadyBooks">📥 Hazır 1.000 Kitabı Aktar</button><label class="btn secondary file-btn">⬆ CSV ile Kitap Ekle<input id="bookCsvInput" type="file" accept=".csv,text/csv"></label><a class="btn ghost" href="ornek-kitap-import.csv" download>Örnek CSV</a><button class="btn secondary" id="exportBooks">CSV Aktar</button></div><p class="muted"><strong>${db.books.length.toLocaleString('tr-TR')}</strong> katalog kaydı. İlk açılışta <code>${BOOK_LIBRARY_FILE}</code> bulunursa katalog otomatik alınır. “Hazır 1.000 Kitabı Aktar” butonu mevcut kayıtları silmeden yalnızca eksik kitapları ekler.</p>${table(['Eser','Yazar','Kategori','Barkod','Raf','Müsait','Durum','İşlem'],rows)}</div>`}
  const rows=db.members.map(m=>{const n=activeLoans().filter(l=>l.memberId===m.id).length;return `<tr><td><strong>${esc(m.name)}</strong><div class="muted">${esc(m.memberNo)}</div></td><td>${esc(m.type)}</td><td>${esc(m.phone||'-')}</td><td>${esc(m.email||'-')}</td><td>${fmt(m.expires)}</td><td>${n}</td><td>${badge(m.status,m.status==='Aktif'?'green':'orange')}</td><td><button class="btn ghost small edit-member" data-id="${m.id}">Düzenle</button> <button class="btn danger small del-member" data-id="${m.id}">Sil</button></td></tr>`}).join('');
  return `<div class="card"><div class="toolbar"><input class="input search" id="memberSearch" placeholder="Üye no, ad, telefon veya e-posta ara..."><button class="btn" id="addMember">＋ Üye Ekle</button><button class="btn secondary" id="exportMembers">CSV Aktar</button></div>${table(['Üye','Tip','Telefon','E-posta','Bitiş','Ödünç','Durum','İşlem'],rows)}</div>`
 }
@@ -110,7 +111,7 @@ function bindCatalog(){
  $('#addBook').onclick=()=>openModal('Yeni Kitap / Materyal',bookFields,d=>{d.id=uid('book');d.copies=Number(d.copies||1);d.available=d.copies;d.year=Number(d.year||0);db.books.push(d);saveDB(`Kitap eklendi: ${d.title}`)});
  $$('.edit-book').forEach(b=>b.onclick=()=>{const item=db.books.find(x=>x.id===b.dataset.id);openModal('Kitabı Düzenle',bookFields,d=>{const oldCopies=item.copies,borrowed=oldCopies-item.available;Object.assign(item,d,{copies:Number(d.copies),year:Number(d.year||0)});item.available=Math.max(0,item.copies-borrowed);saveDB(`Kitap düzenlendi: ${item.title}`)},item)});
  $$('.del-book').forEach(b=>b.onclick=()=>{if(activeLoans().some(l=>l.bookId===b.dataset.id))return toast('Aktif ödünç kaydı olan eser silinemez.');if(confirm('Bu kitabı silmek istiyor musunuz?')){db.books=db.books.filter(x=>x.id!==b.dataset.id);saveDB('Kitap silindi');render()}});
- $('#bookSearch').oninput=e=>filterRows(e.target.value);$('#exportBooks').onclick=()=>csvExport('kitaplar.csv',db.books);$('#bookCsvInput').onchange=importBooksCsv
+ $('#bookSearch').oninput=e=>filterRows(e.target.value);$('#exportBooks').onclick=()=>csvExport('kitaplar.csv',db.books);$('#bookCsvInput').onchange=importBooksCsv;$('#importReadyBooks').onclick=()=>importBooksFromHostedJson({manual:true})
 }
 function bindMembers(){
  $('#addMember').onclick=()=>openModal('Yeni Üye',memberFields,d=>{d.id=uid('mem');db.members.push(d);saveDB(`Üye eklendi: ${d.name}`)});
@@ -147,6 +148,65 @@ function parseCsv(text){
 }
 function normalizeHeader(h){return String(h||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
 function importBooksCsv(e){const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const rows=parseCsv(String(r.result||'').replace(/^\uFEFF/,''));if(rows.length<2)throw new Error('CSV içinde veri satırı bulunamadı.');const map={title:['title','baslik','eseradi','kitapadi'],author:['author','yazar'],publisher:['publisher','yayinevi'],isbn:['isbn','isbn13'],barcode:['barcode','barkod'],category:['category','kategori'],year:['year','yayinyili','yil'],language:['language','dil'],shelf:['shelf','raf','rafkodu'],copies:['copies','kopya','kopyasayisi','adet'],status:['status','durum'],keywords:['keywords','anahtarkelimeler'],description:['description','aciklama']};const hdr=rows[0].map(normalizeHeader);const idx={};for(const [key,alts] of Object.entries(map)){idx[key]=hdr.findIndex(h=>alts.includes(h))}if(idx.title<0||idx.author<0)throw new Error('CSV başlıklarında en az title/kitapadi ve author/yazar sütunları bulunmalıdır.');let added=0,skipped=0;for(const row of rows.slice(1)){const get=k=>idx[k]>=0?String(row[idx[k]]??'').trim():'';const title=get('title'),author=get('author');if(!title||!author){skipped++;continue}let isbn=get('isbn').replace(/[^0-9Xx]/g,''),barcode=get('barcode');if((isbn&&db.books.some(b=>String(b.isbn).replace(/[^0-9Xx]/g,'')===isbn))||(barcode&&db.books.some(b=>b.barcode===barcode))){skipped++;continue}if(!barcode){let n=db.books.length+added+1;do{barcode=`EBS${String(n++).padStart(6,'0')}`}while(db.books.some(b=>b.barcode===barcode))}const copies=Math.max(1,Number(get('copies'))||1);db.books.push({id:uid('book'),title,author,publisher:get('publisher'),isbn,barcode,category:get('category')||'Genel Koleksiyon',year:Number(get('year'))||0,language:get('language')||'Türkçe',shelf:get('shelf')||'GENEL',copies,available:copies,status:get('status')||'Aktif',keywords:get('keywords'),description:get('description')});added++}saveDB(`CSV kitap içe aktarma: ${added} eklendi, ${skipped} atlandı`);toast(`${added} kitap eklendi, ${skipped} kayıt atlandı.`);render()}catch(err){alert('CSV içe aktarma hatası: '+err.message)}e.target.value=''};r.readAsText(f,'UTF-8')}
+function normalizedBookKey(b){return `${String(b.title||'').trim().toLocaleLowerCase('tr-TR')}|${String(b.author||'').trim().toLocaleLowerCase('tr-TR')}`}
+function prepareHostedBook(raw,index){
+ const copies=Math.max(1,Number(raw.copies)||1), available=Math.min(copies,Math.max(0,Number(raw.available ?? copies)||copies));
+ return {
+  ...raw,
+  id:raw.id||uid('book'),
+  title:String(raw.title||'').trim(),author:String(raw.author||'').trim(),publisher:String(raw.publisher||'').trim(),
+  isbn:String(raw.isbn||'').replace(/[^0-9Xx]/g,''),barcode:String(raw.barcode||`EBS-KTP-${String(index+1).padStart(4,'0')}`).trim(),
+  category:String(raw.category||'Genel Koleksiyon').trim(),year:Number(raw.year)||0,language:String(raw.language||'Türkçe').trim(),
+  shelf:String(raw.shelf||'GENEL').trim()||'GENEL',copies,available,status:String(raw.status||'Aktif').trim(),
+  keywords:String(raw.keywords||''),description:String(raw.description||'')
+ };
+}
+async function importBooksFromHostedJson({manual=false,auto=false}={}){
+ const url=new URL(BOOK_LIBRARY_FILE,document.baseURI).href;
+ const btn=$('#importReadyBooks');
+ if(btn){btn.disabled=true;btn.textContent='⏳ Kitaplar aktarılıyor...'}
+ try{
+  const response=await fetch(url,{cache:'no-store'});
+  if(!response.ok)throw new Error(`HTTP ${response.status}`);
+  const payload=await response.json();
+  const source=Array.isArray(payload)?payload:payload.books;
+  if(!Array.isArray(source)||!source.length)throw new Error('JSON içinde books listesi bulunamadı.');
+  const isbnSet=new Set(db.books.map(b=>String(b.isbn||'').replace(/[^0-9Xx]/g,'')).filter(Boolean));
+  const barcodeSet=new Set(db.books.map(b=>String(b.barcode||'').trim()).filter(Boolean));
+  const titleAuthorSet=new Set(db.books.map(normalizedBookKey));
+  let added=0,skipped=0;
+  source.forEach((raw,i)=>{
+   const b=prepareHostedBook(raw,i);
+   if(!b.title||!b.author){skipped++;return}
+   const key=normalizedBookKey(b);
+   if((b.isbn&&isbnSet.has(b.isbn))||(b.barcode&&barcodeSet.has(b.barcode))||titleAuthorSet.has(key)){skipped++;return}
+   db.books.push(b);added++;
+   if(b.isbn)isbnSet.add(b.isbn);if(b.barcode)barcodeSet.add(b.barcode);titleAuthorSet.add(key);
+  });
+  db.meta.catalogBootstrapAttempted=true;
+  db.meta.catalogSource=BOOK_LIBRARY_FILE;
+  db.meta.catalogLastSync=new Date().toISOString();
+  if(manual)saveDB(`Elle kitap kataloğu aktarımı: ${added} eklendi, ${skipped} atlandı`);
+  else{db.meta.updatedAt=new Date().toISOString();localStorage.setItem(DB_KEY,JSON.stringify(db));}
+  if(manual)toast(added?`${added} kitap başarıyla eklendi. ${skipped} mükerrer/eksik kayıt atlandı.`:`Yeni kitap yok. Katalog zaten güncel.`);
+  if(auto&&added)toast(`${added} kitaplık başlangıç kataloğu otomatik yüklendi.`);
+  render();
+  return {added,skipped};
+ }catch(err){
+  db.meta.catalogBootstrapAttempted=true;
+  localStorage.setItem(DB_KEY,JSON.stringify(db));
+  if(manual)alert(`Kitap aktarımı başarısız.\n${url}\n\n${err.message}`);
+  else console.warn('Otomatik kitap aktarımı başarısız:',err);
+  return {added:0,skipped:0,error:err};
+ }finally{
+  const current=$('#importReadyBooks');if(current){current.disabled=false;current.textContent='📥 Hazır 1.000 Kitabı Aktar'}
+ }
+}
+async function bootstrapHostedCatalog(){
+ if(db.meta.catalogBootstrapAttempted)return;
+ if(db.books.length>0){db.meta.catalogBootstrapAttempted=true;localStorage.setItem(DB_KEY,JSON.stringify(db));return}
+ await importBooksFromHostedJson({auto:true});
+}
 function csvExport(name,data){if(!data.length)return toast('Aktarılacak kayıt yok.');const cols=[...new Set(data.flatMap(Object.keys))];const quote=v=>`"${String(v??'').replaceAll('"','""')}"`;download(name,'\ufeff'+[cols.join(';'),...data.map(r=>cols.map(c=>quote(r[c])).join(';'))].join('\n'),'text/csv;charset=utf-8')}
 function exportLoans(){csvExport('odunc-raporu.csv',db.loans.map(l=>({uye:db.members.find(m=>m.id===l.memberId)?.name||'',eser:db.books.find(b=>b.id===l.bookId)?.title||'',verilis:l.loanDate,son_iade:l.dueDate,iade:l.returnedAt||'',uzatma:l.renewals||0})))}
 function backup(){download(`ebs-kutuphane-yedek-${today()}.json`,JSON.stringify(db,null,2));toast('JSON yedeği indirildi.')}
@@ -157,3 +217,4 @@ $('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');$('#modalClose'
 let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true};
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.warn));
 render();
+bootstrapHostedCatalog();
