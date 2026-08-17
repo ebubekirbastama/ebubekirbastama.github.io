@@ -272,45 +272,340 @@
     showToast(enabled ? 'Ses açıldı' : 'Ses kapatıldı');
   }
 
-  function initViewer(id) {
-    document.querySelector('meta[name="robots"]').setAttribute('content','noindex,nofollow');
-    document.title = 'Özel Yayın — EBS Live';
-    homeView.classList.add('hidden');
-    features.classList.add('hidden');
-    viewerView.classList.remove('hidden');
-    $('.site-header').classList.add('hidden');
+function createViewerOfferStream() {
+  /*
+   * PeerJS media call sırasında tamamen boş MediaStream kullanılırsa
+   * SDP içinde audio/video medya kanalları oluşmayabiliyor.
+   *
+   * Bu nedenle kamera/mikrofon izni istemeden:
+   * - 2x2 piksel sahte video
+   * - sessiz sahte audio
+   * oluşturuyoruz.
+   */
 
-    if (!window.Peer) {
-      viewerError('Bağlantı bileşeni yüklenemedi.');
+  const stream = new MediaStream();
+
+  // Sahte video izi
+  const canvas = document.createElement('canvas');
+  canvas.width = 2;
+  canvas.height = 2;
+
+  const ctx = canvas.getContext('2d');
+
+  if (ctx) {
+    ctx.fillRect(0, 0, 2, 2);
+  }
+
+  const canvasStream = canvas.captureStream(1);
+  const videoTrack = canvasStream.getVideoTracks()[0];
+
+  if (videoTrack) {
+    videoTrack.enabled = false;
+    stream.addTrack(videoTrack);
+  }
+
+  // Sessiz audio izi
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+
+  let audioCtx = null;
+  let oscillator = null;
+
+  if (AudioCtx) {
+    try {
+      audioCtx = new AudioCtx();
+
+      const destination = audioCtx.createMediaStreamDestination();
+      oscillator = audioCtx.createOscillator();
+
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0;
+
+      oscillator.connect(gain);
+      gain.connect(destination);
+
+      oscillator.start();
+
+      const audioTrack = destination.stream.getAudioTracks()[0];
+
+      if (audioTrack) {
+        audioTrack.enabled = false;
+        stream.addTrack(audioTrack);
+      }
+
+    } catch (err) {
+      console.warn('Sessiz ses izi oluşturulamadı:', err);
+    }
+  }
+
+  return {
+    stream,
+
+    cleanup() {
+      stream.getTracks().forEach(track => {
+        track.stop();
+      });
+
+      try {
+        oscillator?.stop();
+      } catch (e) {}
+
+      audioCtx?.close?.().catch(() => {});
+    }
+  };
+}
+
+
+function initViewer(id) {
+
+  document
+    .querySelector('meta[name="robots"]')
+    .setAttribute('content', 'noindex,nofollow');
+
+  document.title = 'Özel Yayın — EBS Live';
+
+  homeView.classList.add('hidden');
+  features.classList.add('hidden');
+  viewerView.classList.remove('hidden');
+
+  $('.site-header').classList.add('hidden');
+
+
+  if (!window.Peer) {
+    viewerError('Bağlantı bileşeni yüklenemedi.');
+    return;
+  }
+
+
+  const peer = new Peer(undefined, {
+    debug: 2
+  });
+
+  state.peer = peer;
+
+  const status = $('#viewerStatus');
+
+
+  const tryCall = () => {
+
+    console.log('Yayıncıya bağlanılıyor:', id);
+
+    const offerMedia = createViewerOfferStream();
+
+    const call = peer.call(
+      id,
+      offerMedia.stream
+    );
+
+
+    if (!call) {
+
+      offerMedia.cleanup();
+
+      viewerError(
+        'Yayıncıya ulaşılamadı.'
+      );
+
       return;
     }
 
-    const peer = new Peer(undefined, { debug: 1 });
-    state.peer = peer;
-    const status = $('#viewerStatus');
-    const tryCall = () => {
-      const empty = new MediaStream();
-      const call = peer.call(id, empty);
-      if (!call) return viewerError('Yayıncıya ulaşılamadı.');
-      let gotStream = false;
-      const timeout = setTimeout(() => { if (!gotStream) viewerError('Yayıncı çevrimdışı veya bağlantı kurulamadı.'); }, 14000);
-      call.on('stream', stream => {
-        gotStream = true; clearTimeout(timeout);
-        remoteVideo.srcObject = stream;
-        remotePlaceholder.classList.add('hidden');
-        status.innerHTML = '<i></i> Canlı yayın';
-        remoteVideo.play().catch(() => showToast('Videoyu başlatmak için ekrana dokunun.'));
+
+    let gotStream = false;
+
+
+    const timeout = setTimeout(() => {
+
+      if (!gotStream) {
+
+        offerMedia.cleanup();
+
+        viewerError(
+          'Yayıncı çevrimdışı veya bağlantı kurulamadı.'
+        );
+      }
+
+    }, 15000);
+
+
+
+    call.on('stream', stream => {
+
+      console.log(
+        'Yayın akışı alındı:',
+        stream
+      );
+
+      gotStream = true;
+
+      clearTimeout(timeout);
+
+
+      /*
+       * Artık gerçek yayın geldi.
+       * Sahte medya izlerine ihtiyacımız yok.
+       */
+      offerMedia.cleanup();
+
+
+      remoteVideo.srcObject = stream;
+
+      remotePlaceholder.classList.add(
+        'hidden'
+      );
+
+
+      status.innerHTML =
+        '<i></i> Canlı yayın';
+
+
+      remoteVideo.play().catch(() => {
+
+        showToast(
+          'Videoyu başlatmak için ekrana dokunun.'
+        );
+
       });
-      call.on('close', () => viewerError('Yayın sona erdi.'));
-      call.on('error', () => viewerError('Yayın bağlantısı kesildi.'));
-    };
-    peer.on('open', tryCall);
-    peer.on('error', err => {
-      console.error(err);
-      if (err.type === 'peer-unavailable') viewerError('Yayıncı çevrimdışı veya yayın sona ermiş.');
-      else viewerError('P2P bağlantısı kurulamadı.');
+
     });
-  }
+
+
+
+    call.on('close', () => {
+
+      console.log(
+        'Yayın bağlantısı kapandı.'
+      );
+
+      clearTimeout(timeout);
+
+      offerMedia.cleanup();
+
+      viewerError(
+        'Yayın sona erdi.'
+      );
+
+    });
+
+
+
+    call.on('error', err => {
+
+      console.error(
+        'MediaConnection hatası:',
+        err
+      );
+
+      clearTimeout(timeout);
+
+      offerMedia.cleanup();
+
+      viewerError(
+        'Yayın bağlantısı kesildi.'
+      );
+
+    });
+
+
+
+    /*
+     * ICE / NAT kontrolü
+     */
+
+    setTimeout(() => {
+
+      const pc = call.peerConnection;
+
+      if (!pc) {
+        return;
+      }
+
+
+      console.log(
+        'PeerConnection bulundu.'
+      );
+
+
+      pc.addEventListener(
+        'iceconnectionstatechange',
+        () => {
+
+          console.log(
+            'ICE durumu:',
+            pc.iceConnectionState
+          );
+
+
+          if (
+            pc.iceConnectionState === 'failed'
+          ) {
+
+            viewerError(
+              'P2P bağlantısı kurulamadı. TURN sunucusu gerekli olabilir.'
+            );
+
+          }
+
+        }
+      );
+
+
+      pc.addEventListener(
+        'connectionstatechange',
+        () => {
+
+          console.log(
+            'WebRTC bağlantı durumu:',
+            pc.connectionState
+          );
+
+        }
+      );
+
+    }, 0);
+
+  };
+
+
+
+  peer.on('open', viewerPeerId => {
+
+    console.log(
+      'İzleyici PeerJS bağlantısı hazır:',
+      viewerPeerId
+    );
+
+    tryCall();
+
+  });
+
+
+
+  peer.on('error', err => {
+
+    console.error(
+      'PeerJS izleyici hatası:',
+      err
+    );
+
+
+    if (
+      err.type === 'peer-unavailable'
+    ) {
+
+      viewerError(
+        'Yayıncı çevrimdışı veya yayın sona ermiş.'
+      );
+
+    } else {
+
+      viewerError(
+        'P2P bağlantısı kurulamadı.'
+      );
+
+    }
+
+  });
+
+}
 
   function viewerError(message) {
     $('#viewerStatus').innerHTML = '<i style="background:#ff4964;box-shadow:0 0 14px #ff4964"></i> Bağlantı yok';
