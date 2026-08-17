@@ -1,0 +1,338 @@
+(() => {
+  'use strict';
+
+  const $ = (q) => document.querySelector(q);
+  const $$ = (q) => [...document.querySelectorAll(q)];
+  const params = new URLSearchParams(location.search);
+  const watchId = params.get('watch');
+
+  const state = {
+    peer: null,
+    localStream: null,
+    rawStreams: [],
+    calls: new Map(),
+    source: 'screen',
+    startedAt: null,
+    timer: null,
+    compositorStop: null,
+    audioContext: null
+  };
+
+  const homeView = $('#homeView');
+  const studioView = $('#studioView');
+  const viewerView = $('#viewerView');
+  const features = $('#features');
+  const localVideo = $('#localVideo');
+  const remoteVideo = $('#remoteVideo');
+  const remotePlaceholder = $('#remotePlaceholder');
+  const shareLink = $('#shareLink');
+  const toast = $('#toast');
+
+  $('#year').textContent = new Date().getFullYear();
+
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(showToast.t);
+    showToast.t = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function setNetwork(text, ok = true) {
+    $('#networkText').textContent = text;
+    const dot = $('.status-pill i');
+    if (dot) dot.style.background = ok ? '#20d98d' : '#ff4964';
+  }
+
+  function cleanViewerUrl(id) {
+    const u = new URL(location.href);
+    u.search = '';
+    u.hash = '';
+    u.searchParams.set('watch', id);
+    return u.toString();
+  }
+
+  async function copyLink() {
+    const value = shareLink.value;
+    if (!value || value.includes('hazırlanıyor')) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      showToast('İzleme bağlantısı kopyalandı');
+    } catch {
+      shareLink.select();
+      document.execCommand('copy');
+      showToast('Bağlantı kopyalandı');
+    }
+  }
+
+  $$('.share-option').forEach(btn => btn.addEventListener('click', () => {
+    $$('.share-option').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    state.source = btn.dataset.source;
+    $('#cameraOverlayRow').style.opacity = state.source === 'screen' ? '1' : '.35';
+    $('#cameraOverlayToggle').disabled = state.source !== 'screen';
+  }));
+
+  async function getMicrophoneStream() {
+    if (!$('#micToggle').checked) return null;
+    return navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
+  }
+
+  async function buildScreenStream() {
+    const display = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 30, max: 60 } }, audio: true });
+    state.rawStreams.push(display);
+    const mic = await getMicrophoneStream();
+    if (mic) state.rawStreams.push(mic);
+
+    if ($('#cameraOverlayToggle').checked) {
+      const cam = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, audio: false });
+      state.rawStreams.push(cam);
+      return composeScreenAndCamera(display, cam, mic);
+    }
+
+    const out = new MediaStream();
+    display.getVideoTracks().forEach(t => out.addTrack(t));
+    const audioTracks = [...display.getAudioTracks(), ...(mic ? mic.getAudioTracks() : [])];
+    const mixed = await mixAudio(audioTracks);
+    if (mixed) out.addTrack(mixed);
+    return out;
+  }
+
+  async function buildCameraStream() {
+    const cam = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 30 }, facingMode: 'user' },
+      audio: $('#micToggle').checked ? { echoCancellation: true, noiseSuppression: true, autoGainControl: true } : false
+    });
+    state.rawStreams.push(cam);
+    return cam;
+  }
+
+  async function mixAudio(tracks) {
+    if (!tracks.length) return null;
+    if (tracks.length === 1) return tracks[0];
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return tracks[0];
+    const ctx = new AudioCtx();
+    state.audioContext = ctx;
+    const dest = ctx.createMediaStreamDestination();
+    tracks.forEach(track => {
+      const source = ctx.createMediaStreamSource(new MediaStream([track]));
+      source.connect(dest);
+    });
+    return dest.stream.getAudioTracks()[0] || tracks[0];
+  }
+
+  async function composeScreenAndCamera(screen, camera, mic) {
+    const screenVideo = document.createElement('video');
+    const camVideo = document.createElement('video');
+    screenVideo.srcObject = screen;
+    camVideo.srcObject = camera;
+    screenVideo.muted = camVideo.muted = true;
+    await Promise.all([screenVideo.play(), camVideo.play()]);
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { alpha: false });
+    canvas.width = 1920;
+    canvas.height = 1080;
+    let running = true;
+
+    const draw = () => {
+      if (!running) return;
+      const sw = screenVideo.videoWidth || 1920, sh = screenVideo.videoHeight || 1080;
+      const scale = Math.min(canvas.width / sw, canvas.height / sh);
+      const dw = sw * scale, dh = sh * scale;
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(screenVideo, (canvas.width - dw)/2, (canvas.height - dh)/2, dw, dh);
+
+      const cw = 340, ratio = (camVideo.videoHeight || 720) / (camVideo.videoWidth || 1280), ch = cw * ratio;
+      const x = canvas.width - cw - 38, y = canvas.height - ch - 38;
+      ctx.save();
+      roundRect(ctx, x-6, y-6, cw+12, ch+12, 24);
+      ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.fill();
+      roundRect(ctx, x, y, cw, ch, 20); ctx.clip();
+      ctx.drawImage(camVideo, x, y, cw, ch);
+      ctx.restore();
+      requestAnimationFrame(draw);
+    };
+    draw();
+    state.compositorStop = () => { running = false; };
+
+    const out = canvas.captureStream(30);
+    const audioTracks = [...screen.getAudioTracks(), ...(mic ? mic.getAudioTracks() : [])];
+    const mixed = await mixAudio(audioTracks);
+    if (mixed) out.addTrack(mixed);
+    return out;
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x,y,w,h,r) : (ctx.rect(x,y,w,h));
+  }
+
+  async function startBroadcast() {
+    if (!navigator.mediaDevices || !window.Peer) {
+      showToast('Tarayıcınız gerekli WebRTC özelliklerini desteklemiyor.');
+      return;
+    }
+    const btn = $('#startBtn');
+    btn.disabled = true;
+    btn.querySelector('span:nth-of-type(2)').textContent = 'İzin bekleniyor…';
+
+    try {
+      state.localStream = state.source === 'screen' ? await buildScreenStream() : await buildCameraStream();
+      const videoTrack = state.localStream.getVideoTracks()[0];
+      if (videoTrack) videoTrack.addEventListener('ended', stopBroadcast);
+
+      localVideo.srcObject = state.localStream;
+      $('#stageEmpty').classList.add('hidden');
+      $('#sourceBadge').textContent = state.source === 'screen' ? 'EKRAN' : 'KAMERA';
+      homeView.classList.add('hidden');
+      features.classList.add('hidden');
+      studioView.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      startElapsed();
+      initHostPeer();
+    } catch (err) {
+      console.error(err);
+      showToast(err.name === 'NotAllowedError' ? 'Ekran/kamera izni verilmedi.' : 'Yayın başlatılamadı: ' + (err.message || err.name));
+      btn.disabled = false;
+      btn.querySelector('span:nth-of-type(2)').textContent = 'Yayını Başlat';
+      cleanupMedia();
+    }
+  }
+
+  function initHostPeer() {
+    setNetwork('Bağlantı kuruluyor');
+    state.peer = new Peer(undefined, { debug: 1 });
+    state.peer.on('open', id => {
+      shareLink.value = cleanViewerUrl(id);
+      setNetwork('Yayında');
+      showToast('Yayın hazır — bağlantıyı paylaşabilirsin');
+    });
+    state.peer.on('call', call => {
+      call.answer(state.localStream);
+      state.calls.set(call.peer, call);
+      updateViewerCount();
+      call.on('close', () => { state.calls.delete(call.peer); updateViewerCount(); });
+      call.on('error', () => { state.calls.delete(call.peer); updateViewerCount(); });
+    });
+    state.peer.on('error', err => {
+      console.error('PeerJS:', err);
+      setNetwork('Bağlantı hatası', false);
+      showToast('P2P bağlantı hatası: ' + (err.type || 'network'));
+    });
+  }
+
+  function updateViewerCount() { $('#viewerCount').textContent = state.calls.size; }
+
+  function startElapsed() {
+    state.startedAt = Date.now();
+    state.timer = setInterval(() => {
+      const s = Math.floor((Date.now() - state.startedAt) / 1000);
+      const mm = String(Math.floor(s / 60)).padStart(2,'0');
+      const ss = String(s % 60).padStart(2,'0');
+      $('#elapsed').textContent = `${mm}:${ss}`;
+    }, 1000);
+  }
+
+  function cleanupMedia() {
+    state.localStream?.getTracks().forEach(t => t.stop());
+    state.rawStreams.forEach(s => s.getTracks().forEach(t => t.stop()));
+    state.rawStreams = [];
+    state.compositorStop?.(); state.compositorStop = null;
+    state.audioContext?.close?.().catch(() => {}); state.audioContext = null;
+    state.localStream = null;
+  }
+
+  function stopBroadcast() {
+    clearInterval(state.timer);
+    state.calls.forEach(c => c.close());
+    state.calls.clear();
+    if (state.peer && !state.peer.destroyed) state.peer.destroy();
+    cleanupMedia();
+    shareLink.value = 'Bağlantı hazırlanıyor…';
+    localVideo.srcObject = null;
+    studioView.classList.add('hidden');
+    homeView.classList.remove('hidden');
+    features.classList.remove('hidden');
+    setNetwork('Hazır');
+    const btn = $('#startBtn');
+    btn.disabled = false;
+    btn.querySelector('span:nth-of-type(2)').textContent = 'Yayını Başlat';
+    showToast('Yayın sonlandırıldı');
+  }
+
+  function toggleMic() {
+    if (!state.localStream) return;
+    const tracks = state.localStream.getAudioTracks();
+    if (!tracks.length) { showToast('Bu yayında mikrofon ses izi yok.'); return; }
+    const enabled = !tracks[0].enabled;
+    tracks.forEach(t => t.enabled = enabled);
+    $('#toggleMicBtn').classList.toggle('off', !enabled);
+    $('#toggleMicBtn').firstChild.nodeValue = enabled ? '🎙' : '🔇';
+    showToast(enabled ? 'Ses açıldı' : 'Ses kapatıldı');
+  }
+
+  function initViewer(id) {
+    document.querySelector('meta[name="robots"]').setAttribute('content','noindex,nofollow');
+    document.title = 'Özel Yayın — EBS Live';
+    homeView.classList.add('hidden');
+    features.classList.add('hidden');
+    viewerView.classList.remove('hidden');
+    $('.site-header').classList.add('hidden');
+
+    if (!window.Peer) {
+      viewerError('Bağlantı bileşeni yüklenemedi.');
+      return;
+    }
+
+    const peer = new Peer(undefined, { debug: 1 });
+    state.peer = peer;
+    const status = $('#viewerStatus');
+    const tryCall = () => {
+      const empty = new MediaStream();
+      const call = peer.call(id, empty);
+      if (!call) return viewerError('Yayıncıya ulaşılamadı.');
+      let gotStream = false;
+      const timeout = setTimeout(() => { if (!gotStream) viewerError('Yayıncı çevrimdışı veya bağlantı kurulamadı.'); }, 14000);
+      call.on('stream', stream => {
+        gotStream = true; clearTimeout(timeout);
+        remoteVideo.srcObject = stream;
+        remotePlaceholder.classList.add('hidden');
+        status.innerHTML = '<i></i> Canlı yayın';
+        remoteVideo.play().catch(() => showToast('Videoyu başlatmak için ekrana dokunun.'));
+      });
+      call.on('close', () => viewerError('Yayın sona erdi.'));
+      call.on('error', () => viewerError('Yayın bağlantısı kesildi.'));
+    };
+    peer.on('open', tryCall);
+    peer.on('error', err => {
+      console.error(err);
+      if (err.type === 'peer-unavailable') viewerError('Yayıncı çevrimdışı veya yayın sona ermiş.');
+      else viewerError('P2P bağlantısı kurulamadı.');
+    });
+  }
+
+  function viewerError(message) {
+    $('#viewerStatus').innerHTML = '<i style="background:#ff4964;box-shadow:0 0 14px #ff4964"></i> Bağlantı yok';
+    remotePlaceholder.classList.remove('hidden');
+    remotePlaceholder.querySelector('h1').textContent = message;
+    remotePlaceholder.querySelector('p').textContent = 'Bağlantıyı kontrol edin veya yayıncıdan yeni bir davet bağlantısı isteyin.';
+  }
+
+  $('#startBtn').addEventListener('click', startBroadcast);
+  $('#stopBtn').addEventListener('click', stopBroadcast);
+  $('#toggleMicBtn').addEventListener('click', toggleMic);
+  $('#copyBtn').addEventListener('click', copyLink);
+  $('#copyBtn2').addEventListener('click', copyLink);
+  $('#fullscreenBtn').addEventListener('click', () => {
+    const target = $('.remote-stage');
+    if (!document.fullscreenElement) target.requestFullscreen?.(); else document.exitFullscreen?.();
+  });
+
+  addEventListener('beforeunload', () => {
+    state.peer?.destroy?.();
+    cleanupMedia();
+  });
+
+  if (watchId && /^[A-Za-z0-9_-]{1,128}$/.test(watchId)) initViewer(watchId);
+})();
