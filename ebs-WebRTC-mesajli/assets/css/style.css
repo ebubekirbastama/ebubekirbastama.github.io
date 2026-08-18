@@ -60,3 +60,10 @@ button,input{font:inherit}.shell{width:min(1180px,calc(100% - 40px));margin-inli
 .chat-input-row input[type="text"]{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:10px;background:#06111c;color:#f2f8ff;padding:0 11px;outline:none;font-size:13px}
 .chat-send-btn{border:0;border-radius:10px;padding:0 14px;height:38px;background:linear-gradient(100deg,#087eb2,#16b9ff);color:#001521;cursor:pointer;font-weight:800;font-size:12px}
 @media(max-width:480px){.chat-panel{right:12px;left:12px;width:auto;bottom:82px}.chat-toggle{right:14px;bottom:14px}}
+
+/* --- Harici kaynak / capture kart cihaz seçici --- */
+.capture-devices{padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.07)}
+.capture-field{margin-bottom:10px}
+.capture-field:last-of-type{margin-bottom:0}
+.capture-field>span{display:block;font-size:10px;color:#7c94aa;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.capture-field select{width:100%;height:42px;border:1px solid var(--line);border-radius:12px;background:#06111c;color:#bfeeff;padding:0 12px;outline:none;font-size:12px}

@@ -96,9 +96,41 @@
     $$('.share-option').forEach(x => x.classList.remove('active'));
     btn.classList.add('active');
     state.source = btn.dataset.source;
-    $('#cameraOverlayRow').style.opacity = state.source === 'screen' ? '1' : '.35';
-    $('#cameraOverlayToggle').disabled = state.source !== 'screen';
+    const isScreen = state.source === 'screen';
+    const isCapture = state.source === 'capture';
+    $('#cameraOverlayRow').style.opacity = isScreen ? '1' : '.35';
+    $('#cameraOverlayToggle').disabled = !isScreen;
+    $('#captureDeviceRow').classList.toggle('hidden', !isCapture);
+    $('#micToggle').closest('.switch-row').classList.toggle('hidden', isCapture);
+    if (isCapture) refreshDeviceLists();
   }));
+
+  async function refreshDeviceLists() {
+    try {
+      // Cihaz etiketlerini görebilmek için önce kısa bir izin iste (kapatılır).
+      const probe = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }).catch(() => null);
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      probe?.getTracks().forEach(t => t.stop());
+
+      const videoSel = $('#captureVideoSelect');
+      const audioSel = $('#captureAudioSelect');
+      const videoDevices = devices.filter(d => d.kind === 'videoinput');
+      const audioDevices = devices.filter(d => d.kind === 'audioinput');
+
+      videoSel.innerHTML = videoDevices.length
+        ? videoDevices.map((d, i) => `<option value="${d.deviceId}">${d.label || 'Video girişi ' + (i + 1)}</option>`).join('')
+        : '<option value="">Video girişi bulunamadı</option>';
+      audioSel.innerHTML = audioDevices.length
+        ? '<option value="">Yok / kullanma</option>' + audioDevices.map((d, i) => `<option value="${d.deviceId}">${d.label || 'Ses girişi ' + (i + 1)}</option>`).join('')
+        : '<option value="">Ses girişi bulunamadı</option>';
+
+      showToast('Cihaz listesi güncellendi');
+    } catch (err) {
+      console.error(err);
+      showToast('Cihazlar listelenemedi: ' + (err.message || err.name));
+    }
+  }
+  $('#refreshDevicesBtn').addEventListener('click', refreshDeviceLists);
 
   async function getMicrophoneStream() {
     if (!$('#micToggle').checked) return null;
@@ -132,6 +164,26 @@
     });
     state.rawStreams.push(cam);
     return cam;
+  }
+
+  async function buildCaptureStream() {
+    const videoId = $('#captureVideoSelect').value;
+    const audioId = $('#captureAudioSelect').value;
+    if (!videoId) throw new Error('Lütfen önce bir video girişi (capture kart) seç.');
+
+    const videoConstraint = {
+      deviceId: { exact: videoId },
+      width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 30 }
+    };
+    // Capture kartlar genelde tam çözünürlüğü desteklemeyebilir; 1080p reddedilirse
+    // tarayıcı otomatik en yakın desteklenen çözünürlüğe düşer (ideal kullanıldığı için).
+    const audioConstraint = audioId
+      ? { deviceId: { exact: audioId }, echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+      : false;
+
+    const cap = await navigator.mediaDevices.getUserMedia({ video: videoConstraint, audio: audioConstraint });
+    state.rawStreams.push(cap);
+    return cap;
   }
 
   async function mixAudio(tracks) {
@@ -208,13 +260,15 @@
     btn.querySelector('span:nth-of-type(2)').textContent = 'İzin bekleniyor…';
 
     try {
-      state.localStream = state.source === 'screen' ? await buildScreenStream() : await buildCameraStream();
+      state.localStream = state.source === 'screen' ? await buildScreenStream()
+        : state.source === 'capture' ? await buildCaptureStream()
+        : await buildCameraStream();
       const videoTrack = state.localStream.getVideoTracks()[0];
       if (videoTrack) videoTrack.addEventListener('ended', stopBroadcast);
 
       localVideo.srcObject = state.localStream;
       $('#stageEmpty').classList.add('hidden');
-      $('#sourceBadge').textContent = state.source === 'screen' ? 'EKRAN' : 'KAMERA';
+      $('#sourceBadge').textContent = state.source === 'screen' ? 'EKRAN' : state.source === 'capture' ? 'CAPTURE' : 'KAMERA';
       homeView.classList.add('hidden');
       features.classList.add('hidden');
       studioView.classList.remove('hidden');

@@ -101,6 +101,22 @@
           <button class="share-option" data-source="camera" type="button">
             <span class="option-icon">◉</span><span><b>Kamera</b><small>Web kameranı canlı paylaş</small></span><i></i>
           </button>
+          <button class="share-option" data-source="capture" type="button">
+            <span class="option-icon">🎛</span><span><b>Harici Kaynak</b><small>Capture kart / profesyonel kamera</small></span><i></i>
+          </button>
+        </div>
+
+        <div id="captureDeviceRow" class="capture-devices hidden">
+          <div class="capture-field">
+            <span>Video girişi (capture kart)</span>
+            <select id="captureVideoSelect"><option value="">Cihaz listesi için izin ver…</option></select>
+          </div>
+          <div class="capture-field">
+            <span>Ses girişi</span>
+            <select id="captureAudioSelect"><option value="">Cihaz listesi için izin ver…</option></select>
+          </div>
+          <button id="refreshDevicesBtn" type="button" class="secondary-btn" style="width:100%;margin-top:2px">🔄 Cihazları Yenile</button>
+          <p class="mini-help" style="margin:8px 0 0">Capture kartı takılıyken tarayıcı ondan bir kamera/mikrofon gibi bahseder. Listede görünmüyorsa önce "Cihazları Yenile"ye bas (tarayıcı izin isteyebilir), yoksa kart sürücüsü/USB bağlantısını kontrol et.</p>
         </div>
 
         <label class="switch-row">
