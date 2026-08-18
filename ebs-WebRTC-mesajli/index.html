@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="description" content="EBS Live ile tarayıcınızdan ekran, kamera ve mikrofonunuzu, hiçbir sunucu veya üçüncü servis kullanmadan, tamamen tarayıcılar arası WebRTC ile paylaşın.">
+  <meta name="keywords" content="EBS Live, ekran paylaşımı, WebRTC, sunucusuz, serverless, P2P yayın, manuel signaling, Ebubekir Bastama">
+  <link rel="canonical" href="https://ebubekirbastama.com.tr/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="EBS Live">
+  <meta property="og:title" content="EBS Live — Sunucusuz Ekran, Kamera ve Ses Paylaşımı">
+  <meta property="og:description" content="Hiçbir sunucu veya üçüncü servis kullanmadan, tarayıcıdan tarayıcıya doğrudan WebRTC paylaşımı.">
+  <meta property="og:url" content="https://ebubekirbastama.com.tr/">
+  <meta property="og:image" content="https://ebubekirbastama.com.tr/assets/img/logo.png">
+  <meta property="og:image:alt" content="Ebubekir Bastama logosu">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="EBS Live — Sunucusuz Ekran, Kamera ve Ses Paylaşımı">
+  <meta name="twitter:description" content="Tarayıcıdan tarayıcıya doğrudan, sunucusuz WebRTC paylaşımı.">
+  <meta name="twitter:image" content="https://ebubekirbastama.com.tr/assets/img/logo.png">
+
+  <title>EBS Live — Sunucusuz Ekran, Kamera ve Ses Paylaşımı</title>
+  <link rel="icon" type="image/png" href="assets/img/logo.png">
+  <link rel="apple-touch-icon" href="assets/img/logo.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "EBS Live",
+    "url": "https://ebubekirbastama.com.tr/",
+    "applicationCategory": "CommunicationApplication",
+    "operatingSystem": "Any",
+    "description": "Tarayıcı tabanlı, sunucusuz, tarayıcıdan tarayıcıya gerçek zamanlı ekran, kamera ve mikrofon paylaşım uygulaması.",
+    "creator": {"@type":"Person","name":"Ebubekir Bastama"}
+  }
+  </script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-a" aria-hidden="true"></div>
+  <div class="orb orb-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="EBS Live ana sayfa">
+      <img src="assets/img/logo.png" alt="Ebubekir Bastama" width="58" height="58">
+      <span><strong>EBS</strong><small>LIVE</small></span>
+    </a>
+    <div class="header-actions">
+      <span class="status-pill"><i></i><span id="networkText">Hazır</span></span>
+      <a class="ghost-link" href="https://ebubekirbastama.com.tr/" aria-label="Ana site">ebubekirbastama.com.tr</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="hero shell">
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span>WebRTC</span> • P2P • Sunucusuz</div>
+        <h1>Ekranını, kameranı ve sesini <em>doğrudan</em> paylaş.</h1>
+        <p>Hiçbir sunucu, hesap veya üçüncü servis kullanılmaz. Tarayıcın kısa bir bağlantı kodu üretir, kodu elden (WhatsApp vb.) gönderirsin; karşı tarafın tarayıcısı cevap kodu üretir, onu da geri gönderir — bağlantı tamamen ikiniz arasında kurulur.</p>
+        <div class="hero-badges">
+          <span>🚫 Sunucu yok</span>
+          <span>🔒 Uçtan uca WebRTC</span>
+          <span>🖥 Ekran + Kamera</span>
+        </div>
+
+        <div class="glass-card" style="margin-top:28px;padding:18px 20px;border-radius:18px;max-width:460px">
+          <span class="overline">YAYINA KATIL</span>
+          <div id="joinStep1">
+            <p class="mini-help">Yayıncının sana gönderdiği <b>davet kodunu</b> yapıştır.</p>
+            <textarea id="offerInput" class="code-box" rows="3" placeholder="Davet kodunu buraya yapıştır…"></textarea>
+            <button id="processOfferBtn" type="button" class="secondary-btn" style="width:100%;margin-top:10px">Kodu İşle</button>
+          </div>
+          <div id="joinStep2" class="hidden">
+            <p class="mini-help">Bu <b>cevap kodunu</b> kopyala, yayıncıya geri gönder. Yayıncı kodu girince bağlantı otomatik kurulacak.</p>
+            <textarea id="answerOutput" class="code-box" rows="3" readonly></textarea>
+            <button id="copyAnswerBtn" type="button" class="secondary-btn" style="width:100%;margin-top:10px">Cevap Kodunu Kopyala</button>
+            <button id="goWatchBtn" type="button" class="secondary-btn" style="width:100%;margin-top:8px">Bağlantıyı Bekle / Yayını Aç</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card launcher reveal delay-1">
+        <div class="card-head">
+          <div><span class="overline">YENİ OTURUM</span><h2>Ne paylaşmak istiyorsun?</h2></div>
+          <div class="live-dot" title="Canlı"><span></span></div>
+        </div>
+
+        <div class="share-grid" role="group" aria-label="Paylaşım kaynakları">
+          <button class="share-option active" data-source="screen" type="button">
+            <span class="option-icon">▣</span><span><b>Ekran</b><small>Sekme, pencere veya masaüstü</small></span><i></i>
+          </button>
+          <button class="share-option" data-source="camera" type="button">
+            <span class="option-icon">◉</span><span><b>Kamera</b><small>Web kameranı canlı paylaş</small></span><i></i>
+          </button>
+        </div>
+
+        <label class="switch-row">
+          <span><b>Mikrofon</b><small>Konuşmanı yayına ekle</small></span>
+          <input id="micToggle" type="checkbox" checked><span class="switch"></span>
+        </label>
+        <label class="switch-row" id="cameraOverlayRow">
+          <span><b>Kamera katmanı</b><small>Ekranın sağ altına kameranı ekle</small></span>
+          <input id="cameraOverlayToggle" type="checkbox"><span class="switch"></span>
+        </label>
+
+        <button id="startBtn" class="primary-btn magnetic" type="button">
+          <span class="btn-glow"></span><span>Yayını Başlat</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="privacy-note">İzinler yalnızca sen onayladığında istenir. Hiçbir görüntü/ses sunucudan geçmez; sadece bağlantı kodları elden değiştirilir.</p>
+      </div>
+    </section>
+
+    <section id="studioView" class="studio shell hidden" aria-live="polite">
+      <div class="studio-top">
+        <div>
+          <span class="overline red">● CANLI YAYIN</span>
+          <h2>Yayın Stüdyosu</h2>
+        </div>
+        <div class="viewer-count"><span>Bağlı İzleyici</span><b id="viewerCount">0</b></div>
+      </div>
+
+      <div class="stage-wrap">
+        <video id="localVideo" playsinline autoplay muted></video>
+        <div id="stageEmpty" class="stage-empty"><span>Yayın hazırlanıyor…</span></div>
+        <div class="stage-hud"><span id="sourceBadge">EKRAN</span><span id="elapsed">00:00</span></div>
+      </div>
+
+      <div class="control-deck glass-card">
+        <div class="invite-box">
+          <span>İzleyici Davetleri</span>
+          <p class="mini-help" style="margin:0 0 10px">Her izleyici için ayrı bir davet oluştur, kodu ona gönder, cevabını yapıştırıp bağlan.</p>
+          <button id="addViewerBtn" type="button" class="secondary-btn">+ Yeni İzleyici Davet Et</button>
+          <div id="viewerInvites"></div>
+        </div>
+        <div class="studio-controls">
+          <button id="toggleMicBtn" class="round-control" type="button" title="Mikrofon">🎙<span>Mikrofon</span></button>
+          <button id="stopBtn" class="round-control danger" type="button" title="Yayını bitir">■<span>Bitir</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="viewerView" class="viewer shell hidden">
+      <div class="viewer-heading">
+        <a class="mini-brand" href="./"><img src="assets/img/logo.png" alt="EBS" width="48" height="48"><span>EBS LIVE</span></a>
+        <span id="viewerStatus" class="status-pill"><i></i> Bağlantı bekleniyor</span>
+      </div>
+      <div class="remote-stage">
+        <video id="remoteVideo" playsinline autoplay controls></video>
+        <div id="remotePlaceholder" class="remote-placeholder">
+          <div class="pulse-rings"><span></span><span></span><span></span></div>
+          <h1>Yayıncı bekleniyor…</h1>
+          <p>Cevap kodunu yayıncıya gönderdiysen, yayıncı kodu girince bağlantı birkaç saniye içinde kurulacak.</p>
+        </div>
+      </div>
+      <div class="viewer-bar glass-card">
+        <div><b>Sunucusuz P2P Oturum</b><span>Görüntü doğrudan tarayıcılar arasında aktarılır, hiçbir sunucudan geçmez.</span></div>
+        <button id="fullscreenBtn" class="secondary-btn" type="button">⛶ Tam ekran</button>
+      </div>
+    </section>
+
+    <section class="features shell" id="features">
+      <article><span>01</span><h3>Sunucu yok</h3><p>Signaling bile elden yapılır. GitHub Pages dışında hiçbir barındırma veya servis gerekmez.</p></article>
+      <article><span>02</span><h3>Tarayıcı tabanlı</h3><p>Modern WebRTC desteği olan masaüstü ve mobil tarayıcılarda uygulama kurmadan çalışır.</p></article>
+      <article><span>03</span><h3>Kontrol sende</h3><p>Bağlantı kodunu yalnızca sen ve gönderdiğin kişi görür. Hiçbir üçüncü taraf araya girmez.</p></article>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <div><img src="assets/img/logo.png" alt="" width="42" height="42"><span>© <span id="year"></span> Ebubekir Bastama</span></div>
+    <p>EBS Live • HTML5 + CSS3 + JavaScript + WebRTC (sunucusuz)</p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <button id="chatToggleBtn" class="chat-toggle hidden" type="button" title="Mesajlar">
+    💬<span id="chatBadge" class="chat-badge hidden">0</span>
+  </button>
+
+  <div id="chatPanel" class="chat-panel hidden">
+    <div class="chat-head">
+      <b>Mesajlar</b>
+      <button id="chatCloseBtn" type="button" class="chat-close" aria-label="Kapat">✕</button>
+    </div>
+
+    <div id="chatUsernameRow" class="chat-username-row">
+      <span>Sohbette görünecek adın:</span>
+      <div class="chat-username-inputs">
+        <input id="chatUsernameInput" type="text" maxlength="24" placeholder="Adını gir">
+        <button id="chatUsernameSaveBtn" type="button">Kaydet</button>
+      </div>
+    </div>
+
+    <div id="chatMessages" class="chat-messages"></div>
+
+    <div id="chatEmojiPicker" class="chat-emoji-picker hidden"></div>
+
+    <div id="chatInputRow" class="chat-input-row hidden">
+      <button id="chatEmojiBtn" type="button" class="chat-icon-btn" title="Emoji">😊</button>
+      <button id="chatFileBtn" type="button" class="chat-icon-btn" title="Dosya gönder">📎</button>
+      <input id="chatFileInput" type="file" class="hidden">
+      <input id="chatTextInput" type="text" placeholder="Mesaj yaz…" maxlength="2000" autocomplete="off">
+      <button id="chatSendBtn" type="button" class="chat-send-btn">Gönder</button>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>
