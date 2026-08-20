@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Online Ses Temizleme ve Gürültü Giderme Aracı | Ebubekir Bastama</title>
+<meta name="description" content="Ücretsiz online ses temizleme aracı ile video ve ses dosyalarındaki arka plan gürültüsü, hışırtı ve dip sesi azaltın. MP4, MOV, WAV, MP3 ve M4A dosyalarını tarayıcıda güvenli şekilde temizleyin.">
+<meta name="keywords" content="ses temizleme, ses temizleyici, gürültü giderme, dip ses temizleme, arka plan gürültüsü temizleme, online ses temizleme, video ses temizleme, mp3 ses temizleme, yapay zeka ses temizleme, ses netleştirme">
+<meta name="author" content="Ebubekir Bastama">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="theme-color" content="#0b0d14">
+<link rel="canonical" href="https://www.ebubekirbastama.com.tr/ses-temizleyici/">
+
+<meta property="og:locale" content="tr_TR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Online Ses Temizleme ve Gürültü Giderme Aracı">
+<meta property="og:description" content="Video ve ses dosyalarındaki hışırtı, dip ses ve arka plan gürültüsünü tarayıcınızda temizleyin. Dosyalar sunucuya yüklenmez.">
+<meta property="og:url" content="https://www.ebubekirbastama.com.tr/ses-temizleyici/">
+<meta property="og:site_name" content="Ebubekir Bastama">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Online Ses Temizleme ve Gürültü Giderme Aracı">
+<meta name="twitter:description" content="MP4, MOV, WAV, MP3 ve M4A dosyalarında arka plan gürültüsü ve dip sesi azaltın. İşlem tamamen tarayıcıda yapılır.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Ses Temizleyici Stüdyo",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web",
+  "url": "https://www.ebubekirbastama.com.tr/ses-temizleyici/",
+  "description": "Video ve ses dosyalarındaki arka plan gürültüsü, hışırtı ve dip sesi azaltmaya yönelik tarayıcı tabanlı online ses temizleme aracı.",
+  "author": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama",
+    "url": "https://www.ebubekirbastama.com.tr/"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY"
+  },
+  "featureList": [
+    "Arka plan gürültüsü azaltma",
+    "Dip ses ve hışırtı temizleme",
+    "Video ve ses dosyası desteği",
+    "Toplu dosya işleme",
+    "Tarayıcıda yerel işlem"
+  ]
+}
+</script>
+<style>
+  :root{
+    --bg:#0b0d14;
+    --bg2:#12151f;
+    --panel:#171b27;
+    --panel2:#1e2333;
+    --border:#2a3042;
+    --text:#e9ecf5;
+    --muted:#8b92a8;
+    --accent:#7c5cff;
+    --accent2:#5ce1ff;
+    --danger:#ff5c7c;
+    --success:#4ade80;
+    --wave-clean:#5ce1ff;
+    --wave-noise:#ff5c7c;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.20), transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, rgba(92,225,255,.12), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', Roboto, Arial, sans-serif;
+    padding:24px;
+    display:flex;
+    justify-content:center;
+  }
+  .app{
+    width:100%;
+    max-width:980px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:4px 2px;
+  }
+  .logo{
+    width:44px;height:44px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;flex-shrink:0;
+    box-shadow:0 8px 20px rgba(124,92,255,.35);
+  }
+  header h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.2px;}
+  header p{margin:2px 0 0;color:var(--muted);font-size:13px;}
+
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--bg2));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+  }
+
+  /* Dropzone */
+  #dropzone{
+    border:2px dashed var(--border);
+    border-radius:var(--radius);
+    padding:40px 20px;
+    text-align:center;
+    cursor:pointer;
+    transition:.2s all;
+    background:rgba(255,255,255,.015);
+  }
+  #dropzone.drag{
+    border-color:var(--accent);
+    background:rgba(124,92,255,.08);
+  }
+  #dropzone .icon{font-size:38px;margin-bottom:10px;}
+  #dropzone h3{margin:0 0 6px;font-size:16px;}
+  #dropzone p{margin:0;color:var(--muted);font-size:13px;}
+  #fileInput{display:none;}
+
+  .fileinfo{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 16px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-size:13px;
+    flex-wrap:wrap;
+  }
+  .fileinfo .tag{
+    background:rgba(124,92,255,.15);
+    color:var(--accent2);
+    padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;
+  }
+  .fileinfo .name{font-weight:600;word-break:break-all;flex:1;min-width:140px;}
+  .fileinfo .muted{color:var(--muted);}
+
+  /* Buttons */
+  .btnrow{display:flex;gap:12px;flex-wrap:wrap;}
+  button{
+    font-family:inherit;
+    border:none;border-radius:12px;
+    padding:13px 20px;
+    font-size:14px;font-weight:600;
+    cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:.15s transform, .15s box-shadow, .15s opacity;
+  }
+  button:active{transform:scale(.97);}
+  button:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),#9b7bff);
+    color:white;
+    box-shadow:0 8px 20px rgba(124,92,255,.3);
+  }
+  .btn-primary:not(:disabled):hover{box-shadow:0 10px 26px rgba(124,92,255,.45);}
+  .btn-secondary{
+    background:var(--panel2);
+    color:var(--text);
+    border:1px solid var(--border);
+  }
+  .btn-secondary:not(:disabled):hover{border-color:var(--accent);}
+  .btn-success{
+    background:linear-gradient(135deg,#22c58b,#4ade80);
+    color:#08150e;
+    box-shadow:0 8px 20px rgba(74,222,128,.25);
+  }
+  .btn-ghost{background:transparent;color:var(--muted);}
+
+  /* Section titles */
+  .section-title{
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:14px;
+  }
+  .section-title .num{
+    width:26px;height:26px;border-radius:8px;
+    background:var(--panel2);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;color:var(--accent2);
+    flex-shrink:0;
+  }
+  .section-title h2{font-size:15px;margin:0;font-weight:700;}
+  .section-title span{color:var(--muted);font-size:12.5px;margin-left:auto;}
+
+  /* Waveform */
+  .wave-wrap{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    position:relative;
+  }
+  canvas{width:100%;display:block;border-radius:8px;background:#0d0f18;}
+  .wave-label{
+    position:absolute;top:20px;left:20px;
+    font-size:11px;font-weight:700;letter-spacing:.5px;
+    text-transform:uppercase;padding:4px 10px;border-radius:999px;
+    background:rgba(0,0,0,.4);backdrop-filter:blur(4px);
+  }
+
+  /* Noise analysis result */
+  .analysis-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:12px;margin-top:14px;
+  }
+  .stat{
+    background:var(--panel2);border:1px solid var(--border);
+    border-radius:12px;padding:14px;
+  }
+  .stat .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+  .stat .value{font-size:20px;font-weight:800;margin-top:4px;}
+  .stat .value.bad{color:var(--danger);}
+  .stat .value.ok{color:var(--success);}
+  .badge-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .badge{
+    font-size:12px;padding:6px 12px;border-radius:999px;
+    background:rgba(255,92,124,.12);color:#ff8fa6;
+    border:1px solid rgba(255,92,124,.3);
+    font-weight:600;
+  }
+
+  /* Progress */
+  .progress-wrap{margin-top:14px;}
+  .progress-bar{
+    height:8px;border-radius:999px;background:var(--panel2);
+    overflow:hidden;border:1px solid var(--border);
+  }
+  .progress-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:width .2s;
+  }
+  .progress-text{font-size:12.5px;color:var(--muted);margin-top:8px;}
+
+  /* Sliders (intensity) */
+  .options{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;
+  }
+  .opt{
+    flex:1;min-width:120px;
+    background:var(--panel2);border:1px solid var(--border);
+    border-radius:12px;padding:12px 14px;cursor:pointer;
+    text-align:center;transition:.15s;
+  }
+  .opt.active{
+    border-color:var(--accent);
+    background:rgba(124,92,255,.12);
+    box-shadow:0 0 0 1px var(--accent) inset;
+  }
+  .opt .t{font-weight:700;font-size:13.5px;}
+  .opt .d{font-size:11.5px;color:var(--muted);margin-top:3px;}
+
+  audio{width:100%;margin-top:10px;border-radius:10px;}
+
+  .file-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+  .file-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;font-size:12.5px;}
+  .file-item .name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .file-item .status{color:var(--muted);flex-shrink:0;}
+  .file-item .status.done{color:var(--success);}
+  .file-item .status.error{color:var(--danger);}
+  .batch-note{margin-top:10px;color:var(--muted);font-size:12px;}
+  .hidden{display:none !important;}
+
+  .footer-note{
+    text-align:center;color:var(--muted);font-size:12px;padding:6px;
+  }
+  .footer-note a{color:var(--accent2);text-decoration:none;}
+
+  @media (max-width:640px){
+    body{padding:14px;}
+    .card{padding:16px;}
+    header h1{font-size:17px;}
+    #dropzone{padding:28px 12px;}
+    .btnrow{flex-direction:column;}
+    .btnrow button{width:100%;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="logo">🎙️</div>
+    <div>
+      <h1>Ses Temizleyici Stüdyo</h1>
+      <p>Arka plan hışırtısını (ssss) görselleştir, analiz et ve tek tıkla temizle</p>
+    </div>
+  </header>
+
+  <!-- STEP 1: Upload -->
+  <div class="card">
+    <div class="section-title">
+      <div class="num">1</div>
+      <h2>Dosya Yükle</h2>
+      <span id="ffmpegStatus">Motor yükleniyor…</span>
+    </div>
+
+    <div id="dropzone">
+      <div class="icon">📁</div>
+      <h3>Video veya ses dosyalarını buraya sürükleyin</h3>
+      <p>ya da tıklayıp birden fazla dosya seçin · MP4, MOV, WAV, MP3, M4A desteklenir</p>
+      <input type="file" id="fileInput" accept="video/*,audio/*" multiple>
+    </div>
+
+    <div id="fileinfo" class="fileinfo hidden" style="margin-top:14px;">
+      <span class="tag" id="fileTag">DOSYA</span>
+      <span class="name" id="fileName"></span>
+      <span class="muted" id="fileSize"></span>
+    </div>
+    <div id="fileList" class="file-list hidden"></div>
+    <div id="batchNote" class="batch-note hidden"></div>
+  </div>
+
+  <!-- STEP 2: Waveform + Analysis -->
+  <div class="card hidden" id="analysisCard">
+    <div class="section-title">
+      <div class="num">2</div>
+      <h2>Gürültüyü Gör ve Analiz Et</h2>
+    </div>
+
+    <div class="wave-wrap">
+      <span class="wave-label" style="color:var(--wave-noise);border:1px solid rgba(255,92,124,.4);">Orijinal</span>
+      <canvas id="waveOriginal" height="120"></canvas>
+    </div>
+
+    <div class="btnrow" style="margin-top:14px;">
+      <button class="btn-secondary" id="btnAnalyze">🔍 Gürültüyü Analiz Et</button>
+      <button class="btn-ghost" id="btnPlayOriginal">▶️ Orijinali Dinle</button>
+    </div>
+
+    <div id="analysisResult" class="hidden">
+      <div class="analysis-grid">
+        <div class="stat">
+          <div class="label">Gürültü Tabanı</div>
+          <div class="value bad" id="statNoiseFloor">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Tahmini Hışırtı</div>
+          <div class="value bad" id="statHiss">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Sinyal / Gürültü</div>
+          <div class="value" id="statSNR">—</div>
+        </div>
+      </div>
+      <div class="badge-row" id="badgeRow"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Clean -->
+  <div class="card hidden" id="cleanCard">
+    <div class="section-title">
+      <div class="num">3</div>
+      <h2>Temizleme Gücünü Seç ve Uygula</h2>
+    </div>
+
+    <div class="options">
+      <div class="opt" data-level="hafif">
+        <div class="t">🌿 Hafif</div>
+        <div class="d">Konuşma netliğini en çok korur</div>
+      </div>
+      <div class="opt active" data-level="normal">
+        <div class="t">⚡ Normal</div>
+        <div class="d">Önerilen, dengeli temizlik</div>
+      </div>
+      <div class="opt" data-level="guclu">
+        <div class="t">🔥 Güçlü</div>
+        <div class="d">Yoğun hışırtı / gürültü için</div>
+      </div>
+    </div>
+
+    <div class="btnrow" style="margin-top:16px;">
+      <button class="btn-primary" id="btnClean">✨ Dosyaları Temizle</button>
+    </div>
+
+    <div class="progress-wrap hidden" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">Hazırlanıyor…</div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Result -->
+  <div class="card hidden" id="resultCard">
+    <div class="section-title">
+      <div class="num">4</div>
+      <h2>Temizlenmiş Sonuç</h2>
+    </div>
+
+    <div class="wave-wrap">
+      <span class="wave-label" style="color:var(--wave-clean);border:1px solid rgba(92,225,255,.4);">Temizlenmiş</span>
+      <canvas id="waveClean" height="120"></canvas>
+    </div>
+
+    <audio id="audioPreview" controls></audio>
+
+    <div class="btnrow" style="margin-top:16px;">
+      <button class="btn-success" id="btnDownload">⬇️ Sonucu İndir</button>
+      <button class="btn-secondary" id="btnReset">🔄 Yeni Dosya</button>
+    </div>
+  </div>
+
+  <div class="footer-note">Tüm işlem tarayıcınızda yerel olarak yapılır — dosyanız hiçbir sunucuya yüklenmez.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+const { createFFmpeg, fetchFile } = FFmpeg;
+
+function createEngine(options = {}) {
+  return createFFmpeg({
+    log: false,
+    corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
+    mainName: 'main',
+    ...options
+  });
+}
+
+// core-st motoru tek komut çalıştırıldıktan sonra yeniden kullanılamaz.
+// Bu örnek yalnızca ilk yükleme/uyumluluk kontrolü içindir.
+let ffmpeg = createEngine();
+
+let currentFile = null;
+let selectedFiles = [];
+let isVideo = false;
+let audioCtx = null;
+let originalAudioBuffer = null;
+let cleanedBlobUrl = null;
+let cleanedFileName = '';
+let cleanedResults = [];
+let zipBlobUrl = null;
+let selectedLevel = 'normal';
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const ffmpegStatus = document.getElementById('ffmpegStatus');
+
+(async () => {
+  try {
+    await ffmpeg.load();
+    ffmpegStatus.textContent = 'Motor hazır ✓';
+    ffmpegStatus.style.color = 'var(--success)';
+  } catch (e) {
+    ffmpegStatus.textContent = 'Motor yüklenemedi: ' + (e && e.message ? e.message : 'Bilinmeyen hata');
+    ffmpegStatus.style.color = 'var(--danger)';
+  }
+})();
+
+// --- Drag & drop ---
+['dragenter','dragover'].forEach(ev => dropzone.addEventListener(ev, e=>{
+  e.preventDefault(); dropzone.classList.add('drag');
+}));
+['dragleave','drop'].forEach(ev => dropzone.addEventListener(ev, e=>{
+  e.preventDefault(); dropzone.classList.remove('drag');
+}));
+dropzone.addEventListener('drop', e=>{
+  const files = Array.from(e.dataTransfer.files || []);
+  if (files.length) handleFiles(files);
+});
+dropzone.addEventListener('click', ()=> fileInput.click());
+fileInput.addEventListener('change', e=>{
+  const files = Array.from(e.target.files || []);
+  if (files.length) handleFiles(files);
+});
+
+function fmtBytes(b){
+  if (b < 1024*1024) return (b/1024).toFixed(0)+' KB';
+  return (b/1024/1024).toFixed(1)+' MB';
+}
+
+async function handleFiles(files){
+  selectedFiles = files.filter(f => f && (f.type.startsWith('video') || f.type.startsWith('audio') || /\.(mp4|mov|mkv|avi|webm|wav|mp3|m4a|aac|ogg)$/i.test(f.name)));
+  if (!selectedFiles.length) return;
+
+  currentFile = selectedFiles[0];
+  isVideo = currentFile.type.startsWith('video') || /\.(mp4|mov|mkv|avi|webm)$/i.test(currentFile.name);
+
+  document.getElementById('fileinfo').classList.remove('hidden');
+  document.getElementById('fileTag').textContent = selectedFiles.length > 1 ? selectedFiles.length + ' DOSYA' : (isVideo ? 'VİDEO' : 'SES');
+  document.getElementById('fileName').textContent = selectedFiles.length > 1 ? 'Toplu seçim' : currentFile.name;
+  document.getElementById('fileSize').textContent = fmtBytes(selectedFiles.reduce((n,f)=>n+f.size,0));
+
+  renderFileList();
+  const note = document.getElementById('batchNote');
+  note.classList.remove('hidden');
+  note.textContent = selectedFiles.length === 1
+    ? 'Tek dosya seçildi: işlem sonunda dosya doğrudan indirilecek.'
+    : selectedFiles.length + ' dosya seçildi: işlem sonunda tüm sonuçlar tek ZIP dosyası olarak indirilecek.';
+
+  document.getElementById('analysisCard').classList.remove('hidden');
+  document.getElementById('cleanCard').classList.remove('hidden');
+  document.getElementById('resultCard').classList.add('hidden');
+  document.getElementById('analysisResult').classList.add('hidden');
+  document.getElementById('btnClean').textContent = selectedFiles.length > 1 ? `✨ ${selectedFiles.length} Dosyayı Temizle` : '✨ Gürültüyü Temizle';
+
+  try {
+    await decodeAndDraw(currentFile, 'waveOriginal');
+  } catch (err) {
+    originalAudioBuffer = null;
+    console.warn('İlk dosya analiz önizlemesi oluşturulamadı:', err);
+  }
+}
+
+function renderFileList(){
+  const list = document.getElementById('fileList');
+  list.innerHTML = '';
+  list.classList.remove('hidden');
+  selectedFiles.forEach((f,i)=>{
+    const row = document.createElement('div');
+    row.className = 'file-item';
+    row.innerHTML = `<span>${f.type.startsWith('video') || /\.(mp4|mov|mkv|avi|webm)$/i.test(f.name) ? '🎬' : '🎵'}</span><span class="name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span><span>${fmtBytes(f.size)}</span><span class="status" id="fileStatus${i}">Bekliyor</span>`;
+    list.appendChild(row);
+  });
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>'"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':'&quot;'}[c]));
+}
+
+async function decodeAndDraw(fileOrBlob, canvasId){
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  let audioBuffer;
+  try {
+    const arrBuf = await fileOrBlob.arrayBuffer();
+    audioBuffer = await audioCtx.decodeAudioData(arrBuf.slice(0));
+  } catch (err) {
+    // Bazı tarayıcılar MP4/MOV içindeki sesi Web Audio API ile doğrudan çözemeyebilir.
+    // core-st aynı FFmpeg örneğini ikinci kez çalıştırmada exit(0) hatası verebildiği için
+    // analiz çıkarımı her seferinde yeni, tek kullanımlık bir motorla yapılır.
+    const previewFfmpeg = createEngine();
+    await previewFfmpeg.load();
+
+    const tmpIn = 'preview_input_' + Date.now() + '.bin';
+    const tmpOut = 'preview_audio_' + Date.now() + '.wav';
+    previewFfmpeg.FS('writeFile', tmpIn, await fetchFile(fileOrBlob));
+    try {
+      await previewFfmpeg.run('-i', tmpIn, '-vn', '-acodec', 'pcm_s16le', '-ar', '44100', '-ac', '2', tmpOut);
+      const wav = previewFfmpeg.FS('readFile', tmpOut);
+      const copy = wav.buffer.slice(wav.byteOffset, wav.byteOffset + wav.byteLength);
+      audioBuffer = await audioCtx.decodeAudioData(copy);
+    } finally {
+      try { previewFfmpeg.FS('unlink', tmpIn); } catch (_) {}
+      try { previewFfmpeg.FS('unlink', tmpOut); } catch (_) {}
+    }
+  }
+
+  if (canvasId === 'waveOriginal') originalAudioBuffer = audioBuffer;
+  drawWaveform(audioBuffer, document.getElementById(canvasId), canvasId === 'waveOriginal' ? '#ff5c7c' : '#5ce1ff');
+  return audioBuffer;
+}
+
+function drawWaveform(audioBuffer, canvas, color){
+  const dpr = window.devicePixelRatio || 1;
+  const cssWidth = canvas.clientWidth || canvas.parentElement.clientWidth;
+  const cssHeight = 120;
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+  canvas.style.height = cssHeight+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0,0,cssWidth,cssHeight);
+
+  const data = audioBuffer.getChannelData(0);
+  const step = Math.ceil(data.length / cssWidth);
+  const amp = cssHeight/2;
+
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.2;
+  ctx.globalAlpha = 0.95;
+
+  for (let i=0; i<cssWidth; i++){
+    let min=1.0, max=-1.0;
+    for (let j=0;j<step;j++){
+      const idx = i*step+j;
+      if (idx >= data.length) break;
+      const v = data[idx];
+      if (v<min) min=v;
+      if (v>max) max=v;
+    }
+    ctx.moveTo(i, amp + min*amp*0.95);
+    ctx.lineTo(i, amp + max*amp*0.95);
+  }
+  ctx.stroke();
+
+  // center line
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.beginPath();
+  ctx.moveTo(0,amp); ctx.lineTo(cssWidth,amp);
+  ctx.stroke();
+}
+
+// --- Play original ---
+document.getElementById('btnPlayOriginal').addEventListener('click', ()=>{
+  if (!currentFile) return;
+  const url = URL.createObjectURL(currentFile);
+  const a = new Audio(url);
+  a.play();
+});
+
+// --- Noise analysis (RMS-based noise floor estimation, framed as AI analysis) ---
+document.getElementById('btnAnalyze').addEventListener('click', async ()=>{
+  if (!originalAudioBuffer) return;
+  const btn = document.getElementById('btnAnalyze');
+  btn.disabled = true; btn.textContent = '🔍 Analiz ediliyor…';
+
+  await new Promise(r=>setTimeout(r, 400)); // small UX delay
+
+  const data = originalAudioBuffer.getChannelData(0);
+  const sr = originalAudioBuffer.sampleRate;
+  const frameSize = Math.floor(sr*0.05); // 50ms frames
+  const rmsValues = [];
+  for (let i=0; i<data.length; i+=frameSize){
+    let sum=0, n=0;
+    for (let j=i; j<Math.min(i+frameSize, data.length); j++){ sum += data[j]*data[j]; n++; }
+    rmsValues.push(Math.sqrt(sum/n));
+  }
+  rmsValues.sort((a,b)=>a-b);
+  const noiseFloor = rmsValues[Math.floor(rmsValues.length*0.15)] || 0; // low percentile = noise floor
+  const peakLevel = rmsValues[Math.floor(rmsValues.length*0.95)] || 0.0001;
+  const snrLinear = peakLevel / (noiseFloor + 1e-8);
+  const snrDb = 20*Math.log10(snrLinear || 1);
+  const noiseFloorDb = 20*Math.log10(noiseFloor + 1e-8);
+
+  document.getElementById('statNoiseFloor').textContent = noiseFloorDb.toFixed(1)+' dB';
+  document.getElementById('statHiss').textContent = noiseFloorDb > -45 ? 'Yüksek' : (noiseFloorDb > -55 ? 'Orta' : 'Düşük');
+  document.getElementById('statHiss').className = 'value ' + (noiseFloorDb > -50 ? 'bad':'ok');
+  document.getElementById('statSNR').textContent = snrDb.toFixed(1)+' dB';
+  document.getElementById('statSNR').className = 'value ' + (snrDb < 20 ? 'bad':'ok');
+
+  const badgeRow = document.getElementById('badgeRow');
+  badgeRow.innerHTML = '';
+  const badges = [];
+  if (noiseFloorDb > -45) badges.push('⚠️ Belirgin arka plan hışırtısı (ssss) tespit edildi');
+  if (snrDb < 20) badges.push('⚠️ Düşük sinyal/gürültü oranı');
+  if (badges.length === 0) badges.push('✅ Gürültü seviyesi düşük, yine de temizlik uygulanabilir');
+  badges.forEach(b=>{
+    const el = document.createElement('div');
+    el.className = 'badge';
+    el.textContent = b;
+    badgeRow.appendChild(el);
+  });
+
+  document.getElementById('analysisResult').classList.remove('hidden');
+  document.getElementById('cleanCard').classList.remove('hidden');
+  btn.disabled = false; btn.textContent = '🔍 Yeniden Analiz Et';
+});
+
+// --- Level selection ---
+document.querySelectorAll('.opt').forEach(opt=>{
+  opt.addEventListener('click', ()=>{
+    document.querySelectorAll('.opt').forEach(o=>o.classList.remove('active'));
+    opt.classList.add('active');
+    selectedLevel = opt.dataset.level;
+  });
+});
+
+function filterChain(level){
+  if (level === 'hafif') return 'highpass=f=70,afftdn=nr=12:nf=-30:tn=1,loudnorm=I=-16:TP=-1.5:LRA=11';
+  if (level === 'guclu') return 'highpass=f=90,afftdn=nr=30:nf=-20:tn=1,anlmdn=s=5:p=0.004:r=0.008,loudnorm=I=-16:TP=-1.5:LRA=11';
+  return 'highpass=f=80,afftdn=nr=25:nf=-25:tn=1,anlmdn=s=3:p=0.003:r=0.006,loudnorm=I=-16:TP=-1.5:LRA=11';
+}
+
+// --- Clean process using ffmpeg.wasm ---
+document.getElementById('btnClean').addEventListener('click', async ()=>{
+  if (!selectedFiles.length) return;
+  const btn = document.getElementById('btnClean');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+
+  btn.disabled = true;
+  progressWrap.classList.remove('hidden');
+  progressFill.style.width = '2%';
+  cleanedResults = [];
+  if (cleanedBlobUrl) { URL.revokeObjectURL(cleanedBlobUrl); cleanedBlobUrl = null; }
+  if (zipBlobUrl) { URL.revokeObjectURL(zipBlobUrl); zipBlobUrl = null; }
+
+  try {
+    for (let i=0; i<selectedFiles.length; i++){
+      const file = selectedFiles[i];
+      const status = document.getElementById('fileStatus'+i);
+      if (status) { status.textContent = 'İşleniyor…'; status.className = 'status'; }
+      progressText.textContent = `${i+1}/${selectedFiles.length} işleniyor: ${file.name}`;
+
+      try {
+        const result = await cleanOneFile(file, i, selectedFiles.length, progressFill, progressText);
+        cleanedResults.push(result);
+        if (status) { status.textContent = 'Tamamlandı ✓'; status.className = 'status done'; }
+      } catch (err) {
+        console.error('Dosya işleme hatası:', file.name, err);
+        if (status) { status.textContent = 'Hata'; status.className = 'status error'; }
+        throw new Error(`${file.name}: ${err && err.message ? err.message : err}`);
+      }
+    }
+
+    progressFill.style.width = '100%';
+    const resultCard = document.getElementById('resultCard');
+    resultCard.classList.remove('hidden');
+    const downloadBtn = document.getElementById('btnDownload');
+
+    if (cleanedResults.length === 1){
+      const r = cleanedResults[0];
+      cleanedBlobUrl = URL.createObjectURL(r.blob);
+      cleanedFileName = r.name;
+      downloadBtn.textContent = '⬇️ Temizlenmiş Dosyayı İndir';
+      progressText.textContent = 'Tamamlandı ✓ Tek dosya doğrudan indirilebilir.';
+
+      const preview = document.getElementById('audioPreview');
+      preview.src = cleanedBlobUrl;
+      try { await decodeAndDraw(r.blob, 'waveClean'); } catch (_) {}
+    } else {
+      progressText.textContent = 'ZIP hazırlanıyor…';
+      const zip = new JSZip();
+      cleanedResults.forEach(r => zip.file(r.name, r.blob));
+      const zipBlob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}}, meta=>{
+        progressFill.style.width = Math.min(100, 95 + Math.round(meta.percent*0.05)) + '%';
+      });
+      zipBlobUrl = URL.createObjectURL(zipBlob);
+      cleanedFileName = `temizlenmis_dosyalar_${new Date().toISOString().slice(0,10)}.zip`;
+      downloadBtn.textContent = `⬇️ ${cleanedResults.length} Dosyayı ZIP Olarak İndir`;
+      progressText.textContent = `Tamamlandı ✓ ${cleanedResults.length} dosya ZIP içinde hazır.`;
+
+      const preview = document.getElementById('audioPreview');
+      preview.removeAttribute('src');
+      preview.load();
+      const canvas = document.getElementById('waveClean');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+
+    resultCard.scrollIntoView({behavior:'smooth', block:'start'});
+  } catch (err){
+    progressText.textContent = 'Hata: ' + (err && err.message ? err.message : err);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+async function cleanOneFile(file, index, total, progressFill, progressText){
+  const video = file.type.startsWith('video') || /\.(mp4|mov|mkv|avi|webm)$/i.test(file.name);
+  const workFfmpeg = createEngine();
+  await workFfmpeg.load();
+
+  const ext = file.name.match(/\.[a-zA-Z0-9]+$/)?.[0] || (video ? '.mp4' : '.wav');
+  const safeBase = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_\-]+/g,'_').slice(0,80) || `dosya_${index+1}`;
+  const inName = `input_${index}_${Date.now()}${ext}`;
+  const outName = video ? `output_${index}.mp4` : `output_${index}.mp3`;
+  workFfmpeg.FS('writeFile', inName, await fetchFile(file));
+
+  workFfmpeg.setProgress(({ratio})=>{
+    const local = Math.max(0, Math.min(1, ratio || 0));
+    const overall = ((index + local) / total) * 92;
+    progressFill.style.width = Math.max(2, Math.round(overall)) + '%';
+    progressText.textContent = `${index+1}/${total} temizleniyor… %${Math.round(local*100)}`;
+  });
+
+  const chain = filterChain(selectedLevel);
+  if (video){
+    await workFfmpeg.run(
+      '-i', inName,
+      '-map', '0:v:0', '-map', '0:a:0?',
+      '-c:v', 'copy',
+      '-af', chain,
+      '-c:a', 'aac', '-b:a', '192k',
+      '-movflags', '+faststart',
+      outName
+    );
+  } else {
+    await workFfmpeg.run('-i', inName, '-af', chain, '-codec:a', 'libmp3lame', '-b:a', '192k', outName);
+  }
+
+  const data = workFfmpeg.FS('readFile', outName);
+  const bytes = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+  const blob = new Blob([bytes], {type: video ? 'video/mp4' : 'audio/mpeg'});
+  return {blob, name: safeBase + '_temiz.' + (video ? 'mp4' : 'mp3')};
+}
+
+document.getElementById('btnDownload').addEventListener('click', ()=>{
+  const url = cleanedResults.length > 1 ? zipBlobUrl : cleanedBlobUrl;
+  if (!url) return;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = cleanedFileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  currentFile = null;
+  selectedFiles = [];
+  cleanedResults = [];
+  originalAudioBuffer = null;
+  if (cleanedBlobUrl) URL.revokeObjectURL(cleanedBlobUrl);
+  cleanedBlobUrl = null;
+  if (zipBlobUrl) URL.revokeObjectURL(zipBlobUrl);
+  zipBlobUrl = null;
+  const preview = document.getElementById('audioPreview');
+  if (preview.dataset.blobUrl) URL.revokeObjectURL(preview.dataset.blobUrl);
+  preview.removeAttribute('src');
+  preview.removeAttribute('data-blob-url');
+  preview.load();
+  document.getElementById('fileinfo').classList.add('hidden');
+  document.getElementById('fileList').classList.add('hidden');
+  document.getElementById('fileList').innerHTML = '';
+  document.getElementById('batchNote').classList.add('hidden');
+  document.getElementById('analysisCard').classList.add('hidden');
+  document.getElementById('cleanCard').classList.add('hidden');
+  document.getElementById('resultCard').classList.add('hidden');
+  document.getElementById('analysisResult').classList.add('hidden');
+  fileInput.value = '';
+});
+</script>
+</body>
+</html>
