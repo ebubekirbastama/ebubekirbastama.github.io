@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ücretsiz Instagram Gönderi ve MP4 Video Tasarım Aracı | EBS Free Tools</title>
+<meta name="description" content="Ücretsiz online Instagram gönderi ve MP4 video tasarım aracı. Görsel ve logo yükleyin, metinleri düzenleyin, müzik ekleyin; PNG veya MP4 olarak indirin.">
+<meta name="keywords" content="instagram gönderi hazırlama, instagram post tasarım, mp4 video oluşturma, müzikli video hazırlama, online tasarım aracı, png oluşturma, sosyal medya tasarım aracı, ücretsiz instagram tasarım, EBS Free Tools">
+<meta name="author" content="Ebubekir Bastama">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="theme-color" content="#103f59">
+<meta name="application-name" content="EBS Instagram Tasarım Aracı">
+
+<link rel="canonical" href="https://ebubekirbastama.com.tr/instagram-tasarim-araci/">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="EBS Free Tools">
+<meta property="og:title" content="Ücretsiz Instagram Gönderi ve MP4 Video Tasarım Aracı">
+<meta property="og:description" content="Görsel, logo ve müzik yükleyerek Instagram gönderisi hazırlayın. Tasarımınızı PNG veya müzikli MP4 olarak indirin.">
+<meta property="og:url" content="https://ebubekirbastama.com.tr/instagram-tasarim-araci/">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ücretsiz Instagram Gönderi ve MP4 Video Tasarım Aracı">
+<meta name="twitter:description" content="Online Instagram gönderisi hazırlayın; görsel, logo, yazı ve müzik ekleyerek PNG veya MP4 çıktı alın.">
+<style>
+.seo-content{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;
+  overflow:hidden!important;clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;border:0!important;
+}
+</style>
+<style>
+:root{
+  --navy:#103f59;
+  --blue:#0b94b9;
+  --bg:#eef4f7;
+  --card:#fff;
+  --text:#17242c;
+  --muted:#627680;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(135deg,#e9f4f7,#f7f9fa);
+  color:var(--text);
+}
+.app{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:minmax(340px,440px) 1fr;
+  gap:22px;
+  padding:22px;
+}
+.panel{
+  background:rgba(255,255,255,.97);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 15px 45px rgba(18,62,83,.12);
+  align-self:start;
+  position:sticky;
+  top:22px;
+  max-height:calc(100vh - 44px);
+  overflow:auto;
+}
+h1{font-size:21px;margin:0 0 6px;color:var(--navy)}
+.desc{font-size:12px;line-height:1.5;color:var(--muted);margin-bottom:15px}
+.section{
+  border-top:1px solid #e3ecef;
+  padding-top:15px;
+  margin-top:15px;
+}
+.section:first-of-type{border-top:0;padding-top:0}
+.section-title{
+  font-size:13px;
+  font-weight:900;
+  color:var(--navy);
+  margin-bottom:8px;
+}
+label{
+  display:block;
+  font-size:11px;
+  font-weight:800;
+  color:#365867;
+  margin:10px 0 6px;
+}
+input[type=text],input[type=number],input[type=file],select{
+  width:100%;
+  border:1px solid #d4e1e6;
+  border-radius:10px;
+  padding:10px;
+  background:#fff;
+  color:#17242c;
+}
+input[type=range]{width:100%}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:9px}
+button{
+  width:100%;
+  border:0;
+  border-radius:11px;
+  padding:11px 10px;
+  cursor:pointer;
+  font-weight:900;
+  background:#eaf3f6;
+  color:var(--navy);
+}
+button:hover{filter:brightness(.97)}
+button.primary{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+button.video{background:#111;color:#fff}
+button.warn{background:#f4f5f5;color:#62717a}
+button:disabled{opacity:.45;cursor:not-allowed}
+.checkrow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  color:#45606d;
+  margin-top:9px;
+}
+.stage{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  overflow:auto;
+  padding-bottom:40px;
+}
+.canvas-shell{
+  background:#fff;
+  padding:12px;
+  border-radius:18px;
+  box-shadow:0 18px 55px rgba(20,65,86,.16);
+}
+canvas{
+  display:block;
+  width:min(70vw,810px);
+  height:auto;
+  border-radius:10px;
+  background:#fff;
+  touch-action:none;
+}
+.note{
+  margin-top:10px;
+  padding:10px;
+  border-radius:11px;
+  background:#f1f8fa;
+  color:#486875;
+  font-size:11px;
+  line-height:1.45;
+}
+.progress{
+  display:none;
+  margin-top:10px;
+  background:#e8eef1;
+  height:10px;
+  border-radius:20px;
+  overflow:hidden;
+}
+.progress > div{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,var(--navy),var(--blue));
+  transition:width .15s;
+}
+.status{font-size:11px;color:#57717d;margin-top:7px;min-height:16px}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .panel{position:static;max-height:none}
+  canvas{width:100%}
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "EBS Instagram Gönderi ve MP4 Video Tasarım Aracı",
+  "url": "https://ebubekirbastama.com.tr/instagram-tasarim-araci/",
+  "description": "Görsel, logo, metin ve müzik kullanarak Instagram gönderileri hazırlamaya, PNG veya MP4 çıktı almaya yarayan ücretsiz online tasarım aracı.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "JavaScript etkin olmalıdır.",
+  "inLanguage": "tr-TR",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TRY"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Ebubekir Bastama",
+    "url": "https://www.ebubekirbastama.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "EBS Free Tools",
+    "url": "https://ebubekirbastama.com.tr/"
+  }
+}
+</script>
+
+
+</head>
+<body>
+
+<section class="seo-content" aria-label="Instagram tasarım aracı hakkında">
+  <h2>Ücretsiz Instagram Gönderi ve MP4 Video Tasarım Aracı</h2>
+  <p>
+    EBS Instagram Tasarım Aracı ile sosyal medya gönderileri hazırlayabilirsiniz.
+    Kendi fotoğrafınızı ve firma logonuzu yükleyebilir, başlık ve açıklama metinlerini
+    düzenleyebilir, tasarımınızı PNG formatında kaydedebilirsiniz.
+  </p>
+  <p>
+    Video oluşturma bölümünde müzik ekleyebilir, video süresini belirleyebilir ve
+    görsele yakınlaştırma veya uzaklaştırma hareketi uygulayarak MP4 video çıktısı alabilirsiniz.
+  </p>
+</section>
+
+<div class="app">
+  <aside class="panel">
+    <h1>Instagram Tasarım + Video Aracı</h1>
+    <div class="desc">
+      Açılışta görsel ve logo gelmez. Kullanıcı kendi görselini, logosunu ve müziğini yükler.
+      PNG veya müzikli MP4 çıktı alınabilir.
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. Ana Görsel</div>
+
+      <label>Görsel yükle</label>
+      <input id="photoUpload" type="file" accept="image/*">
+
+      <label>Yakınlaştır / uzaklaştır</label>
+      <input id="photoZoom" type="range" min="0.20" max="4" step="0.01" value="1">
+
+      <div class="row">
+        <button id="photoCenter">Ortala</button>
+        <button id="photoFit">Alana Sığdır</button>
+      </div>
+
+      <div class="note">
+        Görseli tuval üzerinde basılı tutup sağa, sola, yukarı veya aşağı sürükleyebilirsiniz.
+        Fare tekerleği ile yakınlaştırıp uzaklaştırabilirsiniz.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Firma Logosu — İsteğe Bağlı</div>
+
+      <label>Logo yükle</label>
+      <input id="logoUpload" type="file" accept="image/*">
+
+      <label>Logo boyutu</label>
+      <input id="logoSize" type="range" min="60" max="450" step="1" value="220">
+
+      <div class="row">
+        <button id="logoCenter">Logoyu Ortala</button>
+        <button id="logoRemove" class="warn">Logoyu Kaldır</button>
+      </div>
+
+      <div class="note">Varsayılan logo veya ikon yoktur. Logo yalnızca siz yüklerseniz görünür.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Tasarımdaki Yazılar</div>
+
+      <label>Üst başlık</label>
+      <input id="topTitle" type="text" value="">
+
+      <label>Üst alt başlık / slogan</label>
+      <input id="topSubtitle" type="text" value="">
+
+      <label>Kampanya / ana başlık</label>
+      <input id="campaignTitle" type="text" value="">
+
+      <label>Ürün / firma başlığı</label>
+      <input id="productTitle" type="text" value="">
+
+      <label>Fiyat / KDV bilgisi</label>
+      <input id="priceInfo" type="text" value="">
+
+      <label>Alt açıklama</label>
+      <input id="footerText" type="text" value="">
+
+      <label>Yazı tasarımını göster</label>
+      <div class="checkrow">
+        <input id="showTextPanel" type="checkbox" checked>
+        <span>Başlık ve alt bilgi alanlarını göster</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. PNG Çıktı</div>
+      <button id="downloadPng" class="primary">PNG Olarak İndir</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Müzikli MP4 Render</div>
+
+      <label>Firma / haber müziği yükle</label>
+      <input id="audioUpload" type="file" accept="audio/*">
+
+      <label>Video süresi (saniye)</label>
+      <input id="videoDuration" type="number" min="1" max="120" step="1" value="10">
+
+      <label>Video hareketi</label>
+      <select id="videoMotion">
+        <option value="none">Sabit</option>
+        <option value="zoomIn">Yavaş yakınlaşma</option>
+        <option value="zoomOut">Yavaş uzaklaşma</option>
+      </select>
+
+      <div class="checkrow">
+        <input id="loopAudio" type="checkbox" checked>
+        <span>Müzik kısa ise video boyunca tekrar et</span>
+      </div>
+
+      <button id="renderMp4" class="video" style="margin-top:12px">MP4 Render Et ve İndir</button>
+
+      <div class="progress" id="progressBox"><div id="progressBar"></div></div>
+      <div class="status" id="renderStatus"></div>
+
+      <div class="note">
+        MP4 render işlemi tarayıcının kendi video motoruyla yapılır. SharedArrayBuffer veya yerel video motoru kullanılmaz. Güncel Chrome / Edge üzerinde HTML dosyasını doğrudan açarak çalıştırabilirsiniz.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="row">
+        <button id="clearPhoto" class="warn">Görseli Kaldır</button>
+        <button id="resetAll" class="warn">Her Şeyi Sıfırla</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <div class="canvas-shell">
+      <canvas id="canvas" width="1080" height="1350"></canvas>
+    </div>
+  </main>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const photo = new Image();
+const logo = new Image();
+
+let hasPhoto = false;
+let hasLogo = false;
+let photoX = 540;
+let photoY = 675;
+let photoScale = 1;
+let photoBaseScale = 1;
+
+let logoX = 135;
+let logoY = 135;
+let logoTargetWidth = 220;
+
+let dragging = null;
+let lastPointer = {x:0,y:0};
+
+const photoBox = {x:55,y:240,w:970,h:900,r:34};
+
+function roundRectPath(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function fitText(text,maxWidth,startSize,weight='900'){
+  let size=startSize;
+  do{
+    ctx.font=`${weight} ${size}px Arial`;
+    if(ctx.measureText(text).width<=maxWidth) return size;
+    size-=2;
+  }while(size>16);
+  return size;
+}
+
+function photoCoverScale(){
+  if(!hasPhoto || !photo.width) return 1;
+  return Math.max(photoBox.w/photo.width,photoBox.h/photo.height);
+}
+function photoFitScale(){
+  if(!hasPhoto || !photo.width) return 1;
+  return Math.min(photoBox.w/photo.width,photoBox.h/photo.height);
+}
+
+function resetPhoto(mode='cover'){
+  if(!hasPhoto) return;
+  photoBaseScale = mode==='fit' ? photoFitScale() : photoCoverScale();
+  photoScale = 1;
+  photoX = photoBox.x + photoBox.w/2;
+  photoY = photoBox.y + photoBox.h/2;
+  document.getElementById('photoZoom').value='1';
+  draw();
+}
+
+function drawBackground(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const g=ctx.createLinearGradient(0,0,1080,1350);
+  g.addColorStop(0,'#f7fbfc');
+  g.addColorStop(.62,'#ffffff');
+  g.addColorStop(1,'#eaf5f8');
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,1080,1350);
+
+  ctx.globalAlpha=.10;
+  ctx.fillStyle='#0b94b9';
+  ctx.beginPath();
+  ctx.moveTo(0,1180);
+  ctx.bezierCurveTo(250,1080,430,1270,700,1180);
+  ctx.bezierCurveTo(890,1120,990,1110,1080,1150);
+  ctx.lineTo(1080,1350);ctx.lineTo(0,1350);ctx.closePath();ctx.fill();
+  ctx.globalAlpha=1;
+}
+
+function drawPhoto(){
+  ctx.save();
+  roundRectPath(photoBox.x,photoBox.y,photoBox.w,photoBox.h,photoBox.r);
+  ctx.clip();
+
+  // Görsel yokken boş, sade alan.
+  ctx.fillStyle='#f4f7f8';
+  ctx.fillRect(photoBox.x,photoBox.y,photoBox.w,photoBox.h);
+
+  if(hasPhoto && photo.width){
+    const s=photoBaseScale*photoScale;
+    const w=photo.width*s;
+    const h=photo.height*s;
+    ctx.drawImage(photo,photoX-w/2,photoY-h/2,w,h);
+
+    const shade=ctx.createLinearGradient(0,photoBox.y+photoBox.h-220,0,photoBox.y+photoBox.h);
+    shade.addColorStop(0,'rgba(5,43,62,0)');
+    shade.addColorStop(1,'rgba(5,43,62,.42)');
+    ctx.fillStyle=shade;
+    ctx.fillRect(photoBox.x,photoBox.y+photoBox.h-230,photoBox.w,230);
+  }
+  ctx.restore();
+
+  ctx.lineWidth=3;
+  ctx.strokeStyle='rgba(16,63,89,.16)';
+  roundRectPath(photoBox.x,photoBox.y,photoBox.w,photoBox.h,photoBox.r);
+  ctx.stroke();
+}
+
+function getLogoRect(){
+  if(!hasLogo || !logo.width) return null;
+  const ratio=logoTargetWidth/logo.width;
+  const w=logoTargetWidth;
+  const h=logo.height*ratio;
+  return {x:logoX-w/2,y:logoY-h/2,w,h};
+}
+
+function drawLogo(){
+  const r=getLogoRect();
+  if(!r) return;
+  ctx.drawImage(logo,r.x,r.y,r.w,r.h);
+}
+
+function drawText(){
+  if(!document.getElementById('showTextPanel').checked) return;
+
+  const topTitle=document.getElementById('topTitle').value.trim();
+  const topSubtitle=document.getElementById('topSubtitle').value.trim();
+  const campaignTitle=document.getElementById('campaignTitle').value.trim();
+  const productTitle=document.getElementById('productTitle').value.trim();
+  const priceInfo=document.getElementById('priceInfo').value.trim();
+  const footerText=document.getElementById('footerText').value.trim();
+
+  ctx.textAlign='right';
+  ctx.textBaseline='alphabetic';
+
+  if(topTitle){
+    const s=fitText(topTitle,650,48,'900');
+    ctx.font=`900 ${s}px Arial`;
+    ctx.fillStyle='#103f59';
+    ctx.fillText(topTitle,1015,110);
+  }
+
+  if(topSubtitle){
+    const s=fitText(topSubtitle,650,26,'700');
+    ctx.font=`700 ${s}px Arial`;
+    ctx.fillStyle='#0b94b9';
+    ctx.fillText(topSubtitle,1015,150);
+  }
+
+  if(campaignTitle){
+    ctx.fillStyle='#103f59';
+    roundRectPath(100,1040,880,84,22);
+    ctx.fill();
+
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    const s=fitText(campaignTitle,800,42,'900');
+    ctx.font=`900 ${s}px Arial`;
+    ctx.fillStyle='#fff';
+    ctx.fillText(campaignTitle,540,1082);
+  }
+
+  ctx.textAlign='center';
+  ctx.textBaseline='alphabetic';
+
+  if(productTitle){
+    const s=fitText(productTitle,940,35,'900');
+    ctx.font=`900 ${s}px Arial`;
+    ctx.fillStyle='#103f59';
+    ctx.fillText(productTitle,540,1205);
+  }
+
+  if(priceInfo){
+    const s=fitText(priceInfo,940,27,'800');
+    ctx.font=`800 ${s}px Arial`;
+    ctx.fillStyle='#c93434';
+    ctx.fillText(priceInfo,540,1250);
+  }
+
+  if(footerText){
+    const s=fitText(footerText,940,20,'600');
+    ctx.font=`600 ${s}px Arial`;
+    ctx.fillStyle='#627680';
+    ctx.fillText(footerText,540,1294);
+  }
+}
+
+function draw(){
+  drawBackground();
+  drawPhoto();
+  drawLogo();
+  drawText();
+}
+
+function canvasPoint(e){
+  const r=canvas.getBoundingClientRect();
+  return {
+    x:(e.clientX-r.left)*(canvas.width/r.width),
+    y:(e.clientY-r.top)*(canvas.height/r.height)
+  };
+}
+
+document.getElementById('photoUpload').addEventListener('change',e=>{
+  const f=e.target.files?.[0];
+  if(!f) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    photo.onload=()=>{
+      hasPhoto=true;
+      resetPhoto('cover');
+    };
+    photo.src=ev.target.result;
+  };
+  reader.readAsDataURL(f);
+});
+
+document.getElementById('logoUpload').addEventListener('change',e=>{
+  const f=e.target.files?.[0];
+  if(!f) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    logo.onload=()=>{
+      hasLogo=true;
+      logoTargetWidth=Number(document.getElementById('logoSize').value);
+      const r=getLogoRect();
+      logoX=80+(r?.w||logoTargetWidth)/2;
+      logoY=115;
+      draw();
+    };
+    logo.src=ev.target.result;
+  };
+  reader.readAsDataURL(f);
+});
+
+document.getElementById('photoZoom').addEventListener('input',e=>{
+  photoScale=Number(e.target.value);
+  draw();
+});
+document.getElementById('photoCenter').onclick=()=>resetPhoto('cover');
+document.getElementById('photoFit').onclick=()=>resetPhoto('fit');
+
+document.getElementById('logoSize').addEventListener('input',e=>{
+  logoTargetWidth=Number(e.target.value);
+  draw();
+});
+document.getElementById('logoCenter').onclick=()=>{
+  if(!hasLogo) return;
+  logoX=540;
+  logoY=130;
+  draw();
+};
+document.getElementById('logoRemove').onclick=()=>{
+  hasLogo=false;
+  document.getElementById('logoUpload').value='';
+  draw();
+};
+
+['topTitle','topSubtitle','campaignTitle','productTitle','priceInfo','footerText','showTextPanel']
+.forEach(id=>document.getElementById(id).addEventListener('input',draw));
+
+canvas.addEventListener('pointerdown',e=>{
+  const p=canvasPoint(e);
+  const lr=getLogoRect();
+
+  if(lr && p.x>=lr.x && p.x<=lr.x+lr.w && p.y>=lr.y && p.y<=lr.y+lr.h){
+    dragging='logo';
+  }else if(hasPhoto && p.x>=photoBox.x && p.x<=photoBox.x+photoBox.w &&
+           p.y>=photoBox.y && p.y<=photoBox.y+photoBox.h){
+    dragging='photo';
+  }else{
+    return;
+  }
+
+  lastPointer=p;
+  canvas.setPointerCapture(e.pointerId);
+});
+
+canvas.addEventListener('pointermove',e=>{
+  if(!dragging) return;
+  const p=canvasPoint(e);
+  const dx=p.x-lastPointer.x;
+  const dy=p.y-lastPointer.y;
+
+  if(dragging==='photo'){
+    photoX+=dx;
+    photoY+=dy;
+  }else if(dragging==='logo'){
+    logoX+=dx;
+    logoY+=dy;
+  }
+
+  lastPointer=p;
+  draw();
+});
+
+canvas.addEventListener('pointerup',()=>dragging=null);
+canvas.addEventListener('pointercancel',()=>dragging=null);
+
+canvas.addEventListener('wheel',e=>{
+  if(!hasPhoto) return;
+  const p=canvasPoint(e);
+  if(!(p.x>=photoBox.x && p.x<=photoBox.x+photoBox.w &&
+       p.y>=photoBox.y && p.y<=photoBox.y+photoBox.h)) return;
+
+  e.preventDefault();
+  photoScale*=e.deltaY<0?1.06:0.94;
+  photoScale=Math.max(.20,Math.min(4,photoScale));
+  document.getElementById('photoZoom').value=photoScale;
+  draw();
+},{passive:false});
+
+document.getElementById('clearPhoto').onclick=()=>{
+  hasPhoto=false;
+  document.getElementById('photoUpload').value='';
+  photoScale=1;
+  draw();
+};
+
+document.getElementById('resetAll').onclick=()=>{
+  hasPhoto=false;
+  hasLogo=false;
+  photo.src='';
+  logo.src='';
+  document.getElementById('photoUpload').value='';
+  document.getElementById('logoUpload').value='';
+  document.getElementById('audioUpload').value='';
+  document.getElementById('photoZoom').value='1';
+  document.getElementById('logoSize').value='220';
+  document.getElementById('topTitle').value='';
+  document.getElementById('topSubtitle').value='';
+  document.getElementById('campaignTitle').value='';
+  document.getElementById('productTitle').value='';
+  document.getElementById('priceInfo').value='';
+  document.getElementById('footerText').value='';
+  document.getElementById('videoDuration').value='10';
+  document.getElementById('videoMotion').value='none';
+  document.getElementById('loopAudio').checked=true;
+  document.getElementById('showTextPanel').checked=true;
+  draw();
+};
+
+document.getElementById('downloadPng').onclick=()=>{
+  draw();
+  const a=document.createElement('a');
+  a.download='instagram-tasarim.png';
+  a.href=canvas.toDataURL('image/png',1);
+  a.click();
+};
+
+/* ---------------- MP4 RENDER ----------------
+   yerel video motoru / SharedArrayBuffer YOK.
+   Canvas.captureStream + MediaRecorder kullanılır.
+------------------------------------------------ */
+
+function setStatus(text,percent=null){
+  const box=document.getElementById('progressBox');
+  const bar=document.getElementById('progressBar');
+  const status=document.getElementById('renderStatus');
+
+  status.textContent=text;
+  if(percent===null){
+    box.style.display='none';
+  }else{
+    box.style.display='block';
+    bar.style.width=Math.max(0,Math.min(100,percent))+'%';
+  }
+}
+
+function getSupportedMp4Mime(hasAudio){
+  if(!window.MediaRecorder || !MediaRecorder.isTypeSupported){
+    return null;
+  }
+
+  const audioCandidates = [
+    'video/mp4;codecs="avc1.42E01E,mp4a.40.2"',
+    'video/mp4;codecs="avc1.4D401F,mp4a.40.2"',
+    'video/mp4;codecs="avc1.640028,mp4a.40.2"',
+    'video/mp4'
+  ];
+
+  const videoOnlyCandidates = [
+    'video/mp4;codecs="avc1.42E01E"',
+    'video/mp4;codecs="avc1.4D401F"',
+    'video/mp4;codecs="avc1.640028"',
+    'video/mp4'
+  ];
+
+  const list = hasAudio ? audioCandidates : videoOnlyCandidates;
+  return list.find(type => MediaRecorder.isTypeSupported(type)) || null;
+}
+
+async function prepareAudioTrack(file, duration, shouldLoop){
+  if(!file) return null;
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if(!AudioCtx){
+    throw new Error('Bu tarayıcı ses işleme özelliğini desteklemiyor.');
+  }
+
+  const audioContext = new AudioCtx();
+  await audioContext.resume();
+
+  const bytes = await file.arrayBuffer();
+  const audioBuffer = await audioContext.decodeAudioData(bytes.slice(0));
+
+  const source = audioContext.createBufferSource();
+  source.buffer = audioBuffer;
+  source.loop = !!shouldLoop;
+
+  const gain = audioContext.createGain();
+  gain.gain.value = 1;
+
+  const destination = audioContext.createMediaStreamDestination();
+
+  source.connect(gain);
+  gain.connect(destination);
+
+  // Kullanıcıya müziği render sırasında dinletmiyoruz; yalnızca videoya gönderiyoruz.
+  source.start(0);
+
+  return {
+    context: audioContext,
+    source,
+    stream: destination.stream,
+    stop(){
+      try{ source.stop(); }catch(e){}
+      try{ source.disconnect(); }catch(e){}
+      try{ gain.disconnect(); }catch(e){}
+      try{ audioContext.close(); }catch(e){}
+    }
+  };
+}
+
+function animateForRender(durationMs, motion, originalScale, onProgress){
+  return new Promise(resolve=>{
+    const start=performance.now();
+
+    function frame(now){
+      const elapsed=now-start;
+      const t=Math.min(1,elapsed/durationMs);
+
+      if(hasPhoto){
+        if(motion==='zoomIn'){
+          photoScale=originalScale*(1+0.08*t);
+        }else if(motion==='zoomOut'){
+          photoScale=originalScale*(1.08-0.08*t);
+        }else{
+          photoScale=originalScale;
+        }
+      }
+
+      draw();
+      onProgress?.(t);
+
+      if(t<1){
+        requestAnimationFrame(frame);
+      }else{
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  });
+}
+
+document.getElementById('renderMp4').onclick=async()=>{
+  const btn=document.getElementById('renderMp4');
+  const audioFile=document.getElementById('audioUpload').files?.[0] || null;
+  const duration=Math.max(
+    1,
+    Math.min(120,Number(document.getElementById('videoDuration').value)||10)
+  );
+  const motion=document.getElementById('videoMotion').value;
+  const loopAudio=document.getElementById('loopAudio').checked;
+
+  if(!hasPhoto){
+    alert('Önce ana görsel yükleyin.');
+    return;
+  }
+
+  if(!window.MediaRecorder){
+    alert('Bu tarayıcı MediaRecorder özelliğini desteklemiyor. Güncel Chrome veya Edge kullanın.');
+    return;
+  }
+
+  const mimeType=getSupportedMp4Mime(!!audioFile);
+
+  if(!mimeType){
+    alert(
+      'Bu tarayıcı / işletim sistemi MP4 kayıt kodeğini desteklemiyor.\n\n' +
+      'Güncel Chrome veya Edge kullanın. Tarayıcıyı güncelledikten sonra tekrar deneyin.'
+    );
+    return;
+  }
+
+  btn.disabled=true;
+  let audioPack=null;
+  let recorder=null;
+  const originalScale=photoScale;
+
+  try{
+    setStatus('MP4 hazırlanıyor…',3);
+
+    // Canvas videosu
+    const fps=30;
+    const canvasStream=canvas.captureStream(fps);
+    const finalStream=new MediaStream();
+
+    const videoTrack=canvasStream.getVideoTracks()[0];
+    if(!videoTrack){
+      throw new Error('Canvas video akışı oluşturulamadı.');
+    }
+    finalStream.addTrack(videoTrack);
+
+    // İsteğe bağlı müzik
+    if(audioFile){
+      setStatus('Müzik hazırlanıyor…',7);
+      audioPack=await prepareAudioTrack(audioFile,duration,loopAudio);
+      const audioTrack=audioPack.stream.getAudioTracks()[0];
+      if(audioTrack) finalStream.addTrack(audioTrack);
+    }
+
+    const chunks=[];
+
+    const options={
+      mimeType,
+      videoBitsPerSecond: 10000000
+    };
+
+    if(audioFile){
+      options.audioBitsPerSecond=192000;
+    }
+
+    recorder=new MediaRecorder(finalStream,options);
+
+    recorder.ondataavailable=e=>{
+      if(e.data && e.data.size>0) chunks.push(e.data);
+    };
+
+    const stopped=new Promise((resolve,reject)=>{
+      recorder.onstop=resolve;
+      recorder.onerror=e=>reject(
+        e.error || new Error('MediaRecorder kayıt hatası oluştu.')
+      );
+    });
+
+    draw();
+    recorder.start(250);
+
+    setStatus('Video kaydediliyor…',10);
+
+    await animateForRender(
+      duration*1000,
+      motion,
+      originalScale,
+      t=>setStatus(
+        `Video kaydediliyor… %${Math.round(t*100)}`,
+        10+Math.round(t*82)
+      )
+    );
+
+    recorder.stop();
+    await stopped;
+
+    photoScale=originalScale;
+    draw();
+
+    if(!chunks.length){
+      throw new Error('Video verisi üretilemedi.');
+    }
+
+    setStatus('MP4 dosyası hazırlanıyor…',96);
+
+    const blob=new Blob(chunks,{type:mimeType});
+    if(blob.size<1000){
+      throw new Error('Oluşturulan MP4 dosyası geçersiz görünüyor.');
+    }
+
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='instagram-video.mp4';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+
+    setStatus(
+      `MP4 hazır. ${(blob.size/1024/1024).toFixed(1)} MB`,
+      100
+    );
+
+  }catch(err){
+    console.error(err);
+
+    photoScale=originalScale;
+    draw();
+
+    setStatus('Render hatası: '+(err?.message||err),null);
+
+    alert(
+      'MP4 render tamamlanamadı.\n\n' +
+      (err?.message||err)
+    );
+  }finally{
+    if(recorder && recorder.state!=='inactive'){
+      try{ recorder.stop(); }catch(e){}
+    }
+    if(audioPack){
+      audioPack.stop();
+    }
+    btn.disabled=false;
+  }
+};
+
+function showMp4Support(){
+  const status=document.getElementById('renderStatus');
+  if(!window.MediaRecorder){
+    status.textContent='MP4 durumu: MediaRecorder desteklenmiyor.';
+    return;
+  }
+
+  const mp4=getSupportedMp4Mime(false);
+  status.textContent = mp4
+    ? 'MP4 motoru hazır — SharedArrayBuffer gerekmez.'
+    : 'Bu cihazda yerel MP4 kodeği bulunamadı.';
+}
+
+showMp4Support();
+
+draw();
+</script>
+</body>
+</html>
