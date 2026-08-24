@@ -2,7 +2,7 @@
   "name": "EBS Live",
   "short_name": "EBS Live",
   "description": "Özel P2P ekran, kamera ve ses paylaşımı.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#040914",
   "theme_color": "#07111f",
