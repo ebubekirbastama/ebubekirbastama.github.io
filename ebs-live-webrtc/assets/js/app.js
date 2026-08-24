@@ -15,7 +15,9 @@
     startedAt: null,
     timer: null,
     compositorStop: null,
-    audioContext: null
+    audioContext: null,
+    screenStream: null,
+    screenVideoEl: null
   };
 
   const homeView = $('#homeView');
@@ -80,6 +82,7 @@
   async function buildScreenStream() {
     const display = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 30, max: 60 } }, audio: true });
     state.rawStreams.push(display);
+    state.screenStream = display;
     const mic = await getMicrophoneStream();
     if (mic) state.rawStreams.push(mic);
 
@@ -128,6 +131,7 @@
     camVideo.srcObject = camera;
     screenVideo.muted = camVideo.muted = true;
     await Promise.all([screenVideo.play(), camVideo.play()]);
+    state.screenVideoEl = screenVideo;
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d', { alpha: false });
@@ -185,6 +189,7 @@
       localVideo.srcObject = state.localStream;
       $('#stageEmpty').classList.add('hidden');
       $('#sourceBadge').textContent = state.source === 'screen' ? 'EKRAN' : 'KAMERA';
+      $('#switchScreenBtn').classList.toggle('hidden', state.source !== 'screen');
       homeView.classList.add('hidden');
       features.classList.add('hidden');
       studioView.classList.remove('hidden');
@@ -241,6 +246,57 @@
     state.compositorStop?.(); state.compositorStop = null;
     state.audioContext?.close?.().catch(() => {}); state.audioContext = null;
     state.localStream = null;
+    state.screenStream = null;
+    state.screenVideoEl = null;
+  }
+
+  async function switchScreenSource() {
+    if (state.source !== 'screen' || !state.localStream) {
+      showToast('Ekran değiştirme yalnızca ekran paylaşımında kullanılabilir.');
+      return;
+    }
+    const btn = $('#switchScreenBtn');
+    btn.disabled = true;
+    try {
+      const newDisplay = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: { ideal: 30, max: 60 } }, audio: true });
+      const newVideoTrack = newDisplay.getVideoTracks()[0];
+      if (!newVideoTrack) { newDisplay.getTracks().forEach(t => t.stop()); return; }
+      newVideoTrack.addEventListener('ended', stopBroadcast);
+
+      if (state.screenVideoEl) {
+        // Kamera katmanlı (compose) mod: sadece besleme kaynağını değiştir, canvas otomatik günceller.
+        const oldDisplay = state.screenStream;
+        state.screenVideoEl.srcObject = newDisplay;
+        await state.screenVideoEl.play().catch(() => {});
+        state.screenStream = newDisplay;
+        state.rawStreams.push(newDisplay);
+        if (oldDisplay) {
+          oldDisplay.getTracks().forEach(t => t.stop());
+          state.rawStreams = state.rawStreams.filter(s => s !== oldDisplay);
+        }
+        newDisplay.getAudioTracks().forEach(t => t.enabled = true);
+      } else {
+        // Normal mod: track'i doğrudan değiştir.
+        const oldVideoTrack = state.localStream.getVideoTracks()[0];
+        state.localStream.removeTrack(oldVideoTrack);
+        state.localStream.addTrack(newVideoTrack);
+        localVideo.srcObject = state.localStream;
+
+        state.calls.forEach(call => {
+          const pc = call.peerConnection;
+          const sender = pc?.getSenders().find(s => s.track && s.track.kind === 'video');
+          sender?.replaceTrack(newVideoTrack);
+        });
+
+        oldVideoTrack.stop();
+        newDisplay.getAudioTracks().forEach(t => t.stop());
+      }
+      showToast('Ekran kaynağı değiştirildi');
+    } catch (err) {
+      if (err.name !== 'NotAllowedError') showToast('Ekran değiştirilemedi: ' + (err.message || err.name));
+    } finally {
+      btn.disabled = false;
+    }
   }
 
   function stopBroadcast() {
@@ -617,6 +673,7 @@ function initViewer(id) {
   $('#startBtn').addEventListener('click', startBroadcast);
   $('#stopBtn').addEventListener('click', stopBroadcast);
   $('#toggleMicBtn').addEventListener('click', toggleMic);
+  $('#switchScreenBtn').addEventListener('click', switchScreenSource);
   $('#copyBtn').addEventListener('click', copyLink);
   $('#copyBtn2').addEventListener('click', copyLink);
   $('#fullscreenBtn').addEventListener('click', () => {
