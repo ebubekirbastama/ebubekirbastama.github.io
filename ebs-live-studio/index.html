@@ -102,12 +102,22 @@
 
         <aside class="studio-side">
           <div class="chat-card glass-card host-chat-card">
-            <div class="chat-head"><div><span class="overline">CANLI SOHBET</span><h3>Mesajlar</h3></div><span class="participant-note">Yanıt • Etiket • Reaksiyon • Dosya</span></div>
+            <div class="chat-head"><div><span class="overline">CANLI SOHBET</span><h3>Mesajlar</h3></div><span class="participant-note">Yanıt • Etiket • Özel • Dosya</span></div><div class="chat-target-row"><label>Mesaj hedefi <select id="hostChatTarget"><option value="all">Herkese</option></select></label><label>Dosya hedefi <select id="hostFileTarget"><option value="all">Herkese</option></select></label></div>
             <div id="hostPinned" class="pinned-box hidden"></div><div id="hostReplyBar" class="reply-bar hidden"></div>
             <div id="hostChatMessages" class="chat-messages" aria-live="polite"></div>
             <form id="hostChatForm" class="chat-compose" autocomplete="off"><button class="emoji-btn" type="button" data-emoji-target="hostChatInput">😊</button><input id="hostChatInput" maxlength="500" placeholder="Mesaj yaz…"><label class="file-btn">📎<input id="hostFileInput" type="file" multiple hidden></label><button class="send-btn" type="submit">Gönder</button></form><div id="hostEmojiPicker" class="emoji-picker hidden"></div>
           </div>
 
+
+          <div class="transfer-card glass-card">
+            <div class="section-head"><div><span class="overline">P2P DOSYA AKTARIMI</span><h3>Transfer Merkezi</h3></div><span id="hostTransferCount" class="count-badge">0</span></div>
+            <div id="hostDropZone" class="drop-zone">📦 Dosyaları buraya sürükleyip bırak</div>
+            <div id="hostTransferCenter" class="transfer-center"><div class="participants-empty">Aktif transfer yok.</div></div>
+          </div>
+          <div class="connection-card glass-card">
+            <div class="section-head"><div><span class="overline">BAĞLANTI</span><h3>P2P Durumu</h3></div></div>
+            <div id="hostConnectionStats" class="connection-stats"><span>Bağlantı verisi bekleniyor.</span></div>
+          </div>
           <div class="poll-card glass-card">
             <div class="section-head"><div><span class="overline">CANLI ANKET</span><h3>Anket</h3></div></div>
             <form id="pollForm" class="poll-form"><input id="pollQuestion" maxlength="120" placeholder="Soru"><input id="pollOptions" maxlength="240" placeholder="Seçenekler: A, B, C"><button class="secondary-btn" type="submit">📊 Anket Başlat</button></form>
@@ -128,9 +138,19 @@
       <div class="viewer-bar glass-card"><div><b>Özel P2P Oturum</b><span id="viewerInfoText">Görüntü ve kontrol verileri WebRTC üzerinden aktarılır.</span></div><div class="viewer-bar-actions"><button id="fullscreenBtn" class="secondary-btn" type="button">⛶ Tam ekran</button><button id="mobileChatBtn" class="secondary-btn mobile-only" type="button">💬 Sohbet</button></div></div>
       <div class="viewer-reactions glass-card"><span>Canlı tepki:</span><div id="liveReactionButtons" class="live-reaction-buttons"><button type="button">👏</button><button type="button">❤️</button><button type="button">🔥</button><button type="button">😂</button><button type="button">👍</button></div></div>
       <div class="viewer-talk glass-card"><div><span class="overline">CANLI KATILIM</span><h3 id="talkTitle">Yayına katıl</h3><p id="talkText">Konuşmak istersen el kaldır.</p></div><div class="talk-actions"><button id="raiseHandBtn" class="secondary-btn" type="button">✋ Söz İste</button><button id="viewerMicBtn" class="primary-btn compact hidden" type="button">🎙 Mikrofonu Aç</button><button id="viewerCameraBtn" class="secondary-btn hidden" type="button">📹 Kamerayı Aç</button></div></div>
+
+      <div class="transfer-card glass-card">
+        <div class="section-head"><div><span class="overline">P2P DOSYA AKTARIMI</span><h3>Transfer Merkezi</h3></div><span id="viewerTransferCount" class="count-badge">0</span></div>
+        <div id="viewerDropZone" class="drop-zone">📦 Dosyaları buraya sürükleyip bırak</div>
+        <div id="viewerTransferCenter" class="transfer-center"><div class="participants-empty">Aktif transfer yok.</div></div>
+      </div>
+      <div class="connection-card glass-card">
+        <div class="section-head"><div><span class="overline">BAĞLANTI</span><h3>P2P Durumu</h3></div></div>
+        <div id="viewerConnectionStats" class="connection-stats"><span>Bağlantı verisi bekleniyor.</span></div>
+      </div>
       <div id="viewerPoll" class="poll-card glass-card"><span class="muted">Aktif anket yok.</span></div>
       <div id="viewerModPanel" class="moderation-card glass-card hidden"><div class="section-head"><div><span class="overline">MODERATÖR</span><h3>Katılımcı Yönetimi</h3></div></div><div id="viewerModParticipants" class="participants-list"></div></div>
-      <div id="viewerChatCard" class="chat-card glass-card viewer-chat-card"><div class="chat-head"><div><span class="overline">CANLI SOHBET</span><h3>Mesajlar</h3></div><b id="viewerNameBadge" class="name-badge"></b><button id="closeMobileChatBtn" class="icon-btn mobile-only" type="button">✕</button></div><div id="viewerPinned" class="pinned-box hidden"></div><div id="viewerReplyBar" class="reply-bar hidden"></div><div id="viewerChatMessages" class="chat-messages" aria-live="polite"></div><form id="viewerChatForm" class="chat-compose" autocomplete="off"><button class="emoji-btn" type="button" data-emoji-target="viewerChatInput">😊</button><input id="viewerChatInput" maxlength="500" placeholder="Mesaj yaz…"><label class="file-btn">📎<input id="viewerFileInput" type="file" multiple hidden></label><button class="send-btn" type="submit">Gönder</button></form><div id="viewerEmojiPicker" class="emoji-picker hidden"></div></div>
+      <div id="viewerChatCard" class="chat-card glass-card viewer-chat-card"><div class="chat-head"><div><span class="overline">CANLI SOHBET</span><h3>Mesajlar</h3></div><b id="viewerNameBadge" class="name-badge"></b><button id="closeMobileChatBtn" class="icon-btn mobile-only" type="button">✕</button></div><div class="chat-target-row"><label>Mesaj hedefi <select id="viewerChatTarget"><option value="all">Herkese</option><option value="host">Yayıncı (özel)</option></select></label></div><div id="viewerPinned" class="pinned-box hidden"></div><div id="viewerReplyBar" class="reply-bar hidden"></div><div id="viewerChatMessages" class="chat-messages" aria-live="polite"></div><form id="viewerChatForm" class="chat-compose" autocomplete="off"><button class="emoji-btn" type="button" data-emoji-target="viewerChatInput">😊</button><input id="viewerChatInput" maxlength="500" placeholder="Mesaj yaz…"><label class="file-btn">📎<input id="viewerFileInput" type="file" multiple hidden></label><button class="send-btn" type="submit">Gönder</button></form><div id="viewerEmojiPicker" class="emoji-picker hidden"></div></div>
     </section>
 
     <section class="features shell" id="features"><article><span>01</span><h3>Güvenli giriş</h3><p>PIN, bekleme odası, kilit ve host doğrulaması.</p></article><article><span>02</span><h3>Etkileşim</h3><p>Sohbet, reaksiyon, anket, el kaldırma ve konuk sahnesi.</p></article><article><span>03</span><h3>Moderasyon</h3><p>Roller, susturma, çıkarma, kayıt ve olay günlüğü.</p></article></section>
