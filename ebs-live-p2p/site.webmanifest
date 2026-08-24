@@ -1,0 +1,17 @@
+{
+  "name": "EBS Live",
+  "short_name": "EBS Live",
+  "description": "Özel P2P ekran, kamera ve ses paylaşımı.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#040914",
+  "theme_color": "#07111f",
+  "icons": [
+    {
+      "src": "assets/img/logo.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
