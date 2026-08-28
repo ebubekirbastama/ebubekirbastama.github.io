@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="description" content="EBS Live ile tarayıcınızdan ekran, kamera ve mikrofonunuzu özel bir bağlantı üzerinden gerçek zamanlı olarak paylaşın.">
+  <meta name="keywords" content="EBS Live, ekran paylaşımı, WebRTC, kamera paylaşımı, mikrofon paylaşımı, P2P yayın, Ebubekir Bastama">
+  <link rel="canonical" href="https://ebubekirbastama.com.tr/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="EBS Live">
+  <meta property="og:title" content="EBS Live — Özel Ekran, Kamera ve Ses Paylaşımı">
+  <meta property="og:description" content="Tek bağlantı ile ekran, kamera ve mikrofon paylaşın. Kurulum gerektirmeyen modern WebRTC deneyimi.">
+  <meta property="og:url" content="https://ebubekirbastama.com.tr/">
+
+
+  <title>EBS Live — Özel Ekran, Kamera ve Ses Paylaşımı</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="stylesheet" href="style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "EBS Live",
+    "url": "https://ebubekirbastama.com.tr/",
+    "applicationCategory": "CommunicationApplication",
+    "operatingSystem": "Any",
+    "description": "Tarayıcı tabanlı gerçek zamanlı ekran, kamera ve mikrofon paylaşım uygulaması.",
+    "creator": {"@type":"Person","name":"Ebubekir Bastama"}
+  }
+  </script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-a" aria-hidden="true"></div>
+  <div class="orb orb-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="EBS Live ana sayfa">
+      <img src="logo.png" alt="Ebubekir Bastama" width="58" height="58">
+      <span><strong>EBS</strong><small>LIVE</small></span>
+    </a>
+    <div class="header-actions">
+      <span class="status-pill"><i></i><span id="networkText">Hazır</span></span>
+      <a class="ghost-link" href="https://ebubekirbastama.com.tr/" aria-label="Ana site">ebubekirbastama.com.tr</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="hero shell">
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span>WebRTC</span> • P2P • Şifreli bağlantı</div>
+        <h1>Ekranını, kameranı ve sesini <em>tek linkle</em> paylaş.</h1>
+        <p>Kurulum yok. Üyelik yok. Tarayıcından yayını başlat, özel bağlantıyı gönder; karşı taraf tek tıkla izlesin.</p>
+        <div class="hero-badges">
+          <span>⚡ Düşük gecikme</span>
+          <span>🔒 WebRTC şifreleme</span>
+          <span>🖥 Ekran + Kamera</span>
+        </div>
+      </div>
+
+      <div class="glass-card launcher reveal delay-1">
+        <div class="card-head">
+          <div><span class="overline">YENİ OTURUM</span><h2>Ne paylaşmak istiyorsun?</h2></div>
+          <div class="live-dot" title="Canlı"><span></span></div>
+        </div>
+
+        <div class="share-grid" role="group" aria-label="Paylaşım kaynakları">
+          <button class="share-option active" data-source="screen" type="button">
+            <span class="option-icon">▣</span><span><b>Ekran</b><small>Sekme, pencere veya masaüstü</small></span><i></i>
+          </button>
+          <button class="share-option" data-source="camera" type="button">
+            <span class="option-icon">◉</span><span><b>Kamera</b><small>Web kameranı canlı paylaş</small></span><i></i>
+          </button>
+          <button class="share-option" data-source="dualcam" type="button">
+            <span class="option-icon">⛭</span><span><b>2 Kamera + Şablon</b><small>Capture card ile 2 kamera, haber şablonu</small></span><i></i>
+          </button>
+        </div>
+
+        <div id="dualcamPanel" class="dualcam-panel hidden">
+          <div class="dualcam-panel-head">
+            <span>Kamera Ayarları</span>
+            <button id="dualcamRefreshBtn" type="button" class="dualcam-refresh">↻ Cihazları Yenile</button>
+          </div>
+          <p class="dualcam-hint">Bu ekran ilk açıldığında tarayıcı kamera/mikrofon için bir kerelik izin isteyebilir (hangi cihazı seçersen seç, tüm kameralar listeye açılır). Ardından iki farklı capture card'ı aşağıdan seç — asıl yayın izni her kamera için "Yayını Başlat"a basınca ayrı ayrı sorulur.</p>
+          <div class="dualcam-row">
+            <label>Kamera 1 (Capture Card)
+              <select id="dualCam1"></select>
+            </label>
+            <label>Kamera 1 Sesi
+              <select id="dualCam1Audio"></select>
+            </label>
+          </div>
+          <div class="dualcam-row">
+            <label>Kamera 2 (Capture Card)
+              <select id="dualCam2"></select>
+            </label>
+            <label>Kamera 2 Sesi
+              <select id="dualCam2Audio"></select>
+            </label>
+          </div>
+          <div class="dualcam-row">
+            <label>Konuk 1 Adı<input id="tplGuest1Name" type="text" placeholder="Ör. Ahmet Yılmaz" maxlength="40"></label>
+            <label>Konuk 1 Ünvan / Görev<input id="tplGuest1Title" type="text" placeholder="Ör. Uzman" maxlength="40"></label>
+          </div>
+          <div class="dualcam-row">
+            <label>Konuk 2 Adı<input id="tplGuest2Name" type="text" placeholder="Ör. Ayşe Kaya" maxlength="40"></label>
+            <label>Konuk 2 Ünvan / Görev<input id="tplGuest2Title" type="text" placeholder="Ör. Yazar" maxlength="40"></label>
+          </div>
+          <label class="dualcam-full">Başlık<input id="tplTitle" type="text" placeholder="YAYIN BAŞLIĞI BURAYA GELECEK" maxlength="70"></label>
+          <label class="dualcam-full">Alt Başlık<input id="tplSubtitle" type="text" placeholder="Alt başlık / açıklama metni" maxlength="90"></label>
+          <label class="dualcam-full">Açıklama / Kayan Metin (Ticker)<input id="tplTicker" type="text" placeholder="son durum • son durum • son durum" maxlength="200"></label>
+          <div class="dualcam-row social-row">
+            <label>YouTube<input id="tplYoutube" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+            <label>Twitter / X<input id="tplTwitter" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+          </div>
+          <div class="dualcam-row social-row">
+            <label>Facebook<input id="tplFacebook" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+            <label>Instagram<input id="tplInstagram" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+          </div>
+        </div>
+
+        <label class="switch-row">
+          <span><b>Mikrofon</b><small>Konuşmanı yayına ekle</small></span>
+          <input id="micToggle" type="checkbox" checked><span class="switch"></span>
+        </label>
+        <label class="switch-row" id="cameraOverlayRow">
+          <span><b>Kamera katmanı</b><small>Ekranın sağ altına kameranı ekle</small></span>
+          <input id="cameraOverlayToggle" type="checkbox"><span class="switch"></span>
+        </label>
+
+        <button id="startBtn" class="primary-btn magnetic" type="button">
+          <span class="btn-glow"></span><span>Yayını Başlat</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="privacy-note">İzinler yalnızca sen onayladığında istenir. Yayın bağlantısını yalnızca güvendiğin kişilerle paylaş.</p>
+      </div>
+    </section>
+
+    <section id="studioView" class="studio shell hidden" aria-live="polite">
+      <div class="studio-top">
+        <div>
+          <span class="overline red">● CANLI YAYIN</span>
+          <h2>Yayın Stüdyosu</h2>
+        </div>
+        <div class="viewer-count"><span>İzleyici</span><b id="viewerCount">0</b></div>
+      </div>
+
+      <div class="stage-wrap">
+        <video id="localVideo" playsinline autoplay muted></video>
+        <div id="stageEmpty" class="stage-empty"><span>Yayın hazırlanıyor…</span></div>
+        <div class="stage-hud"><span id="sourceBadge">EKRAN</span><span id="elapsed">00:00</span></div>
+      </div>
+
+      <div class="control-deck glass-card">
+        <div class="invite-box">
+          <span>Özel izleme bağlantısı</span>
+          <div class="invite-input"><input id="shareLink" readonly value="Bağlantı hazırlanıyor…"><button id="copyBtn" type="button">Kopyala</button></div>
+          <small>Bu bağlantıya giren kişi yayınını izleyebilir.</small>
+
+          <span style="margin-top:14px">OBS / Yayın alma bağlantısı (sadece video, arayüzsüz)</span>
+          <div class="invite-input"><input id="obsLink" readonly value="Bağlantı hazırlanıyor…"><button id="copyObsBtn" type="button">Kopyala</button></div>
+          <small>Bu bağlantıyı OBS "Tarayıcı Kaynağı" (Browser Source) olarak ekleyip YouTube'a basabilirsin. Sayfa yalnızca videoyu gösterir, kopma olursa kendini otomatik toparlar.</small>
+        </div>
+        <div class="studio-controls">
+          <button id="toggleMicBtn" class="round-control" type="button" title="Mikrofon">🎙<span>Mikrofon</span></button>
+          <button id="switchScreenBtn" class="round-control" type="button" title="Paylaşılan ekranı değiştir">🔁<span>Ekran Değiştir</span></button>
+          <button id="copyBtn2" class="round-control" type="button" title="Linki kopyala">🔗<span>Link</span></button>
+          <button id="stopBtn" class="round-control danger" type="button" title="Yayını bitir">■<span>Bitir</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="viewerView" class="viewer shell hidden">
+      <div class="viewer-heading">
+        <a class="mini-brand" href="./"><img src="logo.png" alt="EBS" width="48" height="48"><span>EBS LIVE</span></a>
+        <span id="viewerStatus" class="status-pill"><i></i> Yayına bağlanılıyor</span>
+      </div>
+      <div class="remote-stage">
+        <video id="remoteVideo" playsinline autoplay controls></video>
+        <div id="remotePlaceholder" class="remote-placeholder">
+          <div class="pulse-rings"><span></span><span></span><span></span></div>
+          <h1>Yayın aranıyor…</h1>
+          <p>Yayıncı çevrimiçiyse bağlantı birkaç saniye içinde kurulacak.</p>
+        </div>
+      </div>
+      <div class="viewer-bar glass-card">
+        <div><b>Özel P2P Oturum</b><span>Görüntü mümkün olduğunda doğrudan tarayıcılar arasında aktarılır.</span></div>
+        <button id="fullscreenBtn" class="secondary-btn" type="button">⛶ Tam ekran</button>
+      </div>
+    </section>
+
+    <section class="features shell" id="features">
+      <article><span>01</span><h3>Tek bağlantı</h3><p>Yayıncı bağlantıyı oluşturur, izleyici bağlantıyı açar. Oda kodu yazmak gerekmez.</p></article>
+      <article><span>02</span><h3>Tarayıcı tabanlı</h3><p>Modern WebRTC desteği olan masaüstü ve mobil tarayıcılarda uygulama kurmadan çalışır.</p></article>
+      <article><span>03</span><h3>Kontrol sende</h3><p>Ekran, kamera ve mikrofon izinleri işletim sistemi ve tarayıcı tarafından açıkça sorulur.</p></article>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <div><img src="logo.png" alt="" width="42" height="42"><span>© <span id="year"></span> Ebubekir Bastama</span></div>
+    <p>EBS Live • HTML5 + CSS3 + JavaScript + WebRTC</p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
