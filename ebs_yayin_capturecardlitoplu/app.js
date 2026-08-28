@@ -317,18 +317,81 @@
       video: { deviceId: { exact: deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } },
       audio: audioDeviceId ? { deviceId: { exact: audioDeviceId }, echoCancellation: true, noiseSuppression: true, autoGainControl: true } : false
     });
-    const cam1 = await navigator.mediaDevices.getUserMedia(constraintsFor(id1, audioId1));
-    state.rawStreams.push(cam1);
-    const cam2 = await navigator.mediaDevices.getUserMedia(constraintsFor(id2, audioId2));
-    state.rawStreams.push(cam2);
 
     const tpl = readTemplateData();
     const v1 = document.createElement('video');
     const v2 = document.createElement('video');
-    v1.srcObject = cam1; v2.srcObject = cam2;
     v1.muted = v2.muted = true;
-    await Promise.all([v1.play(), v2.play()]);
     state.templateVideos = [v1, v2];
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AudioCtx ? new AudioCtx() : null;
+    state.audioContext = audioCtx;
+    const dest = audioCtx ? audioCtx.createMediaStreamDestination() : null;
+
+    const disconnected = { 1: false, 2: false };
+    const retryTimers = { 1: null, 2: null };
+    state.dualcamRetryTimers = retryTimers;
+    state.dualcamDisconnected = disconnected;
+
+    function makeSlot(slotNum, videoEl, deviceId, audioDeviceId, label) {
+      let audioSourceNode = null;
+      let currentStream = null;
+
+      function connectAudio(stream) {
+        if (!audioCtx || !dest) return;
+        if (audioSourceNode) { try { audioSourceNode.disconnect(); } catch (e) {} audioSourceNode = null; }
+        const track = stream.getAudioTracks()[0];
+        if (track) {
+          audioSourceNode = audioCtx.createMediaStreamSource(new MediaStream([track]));
+          audioSourceNode.connect(dest);
+        }
+      }
+
+      function attachStream(stream) {
+        currentStream = stream;
+        state.rawStreams.push(stream);
+        videoEl.srcObject = stream;
+        videoEl.play().catch(() => {});
+        connectAudio(stream);
+        const vTrack = stream.getVideoTracks()[0];
+        if (vTrack) vTrack.addEventListener('ended', () => handleDisconnect());
+      }
+
+      async function acquire() {
+        const s = await navigator.mediaDevices.getUserMedia(constraintsFor(deviceId, audioDeviceId));
+        attachStream(s);
+        return s;
+      }
+
+      function handleDisconnect() {
+        if (disconnected[slotNum]) return;
+        disconnected[slotNum] = true;
+        showToast(`${label} bağlantısı kesildi — yeniden bağlanmayı deniyorum…`);
+        if (currentStream) {
+          currentStream.getTracks().forEach(t => t.stop());
+          state.rawStreams = state.rawStreams.filter(s => s !== currentStream);
+          currentStream = null;
+        }
+        retryTimers[slotNum] = setInterval(async () => {
+          try {
+            await acquire();
+            disconnected[slotNum] = false;
+            clearInterval(retryTimers[slotNum]);
+            retryTimers[slotNum] = null;
+            showToast(`${label} yeniden bağlandı`);
+          } catch (e) {
+            // Cihaz henüz takılı değil veya erişilemiyor; tekrar denenecek.
+          }
+        }, 2500);
+      }
+
+      return { acquire };
+    }
+
+    const slot1 = makeSlot(1, v1, id1, audioId1, 'Kamera 1');
+    const slot2 = makeSlot(2, v2, id2, audioId2, 'Kamera 2');
+    await Promise.all([slot1.acquire(), slot2.acquire()]);
 
     const canvas = document.createElement('canvas');
     canvas.width = 1920; canvas.height = 1080;
@@ -336,25 +399,39 @@
     let running = true;
     let tickerX = canvas.width;
 
-    const drawGuestBox = (video, x, y, w, h, name, title) => {
+    const drawGuestBox = (video, x, y, w, h, name, title, isDisconnected) => {
       ctx.save();
       roundRect(ctx, x, y, w, h, 6);
       ctx.clip();
       ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(x, y, w, h);
-      const vw = video.videoWidth || 16, vh = video.videoHeight || 9;
-      const scale = Math.max(w / vw, h / vh);
-      const dw = vw * scale, dh = vh * scale;
-      ctx.drawImage(video, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+      if (!isDisconnected && video.videoWidth) {
+        const vw = video.videoWidth || 16, vh = video.videoHeight || 9;
+        const scale = Math.max(w / vw, h / vh);
+        const dw = vw * scale, dh = vh * scale;
+        ctx.drawImage(video, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+      }
+      if (isDisconnected) {
+        ctx.fillStyle = 'rgba(0,0,0,.75)';
+        ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = '#ff7186';
+        ctx.textAlign = 'center';
+        ctx.font = '700 28px Inter, sans-serif';
+        ctx.fillText('⚠ Bağlantı kesildi', x + w / 2, y + h / 2 - 10);
+        ctx.fillStyle = '#c9c9c9';
+        ctx.font = '400 18px Inter, sans-serif';
+        ctx.fillText('Yeniden bağlanmayı deniyor…', x + w / 2, y + h / 2 + 22);
+        ctx.textAlign = 'left';
+      }
       ctx.restore();
-      ctx.strokeStyle = 'rgba(255,255,255,.85)';
+      ctx.strokeStyle = isDisconnected ? 'rgba(255,73,100,.8)' : 'rgba(255,255,255,.85)';
       ctx.lineWidth = 3;
       roundRect(ctx, x, y, w, h, 6); ctx.stroke();
 
       const barY = y + h + 4, barH = 62;
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(x, barY, w, barH);
-      ctx.fillStyle = '#df1735';
+      ctx.fillStyle = isDisconnected ? '#7a1a26' : '#df1735';
       ctx.fillRect(x, barY, 8, barH);
       ctx.fillStyle = '#fff';
       ctx.font = '700 24px Inter, sans-serif';
@@ -390,8 +467,8 @@
 
       const boxW = 890, boxH = 460, gap = 40, top = 190;
       const x1 = (W - boxW * 2 - gap) / 2, x2 = x1 + boxW + gap;
-      drawGuestBox(v1, x1, top, boxW, boxH, tpl.guest1Name, tpl.guest1Title);
-      drawGuestBox(v2, x2, top, boxW, boxH, tpl.guest2Name, tpl.guest2Title);
+      drawGuestBox(v1, x1, top, boxW, boxH, tpl.guest1Name, tpl.guest1Title, disconnected[1]);
+      drawGuestBox(v2, x2, top, boxW, boxH, tpl.guest2Name, tpl.guest2Title, disconnected[2]);
 
       const tickerY = 730, tickerH = 56;
       ctx.fillStyle = '#e8e8e8';
@@ -435,12 +512,13 @@
       requestAnimationFrame(draw);
     };
     draw();
-    state.compositorStop = () => { running = false; };
+    state.compositorStop = () => {
+      running = false;
+      Object.values(retryTimers).forEach(t => t && clearInterval(t));
+    };
 
     const out = canvas.captureStream(30);
-    const audioTracks = [...cam1.getAudioTracks(), ...cam2.getAudioTracks()];
-    const mixed = await mixAudio(audioTracks);
-    if (mixed) out.addTrack(mixed);
+    if (dest) dest.stream.getAudioTracks().forEach(t => out.addTrack(t));
     return out;
   }
 
@@ -525,6 +603,8 @@
     state.screenStream = null;
     state.screenVideoEl = null;
     state.templateVideos = null;
+    state.dualcamRetryTimers = null;
+    state.dualcamDisconnected = null;
   }
 
   async function switchScreenSource() {
