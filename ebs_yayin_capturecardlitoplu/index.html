@@ -174,6 +174,7 @@
                 <label id="tplSelectedTextWrap">Metin<input id="tplSelectedText" type="text" maxlength="220" placeholder="Element metni"></label>
                 <label>Yazı Boyutu <span id="tplSelectedFontValue">—</span><input id="tplSelectedFont" type="range" min="8" max="120" value="24"></label>
                 <label class="tpl-check"><input id="tplSelectedVisible" type="checkbox" checked> Yayında göster</label>
+                <label class="tpl-check"><input id="tplSelectedLocked" type="checkbox"> 🔒 Konum ve boyutu kilitle</label>
                 <button id="tplDeleteElementBtn" type="button" class="dualcam-refresh danger-ghost">− Elementi Kaldır</button>
               </div>
             </div>
@@ -242,6 +243,9 @@
           </button>
           <button type="button" class="studio-live-tool" data-live-tool="layout" data-label="Düzen" aria-label="Düzen">
             <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+          </button>
+          <button id="studioLiveLockAllBtn" type="button" class="studio-live-tool" data-label="Tümünü Kilitle" aria-label="Tüm elementleri kilitle">
+            <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
           </button>
           <button type="button" class="studio-live-tool" data-live-tool="file" data-label="JSON / Dosya" aria-label="JSON ve dosya">
             <svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>

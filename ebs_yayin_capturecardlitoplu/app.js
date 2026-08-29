@@ -517,14 +517,18 @@
   }
 
   function normalizeRect(rect, fallback) {
-    const src = rect || {};
-    const out = { ...fallback, ...src };
+    // V4.3: Katman nesnesinin referansını KORU. Önceki sürüm her render'da
+    // yeni obje ürettiği için canlı drag/delete handler'ları eski objeye bağlı kalıyordu.
+    const source = rect && typeof rect === 'object' ? { ...rect } : {};
+    const out = rect && typeof rect === 'object' ? rect : {};
+    Object.assign(out, fallback, source);
     ['x','y','w','h'].forEach(k => { if (!Number.isFinite(Number(out[k]))) out[k] = fallback[k]; else out[k] = Number(out[k]); });
     out.w = Math.min(1, Math.max(0.025, out.w));
     out.h = Math.min(1, Math.max(0.02, out.h));
     out.x = Math.min(1 - out.w, Math.max(0, out.x));
     out.y = Math.min(1 - out.h, Math.max(0, out.y));
     if (typeof out.visible !== 'boolean') out.visible = true;
+    if (typeof out.locked !== 'boolean') out.locked = false;
     return out;
   }
 
@@ -543,8 +547,8 @@
     const defaults = defaultCamsFor(n);
     const cameraCountChanged = !Array.isArray(T.layers.cams) || T.layers.cams.length !== n;
     T.layers.cams = cameraCountChanged
-      ? defaults.map(r => ({ ...r, visible: true }))
-      : Array.from({ length: n }, (_, i) => normalizeRect(T.layers.cams?.[i], { ...defaults[i], visible: true }));
+      ? defaults.map(r => ({ ...r, visible: true, locked: false }))
+      : Array.from({ length: n }, (_, i) => normalizeRect(T.layers.cams?.[i], { ...defaults[i], visible: true, locked: false }));
     T.layers.liveBadge = normalizeRect(T.layers.liveBadge, { x: 20 / 1920, y: 30 / 1080, w: 300 / 1920, h: 60 / 1080, visible: true, fontSize: 30, text: '● CANLI YAYIN' });
     T.layers.programName = normalizeRect(T.layers.programName, { x: .35, y: 22 / 1080, w: .30, h: 56 / 1080, visible: true, fontSize: 44, text: 'ÖZEL YAYIN' });
     T.layers.programTagline = normalizeRect(T.layers.programTagline, { x: .33, y: 76 / 1080, w: .34, h: 38 / 1080, visible: true, fontSize: 18, text: 'GÜNDEM • RÖPORTAJ • ANALİZ' });
@@ -561,7 +565,7 @@
     T.layers.guestTitles = cameraCountChanged
       ? T.layers.cams.map(c => guestLayerDefaults(c, 'title'))
       : Array.from({ length: n }, (_, i) => normalizeRect(T.layers.guestTitles?.[i], guestLayerDefaults(T.layers.cams[i], 'title')));
-    T.layers.custom = Array.isArray(T.layers.custom) ? T.layers.custom.map((r, i) => normalizeRect(r, { x: .08, y: .12 + i * .05, w: .34, h: .07, visible: true, fontSize: 30, text: `Metin ${i + 1}`, id: `custom-${Date.now()}-${i}` })) : [];
+    T.layers.custom = Array.isArray(T.layers.custom) ? T.layers.custom.map((r, i) => normalizeRect(r, { x: .08, y: .12 + i * .05, w: .34, h: .07, visible: true, fontSize: 30, locked: false, text: `Metin ${i + 1}`, id: `custom-${Date.now()}-${i}` })) : [];
     T.layers.custom.forEach((r, i) => {
       r.id ||= `custom-${Date.now()}-${i}-${Math.random().toString(36).slice(2,7)}`;
       r.text = String(r.text ?? `Metin ${i + 1}`);
@@ -582,7 +586,7 @@
     n = n || camCount();
     const oldBgImage = state.templateLayout?.bgImage || null;
     const oldBg = state.templateLayout?.bg || { fit: 'cover', x: .5, y: .5, scale: 1, opacity: 1 };
-    const cams = defaultCamsFor(n).map(r => ({ ...r, visible: true }));
+    const cams = defaultCamsFor(n).map(r => ({ ...r, visible: true, locked: false }));
     state.templateLayout = {
       bgImage: oldBgImage,
       bg: { fit: 'cover', x: .5, y: .5, scale: 1, opacity: 1, ...oldBg },
@@ -614,47 +618,118 @@
     });
   }
 
-  function makeDraggable(el, rect, previewEl, onSelect) {
+  // V4.4: DOM elementleri eski rect referanslarını taşımıyor.
+  // Her işlem katmanı ID üzerinden güncel templateLayout state'inden tekrar bulur.
+  function rectByLayerId(id) {
+    if (!state.templateLayout?.layers || !id) return null;
+    const L = state.templateLayout.layers;
+    let m;
+    if ((m = /^cam:(\d+)$/.exec(id))) return L.cams?.[Number(m[1])] || null;
+    if ((m = /^guestName:(\d+)$/.exec(id))) return L.guestNames?.[Number(m[1])] || null;
+    if ((m = /^guestTitle:(\d+)$/.exec(id))) return L.guestTitles?.[Number(m[1])] || null;
+    if ((m = /^custom:(.+)$/.exec(id))) return L.custom?.find(r => String(r.id) === m[1]) || null;
+    if (['liveBadge','programName','programTagline','title','subtitle','ticker','socials'].includes(id)) return L[id] || null;
+    return null;
+  }
+
+  function makeDraggable(el, layerId, previewEl, onSelect, onCommit) {
+    const currentRect = () => rectByLayerId(layerId);
     const applyPos = () => {
+      const rect = currentRect();
+      if (!rect) return;
       el.style.left = (rect.x * 100) + '%';
       el.style.top = (rect.y * 100) + '%';
       el.style.width = (rect.w * 100) + '%';
       el.style.height = (rect.h * 100) + '%';
     };
     applyPos();
+    el.style.touchAction = 'none';
+    el.style.pointerEvents = 'auto';
+
     el.addEventListener('pointerdown', (e) => {
-      if (e.target.classList.contains('tpl-resize')) return;
+      if (e.target.closest('.tpl-resize,.tpl-live-remove,.tpl-live-lock,button,input,select,textarea')) return;
+      const rect = currentRect();
+      if (!rect) return;
       onSelect?.();
+      if (rect.locked) {
+        e.preventDefault();
+        e.stopPropagation();
+        showToast('Bu element kilitli. Taşımak için kilidi aç.');
+        return;
+      }
       e.preventDefault();
+      e.stopPropagation();
+      el.classList.add('dragging');
+      try { el.setPointerCapture?.(e.pointerId); } catch (_) {}
       const pRect = previewEl.getBoundingClientRect();
-      const startX = e.clientX, startY = e.clientY, origX = rect.x, origY = rect.y;
+      if (!pRect.width || !pRect.height) return;
+      const startX = e.clientX, startY = e.clientY;
+      const origX = rect.x, origY = rect.y;
       const onMove = (ev) => {
-        const dx = (ev.clientX - startX) / pRect.width, dy = (ev.clientY - startY) / pRect.height;
-        rect.x = Math.min(1 - rect.w, Math.max(0, origX + dx));
-        rect.y = Math.min(1 - rect.h, Math.max(0, origY + dy));
+        const liveRect = currentRect();
+        if (!liveRect || liveRect.locked) return;
+        const dx = (ev.clientX - startX) / pRect.width;
+        const dy = (ev.clientY - startY) / pRect.height;
+        liveRect.x = Math.min(1 - liveRect.w, Math.max(0, origX + dx));
+        liveRect.y = Math.min(1 - liveRect.h, Math.max(0, origY + dy));
         applyPos();
       };
-      const onUp = () => { document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); renderLayerList(); };
+      const onUp = (ev) => {
+        el.classList.remove('dragging');
+        try { el.releasePointerCapture?.(ev.pointerId); } catch (_) {}
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        document.removeEventListener('pointercancel', onUp);
+        renderLayerList();
+        renderSelectedInspector();
+        onCommit?.(currentRect());
+      };
       document.addEventListener('pointermove', onMove);
       document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
     });
+
     const handle = document.createElement('div');
     handle.className = 'tpl-resize';
+    handle.title = 'Boyutlandır';
     el.appendChild(handle);
     handle.addEventListener('pointerdown', (e) => {
+      const rect = currentRect();
+      if (!rect) return;
       onSelect?.();
       e.stopPropagation(); e.preventDefault();
+      if (rect.locked) {
+        showToast('Bu element kilitli. Boyutlandırmak için kilidi aç.');
+        return;
+      }
+      el.classList.add('resizing');
+      try { handle.setPointerCapture?.(e.pointerId); } catch (_) {}
       const pRect = previewEl.getBoundingClientRect();
-      const startX = e.clientX, startY = e.clientY, origW = rect.w, origH = rect.h;
+      if (!pRect.width || !pRect.height) return;
+      const startX = e.clientX, startY = e.clientY;
+      const origW = rect.w, origH = rect.h;
       const onMove = (ev) => {
-        const dx = (ev.clientX - startX) / pRect.width, dy = (ev.clientY - startY) / pRect.height;
-        rect.w = Math.min(1 - rect.x, Math.max(0.025, origW + dx));
-        rect.h = Math.min(1 - rect.y, Math.max(0.02, origH + dy));
+        const liveRect = currentRect();
+        if (!liveRect || liveRect.locked) return;
+        const dx = (ev.clientX - startX) / pRect.width;
+        const dy = (ev.clientY - startY) / pRect.height;
+        liveRect.w = Math.min(1 - liveRect.x, Math.max(0.025, origW + dx));
+        liveRect.h = Math.min(1 - liveRect.y, Math.max(0.02, origH + dy));
         applyPos();
       };
-      const onUp = () => { document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); renderLayerList(); };
+      const onUp = (ev) => {
+        el.classList.remove('resizing');
+        try { handle.releasePointerCapture?.(ev.pointerId); } catch (_) {}
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        document.removeEventListener('pointercancel', onUp);
+        renderLayerList();
+        renderSelectedInspector();
+        onCommit?.(currentRect());
+      };
       document.addEventListener('pointermove', onMove);
       document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
     });
   }
 
@@ -662,17 +737,19 @@
     ensureTemplateLayoutShape(camCount());
     const L = state.templateLayout.layers;
     const list = [];
-    L.cams.forEach((rect, i) => list.push({ id: `cam:${i}`, label: `Kamera ${i + 1}`, type: 'camera', rect }));
-    list.push({ id: 'liveBadge', label: 'Canlı Yayın Etiketi', type: 'layoutText', rect: L.liveBadge });
-    list.push({ id: 'programName', label: 'Program Üst Başlığı', type: 'layoutText', rect: L.programName });
-    list.push({ id: 'programTagline', label: 'Program Üst Alt Metni', type: 'layoutText', rect: L.programTagline });
-    list.push({ id: 'title', label: 'Başlık', type: 'text', rect: L.title, inputId: 'tplTitle', fontKey: 'title' });
-    list.push({ id: 'subtitle', label: 'Alt Başlık', type: 'text', rect: L.subtitle, inputId: 'tplSubtitle', fontKey: 'subtitle' });
-    list.push({ id: 'ticker', label: 'Kayan Metin', type: 'text', rect: L.ticker, inputId: 'tplTicker', fontKey: 'ticker' });
-    L.guestNames.forEach((rect, i) => list.push({ id: `guestName:${i}`, label: `Konuk ${i + 1} Adı`, type: 'text', rect, inputId: `tplGuest${i + 1}Name`, fontKey: 'guest' }));
-    L.guestTitles.forEach((rect, i) => list.push({ id: `guestTitle:${i}`, label: `Konuk ${i + 1} Ünvanı`, type: 'text', rect, inputId: `tplGuest${i + 1}Title`, fontKey: 'guestTitle' }));
-    list.push({ id: 'socials', label: 'Sosyal Medya', type: 'socials', rect: L.socials, fontKey: 'socials' });
-    L.custom.forEach((rect, i) => list.push({ id: `custom:${rect.id}`, label: `Serbest Metin ${i + 1}`, type: 'custom', rect, customIndex: i }));
+    // Live editörde başlangıçta gelen katmanlarla sonradan eklenen katmanlar
+    // aynı davranışı kullanır. isDefault yalnızca görsel ayırım içindir.
+    L.cams.forEach((rect, i) => list.push({ id: `cam:${i}`, label: `Kamera ${i + 1}`, type: 'camera', rect, isDefault: true }));
+    list.push({ id: 'liveBadge', label: 'Canlı Yayın Etiketi', type: 'layoutText', rect: L.liveBadge, isDefault: true });
+    list.push({ id: 'programName', label: 'Program Üst Başlığı', type: 'layoutText', rect: L.programName, isDefault: true });
+    list.push({ id: 'programTagline', label: 'Program Üst Alt Metni', type: 'layoutText', rect: L.programTagline, isDefault: true });
+    list.push({ id: 'title', label: 'Başlık', type: 'text', rect: L.title, inputId: 'tplTitle', fontKey: 'title', isDefault: true });
+    list.push({ id: 'subtitle', label: 'Alt Başlık', type: 'text', rect: L.subtitle, inputId: 'tplSubtitle', fontKey: 'subtitle', isDefault: true });
+    list.push({ id: 'ticker', label: 'Kayan Metin', type: 'text', rect: L.ticker, inputId: 'tplTicker', fontKey: 'ticker', isDefault: true });
+    L.guestNames.forEach((rect, i) => list.push({ id: `guestName:${i}`, label: `Konuk ${i + 1} Adı`, type: 'text', rect, inputId: `tplGuest${i + 1}Name`, fontKey: 'guest', isDefault: true }));
+    L.guestTitles.forEach((rect, i) => list.push({ id: `guestTitle:${i}`, label: `Konuk ${i + 1} Ünvanı`, type: 'text', rect, inputId: `tplGuest${i + 1}Title`, fontKey: 'guestTitle', isDefault: true }));
+    list.push({ id: 'socials', label: 'Sosyal Medya', type: 'socials', rect: L.socials, fontKey: 'socials', isDefault: true });
+    L.custom.forEach((rect, i) => list.push({ id: `custom:${rect.id}`, label: `Serbest Metin ${i + 1}`, type: 'custom', rect, customIndex: i, isDefault: false }));
     return list;
   }
 
@@ -724,9 +801,23 @@
       const t = layerPreviewLabel(desc);
       name.innerHTML = `<b>${desc.label}</b><small>${t.replace(/[<&]/g, m => m === '<' ? '&lt;' : '&amp;')}</small>`;
       name.addEventListener('click', () => selectTemplateLayer(desc.id));
+      const lock = document.createElement('button');
+      lock.type = 'button'; lock.className = 'tpl-layer-lock';
+      lock.title = desc.rect.locked ? 'Kilidi aç' : 'Konum ve boyutu kilitle';
+      lock.setAttribute('aria-label', lock.title);
+      lock.textContent = desc.rect.locked ? '🔒' : '🔓';
+      lock.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const liveRect = rectByLayerId(desc.id);
+        if (!liveRect) return;
+        liveRect.locked = !liveRect.locked;
+        state.templateSelected = desc.id;
+        renderTemplateEditor();
+        showToast(liveRect.locked ? `${desc.label} kilitlendi.` : `${desc.label} kilidi açıldı.`);
+      });
       const pick = document.createElement('button'); pick.type = 'button'; pick.textContent = 'Düzenle';
       pick.addEventListener('click', () => selectTemplateLayer(desc.id));
-      row.append(eye, name, pick); box.appendChild(row);
+      row.append(eye, name, lock, pick); box.appendChild(row);
     });
     renderAddElementOptions();
   }
@@ -740,14 +831,19 @@
     if (state.liveEditActive) renderLiveTemplateOverlay();
   }
 
-  function removeTemplateDescriptor(desc) {
+  function removeTemplateDescriptor(descOrId) {
+    const id = typeof descOrId === 'string' ? descOrId : descOrId?.id;
+    if (!id) return;
+    const desc = descriptorById(id);
     if (!desc) return;
     if (desc.type === 'custom') {
-      state.templateLayout.layers.custom.splice(desc.customIndex, 1);
+      const idx = state.templateLayout.layers.custom.findIndex(r => `custom:${r.id}` === id);
+      if (idx >= 0) state.templateLayout.layers.custom.splice(idx, 1);
       state.templateSelected = 'title';
       showToast('Serbest element silindi.');
     } else {
-      desc.rect.visible = false;
+      const liveRect = rectByLayerId(id);
+      if (liveRect) liveRect.visible = false;
       showToast(`${desc.label} yayın alanından kaldırıldı.`);
     }
     renderTemplateEditor();
@@ -756,10 +852,10 @@
   function renderSelectedInspector() {
     const desc = descriptorById(state.templateSelected);
     const title = $('#tplSelectedLabel'), text = $('#tplSelectedText'), textWrap = $('#tplSelectedTextWrap');
-    const font = $('#tplSelectedFont'), fontVal = $('#tplSelectedFontValue'), vis = $('#tplSelectedVisible'), del = $('#tplDeleteElementBtn');
-    if (!title || !text || !font || !vis || !del) return;
+    const font = $('#tplSelectedFont'), fontVal = $('#tplSelectedFontValue'), vis = $('#tplSelectedVisible'), lock = $('#tplSelectedLocked'), del = $('#tplDeleteElementBtn');
+    if (!title || !text || !font || !vis || !lock || !del) return;
     if (!desc) {
-      title.textContent = 'Bir element seç'; text.value = ''; text.disabled = true; font.disabled = true; vis.disabled = true; del.disabled = true;
+      title.textContent = 'Bir element seç'; text.value = ''; text.disabled = true; font.disabled = true; vis.disabled = true; lock.disabled = true; del.disabled = true;
       return;
     }
     title.textContent = desc.label;
@@ -772,6 +868,7 @@
     font.value = Math.min(120, Math.max(8, fs));
     fontVal.textContent = desc.type === 'camera' ? '—' : `${fs}px`;
     vis.disabled = false; vis.checked = desc.rect.visible !== false;
+    lock.disabled = false; lock.checked = !!desc.rect.locked;
     del.disabled = false;
     del.textContent = desc.type === 'custom' ? '− Elementi Sil' : '− Elementi Kaldır';
   }
@@ -844,15 +941,17 @@
     layerDescriptors().forEach(desc => {
       if (desc.rect.visible === false) return;
       const el = document.createElement('div');
-      el.className = 'tpl-el' + (desc.type === 'camera' ? '' : ' text-el') + (desc.type === 'custom' ? ' custom-text-el' : '') + (state.templateSelected === desc.id ? ' selected' : '');
+      el.dataset.layerId = desc.id;
+      el.className = 'tpl-el' + (desc.type === 'camera' ? '' : ' text-el') + (desc.type === 'custom' ? ' custom-text-el' : '') + (state.templateSelected === desc.id ? ' selected' : '') + (desc.rect.locked ? ' locked-layer' : '');
       el.textContent = layerPreviewLabel(desc);
       preview.appendChild(el);
-      makeDraggable(el, desc.rect, preview, () => { state.templateSelected = desc.id; renderLayerList(); renderSelectedInspector(); });
+      makeDraggable(el, desc.id, preview, () => { state.templateSelected = desc.id; renderLayerList(); renderSelectedInspector(); });
     });
     renderLayerList();
     renderSelectedInspector();
     syncTemplateControls();
     refreshLiveTemplateOverlay();
+    refreshStudioLockAllButton();
   }
 
   $('#tplAddElementBtn')?.addEventListener('click', () => {
@@ -886,8 +985,14 @@
     const d = descriptorById(state.templateSelected); if (!d) return;
     d.rect.visible = e.target.checked; renderTemplateEditor();
   });
+  $('#tplSelectedLocked')?.addEventListener('change', (e) => {
+    const d = descriptorById(state.templateSelected); if (!d) return;
+    d.rect.locked = e.target.checked;
+    renderTemplateEditor();
+    showToast(d.rect.locked ? `${d.label} kilitlendi.` : `${d.label} kilidi açıldı.`);
+  });
   $('#tplDeleteElementBtn')?.addEventListener('click', () => {
-    removeTemplateDescriptor(descriptorById(state.templateSelected));
+    removeTemplateDescriptor(state.templateSelected);
   });
 
   $('#tplBgInput')?.addEventListener('change', (e) => {
@@ -964,11 +1069,11 @@
   $('#tplExportBtn')?.addEventListener('click', () => {
     if (!state.templateLayout) resetTemplateLayout(camCount());
     ensureTemplateLayoutShape(camCount());
-    const data = { version: 2, camCount: camCount(), templateLayout: state.templateLayout, texts: readTemplateFieldsRaw() };
+    const data = { version: 4, camCount: camCount(), templateLayout: state.templateLayout, texts: readTemplateFieldsRaw() };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'ebslive-sablon-v2.json';
+    a.href = url; a.download = 'ebslive-sablon-v4.json';
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
     showToast('Tüm katmanlar ve arkaplan ayarları JSON dosyasına aktarıldı.');
@@ -1272,33 +1377,89 @@
     if (!overlay || !state.templateLayout || !state.liveEditActive) return;
     ensureTemplateLayoutShape(camCount());
     overlay.innerHTML = '';
-    layerDescriptors().forEach(desc => {
+
+    const descriptors = layerDescriptors();
+    descriptors.forEach((desc, index) => {
       if (desc.rect.visible === false) return;
       const el = document.createElement('div');
       el.dataset.layerId = desc.id;
-      el.className = 'tpl-el' + (desc.type === 'camera' ? '' : ' text-el') + (desc.type === 'custom' ? ' custom-text-el' : '') + (state.templateSelected === desc.id ? ' selected' : '');
+      el.dataset.layerType = desc.type;
+      el.dataset.defaultLayer = desc.isDefault ? '1' : '0';
+      el.tabIndex = 0;
+      el.className = 'tpl-el live-editable-layer' +
+        (desc.type === 'camera' ? ' camera-el' : ' text-el') +
+        (desc.type === 'custom' ? ' custom-text-el' : ' system-default-el') +
+        (state.templateSelected === desc.id ? ' selected' : '') +
+        (desc.rect.locked ? ' locked-layer' : '');
+      el.dataset.baseZ = String(20 + index);
+      el.style.zIndex = el.dataset.baseZ;
+      el.title = desc.rect.locked
+        ? `${desc.label} — KİLİTLİ`
+        : `${desc.label} — sürükle, sağ alttan boyutlandır`;
+
       const label = document.createElement('span');
       label.className = 'tpl-live-label';
       label.textContent = layerPreviewLabel(desc);
       el.appendChild(label);
 
+      const lockBtn = document.createElement('button');
+      lockBtn.type = 'button';
+      lockBtn.className = 'tpl-live-lock';
+      lockBtn.title = desc.rect.locked ? `${desc.label} kilidini aç` : `${desc.label} konumunu kilitle`;
+      lockBtn.setAttribute('aria-label', lockBtn.title);
+      lockBtn.textContent = desc.rect.locked ? '🔒' : '🔓';
+      lockBtn.addEventListener('pointerdown', e => { e.stopPropagation(); });
+      lockBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        e.preventDefault();
+        const liveRect = rectByLayerId(desc.id);
+        if (!liveRect) return;
+        liveRect.locked = !liveRect.locked;
+        state.templateSelected = desc.id;
+        renderTemplateEditor();
+        showToast(liveRect.locked ? `${desc.label} kilitlendi.` : `${desc.label} kilidi açıldı.`);
+      });
+      el.appendChild(lockBtn);
+
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.className = 'tpl-live-remove';
       removeBtn.title = `${desc.label} kaldır`;
+      removeBtn.setAttribute('aria-label', `${desc.label} kaldır`);
       removeBtn.textContent = '×';
-      removeBtn.addEventListener('pointerdown', e => { e.stopPropagation(); e.preventDefault(); });
-      removeBtn.addEventListener('click', e => { e.stopPropagation(); removeTemplateDescriptor(desc); });
+      removeBtn.addEventListener('pointerdown', e => { e.stopPropagation(); });
+      removeBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        e.preventDefault();
+        removeTemplateDescriptor(desc.id);
+      });
       el.appendChild(removeBtn);
 
       overlay.appendChild(el);
-      makeDraggable(el, desc.rect, overlay, () => {
+      makeDraggable(el, desc.id, overlay, () => {
         state.templateSelected = desc.id;
         renderLayerList();
         renderSelectedInspector();
-        overlay.querySelectorAll('.tpl-el').forEach(node => node.classList.toggle('selected', node.dataset.layerId === desc.id));
+        overlay.querySelectorAll('.tpl-el').forEach(node => {
+          const selected = node.dataset.layerId === desc.id;
+          node.classList.toggle('selected', selected);
+          // Seçim yalnızca görsel vurgu yapar; z-index değiştirmez.
+          // Böylece büyük kamera kutusu içindeki/altındaki metin katmanlarını engellemez.
+          node.style.zIndex = node.dataset.baseZ || '20';
+        });
+      }, (liveRect) => {
+        // Live sahne ile sol editör önizlemesini aynı koordinatta tut.
+        const r = liveRect || rectByLayerId(desc.id);
+        const previewNode = $('#tplPreview')?.querySelector(`[data-layer-id="${CSS.escape(desc.id)}"]`);
+        if (previewNode && r) {
+          previewNode.style.left = (r.x * 100) + '%';
+          previewNode.style.top = (r.y * 100) + '%';
+          previewNode.style.width = (r.w * 100) + '%';
+          previewNode.style.height = (r.h * 100) + '%';
+        }
       });
     });
+    refreshStudioLockAllButton();
   }
 
   function toggleLiveEdit() {
@@ -1322,6 +1483,29 @@
     }
   }
   $('#liveEditBtn')?.addEventListener('click', toggleLiveEdit);
+
+  function allTemplateLayersLocked() {
+    const visible = layerDescriptors().filter(d => d.rect.visible !== false);
+    return visible.length > 0 && visible.every(d => !!d.rect.locked);
+  }
+
+  function refreshStudioLockAllButton() {
+    const btn = $('#studioLiveLockAllBtn');
+    if (!btn || !state.templateLayout) return;
+    const locked = allTemplateLayersLocked();
+    btn.classList.toggle('active', locked);
+    btn.dataset.label = locked ? 'Tüm Kilitleri Aç' : 'Tümünü Kilitle';
+    btn.setAttribute('aria-label', btn.dataset.label);
+  }
+
+  $('#studioLiveLockAllBtn')?.addEventListener('click', () => {
+    if (!state.templateLayout) return;
+    const shouldLock = !allTemplateLayersLocked();
+    layerDescriptors().forEach(d => { if (d.rect.visible !== false) d.rect.locked = shouldLock; });
+    renderTemplateEditor();
+    refreshStudioLockAllButton();
+    showToast(shouldLock ? 'Tüm görünür elementler kilitlendi.' : 'Tüm element kilitleri açıldı.');
+  });
 
   $$('.studio-live-tool[data-live-tool]').forEach(btn => btn.addEventListener('click', () => {
     const tool = btn.dataset.liveTool;

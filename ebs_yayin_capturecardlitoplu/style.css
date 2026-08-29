@@ -278,3 +278,97 @@ body.obs-mode .remote-placeholder h1{font-size:16px;color:#3a4a5a}
 /* V4.1 — canlı araç rayının görünürlüğünü garanti et */
 #studioLiveTools.studio-live-tools:not(.hidden){display:flex!important;z-index:10000!important;visibility:visible!important;opacity:1!important}
 #studioView:not(.hidden) #studioLiveTools.studio-live-tools:not(.hidden){pointer-events:auto!important}
+
+/* V4.2 — Live sahnede başlangıç katmanları da tam düzenlenebilir */
+.live-overlay .live-editable-layer{
+  pointer-events:auto!important;
+  touch-action:none!important;
+  cursor:move!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+.live-overlay .live-editable-layer.system-default-el{
+  border-color:rgba(99,220,255,.92)!important;
+  background:rgba(22,185,255,.10)!important;
+}
+.live-overlay .live-editable-layer.camera-el{
+  border-color:rgba(76,226,164,.95)!important;
+  background:rgba(76,226,164,.08)!important;
+}
+.live-overlay .live-editable-layer.custom-text-el{
+  border-color:rgba(250,205,80,.95)!important;
+}
+.live-overlay .live-editable-layer:hover{
+  border-style:solid!important;
+  box-shadow:0 0 0 2px rgba(255,255,255,.10),0 12px 30px rgba(0,0,0,.25);
+}
+.live-overlay .live-editable-layer.dragging,
+.live-overlay .live-editable-layer.resizing{
+  border-style:solid!important;
+  border-color:#fff!important;
+  box-shadow:0 0 0 2px rgba(22,185,255,.65),0 0 28px rgba(22,185,255,.42)!important;
+  cursor:grabbing!important;
+}
+.live-overlay .live-editable-layer .tpl-resize{
+  pointer-events:auto!important;
+  z-index:70!important;
+  width:18px!important;
+  height:18px!important;
+  right:-3px!important;
+  bottom:-3px!important;
+  border:2px solid #fff;
+  box-shadow:0 2px 10px rgba(0,0,0,.45);
+}
+.live-overlay .live-editable-layer .tpl-live-remove{
+  pointer-events:auto!important;
+  z-index:80!important;
+  width:24px!important;
+  height:24px!important;
+  font-size:17px!important;
+  font-weight:800;
+}
+.live-overlay .live-editable-layer:focus{
+  outline:none;
+  border-style:solid!important;
+  border-color:#fff!important;
+  box-shadow:0 0 0 2px rgba(22,185,255,.55)!important;
+}
+
+
+/* V4.3 — canlı katman referans düzeltmesi + kilitleme */
+.tpl-layer-item{grid-template-columns:34px minmax(0,1fr) 34px auto}
+.tpl-layer-lock{font-size:14px!important;line-height:1}
+.tpl-layer-item:has(.tpl-layer-lock[title="Kilidi aç"]){border-color:rgba(250,205,80,.24)}
+.tpl-el.locked-layer{cursor:not-allowed!important;border-style:dotted!important;opacity:.88}
+.tpl-el.locked-layer .tpl-resize{opacity:.28!important;cursor:not-allowed!important}
+.tpl-el.locked-layer:before{content:"LOCK";position:absolute;left:4px;bottom:3px;padding:2px 5px;border-radius:5px;background:rgba(0,0,0,.68);color:#ffe38a;font-size:7px;font-weight:900;letter-spacing:.1em;pointer-events:none;z-index:76}
+
+/* Live sahnede tüm sağ/sol alanın aynı pointer yüzeyini kullanmasını garanti et. */
+.stage-wrap{isolation:isolate}
+.stage-wrap>video{position:relative;z-index:1;pointer-events:none}
+.stage-wrap>.stage-empty{z-index:2;pointer-events:none}
+.stage-wrap>.stage-hud{z-index:3;pointer-events:none}
+#liveTplOverlay.live-overlay{z-index:50!important;pointer-events:auto!important;inset:0!important;width:100%!important;height:100%!important}
+#liveTplOverlay.live-overlay .live-editable-layer{pointer-events:auto!important;position:absolute!important}
+
+.live-overlay .tpl-live-lock{position:absolute;right:31px;top:3px;width:24px;height:24px;border:1px solid rgba(255,255,255,.30);border-radius:6px;background:rgba(0,0,0,.72);color:#fff;display:grid;place-items:center;padding:0;line-height:1;font-size:12px;cursor:pointer;z-index:90;pointer-events:auto!important}
+.live-overlay .tpl-live-lock:hover{background:#12314a;border-color:rgba(99,220,255,.55)}
+.live-overlay .locked-layer .tpl-live-lock{background:rgba(180,133,0,.82);border-color:rgba(255,227,138,.7)}
+.live-overlay .locked-layer .tpl-live-remove{opacity:.75}
+
+#studioLiveLockAllBtn.active{color:#ffe38a!important;background:rgba(250,205,80,.12)!important;border-color:rgba(250,205,80,.28)!important}
+
+
+/* V4.4 — state kalıcılığı + üst üste katman seçimi */
+/* Seçili olmak z-index'i değiştirmez. Sadece aktif sürükleme sırasında geçici olarak öne gelir. */
+#liveTplOverlay .live-editable-layer.dragging,
+#liveTplOverlay .live-editable-layer.resizing{z-index:120!important}
+
+/* Kilitli katman sahnede click-through olur; böylece altındaki katman tutulabilir. */
+#liveTplOverlay .live-editable-layer.locked-layer{pointer-events:none!important;cursor:default!important}
+#liveTplOverlay .live-editable-layer.locked-layer .tpl-live-lock,
+#liveTplOverlay .live-editable-layer.locked-layer .tpl-live-remove{pointer-events:auto!important}
+#liveTplOverlay .live-editable-layer.locked-layer .tpl-resize{pointer-events:none!important}
+
+/* Seçim çerçevesi hit-area'yı büyütmesin. */
+#liveTplOverlay .live-editable-layer.selected{outline:1px solid rgba(255,255,255,.9);outline-offset:0}
