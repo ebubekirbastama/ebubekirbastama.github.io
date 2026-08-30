@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="description" content="EBS Live ile tarayıcınızdan ekran, kamera ve mikrofonunuzu özel bir bağlantı üzerinden gerçek zamanlı olarak paylaşın.">
+  <meta name="keywords" content="EBS Live, ekran paylaşımı, WebRTC, kamera paylaşımı, mikrofon paylaşımı, P2P yayın, Ebubekir Bastama">
+  <link rel="canonical" href="https://ebubekirbastama.com.tr/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="EBS Live">
+  <meta property="og:title" content="EBS Live — Özel Ekran, Kamera ve Ses Paylaşımı">
+  <meta property="og:description" content="Tek bağlantı ile ekran, kamera ve mikrofon paylaşın. Kurulum gerektirmeyen modern WebRTC deneyimi.">
+  <meta property="og:url" content="https://ebubekirbastama.com.tr/">
+
+
+  <title>EBS Live — Özel Ekran, Kamera ve Ses Paylaşımı</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="stylesheet" href="style.css?v=5.1.1">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "EBS Live",
+    "url": "https://ebubekirbastama.com.tr/",
+    "applicationCategory": "CommunicationApplication",
+    "operatingSystem": "Any",
+    "description": "Tarayıcı tabanlı gerçek zamanlı ekran, kamera ve mikrofon paylaşım uygulaması.",
+    "creator": {"@type":"Person","name":"Ebubekir Bastama"}
+  }
+  </script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-a" aria-hidden="true"></div>
+  <div class="orb orb-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="EBS Live ana sayfa">
+      <img class="brand-logo" src="assets/ebubekir-bastama-logo.png" alt="Ebubekir Bastama">
+      <span class="brand-wordmark"><strong>EBS</strong><small>LIVE</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="ghost-link" href="sablon-studyosu.html">🎨 Şablon Stüdyosu</a>
+      <span class="status-pill"><i></i><span id="networkText">Hazır</span></span>
+      <a class="ghost-link" href="https://ebubekirbastama.com.tr/" aria-label="Ana site">ebubekirbastama.com.tr</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="hero shell">
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span>WebRTC</span> • P2P • Şifreli bağlantı</div>
+        <h1>Ekranını, kameranı ve sesini <em>tek linkle</em> paylaş.</h1>
+        <p>Kurulum yok. Üyelik yok. Tarayıcından yayını başlat, özel bağlantıyı gönder; karşı taraf tek tıkla izlesin.</p>
+        <div class="hero-badges">
+          <span>⚡ Düşük gecikme</span>
+          <span>🔒 WebRTC şifreleme</span>
+          <span>🖥 Ekran + Kamera</span>
+        </div>
+        <div class="hero-actions">
+          <a class="studio-launch-btn" href="sablon-studyosu.html">
+            <span class="studio-launch-icon" aria-hidden="true">🎨</span>
+            <span><strong>Şablon Stüdyosu’nu Aç</strong><small>JSON / HTML tasarımını hazırla ve önizle</small></span>
+            <span class="studio-launch-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="glass-card launcher reveal delay-1">
+        <div class="card-head">
+          <div><span class="overline">YENİ OTURUM</span><h2>Ne paylaşmak istiyorsun?</h2></div>
+          <div class="live-dot" title="Canlı"><span></span></div>
+        </div>
+
+        <div class="share-grid" role="group" aria-label="Paylaşım kaynakları">
+          <button class="share-option active" data-source="screen" type="button">
+            <span class="option-icon">▣</span><span><b>Ekran</b><small>Sekme, pencere veya masaüstü</small></span><i></i>
+          </button>
+          <button class="share-option" data-source="camera" type="button">
+            <span class="option-icon">◉</span><span><b>Kamera</b><small>Web kameranı canlı paylaş</small></span><i></i>
+          </button>
+          <button class="share-option" data-source="dualcam" type="button">
+            <span class="option-icon">⛭</span><span><b>2 Kamera + Şablon</b><small>Capture card ile 2 kamera, haber şablonu</small></span><i></i>
+          </button>
+        </div>
+
+        <div id="dualcamPanel" class="dualcam-panel hidden">
+          <div class="dualcam-panel-head">
+            <span>Kamera Ayarları</span>
+            <button id="dualcamRefreshBtn" type="button" class="dualcam-refresh">↻ Cihazları Yenile</button>
+          </div>
+          <p class="dualcam-hint">Bu ekran ilk açıldığında tarayıcı kamera/mikrofon için bir kerelik izin isteyebilir (hangi cihazı seçersen seç, tüm kameralar listeye açılır). Ardından iki farklı capture card'ı aşağıdan seç — asıl yayın izni her kamera için "Yayını Başlat"a basınca ayrı ayrı sorulur.</p>
+
+          <div class="dualcam-add-row">
+            <span id="camCountLabel" class="dualcam-hint" style="margin:0">2 kamera ekli (en fazla 5)</span>
+            <div class="dualcam-add-actions">
+              <button id="addCamBtn" type="button" class="dualcam-refresh">+ Kamera Ekle</button>
+              <button id="removeCamBtn" type="button" class="dualcam-refresh danger-ghost">− Son Kamerayı Kaldır</button>
+            </div>
+          </div>
+
+          <div id="camRowsContainer"></div>
+          <div class="tpl-editor">
+            <div class="dualcam-panel-head">
+              <span>Şablon Düzenleyici</span>
+              <div class="tpl-editor-actions">
+                <label id="tplBgUploadLabel" class="tpl-bg-btn">🖼 Arkaplan Yükle (Resim/GIF)<input id="tplBgInput" type="file" accept="image/*"></label>
+                <button id="tplBgClearBtn" type="button" class="dualcam-refresh">Arkaplanı Kaldır</button>
+                <button id="tplResetLayoutBtn" type="button" class="dualcam-refresh">↺ Sıfırla</button>
+                <button id="tplExportBtn" type="button" class="dualcam-refresh">⬇ Şablonu Dışa Aktar</button>
+                <label id="tplImportLabel" class="tpl-bg-btn">⬆ Şablon İçe Aktar<input id="tplImportInput" type="file" accept=".json,application/json"></label>
+              </div>
+            </div>
+            <p class="dualcam-hint tpl-main-hint">Yayın alanındaki katmanları sürükleyerek taşı, sağ-alt köşesinden tutup boyutlandır. Katman listesinden görünürlük, metin ve yazı boyutunu değiştirebilir; kaldırdığın hazır öğeyi tekrar ekleyebilirsin.</p>
+
+            <div class="tpl-content-fields">
+              <div class="tpl-subhead">Yayın Metinleri ve Konuk Bilgileri</div>
+              <div id="guestRowsContainer"></div>
+              <label class="dualcam-full">Başlık<input id="tplTitle" type="text" placeholder="YAYIN BAŞLIĞI BURAYA GELECEK" maxlength="70"></label>
+              <label class="dualcam-full">Alt Başlık<input id="tplSubtitle" type="text" placeholder="Alt başlık / açıklama metni" maxlength="90"></label>
+              <label class="dualcam-full">Açıklama / Kayan Metin (Ticker)<input id="tplTicker" type="text" placeholder="son durum • son durum • son durum" maxlength="200"></label>
+              <div class="dualcam-row social-row">
+                <label>YouTube<input id="tplYoutube" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+                <label>Twitter / X<input id="tplTwitter" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+              </div>
+              <div class="dualcam-row social-row">
+                <label>Facebook<input id="tplFacebook" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+                <label>Instagram<input id="tplInstagram" type="text" placeholder="/kanaladiniz" maxlength="30"></label>
+              </div>
+            </div>
+            <div class="tpl-preset-row">
+              <span class="dualcam-hint" style="margin:0">Hazır düzen:</span>
+              <button type="button" class="tpl-preset-btn" data-preset="dual">2'li (yan yana)</button>
+              <button type="button" class="tpl-preset-btn" data-preset="row">3-5'li (tek sıra)</button>
+              <button type="button" class="tpl-preset-btn" data-preset="grid">4-5'li (ızgara)</button>
+            </div>
+
+            <div class="tpl-element-toolbar">
+              <label>Element Ekle
+                <select id="tplAddElementType"></select>
+              </label>
+              <button id="tplAddElementBtn" type="button" class="dualcam-refresh">＋ Element Ekle</button>
+            </div>
+
+            <div class="tpl-bg-controls">
+              <label>Arkaplan Yerleşimi
+                <select id="tplBgFit">
+                  <option value="cover">Ekranı Doldur (Cover)</option>
+                  <option value="contain">Tam Ekrana Sığdır (Contain)</option>
+                  <option value="original">Orijinal Boyut</option>
+                </select>
+              </label>
+              <label>Arkaplan Ölçeği <span id="tplBgScaleValue">100%</span>
+                <input id="tplBgScale" type="range" min="25" max="300" value="100">
+              </label>
+              <div class="tpl-bg-quick-actions">
+                <button id="tplBgContainBtn" type="button" class="dualcam-refresh">↔ Tam Ekrana Sığdır</button>
+                <button id="tplBgCoverBtn" type="button" class="dualcam-refresh">▣ Ekranı Doldur</button>
+                <button id="tplBgCenterBtn" type="button" class="dualcam-refresh">◎ Arkaplanı Ortala</button>
+              </div>
+            </div>
+            <p class="dualcam-hint tpl-bg-hint">Arkaplan resmini yayın önizlemesinde resmin üzerinden tutup sağa-sola / yukarı-aşağı sürükleyebilirsin.</p>
+
+            <div id="tplPreview" class="tpl-preview"></div>
+
+            <div class="tpl-layer-workspace">
+              <div>
+                <div class="tpl-subhead">Katmanlar</div>
+                <div id="tplLayerList" class="tpl-layer-list"></div>
+              </div>
+              <div id="tplSelectedEditor" class="tpl-selected-editor">
+                <div class="tpl-subhead">Seçili Element</div>
+                <div id="tplSelectedLabel" class="tpl-selected-title">Bir element seç</div>
+                <label id="tplSelectedTextWrap">Metin<input id="tplSelectedText" type="text" maxlength="220" placeholder="Element metni"></label>
+                <label>Yazı Boyutu <span id="tplSelectedFontValue">—</span><input id="tplSelectedFont" type="range" min="8" max="120" value="24"></label>
+                <label class="tpl-check"><input id="tplSelectedVisible" type="checkbox" checked> Yayında göster</label>
+                <label class="tpl-check"><input id="tplSelectedLocked" type="checkbox"> 🔒 Konum ve boyutu kilitle</label>
+                <button id="tplDeleteElementBtn" type="button" class="dualcam-refresh danger-ghost">− Elementi Kaldır</button>
+              </div>
+            </div>
+
+            <div class="tpl-font-controls">
+              <label>Başlık Boyutu<input id="fsTitle" type="range" min="20" max="120" value="54"></label>
+              <label>Alt Başlık Boyutu<input id="fsSubtitle" type="range" min="10" max="80" value="24"></label>
+              <label>Ticker Yazı Boyutu<input id="fsTicker" type="range" min="10" max="70" value="22"></label>
+              <label>Konuk İsim Yazı Boyutu<input id="fsGuest" type="range" min="10" max="70" value="24"></label>
+              <label>Konuk Ünvan Boyutu<input id="fsGuestTitle" type="range" min="8" max="60" value="16"></label>
+              <label>Sosyal Medya Boyutu<input id="fsSocials" type="range" min="8" max="60" value="20"></label>
+            </div>
+          </div>
+        </div>
+
+        <label class="switch-row">
+          <span><b>Mikrofon</b><small>Konuşmanı yayına ekle</small></span>
+          <input id="micToggle" type="checkbox" checked><span class="switch"></span>
+        </label>
+        <label class="switch-row" id="cameraOverlayRow">
+          <span><b>Kamera katmanı</b><small>Ekranın sağ altına kameranı ekle</small></span>
+          <input id="cameraOverlayToggle" type="checkbox"><span class="switch"></span>
+        </label>
+
+        <button id="startBtn" class="primary-btn magnetic" type="button">
+          <span class="btn-glow"></span><span>Yayını Başlat</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="privacy-note">İzinler yalnızca sen onayladığında istenir. Yayın bağlantısını yalnızca güvendiğin kişilerle paylaş.</p>
+      </div>
+    </section>
+
+    <section id="studioView" class="studio shell hidden" aria-live="polite">
+      <div class="studio-top">
+        <div>
+          <span class="overline red">● CANLI YAYIN</span>
+          <h2>Yayın Stüdyosu</h2>
+        </div>
+        <div class="viewer-count"><span>İzleyici</span><b id="viewerCount">0</b></div>
+      </div>
+
+      <div class="stage-wrap">
+        <video id="localVideo" playsinline autoplay muted></video>
+        <div id="stageEmpty" class="stage-empty"><span>Yayın hazırlanıyor…</span></div>
+        <div class="stage-hud"><span id="sourceBadge">EKRAN</span><span id="elapsed">00:00</span></div>
+        <div id="liveTplOverlay" class="tpl-preview live-overlay hidden"></div>
+      </div>
+
+      <div id="studioLiveTools" class="studio-live-tools hidden" aria-label="Canlı tasarım araçları">
+        <nav class="studio-live-rail" aria-label="Canlı editör menüsü">
+          <div class="studio-live-brand" title="Canlı Tasarım" aria-hidden="true">
+            <span class="studio-live-pulse"></span>
+            <svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg>
+          </div>
+
+          <button type="button" class="studio-live-tool active" data-live-tool="layers" data-label="Katmanlar" aria-label="Katmanlar">
+            <svg viewBox="0 0 24 24"><path d="m12 3 8 4-8 4-8-4 8-4Z"/><path d="m4 12 8 4 8-4M4 17l8 4 8-4"/></svg>
+          </button>
+          <button type="button" class="studio-live-tool" data-live-tool="add" data-label="Element Ekle" aria-label="Element ekle">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>
+          </button>
+          <button type="button" class="studio-live-tool" data-live-tool="texts" data-label="Metinler" aria-label="Metinler">
+            <svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></svg>
+          </button>
+          <button type="button" class="studio-live-tool" data-live-tool="background" data-label="Arka Plan" aria-label="Arka plan">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m4 17 5-5 4 4 2-2 5 4"/></svg>
+          </button>
+          <button type="button" class="studio-live-tool" data-live-tool="layout" data-label="Düzen" aria-label="Düzen">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+          </button>
+          <button type="button" class="studio-live-tool" data-live-tool="audio" data-label="Ses Mikseri" aria-label="Ses mikseri">
+            <svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h3M11 12h9M4 18h7M15 18h5"/><circle cx="16" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="13" cy="18" r="2"/></svg>
+          </button>
+          <button id="studioLiveLockAllBtn" type="button" class="studio-live-tool" data-label="Tümünü Kilitle" aria-label="Tüm elementleri kilitle">
+            <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          </button>
+          <button type="button" class="studio-live-tool" data-live-tool="file" data-label="JSON / Dosya" aria-label="JSON ve dosya">
+            <svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+          </button>
+
+          <span class="studio-live-rail-spacer"></span>
+          <button id="studioLiveCloseBtn" type="button" class="studio-live-tool danger" data-label="Editörü Kapat" aria-label="Canlı editörü kapat">
+            <svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"/></svg>
+          </button>
+        </nav>
+
+        <aside id="studioLiveDrawer" class="studio-live-drawer" aria-label="Canlı editör paneli">
+          <div class="studio-live-drawer-head">
+            <div><small>CANLI TASARIM</small><strong id="studioLiveToolTitle">Katmanlar</strong></div>
+            <button id="studioLiveDrawerClose" type="button" aria-label="Paneli daralt" title="Paneli daralt">‹</button>
+          </div>
+          <div id="studioTplEditorHost" class="dualcam-panel studio-template-editor-host" data-live-tool="layers" aria-live="polite"></div>
+          <div id="studioAudioMixerHost" class="studio-audio-mixer-host hidden" aria-live="polite"></div>
+        </aside>
+      </div>
+      <button id="studioLiveBackdrop" class="studio-live-backdrop hidden" type="button" aria-label="Canlı editör panelini daralt"></button>
+
+      <div class="control-deck glass-card">
+        <div class="invite-box">
+          <span>Özel izleme bağlantısı</span>
+          <div class="invite-input"><input id="shareLink" readonly value="Bağlantı hazırlanıyor…"><button id="copyBtn" type="button">Kopyala</button></div>
+          <small>Bu bağlantıya giren kişi yayınını izleyebilir.</small>
+
+          <span style="margin-top:14px">OBS / Yayın alma bağlantısı (sadece video, arayüzsüz)</span>
+          <div class="invite-input"><input id="obsLink" readonly value="Bağlantı hazırlanıyor…"><button id="copyObsBtn" type="button">Kopyala</button></div>
+          <small>Bu bağlantıyı OBS "Tarayıcı Kaynağı" (Browser Source) olarak ekleyip YouTube'a basabilirsin. Sayfa yalnızca videoyu gösterir, kopma olursa kendini otomatik toparlar.</small>
+        </div>
+        <div id="dualcamStudioControls" class="dualcam-studio-controls hidden"></div>
+        <div class="studio-controls">
+          <button id="toggleMicBtn" class="round-control" type="button" title="Mikrofon">🎙<span>Mikrofon</span></button>
+          <button id="switchScreenBtn" class="round-control" type="button" title="Paylaşılan ekranı değiştir">🔁<span>Ekran Değiştir</span></button>
+          <button id="liveEditBtn" class="round-control hidden" type="button" title="Şablonu canlı düzenle">🎨<span>Canlı Editör</span></button>
+          <button id="copyBtn2" class="round-control" type="button" title="Linki kopyala">🔗<span>Link</span></button>
+          <button id="stopBtn" class="round-control danger" type="button" title="Yayını bitir">■<span>Bitir</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="viewerView" class="viewer shell hidden">
+      <div class="viewer-heading">
+        <a class="mini-brand" href="./"><span class="brand-mark small" aria-hidden="true">E</span><span>EBS LIVE</span></a>
+        <span id="viewerStatus" class="status-pill"><i></i> Yayına bağlanılıyor</span>
+      </div>
+      <div class="remote-stage">
+        <video id="remoteVideo" playsinline autoplay controls></video>
+        <div id="remotePlaceholder" class="remote-placeholder">
+          <div class="pulse-rings"><span></span><span></span><span></span></div>
+          <h1>Yayın aranıyor…</h1>
+          <p>Yayıncı çevrimiçiyse bağlantı birkaç saniye içinde kurulacak.</p>
+        </div>
+      </div>
+      <div class="viewer-bar glass-card">
+        <div><b>Özel P2P Oturum</b><span>Görüntü mümkün olduğunda doğrudan tarayıcılar arasında aktarılır.</span></div>
+        <button id="fullscreenBtn" class="secondary-btn" type="button">⛶ Tam ekran</button>
+      </div>
+    </section>
+
+    <section class="features shell" id="features">
+      <article><span>01</span><h3>Tek bağlantı</h3><p>Yayıncı bağlantıyı oluşturur, izleyici bağlantıyı açar. Oda kodu yazmak gerekmez.</p></article>
+      <article><span>02</span><h3>Tarayıcı tabanlı</h3><p>Modern WebRTC desteği olan masaüstü ve mobil tarayıcılarda uygulama kurmadan çalışır.</p></article>
+      <article><span>03</span><h3>Kontrol sende</h3><p>Ekran, kamera ve mikrofon izinleri işletim sistemi ve tarayıcı tarafından açıkça sorulur.</p></article>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <div><span class="brand-mark small" aria-hidden="true">E</span><span>© <span id="year"></span> Ebubekir Bastama</span></div>
+    <p>EBS Live • HTML5 + CSS3 + JavaScript + WebRTC</p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+  <script src="app.js?v=5.1" defer></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Şablon Stüdyosu — EBS Live</title>
+  <link rel="stylesheet" href="style.css?v=5.1.1">
+  <link rel="stylesheet" href="design-studio.css?v=1.1">
+</head>
+<body class="ds-body">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-a" aria-hidden="true"></div>
+  <div class="orb orb-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="EBS Live ana sayfa">
+      <img class="brand-logo" src="assets/ebubekir-bastama-logo.png" alt="Ebubekir Bastama">
+      <span class="brand-wordmark"><strong>EBS</strong><small>LIVE</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="ghost-link" href="./">← Yayın Stüdyosuna Dön</a>
+    </div>
+  </header>
+
+  <main class="ds-main shell">
+    <div class="ds-heading">
+      <span class="overline">ŞABLON STÜDYOSU</span>
+      <h1>JSON şablonu anında önizle, kendi HTML tasarımını okunabilir şablona çevir.</h1>
+      <p>Bu sayfa ana yayın sayfasından bağımsız çalışır — kamera bağlamadan, yayın başlatmadan şablon tasarımını görebilir ve dışa/içe aktarabilirsin.</p>
+    </div>
+
+    <div class="ds-grid">
+      <section class="ds-col ds-col-inputs">
+        <div class="glass-card ds-card">
+          <div class="ds-card-head">
+            <h2>1) JSON Config Yükle</h2>
+            <span class="ds-badge">Anlık Önizleme</span>
+          </div>
+          <p class="dualcam-hint">Yayın sayfasındaki "⬇ Şablonu Dışa Aktar" ile indirdiğin <code>.json</code> dosyasını buraya yükle — tasarım aşağıda anında görünür.</p>
+          <label class="ds-drop" for="dsJsonInput">
+            <span class="ds-drop-icon">⬇</span>
+            <span><b>JSON dosyası seç</b><small>veya sürükleyip bırak</small></span>
+            <input id="dsJsonInput" type="file" accept=".json,application/json">
+          </label>
+          <div id="dsJsonStatus" class="ds-status"></div>
+        </div>
+
+        <div class="glass-card ds-card">
+          <div class="ds-card-head">
+            <h2>2) HTML Tasarımını Yükle</h2>
+            <span class="ds-badge alt">HTML → JSON</span>
+          </div>
+          <p class="dualcam-hint">Kendi tasarladığın <code>.html</code> dosyasını yükle; aşağıdaki kurala uyan elementleri otomatik olarak okunabilir bir yayın şablonuna (JSON) çevirir.</p>
+          <label class="ds-drop" for="dsHtmlInput">
+            <span class="ds-drop-icon">🖹</span>
+            <span><b>HTML dosyası seç</b><small>veya sürükleyip bırak</small></span>
+            <input id="dsHtmlInput" type="file" accept=".html,text/html">
+          </label>
+          <div id="dsHtmlStatus" class="ds-status"></div>
+          <a id="dsSampleDownload" class="dualcam-refresh ds-sample-btn" href="#" download="ebslive-ornek-sablon.html">⬇ Örnek HTML Şablonunu İndir</a>
+        </div>
+
+        <div class="glass-card ds-card ds-help">
+          <div class="ds-card-head"><h2>HTML Kuralı (Kısa)</h2></div>
+          <ol class="ds-help-list">
+            <li>Tasarımını <code>1920×1080</code> piksel sabit boyutlu, <code>position:relative</code> bir kapsayıcı içine yap ve ona <code>data-stage</code> ekle.</li>
+            <li>Her öğeyi <code>position:absolute</code> ile yerleştir ve <code>data-layer-type</code> ver: <code>camera</code>, <code>text</code>, <code>ticker</code>, <code>image</code> veya <code>custom</code>.</li>
+            <li>Kamera kutularına sırayla <code>data-cam-index="0"</code>, <code>"1"</code>… ver.</li>
+            <li>Dinamik metinlere <code>data-field</code> ver: <code>title</code>, <code>subtitle</code>, <code>ticker</code>, <code>guest1Name</code>, <code>guest1Title</code>, <code>socials</code> vb. <code>data-field</code> yoksa element metni sabit ("custom") metin olarak alınır.</li>
+            <li>Yazı boyutu/rengi/kalınlığı CSS'ten (<code>font-size</code>, <code>color</code>, <code>font-weight</code>) otomatik okunur.</li>
+          </ol>
+          <p class="dualcam-hint">Emin değilsen önce örnek şablonu indirip onun üzerine kendi tasarımını uygula.</p>
+        </div>
+      </section>
+
+      <section class="ds-col ds-col-preview">
+        <div class="glass-card ds-card ds-preview-card">
+          <div class="ds-card-head">
+            <h2>Canlı Önizleme</h2>
+            <span id="dsCamCountBadge" class="ds-badge">—</span>
+          </div>
+          <div class="ds-preview-wrap">
+            <canvas id="dsCanvas" width="1920" height="1080"></canvas>
+            <div id="dsEmptyState" class="ds-empty-state"><span>Önizlemek için bir JSON ya da HTML dosyası yükle.</span></div>
+          </div>
+        </div>
+
+        <div class="glass-card ds-card">
+          <div class="ds-card-head">
+            <h2>Sonuç JSON</h2>
+            <div class="ds-json-actions">
+              <button id="dsCopyJsonBtn" type="button" class="dualcam-refresh">📋 Kopyala</button>
+              <button id="dsDownloadJsonBtn" type="button" class="dualcam-refresh">⬇ JSON İndir</button>
+            </div>
+          </div>
+          <textarea id="dsJsonOutput" class="ds-json-output" spellcheck="false" placeholder="Yüklediğin şablonun JSON çıktısı burada görünecek…"></textarea>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="design-studio.js?v=1.1" defer></script>
+</body>
+</html>

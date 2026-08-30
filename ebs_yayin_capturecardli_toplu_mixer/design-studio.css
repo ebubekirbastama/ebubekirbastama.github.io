@@ -1,0 +1,34 @@
+/* EBS Live Şablon Stüdyosu V1.1 */
+.ds-body{overflow-x:hidden}
+.ds-main{padding:44px 0 90px}
+.ds-heading{max-width:760px;margin-bottom:30px}
+.ds-heading h1{font-family:"Space Grotesk",sans-serif;font-size:clamp(26px,3.4vw,38px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 10px}
+.ds-heading p{color:#9cafc1;font-size:14px;line-height:1.7;margin:0}
+.ds-grid{display:grid;grid-template-columns:minmax(320px,.92fr) minmax(360px,1.08fr);gap:22px;align-items:start}
+.ds-col{display:grid;gap:18px;min-width:0}
+.ds-card{padding:20px;border-radius:20px}
+.ds-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.ds-card-head h2{font-family:"Space Grotesk",sans-serif;font-size:16px;margin:0}
+.ds-badge{font-size:10px;font-weight:800;letter-spacing:.08em;padding:6px 10px;border-radius:999px;background:rgba(22,185,255,.12);color:#7fe3ff;border:1px solid rgba(99,220,255,.28)}
+.ds-badge.alt{background:rgba(250,205,80,.12);color:#ffdf8a;border-color:rgba(250,205,80,.3)}
+.ds-drop{position:relative;display:flex;align-items:center;gap:14px;padding:16px;margin-top:12px;border:1.5px dashed rgba(99,220,255,.35);border-radius:16px;background:rgba(255,255,255,.02);cursor:pointer;transition:.2s}
+.ds-drop:hover{background:rgba(99,220,255,.06);border-color:rgba(99,220,255,.55)}
+.ds-drop-icon{width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:grid;place-items:center;background:rgba(22,185,255,.12);font-size:20px;color:#7fe3ff}
+.ds-drop b{display:block;font-size:13px;color:#fff}
+.ds-drop small{display:block;margin-top:3px;color:#7f96aa;font-size:11px}
+.ds-drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ds-status{margin-top:10px;font-size:11px;line-height:1.6;color:#7f96aa;min-height:16px}
+.ds-status.ok{color:#7fe8b8}
+.ds-status.err{color:#ff8598}
+.ds-sample-btn{display:inline-flex;margin-top:14px;text-decoration:none}
+.ds-help{background:rgba(255,255,255,.02)}
+.ds-help-list{margin:8px 0 12px;padding-left:18px;display:grid;gap:8px;font-size:12px;color:#b9c8d7;line-height:1.6}
+.ds-help-list code,.ds-card code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px;font-size:11px;color:#bfeeff}
+.ds-preview-card{padding-bottom:14px}
+.ds-preview-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#050505;margin-top:8px}
+.ds-preview-wrap canvas{width:100%;height:100%;display:block}
+.ds-empty-state{position:absolute;inset:0;display:grid;place-items:center;color:#5c7488;font-size:13px;text-align:center;padding:20px;background:radial-gradient(circle at 50% 45%,#0b1d2f,#02070c 75%);pointer-events:none}
+.ds-empty-state.hidden{display:none}
+.ds-json-actions{display:flex;gap:8px}
+.ds-json-output{width:100%;min-height:220px;margin-top:10px;padding:12px;border-radius:12px;border:1px solid var(--line);background:#06111c;color:#bfeeff;font:11px/1.55 "SFMono-Regular",Consolas,monospace;resize:vertical}
+@media(max-width:980px){.ds-grid{grid-template-columns:1fr}}
