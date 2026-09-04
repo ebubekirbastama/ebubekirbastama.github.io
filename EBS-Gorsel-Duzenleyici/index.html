@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="application-name" content="EBS Görsel Düzenleyici">
+  <meta name="description" content="EBS Görsel Düzenleyici ile fotoğraflarınızı tarayıcıda ücretsiz düzenleyin; bulanık arka plan, özel ölçü, çerçeve, renk ve WebP/PNG/JPEG dışa aktarma seçeneklerini kullanın.">
+  <meta name="keywords" content="resim düzenleme, online resim düzenleyici, manşet görseli, webp dönüştürücü, fotoğraf boyutlandırma, sosyal medya görseli, bulanık arka plan, Ebubekir Bastama">
+  <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+  <link rel="icon" type="image/png" href="assets/ebubekir-bastama-logo.png">
+  <link rel="apple-touch-icon" href="assets/ebubekir-bastama-logo.png">
+
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ebubekir Bastama">
+  <meta property="og:title" content="EBS Görsel Düzenleyici | Online Manşet ve Sosyal Medya Görseli Hazırla">
+  <meta property="og:description" content="Fotoğrafınızı yükleyin; bulanık arka plan, özel ölçü, çerçeve ve çıktı formatını seçin. İşlemler cihazınızda gerçekleşir.">
+  <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+  <meta property="og:image" content="https://www.ebubekirbastama.com.tr/assets/ebubekir-bastama-logo.png">
+  <meta property="og:image:alt" content="Ebubekir Bastama logosu">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="EBS Görsel Düzenleyici">
+  <meta name="twitter:description" content="Modern, hızlı ve responsive online görsel düzenleme aracı.">
+  <meta name="twitter:image" content="https://www.ebubekirbastama.com.tr/assets/ebubekir-bastama-logo.png">
+
+  <title>EBS Görsel Düzenleyici | Online Resim Boyutlandırma ve Manşet Hazırlama</title>
+
+  <style>
+    :root {
+      --bg: #090909;
+      --panel: #111214;
+      --panel-2: #17181b;
+      --surface: #1d1f23;
+      --text: #f8f8f6;
+      --muted: #b8b8b2;
+      --line: rgba(255,255,255,.10);
+      --gold: #d4af37;
+      --gold-2: #f4df91;
+      --gold-soft: rgba(212,175,55,.16);
+      --white: #ffffff;
+      --danger: #ff6b6b;
+      --success: #76d59a;
+      --radius: 20px;
+      --shadow: 0 24px 80px rgba(0,0,0,.34);
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% -10%, rgba(212,175,55,.18), transparent 28%),
+        radial-gradient(circle at 90% 5%, rgba(255,255,255,.08), transparent 25%),
+        var(--bg);
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+    a { color: inherit; }
+    button, input, select { font: inherit; }
+    img { max-width: 100%; height: auto; }
+
+    .skip-link {
+      position: absolute; left: -9999px; top: 8px; z-index: 9999;
+      background: var(--white); color: #111; padding: 10px 14px; border-radius: 10px;
+    }
+    .skip-link:focus { left: 8px; }
+
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(16px);
+      background: rgba(9,9,9,.78);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      max-width: var(--max); margin: 0 auto; padding: 10px 22px;
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
+    .brand img { width: 58px; height: 58px; object-fit: contain; }
+    .brand strong { display: block; font-size: 1rem; letter-spacing: .02em; }
+    .brand span { display: block; color: var(--muted); font-size: .78rem; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-links a { text-decoration: none; color: var(--muted); padding: 9px 11px; border-radius: 12px; }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--white); background: rgba(255,255,255,.06); }
+
+    .hero { max-width: var(--max); margin: 0 auto; padding: 72px 22px 38px; text-align: center; }
+    .hero-logo { width: min(420px, 84vw); max-height: 220px; object-fit: contain; filter: drop-shadow(0 14px 34px rgba(0,0,0,.38)); }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+      padding: 7px 12px; border: 1px solid rgba(212,175,55,.35); border-radius: 999px;
+      background: var(--gold-soft); color: var(--gold-2); font-size: .82rem; font-weight: 700;
+    }
+    h1, h2, h3 { line-height: 1.15; margin-top: 0; }
+    h1 { font-size: clamp(2rem, 5vw, 4.6rem); max-width: 920px; margin: 18px auto 16px; letter-spacing: -.045em; }
+    h2 { font-size: clamp(1.55rem, 3vw, 2.45rem); letter-spacing: -.025em; }
+    h3 { font-size: 1.15rem; }
+    .hero p { max-width: 790px; margin: 0 auto; color: var(--muted); font-size: clamp(1rem, 2vw, 1.15rem); }
+    .hero-actions { margin-top: 26px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+    .btn {
+      border: 1px solid transparent; border-radius: 14px; padding: 12px 18px; font-weight: 800;
+      cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px; text-decoration: none; min-height: 46px;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:focus-visible { outline: 3px solid rgba(244,223,145,.35); outline-offset: 2px; }
+    .btn-gold {
+      color: #181308;
+      background: linear-gradient(135deg, #fff8d7 0%, #d4af37 48%, #f3dd8d 100%);
+      box-shadow: 0 12px 28px rgba(212,175,55,.18), inset 0 1px 0 rgba(255,255,255,.7);
+      border-color: rgba(255,255,255,.45);
+    }
+    .btn-white {
+      color: #111; background: linear-gradient(180deg, #fff 0%, #ececec 100%);
+      box-shadow: 0 10px 24px rgba(255,255,255,.08); border-color: rgba(255,255,255,.7);
+    }
+    .btn-ghost { color: var(--text); background: transparent; border-color: var(--line); }
+    .btn-ghost:hover { border-color: rgba(212,175,55,.45); background: var(--gold-soft); }
+    .btn-block { width: 100%; }
+
+    .main { max-width: var(--max); margin: 0 auto; padding: 0 22px 64px; }
+    .tool-shell {
+      display: grid; grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr); gap: 22px;
+      align-items: start;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+      border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .controls { padding: 18px; position: sticky; top: 90px; }
+    .controls h2 { font-size: 1.25rem; margin: 2px 0 16px; }
+    .control-group { padding: 16px 0; border-top: 1px solid var(--line); }
+    .control-group:first-of-type { border-top: 0; padding-top: 0; }
+    .control-title { font-size: .92rem; font-weight: 800; margin-bottom: 10px; color: #f6f1df; }
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 8px; }
+    label { font-size: .88rem; font-weight: 700; color: #e8e8e5; }
+    .value { font-size: .78rem; color: var(--gold-2); white-space: nowrap; }
+    input[type="range"] { width: 100%; accent-color: var(--gold); cursor: pointer; }
+    input[type="color"] {
+      width: 50px; height: 36px; padding: 3px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); cursor: pointer;
+    }
+    select, input[type="number"] {
+      width: 100%; color: var(--text); background: #0f1012; border: 1px solid var(--line); border-radius: 11px; padding: 10px 11px;
+    }
+    select:focus, input[type="number"]:focus { outline: 2px solid rgba(212,175,55,.35); border-color: rgba(212,175,55,.55); }
+    .field-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+    .switch { position: relative; display: inline-block; width: 46px; height: 26px; flex: 0 0 auto; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider-switch { position: absolute; inset: 0; background: #34363b; border-radius: 999px; transition: .2s; }
+    .slider-switch:before { content: ""; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: .2s; }
+    .switch input:checked + .slider-switch { background: var(--gold); }
+    .switch input:checked + .slider-switch:before { transform: translateX(20px); }
+
+    .dropzone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 96px;
+      box-sizing: border-box;
+      overflow: hidden;
+      border: 1.5px dashed rgba(212,175,55,.42);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      line-height: 1.35;
+      background: linear-gradient(180deg, rgba(212,175,55,.08), rgba(255,255,255,.02));
+      cursor: pointer;
+      transition: .2s ease;
+      position: relative;
+    }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--gold-2); background: rgba(212,175,55,.12); }
+    .dropzone input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .dropzone strong, .dropzone small { position: relative; z-index: 1; max-width: 100%; overflow-wrap: anywhere; }
+    .dropzone strong { display: block; }
+    .dropzone small { display: block; color: var(--muted); margin-top: 6px; }
+
+    .presets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .preset {
+      border: 1px solid var(--line); background: #0e0f11; color: var(--text); border-radius: 11px; padding: 9px 8px; cursor: pointer;
+      text-align: left; font-size: .78rem;
+    }
+    .preset:hover { border-color: rgba(212,175,55,.55); background: var(--gold-soft); }
+    .preset b { display: block; color: var(--gold-2); font-size: .76rem; }
+
+    .preview-card { padding: 18px; min-width: 0; }
+    .preview-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 12px; }
+    .preview-head h2 { font-size: 1.2rem; margin: 0; }
+    .status { font-size: .8rem; color: var(--muted); }
+    .stage {
+      width: 100%; min-height: 360px; border-radius: 16px; border: 1px solid var(--line); overflow: auto;
+      background:
+        linear-gradient(45deg, #151619 25%, transparent 25%),
+        linear-gradient(-45deg, #151619 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #151619 75%),
+        linear-gradient(-45deg, transparent 75%, #151619 75%), #101114;
+      background-size: 24px 24px; background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+      display: flex; justify-content: center; align-items: center; padding: 20px;
+    }
+    #previewCanvas { display: block; max-width: 100%; height: auto; box-shadow: 0 18px 45px rgba(0,0,0,.36); }
+    #blurredCanvas, #clearImageCanvas { display: none !important; }
+    .empty-state { max-width: 420px; text-align: center; color: var(--muted); padding: 42px 18px; }
+    .empty-icon { width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 12px; display: grid; place-items: center; background: var(--gold-soft); color: var(--gold-2); font-size: 1.6rem; }
+    .preview-actions { display: grid; grid-template-columns: 1.3fr .7fr; gap: 10px; margin-top: 12px; }
+    .privacy-note { margin: 12px 2px 0; color: var(--muted); font-size: .78rem; }
+
+    .seo-section { max-width: var(--max); margin: 0 auto; padding: 18px 22px 76px; }
+    .seo-intro { max-width: 830px; }
+    .seo-intro p { color: var(--muted); }
+    .content-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-top: 22px; }
+    .info-card { padding: 20px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.025); }
+    .info-card p, .info-card li { color: var(--muted); }
+    .steps { margin: 0; padding-left: 20px; }
+    .faq { margin-top: 30px; }
+    details { border-top: 1px solid var(--line); padding: 15px 0; }
+    details:last-child { border-bottom: 1px solid var(--line); }
+    summary { cursor: pointer; font-weight: 800; color: #f4f1e8; }
+    details p { color: var(--muted); margin-bottom: 2px; }
+
+    .footer { border-top: 1px solid var(--line); background: #070707; }
+    .footer-inner { max-width: var(--max); margin: 0 auto; padding: 24px 22px; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; color: var(--muted); font-size: .85rem; }
+    .footer strong { color: var(--text); }
+
+    .toast {
+      position: fixed; right: 18px; bottom: 18px; z-index: 100; max-width: min(380px, calc(100vw - 36px));
+      padding: 12px 14px; border-radius: 13px; background: #191a1d; border: 1px solid var(--line); box-shadow: var(--shadow);
+      color: var(--text); opacity: 0; transform: translateY(14px); pointer-events: none; transition: .22s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
+
+    @media (max-width: 980px) {
+      .tool-shell { grid-template-columns: 1fr; }
+      .controls { position: static; }
+      .content-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 680px) {
+      .nav { padding: 8px 14px; }
+      .brand img { width: 50px; height: 50px; }
+      .brand span { display: none; }
+      .nav-links a:not(.nav-primary) { display: none; }
+      .hero { padding: 48px 16px 28px; }
+      .main, .seo-section { padding-left: 14px; padding-right: 14px; }
+      .controls, .preview-card { padding: 14px; }
+      .field-inline, .presets, .content-grid, .preview-actions { grid-template-columns: 1fr; }
+      .stage { min-height: 270px; padding: 10px; }
+      .footer-inner { padding: 20px 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "EBS Görsel Düzenleyici",
+    "url": "https://www.ebubekirbastama.com.tr/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web Browser",
+    "inLanguage": "tr-TR",
+    "description": "Tarayıcı üzerinde çalışan, fotoğraf boyutlandırma, bulanık arka plan, çerçeve ve görsel dışa aktarma özellikleri sunan ücretsiz web aracı.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "TRY"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Ebubekir Bastama",
+      "url": "https://www.ebubekirbastama.com.tr/"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "EBS Görsel Düzenleyici nedir?",
+        "acceptedAnswer": {"@type": "Answer", "text": "EBS Görsel Düzenleyici; görselleri tarayıcıda boyutlandırmak, bulanık arka plan oluşturmak, çerçeve eklemek ve PNG, WebP veya JPEG olarak dışa aktarmak için kullanılan çevrim içi bir araçtır."}
+      },
+      {
+        "@type": "Question",
+        "name": "EBS Görsel Düzenleyici nasıl kullanılır?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Görselinizi yükleyin, hedef ölçüyü veya hazır boyutlardan birini seçin, ön plan boyutu ile çerçeve ve bulanıklık ayarlarını düzenleyin, ardından çıktı formatını seçerek görseli indirin."}
+      },
+      {
+        "@type": "Question",
+        "name": "Yüklediğim fotoğraflar sunucuya gönderiliyor mu?",
+        "acceptedAnswer": {"@type": "Answer", "text": "Bu sayfadaki temel görsel işleme işlemleri tarayıcı içindeki Canvas API ile cihaz üzerinde yapılır; görselin düzenlenmesi için bir yükleme sunucusuna gönderilmesi gerekmez."}
+      },
+      {
+        "@type": "Question",
+        "name": "Hangi çıktı formatlarını kullanabilirim?",
+        "acceptedAnswer": {"@type": "Answer", "text": "PNG, WebP ve JPEG çıktıları desteklenir. WebP çoğu web kullanımı için daha küçük dosya boyutu sunarken PNG keskin grafikler için, JPEG ise fotoğraf ağırlıklı içerikler için uygundur."}
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#duzenleyici">Düzenleyiciye geç</a>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Ana menü">
+      <a class="brand" href="#top" aria-label="Ebubekir Bastama ana sayfa">
+        <img src="assets/ebubekir-bastama-logo.png" alt="Ebubekir Bastama logosu" width="460" height="460">
+        <div>
+          <strong>Ebubekir Bastama</strong>
+          <span>EBS Görsel Düzenleyici</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="#nasil-kullanilir">Nasıl kullanılır?</a>
+        <a href="#sss">SSS</a>
+        <a class="btn btn-gold nav-primary" href="#duzenleyici">Görsel oluştur</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-logo" src="assets/ebubekir-bastama-logo.png" alt="Ebubekir Bastama" width="460" height="460" fetchpriority="high">
+      <div class="eyebrow">HIZLI • RESPONSIVE • TARAYICIDA ÇALIŞIR</div>
+      <h1 id="hero-title">Manşet ve sosyal medya görsellerinizi saniyeler içinde hazırlayın.</h1>
+      <p>Fotoğrafınızı yükleyin; bulanık arka plan, özel ölçü, çerçeve ve çıktı formatını ayarlayın. Masaüstü, tablet ve mobil cihazlarda çalışacak şekilde tasarlanmıştır.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold" href="#duzenleyici">Görsel düzenlemeye başla</a>
+        <a class="btn btn-white" href="#nasil-kullanilir">Kullanım rehberi</a>
+      </div>
+    </section>
+
+    <section class="main" id="duzenleyici" aria-labelledby="editor-title">
+      <div class="tool-shell">
+        <aside class="controls card" aria-label="Görsel ayarları">
+          <h2 id="editor-title">Görsel Ayarları</h2>
+
+          <div class="control-group">
+            <div class="control-title">1. Görsel yükle</div>
+            <label class="dropzone" id="dropzone">
+              <input type="file" id="imageInput" accept="image/*" aria-label="Görsel seç">
+              <strong>Dosya seç veya buraya sürükle</strong>
+              <small>JPG, PNG, WebP ve tarayıcınızın desteklediği görseller</small>
+            </label>
+          </div>
+
+          <div class="control-group">
+            <div class="control-title">2. Hazır ölçüler</div>
+            <div class="presets" aria-label="Hazır görsel ölçüleri">
+              <button class="preset" type="button" data-width="1280" data-height="720"><b>1280 × 720</b>Haber / YouTube</button>
+              <button class="preset" type="button" data-width="1200" data-height="630"><b>1200 × 630</b>Open Graph / Paylaşım</button>
+              <button class="preset" type="button" data-width="1080" data-height="1080"><b>1080 × 1080</b>Kare sosyal medya</button>
+              <button class="preset" type="button" data-width="1080" data-height="1350"><b>1080 × 1350</b>Dikey gönderi</button>
+              <button class="preset" type="button" data-width="1080" data-height="1920"><b>1080 × 1920</b>Hikâye / Reels</button>
+              <button class="preset" type="button" data-width="1920" data-height="1080"><b>1920 × 1080</b>Full HD</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-title">3. Arka plan ölçüsü ve bulanıklık</div>
+            <div class="field">
+              <div class="field-head"><label for="blurredWidthSlider">Genişlik</label><span class="value" id="blurredWidthValue">1280 px</span></div>
+              <input type="range" id="blurredWidthSlider" min="320" max="2160" step="10" value="1280">
+            </div>
+            <div class="field">
+              <div class="field-head"><label for="blurredHeightSlider">Yükseklik</label><span class="value" id="blurredHeightValue">720 px</span></div>
+              <input type="range" id="blurredHeightSlider" min="320" max="2160" step="10" value="720">
+            </div>
+            <div class="field">
+              <div class="field-head"><label for="blurSlider">Bulanıklık</label><span class="value" id="blurValue">25 px</span></div>
+              <input type="range" id="blurSlider" min="0" max="60" step="1" value="25">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-title">4. Ön plan görseli</div>
+            <div class="field">
+              <div class="field-head"><label for="widthSlider">Genişlik</label><span class="value" id="widthValue">900 px</span></div>
+              <input type="range" id="widthSlider" min="100" max="2000" step="10" value="900">
+            </div>
+            <div class="field">
+              <div class="field-head"><label for="heightSlider">Yükseklik</label><span class="value" id="heightValue">600 px</span></div>
+              <input type="range" id="heightSlider" min="100" max="2000" step="10" value="600">
+            </div>
+            <div class="field">
+              <label for="fitMode">Yerleşim</label>
+              <select id="fitMode">
+                <option value="contain" selected>Oranı koru (tamamını göster)</option>
+                <option value="cover">Alanı doldur (gerekirse kırp)</option>
+                <option value="stretch">Esnet</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-title">5. Çerçeve</div>
+            <div class="field">
+              <div class="field-head"><label for="borderSlider">Çerçeve kalınlığı</label><span class="value" id="borderValue">8 px</span></div>
+              <input type="range" id="borderSlider" min="0" max="40" value="8">
+            </div>
+            <div class="field">
+              <div class="field-head"><label for="radiusSlider">Köşe yuvarlaklığı</label><span class="value" id="radiusValue">0 px</span></div>
+              <input type="range" id="radiusSlider" min="0" max="80" value="0">
+            </div>
+            <div class="field toggle-row">
+              <div>
+                <label for="borderColorPicker">Çerçeve rengi</label>
+                <div class="value" id="borderColorValue">#ffffff</div>
+              </div>
+              <input type="color" id="borderColorPicker" value="#ffffff" aria-label="Çerçeve rengini seç">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-title">6. Çıktı</div>
+            <div class="field-inline">
+              <div class="field">
+                <label for="formatSelect">Format</label>
+                <select id="formatSelect">
+                  <option value="image/webp" selected>WebP</option>
+                  <option value="image/png">PNG</option>
+                  <option value="image/jpeg">JPEG</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="qualitySelect">Kalite</label>
+                <select id="qualitySelect">
+                  <option value="0.72">%72</option>
+                  <option value="0.82">%82</option>
+                  <option value="0.9" selected>%90</option>
+                  <option value="0.96">%96</option>
+                  <option value="1">%100</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field toggle-row">
+              <div><label for="watermarkToggle">Görünmez site damgası</label><div class="value">www.ebubekirbastama.com.tr</div></div>
+              <label class="switch"><input id="watermarkToggle" type="checkbox" checked><span class="slider-switch"></span></label>
+            </div>
+            <div class="field toggle-row">
+              <div><label for="autoDownloadToggle">Yükleme sonrası otomatik indir</label><div class="value">Mevcut işlev korunur</div></div>
+              <label class="switch"><input id="autoDownloadToggle" type="checkbox" checked><span class="slider-switch"></span></label>
+            </div>
+          </div>
+        </aside>
+
+        <section class="preview-card card" aria-label="Görsel önizleme alanı">
+          <div class="preview-head">
+            <h2>Canlı Önizleme</h2>
+            <span class="status" id="statusText" aria-live="polite">Görsel bekleniyor</span>
+          </div>
+
+          <div class="stage" id="stage">
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon" aria-hidden="true">✦</div>
+              <strong>Önizleme burada görünecek</strong>
+              <p>Bir görsel yükleyin veya sürükleyip bırakın. Tüm düzenlemeler cihazınızda yapılır.</p>
+            </div>
+            <canvas id="previewCanvas" class="hidden" aria-label="Düzenlenen görsel önizlemesi"></canvas>
+            <canvas id="blurredCanvas" class="hidden"></canvas>
+            <canvas id="clearImageCanvas" class="hidden"></canvas>
+          </div>
+
+          <div class="preview-actions">
+            <button id="saveBtn" class="btn btn-gold btn-block" type="button" disabled>Görseli İndir</button>
+            <button id="resetBtn" class="btn btn-white btn-block" type="button">Sıfırla</button>
+          </div>
+          <p class="privacy-note">🔒 Gizlilik: Görsel işleme Canvas API ile tarayıcınızda gerçekleştirilir. Bu sayfadaki düzenleme işlemi için dosyanızın sunucuya yüklenmesi gerekmez.</p>
+        </section>
+      </div>
+    </section>
+
+    <section class="seo-section" id="nasil-kullanilir" aria-labelledby="guide-title">
+      <div class="seo-intro">
+        <div class="eyebrow">KULLANIM REHBERİ</div>
+        <h2 id="guide-title">EBS Görsel Düzenleyici nedir, nasıl kullanılır?</h2>
+        <p>EBS Görsel Düzenleyici; haber manşeti, web sitesi kapak görseli ve sosyal medya içeriği hazırlarken fotoğrafı hedef ölçüye uyarlamak için tasarlanmış çevrim içi bir araçtır. Görselin kenarlarında boş alan kalmasını istemediğiniz durumlarda bulanık arka plan oluşturabilir, ön plandaki net görselin boyutunu değiştirebilir ve çerçeve ekleyebilirsiniz.</p>
+      </div>
+
+      <div class="content-grid">
+        <article class="info-card">
+          <h3>Nasıl kullanılır?</h3>
+          <ol class="steps">
+            <li>JPG, PNG veya WebP görselinizi yükleyin.</li>
+            <li>Hazır ölçülerden birini seçin ya da genişlik ve yüksekliği ayarlayın.</li>
+            <li>Bulanıklık, ön plan boyutu, çerçeve ve köşe ayarlarını düzenleyin.</li>
+            <li>WebP, PNG veya JPEG çıktı formatını seçin.</li>
+            <li>“Görseli İndir” butonuyla dosyanızı kaydedin.</li>
+          </ol>
+        </article>
+
+        <article class="info-card">
+          <h3>Hangi görsel ölçüsünü seçmeliyim?</h3>
+          <p><strong>1280×720</strong> yatay video ve haber görsellerinde, <strong>1200×630</strong> Open Graph/paylaşım kartlarında, <strong>1080×1080</strong> kare sosyal medya gönderilerinde, <strong>1080×1350</strong> dikey gönderilerde ve <strong>1080×1920</strong> hikâye/Reels içeriklerinde pratik bir başlangıç noktasıdır.</p>
+        </article>
+
+        <article class="info-card">
+          <h3>WebP, PNG veya JPEG?</h3>
+          <p><strong>WebP</strong> çoğu web sayfasında daha küçük dosya boyutu için uygundur. <strong>PNG</strong> grafik, logo ve keskin detaylarda tercih edilebilir. <strong>JPEG</strong> ise fotoğraf ağırlıklı içeriklerde yaygın bir seçenektir. İhtiyacınıza göre kalite seviyesini düşürerek dosya boyutunu azaltabilirsiniz.</p>
+        </article>
+      </div>
+
+      <div class="content-grid">
+        <article class="info-card">
+          <h3>Bulanık arka plan ne işe yarar?</h3>
+          <p>Dikey veya kare bir fotoğrafı yatay bir alana yerleştirirken oluşan boşlukları, aynı fotoğrafın bulanıklaştırılmış bir kopyasıyla doldurur. Böylece ana fotoğraf kırpılmadan daha dengeli bir kompozisyon elde edilir.</p>
+        </article>
+        <article class="info-card">
+          <h3>Manşet görseli hazırlarken dikkat</h3>
+          <p>Önemli yüzleri ve metinleri merkeze yakın tutun, çok ince çerçevelerden kaçının ve mobilde küçük görünecek ayrıntıları büyütün. Web sayfasında kullanacaksanız görsel dosya boyutunu mümkün olduğunca düşük tutmak sayfa hızına yardımcı olur.</p>
+        </article>
+        <article class="info-card">
+          <h3>Gizlilik ve tarayıcı desteği</h3>
+          <p>Araç görsel üretimini tarayıcıdaki Canvas API ile yapar. Modern Chrome, Edge, Firefox ve Safari sürümlerinde temel işlevler desteklenir. Çok büyük görseller, düşük belleğe sahip cihazlarda daha yavaş işlenebilir.</p>
+        </article>
+      </div>
+
+      <section class="faq" id="sss" aria-labelledby="faq-title">
+        <div class="eyebrow">SIK SORULAN SORULAR</div>
+        <h2 id="faq-title">EBS Görsel Düzenleyici hakkında SSS</h2>
+        <details>
+          <summary>EBS Görsel Düzenleyici ücretsiz mi?</summary>
+          <p>Sayfa, kullanıcıdan ücret talep etmeyen tarayıcı tabanlı bir görsel düzenleme aracı olarak hazırlanmıştır.</p>
+        </details>
+        <details>
+          <summary>Fotoğrafımı kırpmadan yatay manşete nasıl yerleştiririm?</summary>
+          <p>Yerleşim seçeneğini “Oranı koru” olarak bırakın. Arka planı hedef yatay ölçüye ayarlayın, ön plan görselini küçültüp büyütün ve bulanık arka plan ile boşlukları doldurun.</p>
+        </details>
+        <details>
+          <summary>En küçük dosya boyutu için hangi formatı seçmeliyim?</summary>
+          <p>Genellikle WebP iyi bir başlangıçtır. Kaliteyi %82–90 aralığına getirip sonuç görüntüsünü kontrol ederek boyut ve kalite arasında denge kurabilirsiniz.</p>
+        </details>
+        <details>
+          <summary>Görünmez site damgası nedir?</summary>
+          <p>Etkin olduğunda çıktı görselinin sağ alt bölümüne çok düşük opaklıkta “www.ebubekirbastama.com.tr” metni eklenir. İsterseniz anahtarı kapatarak bu işlemi devre dışı bırakabilirsiniz.</p>
+        </details>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div><strong>Ebubekir Bastama</strong> — EBS Görsel Düzenleyici</div>
+      <div>© <span id="year"></span> www.ebubekirbastama.com.tr</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    'use strict';
+
+    const $ = (id) => document.getElementById(id);
+
+    const els = {
+      imageInput: $('imageInput'),
+      dropzone: $('dropzone'),
+      previewCanvas: $('previewCanvas'),
+      blurredCanvas: $('blurredCanvas'),
+      clearImageCanvas: $('clearImageCanvas'),
+      emptyState: $('emptyState'),
+      saveBtn: $('saveBtn'),
+      resetBtn: $('resetBtn'),
+      statusText: $('statusText'),
+      blurredWidthSlider: $('blurredWidthSlider'),
+      blurredHeightSlider: $('blurredHeightSlider'),
+      blurredWidthValue: $('blurredWidthValue'),
+      blurredHeightValue: $('blurredHeightValue'),
+      blurSlider: $('blurSlider'),
+      blurValue: $('blurValue'),
+      widthSlider: $('widthSlider'),
+      heightSlider: $('heightSlider'),
+      widthValue: $('widthValue'),
+      heightValue: $('heightValue'),
+      borderSlider: $('borderSlider'),
+      borderValue: $('borderValue'),
+      borderColorPicker: $('borderColorPicker'),
+      borderColorValue: $('borderColorValue'),
+      radiusSlider: $('radiusSlider'),
+      radiusValue: $('radiusValue'),
+      fitMode: $('fitMode'),
+      formatSelect: $('formatSelect'),
+      qualitySelect: $('qualitySelect'),
+      watermarkToggle: $('watermarkToggle'),
+      autoDownloadToggle: $('autoDownloadToggle'),
+      toast: $('toast')
+    };
+
+    const defaults = {
+      bgWidth: 1280,
+      bgHeight: 720,
+      blur: 25,
+      fgWidth: 900,
+      fgHeight: 600,
+      border: 8,
+      borderColor: '#ffffff',
+      radius: 0,
+      fitMode: 'contain',
+      format: 'image/webp',
+      quality: '0.9'
+    };
+
+    let uploadedImage = null;
+    let sourceName = 'ebs-gorsel';
+    let toastTimer = null;
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2400);
+    }
+
+    function setStatus(message) {
+      els.statusText.textContent = message;
+    }
+
+    function syncLabels() {
+      els.blurredWidthValue.textContent = `${els.blurredWidthSlider.value} px`;
+      els.blurredHeightValue.textContent = `${els.blurredHeightSlider.value} px`;
+      els.blurValue.textContent = `${els.blurSlider.value} px`;
+      els.widthValue.textContent = `${els.widthSlider.value} px`;
+      els.heightValue.textContent = `${els.heightSlider.value} px`;
+      els.borderValue.textContent = `${els.borderSlider.value} px`;
+      els.borderColorValue.textContent = els.borderColorPicker.value;
+      els.radiusValue.textContent = `${els.radiusSlider.value} px`;
+    }
+
+    function roundedRectPath(ctx, x, y, w, h, radius) {
+      const r = clamp(radius, 0, Math.min(w, h) / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawImageFit(ctx, img, x, y, boxW, boxH, mode) {
+      if (mode === 'stretch') {
+        ctx.drawImage(img, x, y, boxW, boxH);
+        return;
+      }
+
+      const imgRatio = img.width / img.height;
+      const boxRatio = boxW / boxH;
+      let drawW, drawH, offsetX, offsetY;
+
+      if ((mode === 'cover' && imgRatio > boxRatio) || (mode === 'contain' && imgRatio < boxRatio)) {
+        drawH = boxH;
+        drawW = drawH * imgRatio;
+      } else {
+        drawW = boxW;
+        drawH = drawW / imgRatio;
+      }
+
+      offsetX = x + (boxW - drawW) / 2;
+      offsetY = y + (boxH - drawH) / 2;
+      ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+    }
+
+    function coverDimensions(img, targetW, targetH) {
+      const scale = Math.max(targetW / img.width, targetH / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      return { w, h, x: (targetW - w) / 2, y: (targetH - h) / 2 };
+    }
+
+    function renderPreview() {
+      syncLabels();
+      if (!uploadedImage) return;
+
+      const bgWidth = Number(els.blurredWidthSlider.value);
+      const bgHeight = Number(els.blurredHeightSlider.value);
+      const blurPx = Number(els.blurSlider.value);
+      const border = Number(els.borderSlider.value);
+      const radius = Number(els.radiusSlider.value);
+      const requestedFgW = Number(els.widthSlider.value);
+      const requestedFgH = Number(els.heightSlider.value);
+      const fgW = clamp(requestedFgW, 40, Math.max(40, bgWidth - border * 2));
+      const fgH = clamp(requestedFgH, 40, Math.max(40, bgHeight - border * 2));
+      if (fgW !== requestedFgW) els.widthSlider.value = Math.round(fgW);
+      if (fgH !== requestedFgH) els.heightSlider.value = Math.round(fgH);
+      syncLabels();
+      const fitMode = els.fitMode.value;
+      const borderColor = els.borderColorPicker.value;
+
+      const preview = els.previewCanvas;
+      const ctx = preview.getContext('2d', { alpha: false });
+      preview.width = bgWidth;
+      preview.height = bgHeight;
+
+      // Keep original hidden canvases updated for backward compatibility.
+      els.blurredCanvas.width = bgWidth;
+      els.blurredCanvas.height = bgHeight;
+      els.clearImageCanvas.width = fgW;
+      els.clearImageCanvas.height = fgH;
+
+      const blurredCtx = els.blurredCanvas.getContext('2d');
+      blurredCtx.clearRect(0, 0, bgWidth, bgHeight);
+      blurredCtx.save();
+      blurredCtx.filter = `blur(${blurPx}px)`;
+      const bleed = Math.max(blurPx * 2, 20);
+      const cover = coverDimensions(uploadedImage, bgWidth + bleed * 2, bgHeight + bleed * 2);
+      blurredCtx.drawImage(uploadedImage, cover.x - bleed, cover.y - bleed, cover.w, cover.h);
+      blurredCtx.restore();
+
+      ctx.fillStyle = '#111111';
+      ctx.fillRect(0, 0, bgWidth, bgHeight);
+      ctx.drawImage(els.blurredCanvas, 0, 0);
+
+      const x = (bgWidth - fgW) / 2;
+      const y = (bgHeight - fgH) / 2;
+
+      ctx.save();
+      roundedRectPath(ctx, x, y, fgW, fgH, radius);
+      ctx.clip();
+      drawImageFit(ctx, uploadedImage, x, y, fgW, fgH, fitMode);
+      ctx.restore();
+
+      // Update clear image canvas as in the original implementation.
+      const clearCtx = els.clearImageCanvas.getContext('2d');
+      clearCtx.clearRect(0, 0, fgW, fgH);
+      clearCtx.save();
+      roundedRectPath(clearCtx, 0, 0, fgW, fgH, radius);
+      clearCtx.clip();
+      drawImageFit(clearCtx, uploadedImage, 0, 0, fgW, fgH, fitMode);
+      clearCtx.restore();
+
+      if (border > 0) {
+        ctx.save();
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = border;
+        roundedRectPath(ctx, x + border / 2, y + border / 2, fgW - border, fgH - border, Math.max(0, radius - border / 2));
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      els.emptyState.classList.add('hidden');
+      preview.classList.remove('hidden');
+      els.saveBtn.disabled = false;
+      setStatus(`${bgWidth} × ${bgHeight} px`);
+    }
+
+    function addInvisibleWatermark(canvas, context) {
+      if (!els.watermarkToggle.checked) return;
+      const text = 'www.ebubekirbastama.com.tr';
+      const fontSize = Math.max(14, Math.round(canvas.width / 64));
+      const padding = Math.max(10, Math.round(canvas.width / 100));
+      context.save();
+      context.globalAlpha = 0.02;
+      context.font = `${fontSize}px Arial, sans-serif`;
+      context.fillStyle = '#000000';
+      const textWidth = context.measureText(text).width;
+      context.fillText(text, Math.max(padding, canvas.width - textWidth - padding), canvas.height - padding);
+      context.restore();
+    }
+
+    function createFinalCanvas() {
+      renderPreview();
+      const finalCanvas = document.createElement('canvas');
+      finalCanvas.width = els.previewCanvas.width;
+      finalCanvas.height = els.previewCanvas.height;
+      const finalCtx = finalCanvas.getContext('2d');
+      finalCtx.drawImage(els.previewCanvas, 0, 0);
+      addInvisibleWatermark(finalCanvas, finalCtx);
+      return finalCanvas;
+    }
+
+    function saveImage({ silent = false } = {}) {
+      if (!uploadedImage) {
+        showToast('Önce bir görsel yükleyin.');
+        return;
+      }
+
+      const finalCanvas = createFinalCanvas();
+      const mime = els.formatSelect.value;
+      const quality = Number(els.qualitySelect.value);
+      const ext = mime === 'image/png' ? 'png' : mime === 'image/jpeg' ? 'jpg' : 'webp';
+      const cleanName = (sourceName || 'ebs-gorsel')
+        .replace(/\.[^.]+$/, '')
+        .toLocaleLowerCase('tr-TR')
+        .replace(/[^a-z0-9çğıöşü]+/gi, '-')
+        .replace(/^-+|-+$/g, '') || 'ebs-gorsel';
+      const fileName = `${cleanName}-${finalCanvas.width}x${finalCanvas.height}.${ext}`;
+
+      const downloadBlob = (blob) => {
+        if (!blob) {
+          showToast('Bu çıktı formatı tarayıcınızda desteklenmiyor.');
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        if (!silent) showToast(`İndirildi: ${fileName}`);
+      };
+
+      if (finalCanvas.toBlob) {
+        finalCanvas.toBlob(downloadBlob, mime, mime === 'image/png' ? undefined : quality);
+      } else {
+        const dataUrl = finalCanvas.toDataURL(mime, quality);
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = fileName;
+        link.click();
+        if (!silent) showToast(`İndirildi: ${fileName}`);
+      }
+    }
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Lütfen geçerli bir görsel dosyası seçin.');
+        return;
+      }
+
+      sourceName = file.name || 'ebs-gorsel';
+      setStatus('Görsel yükleniyor…');
+
+      const reader = new FileReader();
+      reader.onerror = () => {
+        setStatus('Yükleme başarısız');
+        showToast('Dosya okunamadı.');
+      };
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          uploadedImage = img;
+
+          // Use image ratio to make the initial foreground fit naturally inside the default canvas.
+          const bgW = Number(els.blurredWidthSlider.value);
+          const bgH = Number(els.blurredHeightSlider.value);
+          const scale = Math.min((bgW * .82) / img.width, (bgH * .82) / img.height);
+          els.widthSlider.value = Math.round(clamp(img.width * scale, Number(els.widthSlider.min), Number(els.widthSlider.max)) / 10) * 10;
+          els.heightSlider.value = Math.round(clamp(img.height * scale, Number(els.heightSlider.min), Number(els.heightSlider.max)) / 10) * 10;
+
+          renderPreview();
+          showToast('Görsel hazır. Ayarları değiştirebilirsiniz.');
+          if (els.autoDownloadToggle.checked) {
+            setTimeout(() => saveImage({ silent: true }), 180);
+          }
+        };
+        img.onerror = () => {
+          setStatus('Görsel açılamadı');
+          showToast('Bu görsel tarayıcı tarafından açılamadı.');
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetEditor() {
+      uploadedImage = null;
+      sourceName = 'ebs-gorsel';
+      els.imageInput.value = '';
+      els.blurredWidthSlider.value = defaults.bgWidth;
+      els.blurredHeightSlider.value = defaults.bgHeight;
+      els.blurSlider.value = defaults.blur;
+      els.widthSlider.value = defaults.fgWidth;
+      els.heightSlider.value = defaults.fgHeight;
+      els.borderSlider.value = defaults.border;
+      els.borderColorPicker.value = defaults.borderColor;
+      els.radiusSlider.value = defaults.radius;
+      els.fitMode.value = defaults.fitMode;
+      els.formatSelect.value = defaults.format;
+      els.qualitySelect.value = defaults.quality;
+      els.previewCanvas.classList.add('hidden');
+      els.emptyState.classList.remove('hidden');
+      els.saveBtn.disabled = true;
+      setStatus('Görsel bekleniyor');
+      syncLabels();
+      showToast('Ayarlar sıfırlandı.');
+    }
+
+    // Original function names are kept for compatibility with the previous version.
+    function handleImageUpload(event) { handleFile(event.target.files[0]); }
+    function updateBlurredCanvasDimensions() { renderPreview(); }
+    function updateBorderColor() { renderPreview(); }
+    function updateBorder() { renderPreview(); }
+    function updateDimensions() { renderPreview(); }
+
+    els.imageInput.addEventListener('change', handleImageUpload);
+    els.saveBtn.addEventListener('click', () => saveImage());
+    els.resetBtn.addEventListener('click', resetEditor);
+
+    [
+      els.blurredWidthSlider,
+      els.blurredHeightSlider,
+      els.blurSlider,
+      els.widthSlider,
+      els.heightSlider,
+      els.borderSlider,
+      els.radiusSlider,
+      els.borderColorPicker,
+      els.fitMode
+    ].forEach((el) => el.addEventListener('input', renderPreview));
+
+    document.querySelectorAll('.preset').forEach((button) => {
+      button.addEventListener('click', () => {
+        const width = Number(button.dataset.width);
+        const height = Number(button.dataset.height);
+        els.blurredWidthSlider.value = clamp(width, Number(els.blurredWidthSlider.min), Number(els.blurredWidthSlider.max));
+        els.blurredHeightSlider.value = clamp(height, Number(els.blurredHeightSlider.min), Number(els.blurredHeightSlider.max));
+        renderPreview();
+        showToast(`${width} × ${height} ölçüsü seçildi.`);
+      });
+    });
+
+    ['dragenter', 'dragover'].forEach((name) => {
+      els.dropzone.addEventListener(name, (event) => {
+        event.preventDefault();
+        els.dropzone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach((name) => {
+      els.dropzone.addEventListener(name, (event) => {
+        event.preventDefault();
+        els.dropzone.classList.remove('dragover');
+      });
+    });
+    els.dropzone.addEventListener('drop', (event) => {
+      const file = event.dataTransfer.files && event.dataTransfer.files[0];
+      handleFile(file);
+    });
+
+    els.formatSelect.addEventListener('change', () => {
+      const isPng = els.formatSelect.value === 'image/png';
+      els.qualitySelect.disabled = isPng;
+      if (isPng) showToast('PNG kayıpsızdır; kalite seçeneği uygulanmaz.');
+    });
+
+    $('year').textContent = new Date().getFullYear();
+    syncLabels();
+  </script>
+</body>
+</html>
