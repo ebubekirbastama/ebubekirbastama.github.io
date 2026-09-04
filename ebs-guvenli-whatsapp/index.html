@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111b21">
+  <meta name="color-scheme" content="dark">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https: wss: stun: turn:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="EBS Güvenli WhatsApp — Ebubekir Bastama tarafından geliştirilen şifreli çok kullanıcılı WebRTC P2P sohbet ve görüşme.">
+  <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+  <title>EBS Güvenli WhatsApp</title>
+  <link rel="icon" href="assets/img/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/logo.png">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="app">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="assets/img/logo.png" alt="Ebubekir Bastama">
+        <div>
+          <h1>EBUBEKİR BAŞLAMA</h1>
+          <p>EBS Güvenli WhatsApp</p>
+          <span class="secure-chip">🔒 AES-256-GCM + WebRTC</span>
+        </div>
+      </div>
+
+      <button class="profile-card" id="profileBtn" type="button">
+        <img id="sideAvatar" class="profile-avatar" src="assets/img/logo.png" alt="Profil">
+        <span>
+          <strong id="sideProfileName">Misafir</strong>
+          <small id="sideProfileUser">@misafir</small>
+        </span>
+        <i>✎</i>
+      </button>
+
+      <div class="connection-card">
+        <div class="connection-title"><i id="connectionDot" class="dot warn"></i><strong id="connectionTitle">Hazır</strong></div>
+        <small id="connectionDetail">Yeni bir oda oluşturun veya davet bağlantısını açın.</small>
+      </div>
+
+      <div class="participants-headline">
+        <span>Katılımcılar <small id="sidePresence">yalnızsınız</small></span><b id="participantCount">1</b>
+      </div>
+      <div id="participantsList" class="participants-list"></div>
+
+      <div class="side-actions">
+        <button class="btn primary" id="newChatBtn" type="button">＋ Yeni güvenli oda</button>
+        <button class="btn secondary" id="inviteInfoBtn" type="button">🔗 Davet bilgileri</button>
+        <button class="btn secondary" id="securityBtn" type="button">🛡 Güvenlik bilgisi</button>
+      </div>
+      <p class="side-note">Ad, soyad, kullanıcı adı ve profil resmi bu tarayıcıda saklanır. Parola, AES anahtarları ve konuşma geçmişi saklanmaz.</p>
+    </aside>
+
+    <main class="main">
+      <header class="chat-head">
+        <div class="peer-head">
+          <div class="room-avatar">EBS</div>
+          <div class="peer-copy">
+            <strong id="roomTitle">Güvenli Oda</strong>
+            <span id="presence">bağlantı bekleniyor</span>
+          </div>
+        </div>
+        <div class="head-actions">
+          <button id="participantsBtn" class="icon-btn" title="Katılımcılar" type="button">👥</button>
+          <button id="voiceCallBtn" class="icon-btn" title="Grup sesli görüşme" type="button">☎</button>
+          <button id="videoCallBtn" class="icon-btn" title="Grup görüntülü görüşme" type="button">📹</button>
+          <button id="moreBtn" class="icon-btn" title="Menü" type="button">⋮</button>
+        </div>
+      </header>
+
+      <section id="chatArea" class="chat-area">
+        <div class="encrypt-banner">🔒 Mesaj ve dosyalar AES-256-GCM ile korunur. Grup ses/görüntü WebRTC P2P kullanır; aynı bağlantıya birden fazla kullanıcı katılabilir.</div>
+        <div id="emptyState" class="empty-state">
+          <div><div class="empty-icon">🔐</div><strong>Özel grup sohbeti</strong><p>Mesaj, emoji, GIF, fotoğraf, dosya, MP3 sesli mesaj, görüntülü mesaj ve grup görüşmesi kullanabilirsiniz.</p></div>
+        </div>
+        <div id="messages" class="messages" aria-live="polite"></div>
+      </section>
+
+      <div id="replyBar" class="reply-bar"><div><b>Yanıtlanıyor</b><span id="replyPreview"></span></div><button id="cancelReplyBtn" type="button">✕</button></div>
+
+      <div class="composer-wrap">
+        <div id="emojiPopover" class="popover hidden"><div class="popover-head"><b>Emoji</b><button class="close-pop" type="button">✕</button></div><div id="emojiGrid" class="emoji-grid"></div></div>
+        <div id="attachPopover" class="popover hidden">
+          <div class="popover-head"><b>Gönder</b><button class="close-pop" type="button">✕</button></div>
+          <div class="attach-grid">
+            <button id="photoBtn" type="button"><span>🖼️</span>Fotoğraf</button>
+            <button id="videoBtn" type="button"><span>🎬</span>Video</button>
+            <button id="fileBtn" type="button"><span>📄</span>Dosya</button>
+            <button id="gifBtn" type="button"><span>GIF</span>GIF</button>
+            <button id="videoNoteBtn" type="button"><span>◉</span>Video mesaj</button>
+            <button id="screenShotBtn" type="button"><span>📸</span>Ekran görüntüsü</button>
+          </div>
+        </div>
+        <div id="recordBar" class="record-bar hidden"><span class="record-dot"></span><b id="recordTime">00:00</b><span id="recordLabel">Kayıt yapılıyor…</span><button id="cancelRecordBtn" class="btn secondary small" type="button">İptal</button><button id="sendRecordBtn" class="btn primary small" type="button">Gönder</button></div>
+        <div class="composer">
+          <button id="emojiBtn" class="icon-btn" type="button">😊</button>
+          <button id="attachBtn" class="icon-btn" type="button">📎</button>
+          <input id="messageInput" autocomplete="off" maxlength="6000" placeholder="Mesaj yazın">
+          <button id="voiceNoteBtn" class="icon-btn" type="button">🎙️</button>
+          <button id="sendBtn" class="send-btn" type="button">➤</button>
+        </div>
+      </div>
+
+      <section id="callLayer" class="call-layer hidden">
+        <div class="call-topbar"><div><b id="callTitle">P2P grup görüşmesi</b><span id="callStatus">Bağlanıyor…</span></div><div class="call-badges"><span class="p2p-badge">P2P</span><span class="e2ee-badge">WebRTC</span><span id="callMemberCount">1 kişi</span></div></div>
+        <div id="remoteGrid" class="remote-grid"></div>
+        <video id="localVideo" class="local-video hidden" autoplay playsinline muted></video>
+        <div class="call-controls">
+          <button id="muteBtn" type="button" title="Mikrofon">🎙️</button>
+          <button id="screenShareBtn" type="button" title="Ekran paylaşımı">🖥️</button>
+          <button id="cameraBtn" type="button" title="Kamera">📹</button>
+          <button id="hangupBtn" class="hang" type="button" title="Görüşmeden ayrıl">☎</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<input id="photoInput" type="file" accept="image/*" hidden>
+<input id="videoInput" type="file" accept="video/*" hidden>
+<input id="fileInput" type="file" hidden>
+<input id="gifInput" type="file" accept="image/gif" hidden>
+<input id="profileImageInput" type="file" accept="image/*" hidden>
+
+<div id="createModal" class="modal">
+  <div class="modal-card">
+    <img class="modal-logo" src="assets/img/logo.png" alt="Ebubekir Bastama">
+    <h2>Güvenli oda oluştur</h2>
+    <p class="lead">Aynı linki istediğiniz kişilere gönderebilirsiniz. Parolayı linkten ayrı paylaşın.</p>
+    <div class="field"><label>Oda adı</label><input id="roomNameInput" maxlength="40" value="Özel Görüşme"></div>
+    <div class="field"><label>Görüşme parolası</label><div class="inline-field password-tools"><input id="createPassword" type="password" autocomplete="new-password" placeholder="En az 10 karakter"><button id="generatePasswordBtn" class="btn secondary compact" type="button">Üret</button><button id="copyGeneratedPasswordBtn" class="btn secondary compact" type="button">Kopyala</button></div></div>
+    <button id="createRoomBtn" class="btn primary full" type="button">Güvenli odayı oluştur</button>
+    <div id="inviteOutput" class="invite-output hidden">
+      <label>Davet bağlantısı</label><div class="copy-row"><input id="inviteLink" readonly><button id="copyLinkBtn" class="btn secondary compact" type="button">Kopyala</button></div>
+      <label>Parola</label><div class="copy-row"><input id="invitePassword" readonly><button id="copyPasswordBtn" class="btn secondary compact" type="button">Kopyala</button></div>
+      <button id="shareLinkBtn" class="btn primary full" type="button">Bağlantıyı paylaş</button>
+    </div>
+    <div id="createStatus" class="status"></div>
+  </div>
+</div>
+
+<div id="joinModal" class="modal hidden">
+  <div class="modal-card">
+    <img class="modal-logo" src="assets/img/logo.png" alt="Ebubekir Bastama">
+    <h2>Güvenli odaya katıl</h2>
+    <p class="lead">Davet sahibinin size ayrıca gönderdiği parolayı girin.</p>
+    <div class="field"><label>Oda bağlantısı</label><input id="hostPeerIdInput" readonly></div>
+    <div class="field"><label>Parola</label><input id="joinPassword" type="password" autocomplete="current-password" placeholder="Parola"></div>
+    <button id="joinBtn" class="btn primary full" type="button">Bağlan</button>
+    <div id="joinStatus" class="status"></div>
+  </div>
+</div>
+
+<div id="profileModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>Profilim</h2>
+    <div class="profile-editor">
+      <button id="avatarPickBtn" class="avatar-picker" type="button"><img id="profilePreview" src="assets/img/logo.png" alt="Profil"><span>Fotoğraf seç</span></button>
+      <div class="field"><label>Ad</label><input id="profileFirstName" maxlength="32" placeholder="Adınız"></div>
+      <div class="field"><label>Soyad</label><input id="profileLastName" maxlength="32" placeholder="Soyadınız"></div>
+      <div class="field"><label>Kullanıcı adı</label><input id="profileUsername" maxlength="24" placeholder="kullanici_adi"></div>
+    </div>
+    <div class="row"><button id="saveProfileBtn" class="btn primary" type="button">Profili kaydet</button><button id="closeProfileBtn" class="btn secondary" type="button">Kapat</button></div><p class="profile-storage-note">Bu profil bu tarayıcıda hatırlanır; oda parolası ve mesaj geçmişi kaydedilmez.</p><button id="clearStoredProfileBtn" class="btn danger full" type="button">Tarayıcıdaki profilimi sil</button>
+    <div class="status show">Profil yalnız açık sekmenin belleğinde tutulur; yenilemede silinir.</div>
+  </div>
+</div>
+
+<div id="participantsModal" class="modal hidden">
+  <div class="modal-card wide">
+    <div class="modal-title-row"><h2>Katılımcılar</h2><span id="participantsModalCount" class="count-badge">1</span></div>
+    <div id="participantsModalList" class="participants-modal-list"></div>
+    <button id="closeParticipantsBtn" class="btn secondary full" type="button">Kapat</button>
+  </div>
+</div>
+
+
+<div id="participantProfileModal" class="modal hidden">
+  <div class="modal-card participant-profile-sheet">
+    <button id="closeParticipantProfileBtn" class="sheet-close" type="button">✕</button>
+    <div class="profile-hero">
+      <img id="viewProfileAvatar" src="assets/img/logo.png" alt="Profil">
+      <h2 id="viewProfileName">Katılımcı</h2>
+      <p id="viewProfileUsername">@kullanici</p>
+      <span id="viewProfileRole" class="role-badge member">Üye</span>
+    </div>
+    <div class="profile-info-list">
+      <div><span>Durum</span><b id="viewProfileStatus">Çevrimiçi</b></div>
+      <div><span>Bağlantı</span><b>Uçtan uca şifreli oda</b></div>
+    </div>
+    <div id="participantAdminActions" class="admin-actions hidden">
+      <button id="roleToggleBtn" class="btn secondary" type="button">Moderatör yap</button>
+      <button id="muteParticipantAudioBtn" class="btn secondary" type="button">🎙 Mikrofonu sustur</button>
+      <button id="muteParticipantVideoBtn" class="btn secondary" type="button">📹 Kamerayı kapat</button>
+      <button id="kickParticipantBtn" class="btn danger" type="button">Odanın dışına çıkar</button>
+    </div>
+  </div>
+</div>
+
+<div id="messageActionsModal" class="modal hidden">
+  <div class="modal-card message-actions-card">
+    <h2>Mesaj işlemleri</h2>
+    <div class="message-actions-grid">
+      <button id="messageReplyAction" class="btn secondary" type="button">↩ Yanıtla</button>
+      <button id="messageEditAction" class="btn secondary" type="button">✎ Düzenle</button>
+      <button id="messageReactAction" class="btn secondary" type="button">❤️ Tepki</button>
+      <button id="messageDeleteAction" class="btn danger" type="button">🗑 Sil</button>
+    </div>
+    <button id="closeMessageActionsBtn" class="btn secondary full" type="button">Kapat</button>
+  </div>
+</div>
+
+<div id="editMessageModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>Mesajı düzenle</h2>
+    <div class="field">
+      <label>Mesaj</label>
+      <textarea id="editMessageInput" class="edit-message-input" maxlength="6000"></textarea>
+    </div>
+    <div class="row">
+      <button id="saveMessageEditBtn" class="btn primary" type="button">Kaydet</button>
+      <button id="cancelMessageEditBtn" class="btn secondary" type="button">İptal</button>
+    </div>
+  </div>
+</div>
+
+<div id="incomingCallModal" class="modal hidden">
+  <div class="modal-card incoming">
+    <div class="call-avatar">G</div><h2>Grup araması</h2><p id="incomingCallText" class="lead">Sesli görüşmeye davet edildiniz.</p>
+    <div class="incoming-actions"><button id="acceptCallBtn" class="accept" type="button">✓</button><button id="rejectCallBtn" class="reject" type="button">✕</button></div>
+  </div>
+</div>
+
+<div id="securityModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>Güvenlik ve performans</h2>
+    <div class="security-list">
+      <div><b>Mesaj / dosya</b><span>AES-256-GCM + WebRTC DataConnection.</span></div>
+      <div><b>Parola</b><span>PBKDF2-SHA-256 ile AES ve HMAC anahtarları türetilir.</span></div>
+      <div><b>Çok kullanıcılı oda</b><span>Sohbet ve dosya trafiği host merkezli yıldız topolojisinde dağıtılır; her kullanıcı birbirine ayrı DataConnection açmaz.</span></div>
+      <div><b>Grup görüşmesi</b><span>Canlı ses/görüntü tamamen tarayıcılar arasında WebRTC P2P mesh ile çalışır. Stabilite için görüntülü 6, sesli 10 aktif kullanıcı sınırı uygulanır.</span></div>
+      <div><b>Sesli mesaj</b><span>Tarayıcıda MP3'e dönüştürülür ve mesajdan .mp3 olarak indirilebilir.</span></div>
+      <div><b>Yetkiler</b><span>Oda sahibi admin; üyeler moderatör yapılabilir. Yetkiler yalnız açık oda belleğinde tutulur.</span></div><div><b>Mesaj yönetimi</b><span>Gönderen kendi mesajını düzenleyebilir/silebilir; admin ve moderatör yetkilerine göre mesaj silebilir.</span></div><div><b>Tarayıcı profili</b><span>Ad, soyad, kullanıcı adı ve profil resmi yalnız bu tarayıcıdaki localStorage alanında saklanır.</span></div><div><b>Geçmiş</b><span>Mesajlar, oda parolası ve şifreleme anahtarları localStorage/IndexedDB/veritabanına yazılmaz.</span></div>
+    </div>
+    <button id="closeSecurityBtn" class="btn secondary full" type="button">Kapat</button>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/lamejs@1.2.1/lame.min.js"></script>
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>
