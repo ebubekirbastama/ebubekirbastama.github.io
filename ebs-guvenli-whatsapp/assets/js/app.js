@@ -326,6 +326,7 @@ function bindPeerEvents(peer) {
 
 async function createRoom() {
   const password = $("#createPassword").value;
+  $("#enterChatBtn").textContent = "Sohbete geç";
   if (password.length < 10) {
     showStatus("#createStatus", "Parola en az 10 karakter olmalı.");
     return;
@@ -357,8 +358,9 @@ async function createRoom() {
     $("#inviteLink").value = link;
     $("#invitePassword").value = password;
     $("#inviteOutput").classList.remove("hidden");
-    history.replaceState(null, "", `#peer=${encodeURIComponent(id)}`);
-    showStatus("#createStatus", "Oda hazır. Aynı linki birden fazla kişiye gönderebilirsiniz.");
+    // Host URL'sine davet hash'i yazılmaz.
+    // Davet linki yalnız aşağıdaki kutudan paylaşılır.
+    showStatus("#createStatus", "Oda hazır. Linki ve parolayı paylaşın; sonra Sohbete geç'e basın.");
     setConnection("ok", "Oda hazır", "Katılımcılar bekleniyor.");
     setPresence("katılımcılar bekleniyor");
     refreshParticipantUI();
@@ -442,7 +444,16 @@ function attachHostGuestConnection(conn) {
     hostCallLeave(conn.peer).catch(() => {});
     refreshParticipantUI();
     broadcastRoomState().catch(() => {});
-    setPresence(state.participants.size > 1 ? `${state.participants.size} kişi odada` : "katılımcılar bekleniyor");
+    const count = state.participants.size;
+    if (count > 1) {
+      setConnection("ok", "Güvenli P2P bağlı", `${count} kişi odada • şifreli bağlantı aktif.`);
+      setPresence(`${count} kişi odada • şifreli`);
+      $("#enterChatBtn").textContent = `Sohbete geç • ${count} kişi bağlı`;
+    } else {
+      setConnection("ok", "Oda hazır", "Katılımcılar bekleniyor.");
+      setPresence("katılımcılar bekleniyor");
+      $("#enterChatBtn").textContent = "Sohbete geç";
+    }
   });
 
   conn.on("error", console.error);
@@ -488,6 +499,16 @@ async function handleHostFrame(entry, frame) {
     entry.conn.send({ type:"auth-ok" });
     state.participants.set(entry.peerId, entry.profile);
     state.roles.set(entry.peerId, "member");
+
+    const connectedCount = state.participants.size;
+    setConnection(
+      "ok",
+      "Güvenli P2P bağlı",
+      `${connectedCount} kişi odada • parola doğrulandı • şifreli bağlantı aktif.`
+    );
+    setPresence(`${connectedCount} kişi odada • şifreli`);
+    $("#enterChatBtn").textContent = `Sohbete geç • ${connectedCount} kişi bağlı`;
+
     await sendEncryptedToConn(entry.conn, {
       kind:"room-state",
       roomName:state.roomName,
@@ -1816,11 +1837,23 @@ $("#copyPasswordBtn").onclick = async () => {
 $("#shareLinkBtn").onclick = async () => {
   const url = $("#inviteLink").value;
   if (navigator.share) {
-    await navigator.share({ title:"EBS Güvenli Oda", text:"Güvenli oda bağlantısı:", url }).catch(() => {});
+    await navigator.share({ title:"EBS Güvenli WhatsApp", text:"Güvenli oda bağlantısı:", url }).catch(() => {});
   } else {
     await navigator.clipboard.writeText(url);
     toast("Bağlantı kopyalandı.");
   }
+};
+$("#enterChatBtn").onclick = () => {
+  $("#createModal").classList.add("hidden");
+  const count = state.participants.size;
+  if (count > 1) {
+    setConnection("ok", "Güvenli P2P bağlı", `${count} kişi odada • şifreli bağlantı aktif.`);
+    setPresence(`${count} kişi odada • şifreli`);
+  } else {
+    setConnection("ok", "Oda hazır", "Katılımcılar bekleniyor.");
+    setPresence("katılımcılar bekleniyor");
+  }
+  $("#messageInput").focus();
 };
 $("#inviteInfoBtn").onclick = () => {
   if (!state.hostPeerId) {
