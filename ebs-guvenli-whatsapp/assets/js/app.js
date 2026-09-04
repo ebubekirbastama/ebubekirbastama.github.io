@@ -1,4 +1,5 @@
 "use strict";
+const EBS_BUILD = "20260904-1125";
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -89,24 +90,15 @@ function setConnection(kind, title, detail) {
   $("#connectionTitle").textContent = title;
   $("#connectionDetail").textContent = detail;
 }
-// Modulo-bias önlemek için reddetme örneklemesi (rejection sampling) kullanılır;
-// böylece her karakterin seçilme olasılığı tam olarak eşittir.
-function randomFromAlphabet(len, chars) {
-  const max = 256 - (256 % chars.length);
-  let out = "";
-  while (out.length < len) {
-    const buf = crypto.getRandomValues(new Uint8Array(len - out.length));
-    for (const b of buf) {
-      if (b < max) out += chars[b % chars.length];
-    }
-  }
-  return out;
-}
 function randomId(len = 22) {
-  return randomFromAlphabet(len, "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789");
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+  const bytes = crypto.getRandomValues(new Uint8Array(len));
+  return [...bytes].map((b) => chars[b % chars.length]).join("");
 }
 function randomPassword(len = 22) {
-  return randomFromAlphabet(len, "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%+-_");
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%+-_";
+  const bytes = crypto.getRandomValues(new Uint8Array(len));
+  return [...bytes].map((b) => chars[b % chars.length]).join("");
 }
 function bytesToB64(bytes) {
   const u = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
@@ -214,22 +206,7 @@ function makePeer(customId) {
   const options = {
     debug: 1,
     config: {
-      // STUN alone başarısız olursa (kurumsal ağ / symmetric NAT) TURN'e düşer;
-      // çok kullanıcılı P2P bağlantı başarı oranını yükseltir.
-      iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-        {
-          urls: [
-            "turn:openrelay.metered.ca:80",
-            "turn:openrelay.metered.ca:443",
-            "turn:openrelay.metered.ca:443?transport=tcp"
-          ],
-          username: "openrelayproject",
-          credential: "openrelayproject"
-        }
-      ],
-      iceCandidatePoolSize: 4,
+      iceServers: [{ urls:"stun:stun.l.google.com:19302" }],
       sdpSemantics: "unified-plan"
     }
   };
@@ -343,7 +320,14 @@ function bindPeerEvents(peer) {
   });
 
   peer.on("disconnected", () => {
-    setConnection("warn", "Signaling koptu", "PeerJS yeniden bağlanmayı deneyecek.");
+    if (state.verified && (
+      state.hostConn?.open ||
+      [...state.guests.values()].some((entry) => entry.verified && entry.conn?.open)
+    )) {
+      setConnection("ok", "Güvenli P2P bağlı", "WebRTC bağlantısı aktif • signaling yeniden bağlanıyor.");
+    } else {
+      setConnection("warn", "Signaling koptu", "PeerJS yeniden bağlanmayı deneyecek.");
+    }
     try { peer.reconnect(); } catch {}
   });
 }
@@ -488,8 +472,16 @@ function attachGuestHostConnection(conn) {
   state.hostChunks = new Map();
 
   conn.on("open", () => {
-    setConnection("warn", "P2P bağlantı kuruldu", "Parola doğrulanıyor…");
-    setPresence("güvenlik doğrulaması…");
+    setConnection("warn", "P2P bağlantı kuruldu", "Oda sahibiyle veri kanalı açık • parola doğrulanıyor…");
+    setPresence("P2P bağlı • parola doğrulanıyor…");
+
+    clearTimeout(state.guestAuthTimer);
+    state.guestAuthTimer = setTimeout(() => {
+      if (!state.verified && state.hostConn?.open) {
+        setConnection("warn", "P2P bağlı • onay bekleniyor", "Parola kanıtı gönderildi; oda sahibinin doğrulama yanıtı bekleniyor.");
+        setPresence("P2P bağlı • doğrulama bekleniyor…");
+      }
+    }, 7000);
   });
 
   conn.on("data", (frame) => {
@@ -500,6 +492,7 @@ function attachGuestHostConnection(conn) {
   });
 
   conn.on("close", () => {
+    clearTimeout(state.guestAuthTimer);
     state.verified = false;
     setConnection("bad", "Oda kapandı", "Davet sahibi bağlantıyı kapattı.");
     setPresence("bağlantı kapandı");
@@ -520,15 +513,42 @@ async function handleHostFrame(entry, frame) {
       return;
     }
     entry.verified = true;
-    entry.conn.send({ type:"auth-ok" });
     state.participants.set(entry.peerId, entry.profile);
     state.roles.set(entry.peerId, "member");
+
+    entry.conn.send({
+      type:"auth-ok",
+      roomName:state.roomName,
+      participantCount:state.participants.size
+    });
 
     const connectedCount = state.participants.size;
     setConnection(
       "ok",
       "Güvenli P2P bağlı",
       `${connectedCount} kişi odada • parola doğrulandı • şifreli bağlantı aktif.`
+    );
+    setPresence(`${connectedCount} kişi odada • şifreli`);
+    $("#enterChatBtn").textContent = `Sohbete geç • ${connectedCount} kişi bağlı`;
+
+    await sendEncryptedToConn(entry.conn, {
+      kind:"room-state",
+      roomName:state.roomName,
+      participants:currentRoster()
+    });
+    await broadcastRoomState();
+    return;
+  }
+
+  if (frame.type === "guest-ready" && entry.verified) {
+    entry.profile = safeProfile(frame.profile || entry.profile);
+    state.participants.set(entry.peerId, entry.profile);
+
+    const connectedCount = state.participants.size;
+    setConnection(
+      "ok",
+      "Güvenli P2P bağlı",
+      `${connectedCount} kişi odada • iki taraflı bağlantı onaylandı.`
     );
     setPresence(`${connectedCount} kişi odada • şifreli`);
     $("#enterChatBtn").textContent = `Sohbete geç • ${connectedCount} kişi bağlı`;
@@ -559,15 +579,36 @@ async function handleGuestFrame(frame) {
   }
 
   if (frame.type === "auth-challenge") {
+    setConnection("warn", "Parola doğrulanıyor", "Oda sahibinden güvenlik isteği alındı.");
+    setPresence("parola doğrulanıyor…");
     const proof = await hmac(`EBS-AUTH|${frame.nonce}|${state.hostPeerId}`);
     state.hostConn.send({ type:"auth-proof", nonce:frame.nonce, proof });
     return;
   }
 
   if (frame.type === "auth-ok") {
+    clearTimeout(state.guestAuthTimer);
     state.verified = true;
-    setConnection("ok", "Güvenli P2P bağlı", "Parola doğrulandı; şifreli oda aktif.");
-    setPresence("çevrimiçi • şifreli");
+
+    if (frame.roomName) {
+      state.roomName = String(frame.roomName).slice(0, 40);
+      $("#roomTitle").textContent = state.roomName;
+    }
+
+    const count = Math.max(2, Number(frame.participantCount || state.participants.size || 2));
+    setConnection(
+      "ok",
+      "Güvenli P2P bağlı",
+      `${count} kişi odada • parola doğrulandı • bağlantı aktif.`
+    );
+    setPresence(`${count} kişi odada • şifreli`);
+    $("#joinModal").classList.add("hidden");
+
+    state.hostConn.send({
+      type:"guest-ready",
+      profile:state.selfProfile
+    });
+
     await routeOutgoing({ kind:"profile", profile:state.selfProfile });
     return;
   }
@@ -764,7 +805,13 @@ async function handleRoomPayload(p) {
     if (state.myPeerId && !state.participants.has(state.myPeerId)) state.participants.set(state.myPeerId, state.selfProfile);
     if (state.hostPeerId) state.roles.set(state.hostPeerId, "owner");
     refreshParticipantUI();
-    setPresence(`${state.participants.size} kişi odada`);
+    if (state.verified) {
+      const count = state.participants.size;
+      setConnection("ok", "Güvenli P2P bağlı", `${count} kişi odada • şifreli bağlantı aktif.`);
+      setPresence(`${count} kişi odada • şifreli`);
+    } else {
+      setPresence(`${state.participants.size} kişi odada`);
+    }
     return;
   }
 
