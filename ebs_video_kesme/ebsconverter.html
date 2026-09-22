@@ -3,325 +3,549 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EBS Premium Multi-Format Converter</title>
+<title>EBS Elite Universal Media Converter</title>
 
 <script src="coi-serviceworker.js"></script>
 
 <style>
+:root{
+    --bg:#050608;
+    --bg-soft:#0a0c11;
+    --card:rgba(13,15,21,.78);
+    --card-2:rgba(18,20,28,.72);
+    --line:rgba(255,207,93,.18);
+    --line-strong:rgba(255,207,93,.42);
+    --gold:#f1c75b;
+    --gold-2:#b98627;
+    --gold-3:#fff1a8;
+    --text:#f7f3e8;
+    --muted:#a9a59a;
+    --muted-2:#74716a;
+    --green:#61e3a7;
+    --red:#ff7c82;
+    --shadow:0 28px 80px rgba(0,0,0,.48);
+    --radius:26px;
+}
+
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
     margin:0;
     min-height:100vh;
-    font-family:Arial,sans-serif;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
     background:
-    radial-gradient(circle at top left,rgba(212,175,55,.22),transparent 35%),
-    radial-gradient(circle at bottom right,rgba(255,215,0,.12),transparent 35%),
-    linear-gradient(135deg,#050505,#111,#050505);
-    color:#f7f2df;
+        radial-gradient(circle at 8% 8%,rgba(241,199,91,.15),transparent 25%),
+        radial-gradient(circle at 90% 15%,rgba(90,79,255,.10),transparent 24%),
+        radial-gradient(circle at 80% 90%,rgba(241,199,91,.10),transparent 30%),
+        linear-gradient(135deg,#030405 0%,#080a0f 42%,#040506 100%);
+    padding:28px;
+    overflow-x:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 82%);
+}
+
+.ambient{
+    position:fixed;
+    width:420px;
+    height:420px;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.12;
+    pointer-events:none;
+    animation:floatGlow 11s ease-in-out infinite alternate;
+}
+.ambient.one{background:#d7a52c;top:-180px;left:-120px}
+.ambient.two{background:#6258ff;right:-180px;bottom:-180px;animation-delay:-4s}
+@keyframes floatGlow{to{transform:translate3d(40px,35px,0) scale(1.14)}}
+
+.wrapper{
+    position:relative;
+    z-index:2;
+    width:min(1440px,100%);
+    margin:0 auto;
+    border:1px solid var(--line);
+    border-radius:32px;
+    background:linear-gradient(180deg,rgba(11,13,18,.88),rgba(7,8,11,.93));
+    box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.035);
+    backdrop-filter:blur(22px);
+    overflow:hidden;
+}
+
+.topbar{
     display:flex;
     align-items:center;
-    justify-content:center;
-    padding:30px;
+    justify-content:space-between;
+    gap:18px;
+    padding:18px 28px;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    background:rgba(255,255,255,.015);
 }
-.wrapper{
-    width:100%;
-    max-width:1220px;
-    background:rgba(10,10,10,.92);
-    border:1px solid rgba(212,175,55,.35);
-    border-radius:28px;
-    padding:34px;
-    box-shadow:0 0 45px rgba(212,175,55,.18);
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.5px}
+.brand-mark{
+    width:38px;height:38px;border-radius:13px;display:grid;place-items:center;
+    color:#0a0a0a;font-weight:1000;
+    background:linear-gradient(135deg,var(--gold-3),var(--gold),var(--gold-2));
+    box-shadow:0 10px 28px rgba(241,199,91,.22);
 }
-.header{text-align:center;margin-bottom:25px}
+.brand small{display:block;color:var(--muted);font-weight:600;font-size:11px;letter-spacing:1.2px;margin-top:2px}
+.top-status{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.micro-badge{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:8px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.06);
+    color:#c9c5bb;background:rgba(255,255,255,.025);font-size:11px;font-weight:700;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 15px rgba(97,227,167,.75)}
+
+.header{
+    padding:42px 34px 30px;
+    text-align:center;
+    position:relative;
+}
 .badge{
-    display:inline-block;
-    padding:8px 18px;
-    border:1px solid rgba(212,175,55,.5);
-    border-radius:999px;
-    color:#d4af37;
-    letter-spacing:2px;
-    font-size:12px;
-    margin-bottom:14px;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 15px;border-radius:999px;
+    color:var(--gold-3);font-size:11px;font-weight:900;letter-spacing:1.8px;
+    border:1px solid var(--line-strong);
+    background:linear-gradient(180deg,rgba(241,199,91,.10),rgba(241,199,91,.03));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
 }
 h1{
-    margin:0;
-    font-size:38px;
-    background:linear-gradient(90deg,#fff6c7,#d4af37,#fff);
+    margin:18px auto 0;
+    max-width:920px;
+    font-size:clamp(34px,5.2vw,68px);
+    line-height:1.03;
+    letter-spacing:-2.4px;
+    background:linear-gradient(95deg,#fff 2%,#fff4be 40%,#d6a63a 74%,#fff 96%);
     -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    color:transparent;
 }
-.subtitle{color:#cfc7a8;margin-top:12px;font-size:15px}
-.gold-line{
-    height:1px;
-    margin:22px 0;
-    background:linear-gradient(90deg,transparent,#d4af37,transparent);
+.subtitle{
+    max-width:820px;margin:17px auto 0;color:var(--muted);
+    font-size:15px;line-height:1.7;
 }
+
+.steps{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    max-width:850px;
+    margin:27px auto 0;
+}
+.step{
+    display:flex;align-items:center;gap:10px;padding:11px 13px;
+    border:1px solid rgba(255,255,255,.055);border-radius:14px;background:rgba(255,255,255,.02);
+    color:#8f8b82;font-size:12px;font-weight:750;text-align:left;
+}
+.step b{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:rgba(241,199,91,.10);color:var(--gold)}
+
+.gold-line{height:1px;background:linear-gradient(90deg,transparent,rgba(241,199,91,.55),transparent)}
+
 .panel{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:22px;
+    grid-template-columns:minmax(0,1.08fr) minmax(350px,.92fr);
+    gap:20px;
+    padding:28px;
 }
 .card{
-    background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
-    border:1px solid rgba(212,175,55,.22);
-    border-radius:22px;
-    padding:24px;
-    display: flex;
-    flex-direction: column;
-    gap:16px;
-}
-label{
-    display:block;
-    color:#d4af37;
-    font-size:13px;
-    font-weight:bold;
-}
-input[type=file]{
-    width:100%;
-    background:#090909;
-    color:#f7f2df;
-    border:1px solid rgba(212,175,55,.35);
-    border-radius:14px;
-    padding:14px;
-    outline:none;
-    cursor: pointer;
-}
-
-.format-group-title{
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #8a6a1f;
-    margin-top: 8px;
-    margin-bottom: 4px;
-}
-.modern-selector {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-    gap: 8px;
-}
-.format-option {
-    background: #090909;
-    border: 1px solid rgba(212,175,55,.25);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 13px;
-    color: #cfc7a8;
-    transition: all 0.2s ease;
-}
-.format-option:hover {
-    border-color: #d4af37;
-    background: rgba(212,175,55,0.05);
-}
-.format-option.selected {
-    background: linear-gradient(135deg, #d4af37, #8a6a1f);
-    color: #111;
-    border-color: #fff2a8;
-    box-shadow: 0 4px 12px rgba(212,175,55,0.2);
-}
-
-.preview-container {
-    width: 100%;
-    background: #050505;
-    border: 1px solid rgba(212,175,55,.2);
-    border-radius: 16px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 240px;
-}
-video, audio {
-    width: 100%;
-    max-height: 320px;
-    background: #000;
-}
-.no-preview {
-    color: #666;
-    font-size: 14px;
-    text-align: center;
-    padding: 20px;
-}
-
-.actions{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-}
-button{
-    border:none;
-    cursor:pointer;
-    border-radius:14px;
-    padding:14px 22px;
-    font-weight:700;
-    color:#111;
-    background:linear-gradient(135deg,#fff1a8,#d4af37,#9f7928);
-    box-shadow:0 8px 24px rgba(212,175,55,.23);
-    flex: 1;
-    min-width: 150px;
-}
-button.secondary{
-    color:#f7f2df;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(212,175,55,.28);
-    box-shadow: none;
-    flex: 0;
-    min-width: auto;
-}
-button:disabled{opacity:.5;cursor:not-allowed}
-
-#status{
-    padding:14px;
-    border-radius:14px;
-    background:rgba(212,175,55,.08);
-    border:1px solid rgba(212,175,55,.2);
-    color:#fff4bd;
-    font-weight:600;
-}
-.progress{
-    height:14px;
-    background:#070707;
-    border-radius:999px;
+    min-width:0;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--card),rgba(10,11,15,.76));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 18px 44px rgba(0,0,0,.24);
     overflow:hidden;
-    border:1px solid rgba(212,175,55,.25);
 }
-#bar{
-    width:0%;
-    height:100%;
-    background:linear-gradient(90deg,#8a6a1f,#d4af37,#fff2a8);
-    transition:.3s;
+.card-inner{padding:24px}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
+.card-title{display:flex;gap:12px;align-items:flex-start}
+.icon-box{
+    flex:0 0 auto;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+    color:var(--gold-3);border:1px solid rgba(241,199,91,.20);background:rgba(241,199,91,.07);
 }
-.progress-text{
-    color:#d4af37;
-    font-weight:bold;
-    font-size:13px;
-    text-align: right;
-    margin-top: -8px;
+.card-title h2{font-size:16px;margin:1px 0 4px;letter-spacing:.1px}
+.card-title p{margin:0;color:var(--muted-2);font-size:12px;line-height:1.5}
+
+label{display:block;color:#e5d49e;font-size:12px;font-weight:850;margin-bottom:9px;letter-spacing:.25px}
+
+.drop-zone{
+    position:relative;
+    border:1px dashed rgba(241,199,91,.34);
+    border-radius:19px;
+    background:linear-gradient(180deg,rgba(241,199,91,.055),rgba(255,255,255,.018));
+    padding:19px;
+    transition:.25s ease;
+    cursor:pointer;
 }
-.log-box{
-    background:#050505;
-    border:1px solid rgba(212,175,55,.25);
+.drop-zone:hover,.drop-zone.dragover{
+    border-color:rgba(255,225,137,.78);
+    background:linear-gradient(180deg,rgba(241,199,91,.10),rgba(255,255,255,.025));
+    transform:translateY(-1px);
+    box-shadow:0 12px 30px rgba(0,0,0,.16),0 0 0 4px rgba(241,199,91,.035);
+}
+.drop-content{display:flex;align-items:center;gap:14px}
+.upload-icon{
+    width:50px;height:50px;border-radius:16px;display:grid;place-items:center;flex:0 0 auto;
+    color:#111;background:linear-gradient(135deg,var(--gold-3),var(--gold),var(--gold-2));
+    box-shadow:0 10px 28px rgba(241,199,91,.16);
+}
+.drop-text strong{display:block;font-size:14px;margin-bottom:4px}
+.drop-text span{color:var(--muted-2);font-size:12px}
+input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.file-meta{
+    display:none;
+    margin-top:12px;padding:11px 12px;border-radius:13px;
+    border:1px solid rgba(97,227,167,.16);background:rgba(97,227,167,.045);
+    color:#bfead5;font-size:12px;gap:10px;align-items:center;justify-content:space-between;
+}
+.file-meta.show{display:flex}
+.file-meta .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:750}
+.file-meta .size{color:#83b99f;flex:0 0 auto}
+
+.section-gap{height:20px}
+.format-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:13px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:220px}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6e6b65}
+#formatSearch{
+    width:100%;border:1px solid rgba(255,255,255,.07);border-radius:13px;
+    background:#090b0f;color:#f3eee0;padding:11px 12px 11px 37px;outline:none;
+    transition:.2s;font-size:12px;
+}
+#formatSearch:focus{border-color:rgba(241,199,91,.42);box-shadow:0 0 0 3px rgba(241,199,91,.05)}
+.filter-tabs{display:flex;padding:3px;background:#080a0d;border:1px solid rgba(255,255,255,.055);border-radius:13px}
+.filter-btn{
+    border:0;background:transparent;color:#77736b;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:11px;font-weight:850;
+}
+.filter-btn.active{background:rgba(241,199,91,.10);color:#eedb9b;box-shadow:inset 0 0 0 1px rgba(241,199,91,.14)}
+
+.format-group{margin-top:15px}
+.format-group-title{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin:0 0 9px;color:#8f7a46;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1.4px;
+}
+.format-group-title span:last-child{font-weight:700;color:#5e5a53;letter-spacing:.2px;text-transform:none}
+.modern-selector{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.format-option{
+    position:relative;
+    min-height:70px;
+    border:1px solid rgba(255,255,255,.065);
     border-radius:14px;
-    padding:12px;
-    height:160px;
-    overflow-y:auto;
+    background:linear-gradient(180deg,#0b0d12,#08090d);
+    color:#b7b2a7;
+    padding:11px 10px;
+    cursor:pointer;
+    transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+    overflow:hidden;
 }
-.log-title{
-    color:#d4af37;
-    font-size:13px;
-    font-weight:bold;
-    margin-bottom:8px;
+.format-option::after{
+    content:"";position:absolute;inset:auto -30% -80% -30%;height:80px;
+    background:radial-gradient(circle,rgba(241,199,91,.16),transparent 62%);opacity:0;transition:.2s;
 }
-#logPanel{
-    font-family:Consolas,monospace;
-    font-size:12px;
-    color:#d8cfaa;
-    line-height:1.5;
+.format-option:hover{transform:translateY(-2px);border-color:rgba(241,199,91,.35);color:#e6ddc6}
+.format-option:hover::after{opacity:1}
+.format-option.selected{
+    border-color:rgba(255,224,129,.70);
+    background:linear-gradient(155deg,rgba(241,199,91,.18),rgba(241,199,91,.055));
+    color:#fff4c6;
+    box-shadow:0 10px 24px rgba(0,0,0,.24),inset 0 0 0 1px rgba(255,255,255,.035),0 0 20px rgba(241,199,91,.05);
 }
-.log-line{
-    border-bottom:1px solid rgba(255,255,255,.05);
-    padding:3px 0;
+.format-option.selected::before{
+    content:"✓";position:absolute;right:8px;top:7px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;
+    background:var(--gold);color:#14110a;font-size:10px;font-weight:1000;
+}
+.format-option.disabled{opacity:.34;cursor:not-allowed;filter:grayscale(.8)}
+.format-option.disabled:hover{transform:none;border-color:rgba(255,255,255,.065)}
+.format-name{font-size:13px;font-weight:950;letter-spacing:.3px}
+.format-desc{display:block;margin-top:6px;color:#716e67;font-size:9.5px;line-height:1.3;font-weight:650}
+.format-option.selected .format-desc{color:#bda96d}
+.format-empty{grid-column:1/-1;padding:18px;border:1px dashed rgba(255,255,255,.06);border-radius:14px;color:#68645d;text-align:center;font-size:12px}
+
+.actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+button{font:inherit}
+#convertBtn{
+    position:relative;overflow:hidden;flex:1;min-width:220px;
+    border:0;border-radius:15px;padding:15px 19px;cursor:pointer;
+    color:#141109;font-weight:950;letter-spacing:.1px;
+    background:linear-gradient(115deg,#fff0a5 0%,#efc453 42%,#b98524 100%);
+    box-shadow:0 13px 32px rgba(241,199,91,.18),inset 0 1px 0 rgba(255,255,255,.6);
+    transition:.22s ease;
+}
+#convertBtn::after{
+    content:"";position:absolute;top:-40%;left:-60%;width:35%;height:190%;transform:rotate(24deg);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);transition:.45s;
+}
+#convertBtn:hover{transform:translateY(-2px);box-shadow:0 17px 38px rgba(241,199,91,.25),inset 0 1px 0 rgba(255,255,255,.7)}
+#convertBtn:hover::after{left:125%}
+#convertBtn:active{transform:translateY(0) scale(.99)}
+#convertBtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.secondary{
+    border:1px solid rgba(255,255,255,.07);border-radius:15px;padding:14px 16px;cursor:pointer;
+    color:#c4bfb3;background:rgba(255,255,255,.035);font-weight:800;transition:.2s;
+}
+.secondary:hover{border-color:rgba(241,199,91,.24);color:#efe4c1;background:rgba(241,199,91,.045)}
+
+.status-shell{margin-top:15px;padding:13px 14px;border:1px solid rgba(241,199,91,.12);border-radius:15px;background:rgba(241,199,91,.045)}
+#status{display:flex;align-items:center;gap:9px;color:#dfd4af;font-size:12px;font-weight:750;line-height:1.45}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px rgba(241,199,91,.48);flex:0 0 auto}
+.progress{height:8px;background:#050608;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.05);margin-top:11px}
+#bar{width:0%;height:100%;border-radius:999px;background:linear-gradient(90deg,#8f651b,#f1c75b,#fff0a4);box-shadow:0 0 16px rgba(241,199,91,.22);transition:width .25s ease}
+.progress-row{display:flex;align-items:center;justify-content:space-between;margin-top:7px;color:#767168;font-size:10px}
+#progressText{color:#d6bd72;font-weight:900}
+
+.log-box{margin-top:14px;background:#07080b;border:1px solid rgba(255,255,255,.055);border-radius:15px;overflow:hidden}
+.log-title{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.045);color:#9c8b5c;font-size:10px;font-weight:950;letter-spacing:.7px;text-transform:uppercase}
+.log-title .live{display:inline-flex;align-items:center;gap:6px;color:#5f8974;letter-spacing:0}
+.log-title .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(97,227,167,.5)}
+#logPanel{height:145px;overflow:auto;padding:9px 12px;font-family:Consolas,"SFMono-Regular",monospace;font-size:10.5px;line-height:1.6;color:#948f82}
+.log-line{padding:2px 0;border-bottom:1px solid rgba(255,255,255,.025);word-break:break-word}
+.log-line.error{color:#ff999e}
+.log-line.success{color:#82d9af}
+
+.preview-stack{display:grid;gap:15px}
+.preview-block{border:1px solid rgba(255,255,255,.055);border-radius:18px;overflow:hidden;background:#08090c}
+.preview-label{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.045);font-size:10px;color:#887d5e;font-weight:900;text-transform:uppercase;letter-spacing:.9px}
+.preview-label span:last-child{color:#56534e;font-weight:700;letter-spacing:0;text-transform:none}
+.preview-container{
+    min-height:235px;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at center,rgba(241,199,91,.035),transparent 55%),#050608;
+    overflow:hidden;
+}
+video,audio{width:100%;max-height:330px;background:#000}
+audio{padding:18px;background:transparent}
+.no-preview{padding:32px 20px;text-align:center;color:#5e5a53;font-size:12px;line-height:1.6}
+.no-preview svg{display:block;margin:0 auto 12px;color:#3e3c37}
+
+.output-actions{display:flex;gap:10px;margin-top:15px}
+#downloadBtn{
+    display:none;flex:1;border:1px solid rgba(97,227,167,.22);border-radius:15px;padding:14px 16px;cursor:pointer;
+    color:#c7f3dd;background:linear-gradient(180deg,rgba(97,227,167,.10),rgba(97,227,167,.045));font-weight:900;
+    box-shadow:0 10px 26px rgba(0,0,0,.15);transition:.2s;
+}
+#downloadBtn:hover{transform:translateY(-1px);border-color:rgba(97,227,167,.40)}
+
+.selection-summary{
+    margin-top:15px;padding:13px;border-radius:16px;border:1px solid rgba(255,255,255,.055);
+    background:rgba(255,255,255,.018);
+}
+.selection-summary .row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.035);font-size:11px}
+.selection-summary .row:last-child{border-bottom:0}
+.selection-summary .key{color:#68645d}.selection-summary .value{color:#d4cab0;font-weight:850;text-align:right}
+
+.note{
+    margin-top:14px;padding:12px 13px;border-radius:14px;border:1px solid rgba(241,199,91,.09);
+    color:#7e786b;background:rgba(241,199,91,.025);font-size:10.5px;line-height:1.55;
 }
 
-@media(max-width:850px){
+.toast{
+    position:fixed;z-index:50;right:22px;bottom:22px;max-width:min(380px,calc(100vw - 44px));
+    padding:13px 15px;border-radius:14px;border:1px solid rgba(255,255,255,.09);
+    background:rgba(11,13,18,.96);color:#e7e0cd;box-shadow:0 18px 50px rgba(0,0,0,.45);
+    transform:translateY(16px);opacity:0;pointer-events:none;transition:.25s;font-size:12px;font-weight:750;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{border-color:rgba(255,124,130,.22);color:#ffc0c3}
+.toast.success{border-color:rgba(97,227,167,.20);color:#c6efdb}
+
+@media(max-width:1080px){
     .panel{grid-template-columns:1fr}
-    h1{font-size:28px}
-    body{padding:15px}
-    .wrapper{padding:22px}
+    .preview-container{min-height:205px}
+}
+@media(max-width:720px){
+    body{padding:10px}
+    .wrapper{border-radius:22px}
+    .topbar{padding:14px 16px}.top-status{display:none}
+    .header{padding:30px 18px 22px}
+    h1{letter-spacing:-1.3px}
+    .steps{grid-template-columns:1fr;margin-top:20px}
+    .step{padding:9px 11px}
+    .panel{padding:14px;gap:14px}
+    .card{border-radius:20px}.card-inner{padding:17px}
+    .format-toolbar{align-items:stretch}.search-wrap{min-width:100%}.filter-tabs{width:100%}.filter-btn{flex:1}
+    .modern-selector{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .format-option{min-height:68px;padding:10px 8px}.format-desc{font-size:8.8px}
+    .drop-content{align-items:flex-start}.upload-icon{width:44px;height:44px}
+    .actions{flex-direction:column}#convertBtn,.secondary{width:100%;min-width:0}
+}
+@media(max-width:460px){
+    .modern-selector{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .brand small{display:none}
+    .header{padding-top:26px}
+    h1{font-size:36px}
+    .subtitle{font-size:13px}
 }
 </style>
 </head>
 <body>
+<div class="ambient one"></div>
+<div class="ambient two"></div>
 
 <div class="wrapper">
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-mark">E</div>
+            <div>EBS CONVERTER <small>ELITE MEDIA ENGINE</small></div>
+        </div>
+        <div class="top-status">
+            <div class="micro-badge"><span class="dot"></span> Yerel İşlem</div>
+            <div class="micro-badge">Sunucuya Yükleme Yok</div>
+            <div class="micro-badge">FFmpeg WASM</div>
+        </div>
+    </div>
+
     <div class="header">
-        <div class="badge">EBS PREMIUM AI STUDIO</div>
-        <h1>Multi-Format Video Converter</h1>
-        <div class="subtitle">Yerel FFmpeg motoru ile yüksek hızlı, sunucusuz format dönüştürme stüdyosu.</div>
+        <div class="badge">✦ EBS PREMIUM AI STUDIO</div>
+        <h1>Universal Media Converter</h1>
+        <div class="subtitle">
+            Video ve ses dosyanızı seçin, sadece hedef formatı belirleyin. Kodlama profili, codec, ses ayıklama ve çıktı yapısı otomatik ayarlanır.
+        </div>
+        <div class="steps">
+            <div class="step"><b>01</b><span>Medya dosyasını seç</span></div>
+            <div class="step"><b>02</b><span>Dönüşecek formatı seç</span></div>
+            <div class="step"><b>03</b><span>Dönüştür ve indir</span></div>
+        </div>
     </div>
 
     <div class="gold-line"></div>
 
     <div class="panel">
         <div class="card">
-            <div>
-                <label>Video / Ses Dosyası Seç</label>
-                <input type="file" id="videoInput" accept="video/*,audio/*">
-            </div>
-
-            <div>
-                <label>Hedef Format Seçin</label>
-                
-                <div class="format-group-title">Video Formatları</div>
-                <div class="modern-selector" id="videoFormats">
-                    <div class="format-option selected" data-value="mp4">MP4</div>
-                    <div class="format-option" data-value="webm">WebM</div>
-                    <div class="format-option" data-value="mkv">MKV</div>
-                    <div class="format-option" data-value="avi">AVI</div>
-                    <div class="format-option" data-value="mov">MOV</div>
+            <div class="card-inner">
+                <div class="card-head">
+                    <div class="card-title">
+                        <div class="icon-box">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+                        </div>
+                        <div><h2>Dönüştürme Merkezi</h2><p>Dosyayı ekle ve çıkış formatını seç. Geri kalan işlemi EBS halleder.</p></div>
+                    </div>
                 </div>
 
-                <div class="format-group-title">Ses Formatları (Sadece Ses Ayıkla)</div>
-                <div class="modern-selector" id="audioFormats">
-                    <div class="format-option" data-value="mp3">MP3</div>
-                    <div class="format-option" data-value="wav">WAV</div>
-                    <div class="format-option" data-value="aac">AAC</div>
-                    <div class="format-option" data-value="flac">FLAC</div>
+                <label>Video / Ses Dosyası</label>
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" id="videoInput" accept="video/*,audio/*,.mkv,.avi,.mov,.wmv,.flv,.mpeg,.mpg,.ts,.m2ts,.mts,.3gp,.3g2,.vob,.ogv,.webm,.m4v,.m4a,.aac,.flac,.ogg,.opus,.wma,.ac3,.aiff,.aif,.au,.caf,.w64,.mp2,.mka,.m4b">
+                    <div class="drop-content">
+                        <div class="upload-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+                        </div>
+                        <div class="drop-text"><strong>Dosya seç veya buraya sürükle</strong><span>Video ve ses dosyaları desteklenir</span></div>
+                    </div>
                 </div>
-            </div>
+                <div class="file-meta" id="fileMeta"><span class="name" id="fileName">—</span><span class="size" id="fileSize">—</span></div>
 
-            <div class="actions">
-                <button id="convertBtn">Dönüştürmeyi Başlat</button>
-                <button id="clearLogBtn" class="secondary">Temizle</button>
-            </div>
-
-            <div id="status">Hazır. Medya dosyası seçip format belirleyin.</div>
-
-            <div>
-                <div class="progress">
-                    <div id="bar"></div>
+                <div class="section-gap"></div>
+                <label>Dönüştürmek İstediğiniz Format</label>
+                <div class="format-toolbar">
+                    <div class="search-wrap">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+                        <input id="formatSearch" type="text" placeholder="Format ara: MP3, MKV, FLAC, WMV..." autocomplete="off">
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">Tümü</button>
+                        <button class="filter-btn" data-filter="video">Video</button>
+                        <button class="filter-btn" data-filter="audio">Ses</button>
+                    </div>
                 </div>
-                <div class="progress-text" id="progressText">%0</div>
-            </div>
 
-            <div class="log-box">
-                <div class="log-title">Canlı Dönüştürme Logları</div>
-                <div id="logPanel">
-                    <div class="log-line">[00:00:00] EBS Converter Hazır.</div>
+                <div class="format-group" id="videoGroup">
+                    <div class="format-group-title"><span>Hedef Video Formatları</span><span id="videoCount"></span></div>
+                    <div class="modern-selector" id="videoFormats"></div>
+                </div>
+
+                <div class="format-group" id="audioGroup">
+                    <div class="format-group-title"><span>Ses Formatları · Sadece Ses / Ses Dönüşümü</span><span id="audioCount"></span></div>
+                    <div class="modern-selector" id="audioFormats"></div>
+                </div>
+
+                <div class="actions">
+                    <button id="convertBtn">✦ Dönüştürmeyi Başlat</button>
+                    <button id="clearLogBtn" class="secondary">Logları Temizle</button>
+                </div>
+
+                <div class="status-shell">
+                    <div id="status"><span class="status-dot"></span><span>Hazır. Medya dosyası seçip hedef formatı belirleyin.</span></div>
+                    <div class="progress"><div id="bar"></div></div>
+                    <div class="progress-row"><span>İşlem İlerlemesi</span><span id="progressText">%0</span></div>
+                </div>
+
+                <div class="log-box">
+                    <div class="log-title"><span>Canlı Dönüştürme Logları</span><span class="live">LIVE</span></div>
+                    <div id="logPanel"><div class="log-line">[00:00:00] EBS Converter hazır.</div></div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <label>Kaynak Medya Önizleme</label>
-            <div class="preview-container" id="sourcePreviewContainer">
-                <div class="no-preview">Henüz dosya seçilmedi.</div>
-            </div>
+            <div class="card-inner">
+                <div class="card-head">
+                    <div class="card-title">
+                        <div class="icon-box">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16v10H4z"/><path d="m10 9 5 3-5 3z"/></svg>
+                        </div>
+                        <div><h2>Medya Önizleme</h2><p>Kaynak ve dönüştürülen çıktıyı aynı ekranda kontrol edin.</p></div>
+                    </div>
+                </div>
 
-            <label>Dönüştürülen Çıktı Sonucu</label>
-            <div class="preview-container" id="outputPreviewContainer">
-                <div class="no-preview">Dönüştürme tamamlandığında oynatıcı burada belirecek.</div>
+                <div class="preview-stack">
+                    <div class="preview-block">
+                        <div class="preview-label"><span>Kaynak Medya</span><span id="sourceTypeText">Bekleniyor</span></div>
+                        <div class="preview-container" id="sourcePreviewContainer">
+                            <div class="no-preview">
+                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>
+                                Henüz dosya seçilmedi.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preview-block">
+                        <div class="preview-label"><span>Dönüştürülen Çıktı</span><span id="outputTypeText">—</span></div>
+                        <div class="preview-container" id="outputPreviewContainer">
+                            <div class="no-preview">
+                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 17v2h14v-2"/></svg>
+                                Dönüştürme tamamlandığında çıktı burada görünecek.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="output-actions"><button id="downloadBtn">↓ Dönüştürülen Dosyayı İndir</button></div>
+
+                <div class="selection-summary">
+                    <div class="row"><span class="key">Kaynak</span><span class="value" id="summarySource">Dosya seçilmedi</span></div>
+                    <div class="row"><span class="key">Hedef Format</span><span class="value" id="summaryTarget">MP4</span></div>
+                    <div class="row"><span class="key">İşlem Tipi</span><span class="value" id="summaryMode">Video dönüştürme</span></div>
+                    <div class="row"><span class="key">Motor</span><span class="value">FFmpeg / WebAssembly</span></div>
+                </div>
+
+                <div class="note">
+                    Bazı eski/özel formatların tarayıcı içi oynatımı desteklenmeyebilir. Dönüştürme başarılı olsa bile önizleme görünmezse çıktı dosyasını indirip VLC gibi bir medya oynatıcıyla açabilirsiniz.
+                </div>
             </div>
-            <button id="downloadBtn" style="display: none; margin-top: 10px;">Dönüştürülen Dosyayı İndir</button>
         </div>
     </div>
 </div>
 
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+<div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 <script>
-// Sizin verdiğiniz koddaki orijinal değişmez atama yapısı
 const { createFFmpeg, fetchFile } = FFmpeg;
 
 let ffmpeg = null;
 let selectedFormat = 'mp4';
 let currentFile = null;
 let convertedBlobUrl = null;
+let sourceBlobUrl = null;
+let activeFilter = 'all';
+let lastProgress = 0;
+let lastFrameLogAt = 0;
 
-// DOM Elemanları
 const videoInput = document.getElementById('videoInput');
 const convertBtn = document.getElementById('convertBtn');
 const clearLogBtn = document.getElementById('clearLogBtn');
@@ -332,174 +556,507 @@ const progressText = document.getElementById('progressText');
 const logPanel = document.getElementById('logPanel');
 const sourcePreviewContainer = document.getElementById('sourcePreviewContainer');
 const outputPreviewContainer = document.getElementById('outputPreviewContainer');
+const dropZone = document.getElementById('dropZone');
+const fileMeta = document.getElementById('fileMeta');
+const fileNameEl = document.getElementById('fileName');
+const fileSizeEl = document.getElementById('fileSize');
+const formatSearch = document.getElementById('formatSearch');
+const videoFormatsEl = document.getElementById('videoFormats');
+const audioFormatsEl = document.getElementById('audioFormats');
+const videoGroup = document.getElementById('videoGroup');
+const audioGroup = document.getElementById('audioGroup');
+const sourceTypeText = document.getElementById('sourceTypeText');
+const outputTypeText = document.getElementById('outputTypeText');
+const summarySource = document.getElementById('summarySource');
+const summaryTarget = document.getElementById('summaryTarget');
+const summaryMode = document.getElementById('summaryMode');
+const toast = document.getElementById('toast');
 
-// Loglama Mekanizması
-function addLog(message){
-    const time = new Date().toLocaleTimeString("tr-TR");
-    const div = document.createElement("div");
-    div.className = "log-line";
-    div.innerText = "[" + time + "] " + message;
+const VIDEO_FORMATS = [
+    {value:'mp4', label:'MP4', ext:'mp4', mime:'video/mp4', desc:'H.264 + AAC', family:'video'},
+    {value:'mp4hevc', label:'MP4 H.265', ext:'mp4', mime:'video/mp4', desc:'HEVC + AAC', family:'video'},
+    {value:'mov', label:'MOV', ext:'mov', mime:'video/quicktime', desc:'QuickTime', family:'video'},
+    {value:'m4v', label:'M4V', ext:'m4v', mime:'video/x-m4v', desc:'Apple video', family:'video'},
+    {value:'mkv', label:'MKV', ext:'mkv', mime:'video/x-matroska', desc:'Matroska', family:'video'},
+    {value:'webm', label:'WebM', ext:'webm', mime:'video/webm', desc:'VP8 + Vorbis', family:'video'},
+    {value:'webmav1', label:'WebM AV1', ext:'webm', mime:'video/webm', desc:'AV1 + Opus', family:'video'},
+    {value:'avi', label:'AVI', ext:'avi', mime:'video/x-msvideo', desc:'MPEG-4 + MP3', family:'video'},
+    {value:'wmv', label:'WMV', ext:'wmv', mime:'video/x-ms-wmv', desc:'WMV2 + WMA', family:'video'},
+    {value:'flv', label:'FLV', ext:'flv', mime:'video/x-flv', desc:'Flash Video', family:'video'},
+    {value:'mpeg', label:'MPEG', ext:'mpeg', mime:'video/mpeg', desc:'MPEG-2', family:'video'},
+    {value:'mpg', label:'MPG', ext:'mpg', mime:'video/mpeg', desc:'MPEG-2', family:'video'},
+    {value:'ts', label:'TS', ext:'ts', mime:'video/mp2t', desc:'MPEG Transport', family:'video'},
+    {value:'m2ts', label:'M2TS', ext:'m2ts', mime:'video/mp2t', desc:'Blu-ray TS', family:'video'},
+    {value:'mts', label:'MTS', ext:'mts', mime:'video/mp2t', desc:'AVCHD TS', family:'video'},
+    {value:'3gp', label:'3GP', ext:'3gp', mime:'video/3gpp', desc:'Mobil video', family:'video'},
+    {value:'3g2', label:'3G2', ext:'3g2', mime:'video/3gpp2', desc:'3GPP2', family:'video'},
+    {value:'ogv', label:'OGV', ext:'ogv', mime:'video/ogg', desc:'Theora + Vorbis', family:'video'},
+    {value:'vob', label:'VOB', ext:'vob', mime:'video/mpeg', desc:'DVD video', family:'video'},
+    {value:'asf', label:'ASF', ext:'asf', mime:'video/x-ms-asf', desc:'Windows Media', family:'video'},
+    {value:'f4v', label:'F4V', ext:'f4v', mime:'video/mp4', desc:'Flash MP4', family:'video'},
+    {value:'nut', label:'NUT', ext:'nut', mime:'video/x-nut', desc:'FFmpeg container', family:'video'},
+    {value:'gif', label:'GIF', ext:'gif', mime:'image/gif', desc:'Animasyon · sessiz', family:'animation'},
+    {value:'apng', label:'APNG', ext:'apng', mime:'image/apng', desc:'Animasyon · sessiz', family:'animation'},
+    {value:'webp', label:'WebP', ext:'webp', mime:'image/webp', desc:'Animasyon · sessiz', family:'animation'}
+];
+
+const AUDIO_FORMATS = [
+    {value:'mp3', label:'MP3', ext:'mp3', mime:'audio/mpeg', desc:'192 kbps', family:'audio'},
+    {value:'wav', label:'WAV', ext:'wav', mime:'audio/wav', desc:'PCM 16-bit', family:'audio'},
+    {value:'aac', label:'AAC', ext:'aac', mime:'audio/aac', desc:'AAC stream', family:'audio'},
+    {value:'m4a', label:'M4A', ext:'m4a', mime:'audio/mp4', desc:'AAC / MP4', family:'audio'},
+    {value:'flac', label:'FLAC', ext:'flac', mime:'audio/flac', desc:'Kayıpsız', family:'audio'},
+    {value:'ogg', label:'OGG', ext:'ogg', mime:'audio/ogg', desc:'Vorbis', family:'audio'},
+    {value:'opus', label:'OPUS', ext:'opus', mime:'audio/ogg; codecs=opus', desc:'Opus', family:'audio'},
+    {value:'wma', label:'WMA', ext:'wma', mime:'audio/x-ms-wma', desc:'Windows Media', family:'audio'},
+    {value:'ac3', label:'AC3', ext:'ac3', mime:'audio/ac3', desc:'Dolby Digital', family:'audio'},
+    {value:'eac3', label:'E-AC3', ext:'eac3', mime:'audio/eac3', desc:'Dolby Digital+', family:'audio'},
+    {value:'aiff', label:'AIFF', ext:'aiff', mime:'audio/aiff', desc:'PCM big-endian', family:'audio'},
+    {value:'aif', label:'AIF', ext:'aif', mime:'audio/aiff', desc:'AIFF kısa uzantı', family:'audio'},
+    {value:'au', label:'AU', ext:'au', mime:'audio/basic', desc:'Sun/NeXT Audio', family:'audio'},
+    {value:'caf', label:'CAF', ext:'caf', mime:'audio/x-caf', desc:'Core Audio', family:'audio'},
+    {value:'w64', label:'W64', ext:'w64', mime:'audio/wav', desc:'Wave64', family:'audio'},
+    {value:'mp2', label:'MP2', ext:'mp2', mime:'audio/mpeg', desc:'MPEG Layer II', family:'audio'},
+    {value:'oga', label:'OGA', ext:'oga', mime:'audio/ogg', desc:'Ogg Audio', family:'audio'},
+    {value:'mka', label:'MKA', ext:'mka', mime:'audio/x-matroska', desc:'Matroska Audio', family:'audio'},
+    {value:'m4b', label:'M4B', ext:'m4b', mime:'audio/mp4', desc:'Audiobook AAC', family:'audio'},
+    {value:'alac', label:'ALAC', ext:'m4a', mime:'audio/mp4', desc:'Apple Lossless', family:'audio'},
+    {value:'tta', label:'TTA', ext:'tta', mime:'audio/x-tta', desc:'True Audio · kayıpsız', family:'audio'}
+];
+
+const ALL_FORMATS = [...VIDEO_FORMATS, ...AUDIO_FORMATS];
+
+function getFormat(value){
+    return ALL_FORMATS.find(f => f.value === value) || VIDEO_FORMATS[0];
+}
+
+function isAudioTarget(value){
+    return AUDIO_FORMATS.some(f => f.value === value);
+}
+
+function isAnimationTarget(value){
+    const f = getFormat(value);
+    return f.family === 'animation';
+}
+
+function isAudioSource(file){
+    if (!file) return false;
+    if (file.type && file.type.startsWith('audio/')) return true;
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    return ['mp3','wav','aac','m4a','flac','ogg','oga','opus','wma','ac3','eac3','aiff','aif','au','caf','w64','mp2','mka','m4b','tta'].includes(ext);
+}
+
+function isVideoSource(file){
+    return file && !isAudioSource(file);
+}
+
+function safeInputName(file){
+    const ext = (file.name.split('.').pop() || 'media').toLowerCase().replace(/[^a-z0-9]/g,'') || 'media';
+    return 'ebs_input_' + Date.now() + '.' + ext;
+}
+
+function escapeHtml(str=''){
+    return String(str).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[ch]));
+}
+
+function humanSize(bytes){
+    if (!Number.isFinite(bytes)) return '—';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    if (bytes < 1024*1024*1024) return (bytes/1024/1024).toFixed(2) + ' MB';
+    return (bytes/1024/1024/1024).toFixed(2) + ' GB';
+}
+
+function showToast(message, type=''){
+    toast.textContent = message;
+    toast.className = 'toast ' + type + ' show';
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => toast.className = 'toast ' + type, 3200);
+}
+
+function setStatus(message){
+    statusEl.innerHTML = '<span class="status-dot"></span><span>' + escapeHtml(message) + '</span>';
+}
+
+function addLog(message, type=''){
+    const time = new Date().toLocaleTimeString('tr-TR');
+    const div = document.createElement('div');
+    div.className = 'log-line' + (type ? ' ' + type : '');
+    div.innerText = '[' + time + '] ' + message;
     logPanel.appendChild(div);
     logPanel.scrollTop = logPanel.scrollHeight;
 }
 
-// Modern Format Seçici Kontrolü
-document.querySelectorAll('.format-option').forEach(option => {
-    option.addEventListener('click', function() {
-        document.querySelectorAll('.format-option').forEach(opt => opt.classList.remove('selected'));
-        this.classList.add('selected');
-        selectedFormat = this.getAttribute('data-value');
-        addLog("Hedef format değiştirildi: " + selectedFormat.toUpperCase());
-    });
-});
+function resetProgress(){
+    lastProgress = 0;
+    bar.style.width = '0%';
+    progressText.innerText = '%0';
+}
 
-// Dosya Seçildiğinde Önizleme Oluşturma
-videoInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    currentFile = file;
-    addLog(`Dosya yüklendi: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
-    
-    sourcePreviewContainer.innerHTML = '';
-    outputPreviewContainer.innerHTML = '<div class="no-preview">Yeni dosya için dönüştürme bekleniyor...</div>';
-    downloadBtn.style.display = 'none';
-    
-    const fileUrl = URL.createObjectURL(file);
-    
-    if (file.type.startsWith('video/')) {
-        sourcePreviewContainer.innerHTML = `<video src="${fileUrl}" controls></video>`;
-    } else if (file.type.startsWith('audio/')) {
-        sourcePreviewContainer.innerHTML = `<audio src="${fileUrl}" controls style="width:90%;"></audio>`;
-    } else {
-        sourcePreviewContainer.innerHTML = `<div class="no-preview">Önizleme desteklenmiyor fakat dönüştürülebilir.</div>`;
-    }
-    
-    statusEl.innerText = "Dosya hazır. Hedef formatı seçip işlemi başlatın.";
-});
+function setProgress(pct){
+    pct = Math.max(0, Math.min(100, Math.round(pct || 0)));
+    if (pct < lastProgress && lastProgress < 99) return;
+    lastProgress = pct;
+    bar.style.width = pct + '%';
+    progressText.innerText = '%' + pct;
+}
 
-// FFmpeg Motorunu Yükleme (Sizin Kod Yapınız)
-async function initFFmpeg() {
-    if (ffmpeg) return ffmpeg;
-    
-    statusEl.innerText = "FFmpeg motoru yükleniyor...";
-    ffmpeg = createFFmpeg({
-        log: true,
-        progress: ({ ratio }) => {
-            const pct = Math.round(ratio * 100);
-            bar.style.width = pct + "%";
-            progressText.innerText = "%" + pct;
-        }
-    });
-    
-    ffmpeg.setLogger(({ message }) => {
-        if(message && message.trim() !== "") {
-            if(message.includes('frame=') || message.includes('size=')){
-                statusEl.innerText = "Dönüştürülüyor: " + message;
-            } else {
-                addLog("FFmpeg: " + message);
+function formatCard(format){
+    const selected = selectedFormat === format.value ? ' selected' : '';
+    const disabled = currentFile && isAudioSource(currentFile) && format.family === 'animation' ? ' disabled' : '';
+    return `<div class="format-option${selected}${disabled}" data-value="${format.value}" title="${escapeHtml(format.desc)}">
+        <div class="format-name">${escapeHtml(format.label)}</div>
+        <span class="format-desc">${escapeHtml(format.desc)}</span>
+    </div>`;
+}
+
+function renderFormats(){
+    const q = formatSearch.value.trim().toLowerCase();
+    const filterFn = f => {
+        const searchOk = !q || f.label.toLowerCase().includes(q) || f.value.toLowerCase().includes(q) || f.desc.toLowerCase().includes(q);
+        const groupOk = activeFilter === 'all' || (activeFilter === 'audio' ? f.family === 'audio' : f.family !== 'audio');
+        return searchOk && groupOk;
+    };
+
+    const vf = VIDEO_FORMATS.filter(filterFn);
+    const af = AUDIO_FORMATS.filter(filterFn);
+
+    videoGroup.style.display = activeFilter === 'audio' ? 'none' : '';
+    audioGroup.style.display = activeFilter === 'video' ? 'none' : '';
+
+    videoFormatsEl.innerHTML = vf.length ? vf.map(formatCard).join('') : '<div class="format-empty">Video formatı bulunamadı.</div>';
+    audioFormatsEl.innerHTML = af.length ? af.map(formatCard).join('') : '<div class="format-empty">Ses formatı bulunamadı.</div>';
+    document.getElementById('videoCount').textContent = VIDEO_FORMATS.length + ' seçenek';
+    document.getElementById('audioCount').textContent = AUDIO_FORMATS.length + ' seçenek';
+
+    document.querySelectorAll('.format-option').forEach(option => {
+        option.addEventListener('click', () => {
+            if (option.classList.contains('disabled')) {
+                showToast('Ses dosyasından GIF/APNG/WebP animasyonu oluşturulamaz. Video formatı veya ses formatı seçin.', 'error');
+                return;
             }
+            selectedFormat = option.dataset.value;
+            renderFormats();
+            updateSummary();
+            const f = getFormat(selectedFormat);
+            addLog('Hedef format değiştirildi: ' + f.label);
+        });
+    });
+}
+
+function updateSummary(){
+    const f = getFormat(selectedFormat);
+    summaryTarget.textContent = f.label;
+    outputTypeText.textContent = f.label;
+
+    if (!currentFile) {
+        summarySource.textContent = 'Dosya seçilmedi';
+        summaryMode.textContent = isAudioTarget(selectedFormat) ? 'Ses dönüştürme / ayıklama' : (isAnimationTarget(selectedFormat) ? 'Animasyon oluşturma' : 'Video dönüştürme');
+        return;
+    }
+
+    summarySource.textContent = currentFile.name;
+    if (isAudioTarget(selectedFormat)) {
+        summaryMode.textContent = isAudioSource(currentFile) ? 'Ses → Ses' : 'Video → Ses ayıklama';
+    } else if (isAnimationTarget(selectedFormat)) {
+        summaryMode.textContent = 'Video → Animasyon';
+    } else if (isAudioSource(currentFile)) {
+        summaryMode.textContent = 'Ses → Video (otomatik arka plan)';
+    } else {
+        summaryMode.textContent = 'Video → Video';
+    }
+}
+
+function setSourcePreview(file){
+    if (sourceBlobUrl) URL.revokeObjectURL(sourceBlobUrl);
+    sourceBlobUrl = URL.createObjectURL(file);
+    sourcePreviewContainer.innerHTML = '';
+
+    if (isAudioSource(file)) {
+        sourcePreviewContainer.innerHTML = `<audio src="${sourceBlobUrl}" controls></audio>`;
+        sourceTypeText.textContent = 'Ses';
+    } else {
+        sourcePreviewContainer.innerHTML = `<video src="${sourceBlobUrl}" controls></video>`;
+        sourceTypeText.textContent = 'Video';
+    }
+}
+
+function handleSelectedFile(file){
+    if (!file) return;
+    currentFile = file;
+    setSourcePreview(file);
+    fileNameEl.textContent = file.name;
+    fileSizeEl.textContent = humanSize(file.size);
+    fileMeta.classList.add('show');
+    outputPreviewContainer.innerHTML = '<div class="no-preview">Yeni dosya için dönüşüm bekleniyor...</div>';
+    downloadBtn.style.display = 'none';
+    if (convertedBlobUrl) { URL.revokeObjectURL(convertedBlobUrl); convertedBlobUrl = null; }
+    addLog(`Dosya yüklendi: ${file.name} (${humanSize(file.size)})`);
+    setStatus('Dosya hazır. Yalnızca hedef formatı seçip işlemi başlatın.');
+    updateSummary();
+    renderFormats();
+}
+
+videoInput.addEventListener('change', e => handleSelectedFile(e.target.files[0]));
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) handleSelectedFile(file);
+});
+
+formatSearch.addEventListener('input', renderFormats);
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderFormats();
+    });
+});
+
+async function initFFmpeg(){
+    if (ffmpeg) return ffmpeg;
+    setStatus('FFmpeg motoru yükleniyor...');
+    addLog('FFmpeg WebAssembly motoru başlatılıyor.');
+
+    ffmpeg = createFFmpeg({
+        log:true,
+        progress:({ratio}) => {
+            if (Number.isFinite(ratio)) setProgress(ratio * 100);
         }
     });
-    
+
+    ffmpeg.setLogger(({message}) => {
+        if (!message || !message.trim()) return;
+        const now = Date.now();
+        if (message.includes('frame=') || message.includes('size=')) {
+            setStatus('Dönüştürme devam ediyor...');
+            if (now - lastFrameLogAt > 1500) {
+                addLog('FFmpeg: ' + message.trim());
+                lastFrameLogAt = now;
+            }
+        } else if (/error|invalid|failed/i.test(message)) {
+            addLog('FFmpeg: ' + message.trim(), 'error');
+        }
+    });
+
     await ffmpeg.load();
+    addLog('FFmpeg motoru hazır.', 'success');
     return ffmpeg;
 }
 
-// Convert İşlemi
-convertBtn.addEventListener('click', async () => {
-    if (!currentFile) {
-        alert("Lütfen önce bir dosya seçin.");
+function standardVideoArgs(codec='libx264', audioCodec='aac'){
+    const args = ['-c:v',codec];
+    if (codec === 'libx264') args.push('-preset','veryfast','-crf','23','-pix_fmt','yuv420p');
+    if (codec === 'libx265') args.push('-preset','ultrafast','-crf','28','-pix_fmt','yuv420p');
+    args.push('-c:a',audioCodec);
+    if (audioCodec === 'aac') args.push('-b:a','192k');
+    return args;
+}
+
+function profileArgs(format){
+    switch(format){
+        case 'mp4': return [...standardVideoArgs('libx264','aac'),'-movflags','+faststart'];
+        case 'mp4hevc': return [...standardVideoArgs('libx265','aac'),'-tag:v','hvc1','-movflags','+faststart'];
+        case 'mov': return [...standardVideoArgs('libx264','aac'),'-f','mov'];
+        case 'm4v': return ['-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-f','mp4'];
+        case 'mkv': return [...standardVideoArgs('libx264','aac'),'-f','matroska'];
+        case 'webm': return ['-c:v','libvpx','-deadline','realtime','-cpu-used','5','-b:v','1400k','-c:a','libvorbis','-q:a','5'];
+        case 'webmav1': return ['-c:v','libaom-av1','-cpu-used','8','-crf','38','-b:v','0','-c:a','libopus','-b:a','128k','-f','webm'];
+        case 'avi': return ['-c:v','mpeg4','-q:v','5','-c:a','libmp3lame','-b:a','192k','-f','avi'];
+        case 'wmv': return ['-c:v','wmv2','-b:v','2200k','-c:a','wmav2','-b:a','192k','-f','asf'];
+        case 'flv': return ['-c:v','flv','-b:v','1800k','-c:a','libmp3lame','-b:a','160k','-f','flv'];
+        case 'mpeg':
+        case 'mpg': return ['-c:v','mpeg2video','-q:v','5','-c:a','mp2','-b:a','192k','-f','mpeg'];
+        case 'ts':
+        case 'm2ts':
+        case 'mts': return ['-c:v','mpeg2video','-q:v','5','-c:a','aac','-b:a','192k','-f','mpegts'];
+        case '3gp': return ['-c:v','mpeg4','-b:v','900k','-c:a','aac','-b:a','96k','-ar','44100','-f','3gp'];
+        case '3g2': return ['-c:v','mpeg4','-b:v','900k','-c:a','aac','-b:a','96k','-ar','44100','-f','3g2'];
+        case 'ogv': return ['-c:v','libtheora','-q:v','7','-c:a','libvorbis','-q:a','5','-f','ogg'];
+        case 'vob': return ['-c:v','mpeg2video','-b:v','4500k','-c:a','ac3','-b:a','192k','-f','vob'];
+        case 'asf': return ['-c:v','wmv2','-b:v','2000k','-c:a','wmav2','-b:a','160k','-f','asf'];
+        case 'f4v': return [...standardVideoArgs('libx264','aac'),'-f','f4v'];
+        case 'nut': return ['-c:v','mpeg4','-q:v','5','-c:a','aac','-b:a','192k','-f','nut'];
+        case 'gif': return ['-vf',"fps=12,scale=w='min(960,iw)':h=-2:flags=lanczos",'-an','-loop','0'];
+        case 'apng': return ['-vf',"fps=15,scale=w='min(1280,iw)':h=-2:flags=lanczos",'-an','-plays','0','-f','apng'];
+        case 'webp': return ['-vf',"fps=15,scale=w='min(1280,iw)':h=-2:flags=lanczos",'-an','-c:v','libwebp','-lossless','0','-q:v','72','-loop','0','-preset','picture'];
+
+        case 'mp3': return ['-vn','-c:a','libmp3lame','-b:a','192k'];
+        case 'wav': return ['-vn','-c:a','pcm_s16le','-ar','44100'];
+        case 'aac': return ['-vn','-c:a','aac','-b:a','192k','-f','adts'];
+        case 'm4a': return ['-vn','-c:a','aac','-b:a','192k','-f','ipod'];
+        case 'flac': return ['-vn','-c:a','flac','-compression_level','5'];
+        case 'ogg': return ['-vn','-c:a','libvorbis','-q:a','5','-f','ogg'];
+        case 'opus': return ['-vn','-c:a','libopus','-b:a','128k','-vbr','on','-f','opus'];
+        case 'wma': return ['-vn','-c:a','wmav2','-b:a','192k','-f','asf'];
+        case 'ac3': return ['-vn','-c:a','ac3','-b:a','192k'];
+        case 'eac3': return ['-vn','-c:a','eac3','-b:a','256k'];
+        case 'aiff':
+        case 'aif': return ['-vn','-c:a','pcm_s16be','-f','aiff'];
+        case 'au': return ['-vn','-c:a','pcm_s16be','-f','au'];
+        case 'caf': return ['-vn','-c:a','pcm_s16le','-f','caf'];
+        case 'w64': return ['-vn','-c:a','pcm_s16le','-f','w64'];
+        case 'mp2': return ['-vn','-c:a','mp2','-b:a','192k'];
+        case 'oga': return ['-vn','-c:a','libvorbis','-q:a','5','-f','ogg'];
+        case 'mka': return ['-vn','-c:a','flac','-f','matroska'];
+        case 'm4b': return ['-vn','-c:a','aac','-b:a','128k','-f','ipod'];
+        case 'alac': return ['-vn','-c:a','alac','-f','ipod'];
+        case 'tta': return ['-vn','-c:a','tta','-f','tta'];
+        default: return [...standardVideoArgs('libx264','aac')];
+    }
+}
+
+function audioToVideoInputs(inputName){
+    return ['-f','lavfi','-i','color=c=0x090a0d:s=1280x720:r=30','-i',inputName,'-shortest'];
+}
+
+function inputArgs(inputName){
+    const target = getFormat(selectedFormat);
+    if (currentFile && isAudioSource(currentFile) && target.family === 'video') {
+        return audioToVideoInputs(inputName);
+    }
+    return ['-i',inputName];
+}
+
+function browserCanPreview(format){
+    return ['mp4','m4v','mov','webm','mp3','wav','aac','m4a','ogg','opus','flac','gif','apng','webp'].includes(format);
+}
+
+function buildOutputPreview(url, spec){
+    outputPreviewContainer.innerHTML = '';
+    if (!browserCanPreview(selectedFormat)) {
+        outputPreviewContainer.innerHTML = `<div class="no-preview">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 17v2h14v-2"/></svg>
+            <strong style="color:#bdb5a1">${escapeHtml(spec.label)} dönüşümü tamamlandı.</strong><br>Bu format tarayıcıda doğrudan önizlenmeyebilir. Dosyayı aşağıdaki butondan indirebilirsiniz.
+        </div>`;
         return;
     }
-    
+    if (spec.family === 'audio') {
+        outputPreviewContainer.innerHTML = `<audio src="${url}" controls></audio>`;
+    } else if (spec.family === 'animation') {
+        outputPreviewContainer.innerHTML = `<img src="${url}" alt="Dönüştürülen çıktı" style="max-width:100%;max-height:330px;display:block;margin:auto;">`;
+    } else {
+        outputPreviewContainer.innerHTML = `<video src="${url}" controls></video>`;
+    }
+}
+
+async function runConversion(inputName, outputName){
+    const args = [...inputArgs(inputName), ...profileArgs(selectedFormat), outputName];
+    addLog('FFmpeg komutu hazırlanıyor: ' + getFormat(selectedFormat).label);
+    await ffmpeg.run(...args);
+}
+
+async function fallbackConversion(inputName, outputName){
+    const f = getFormat(selectedFormat);
+    addLog('Birincil profil başarısız. Uyumlu alternatif profil deneniyor...', 'error');
+
+    let args;
+    if (f.family === 'audio') {
+        if (['mp3'].includes(selectedFormat)) args = [...inputArgs(inputName),'-vn','-c:a','libmp3lame','-q:a','2',outputName];
+        else if (['ogg','oga'].includes(selectedFormat)) args = [...inputArgs(inputName),'-vn','-c:a','libvorbis','-q:a','4',outputName];
+        else if (selectedFormat === 'opus') args = [...inputArgs(inputName),'-vn','-c:a','libopus','-b:a','96k',outputName];
+        else if (['m4a','m4b','aac'].includes(selectedFormat)) args = [...inputArgs(inputName),'-vn','-c:a','aac','-b:a','160k',outputName];
+        else if (selectedFormat === 'flac') args = [...inputArgs(inputName),'-vn','-c:a','flac',outputName];
+        else args = [...inputArgs(inputName),'-vn','-c:a','pcm_s16le',outputName];
+    } else if (f.family === 'animation') {
+        args = [...inputArgs(inputName),'-vf','fps=10,scale=640:-2','-an',outputName];
+    } else {
+        args = [...inputArgs(inputName),'-c:v','mpeg4','-q:v','6','-c:a','aac','-b:a','128k',outputName];
+    }
+    await ffmpeg.run(...args);
+}
+
+convertBtn.addEventListener('click', async () => {
+    if (!currentFile) {
+        showToast('Önce dönüştürülecek bir medya dosyası seçin.', 'error');
+        return;
+    }
+    if (isAudioSource(currentFile) && isAnimationTarget(selectedFormat)) {
+        showToast('Ses dosyası animasyon formatına dönüştürülemez. Video veya ses hedefi seçin.', 'error');
+        return;
+    }
+
+    let inputName = null;
+    let outputName = null;
+
     try {
         convertBtn.disabled = true;
-        bar.style.width = "0%";
-        progressText.innerText = "%0";
-        
+        resetProgress();
+        downloadBtn.style.display = 'none';
+        outputPreviewContainer.innerHTML = '<div class="no-preview">Dönüştürme hazırlanıyor...</div>';
+
         await initFFmpeg();
-        
-        statusEl.innerText = "Dosya belleğe alınıyor...";
-        const inputName = "input_" + currentFile.name;
-        const outputName = "output_" + Date.now() + "." + selectedFormat;
-        
-        ffmpeg.FS("writeFile", inputName, await fetchFile(currentFile));
-        
-        statusEl.innerText = "Dönüştürme işlemi başlatıldı...";
-        addLog(`${selectedFormat.toUpperCase()} kodlaması ayarlanıyor...`);
-        
-        let ffmpegArgs = ["-i", inputName];
-        
-        // Ses formatları seçildiyse videoyu devre dışı bırak (-vn)
-        if (['mp3', 'wav', 'aac', 'flac'].includes(selectedFormat)) {
-            ffmpegArgs.push("-vn");
-            if (selectedFormat === 'mp3') ffmpegArgs.push("-acodec", "libmp3lame", "-ab", "192k");
-            else if (selectedFormat === 'wav') ffmpegArgs.push("-acodec", "pcm_s16le");
-            else if (selectedFormat === 'aac') ffmpegArgs.push("-acodec", "aac");
-            else if (selectedFormat === 'flac') ffmpegArgs.push("-acodec", "flac");
-        } else {
-            // Standart video dönüşüm parametreleri
-            if (selectedFormat === 'mp4') {
-                ffmpegArgs.push("-c:v", "libx264", "-profile:v", "main", "-vf", "format=yuv420p", "-c:a", "aac", "-movflags", "+faststart");
-            } else if (selectedFormat === 'webm') {
-                ffmpegArgs.push("-c:v", "libvpx", "-c:a", "libvorbis");
-            } else {
-                ffmpegArgs.push("-c:v", "libx264", "-c:a", "aac");
-            }
+
+        const spec = getFormat(selectedFormat);
+        inputName = safeInputName(currentFile);
+        outputName = 'ebs_output_' + Date.now() + '.' + spec.ext;
+
+        setStatus('Dosya belleğe alınıyor...');
+        addLog('Dosya FFmpeg sanal belleğine aktarılıyor.');
+        ffmpeg.FS('writeFile', inputName, await fetchFile(currentFile));
+
+        setStatus(spec.label + ' formatına dönüştürme başlatıldı...');
+        addLog(`${spec.label} kodlama profili uygulanıyor.`);
+
+        try {
+            await runConversion(inputName, outputName);
+        } catch (primaryErr) {
+            try { ffmpeg.FS('unlink', outputName); } catch(e) {}
+            await fallbackConversion(inputName, outputName);
         }
-        
-        ffmpegArgs.push(outputName);
-        
-        await ffmpeg.run(...ffmpegArgs);
-        
-        statusEl.innerText = "Dönüştürme tamamlandı.";
-        addLog("İşlem bitti. Çıktı önizlemesi hazırlanıyor.");
-        
-        const data = ffmpeg.FS("readFile", outputName);
-        
-        let mimeType = currentFile.type;
-        if(['mp3','wav','aac','flac'].includes(selectedFormat)){
-            mimeType = 'audio/' + selectedFormat;
-        } else {
-            mimeType = 'video/' + selectedFormat;
-        }
-        
-        const outputBlob = new Blob([data.buffer], { type: mimeType });
+
+        setProgress(100);
+        setStatus('Dönüştürme tamamlandı.');
+        addLog('İşlem başarıyla tamamlandı. Çıktı hazırlanıyor.', 'success');
+
+        const data = ffmpeg.FS('readFile', outputName);
+        const outputBlob = new Blob([data.buffer], {type: spec.mime});
+
+        if (convertedBlobUrl) URL.revokeObjectURL(convertedBlobUrl);
         convertedBlobUrl = URL.createObjectURL(outputBlob);
-        
-        outputPreviewContainer.innerHTML = '';
-        if (mimeType.startsWith('video/')) {
-            outputPreviewContainer.innerHTML = `<video src="${convertedBlobUrl}" controls></video>`;
-        } else {
-            outputPreviewContainer.innerHTML = `<audio src="${convertedBlobUrl}" controls style="width:90%;"></audio>`;
-        }
-        
+
+        buildOutputPreview(convertedBlobUrl, spec);
         downloadBtn.style.display = 'block';
+        outputTypeText.textContent = spec.label + ' · ' + humanSize(outputBlob.size);
+
         downloadBtn.onclick = () => {
             const a = document.createElement('a');
             a.href = convertedBlobUrl;
-            a.download = "ebs_converted_" + Date.now() + "." + selectedFormat;
+            const originalBase = currentFile.name.replace(/\.[^/.]+$/, '').replace(/[^\w\-]+/g,'_').slice(0,70) || 'ebs_media';
+            a.download = originalBase + '_EBS.' + spec.ext;
+            document.body.appendChild(a);
             a.click();
-            addLog("Dosya indirildi.");
+            a.remove();
+            addLog('Dönüştürülen dosya indirildi.', 'success');
         };
-        
-        ffmpeg.FS("unlink", inputName);
-        ffmpeg.FS("unlink", outputName);
-        
+
+        showToast(spec.label + ' dönüşümü tamamlandı.', 'success');
+
     } catch (err) {
         console.error(err);
-        addLog("HATA: " + err.message);
-        statusEl.innerText = "Hata oluştu: " + err.message;
+        addLog('HATA: ' + (err && err.message ? err.message : String(err)), 'error');
+        setStatus('Dönüştürme başarısız: ' + (err && err.message ? err.message : 'Bilinmeyen hata'));
+        outputPreviewContainer.innerHTML = '<div class="no-preview" style="color:#a86d70">Dönüştürme sırasında hata oluştu. Log panelini kontrol edin.</div>';
+        showToast('Dönüştürme sırasında hata oluştu.', 'error');
     } finally {
+        try { if (inputName) ffmpeg.FS('unlink', inputName); } catch(e) {}
+        try { if (outputName) ffmpeg.FS('unlink', outputName); } catch(e) {}
         convertBtn.disabled = false;
     }
 });
 
 clearLogBtn.addEventListener('click', () => {
     logPanel.innerHTML = '<div class="log-line">[00:00:00] Log paneli temizlendi.</div>';
+    showToast('Log paneli temizlendi.');
 });
-</script>
 
+renderFormats();
+updateSummary();
+</script>
 </body>
 </html>
