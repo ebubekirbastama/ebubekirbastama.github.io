@@ -1,402 +1,432 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
- <url>
-    <loc> https://www.ebubekirbastama.com.tr/ebs-belge-masasi.html</loc>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/ebsforensic/</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/ebssuclutespitsistemi/</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/ebsapikeygenerater.html</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/PBKDF2.html</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/HMAC256.html</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/aesencode_decode.html</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/base64encoder.html</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/base64decode.html</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/sha1encode.html</loc>
+  </url>
+  <url>
+    <loc>https://ebubekirbastama.com.tr/md5.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsforensic/</loc>
+    <loc>https://ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebssuclutespitsistemi/</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSbcrypt.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsapikeygenerater.html</loc>
+    <loc>https://ebubekirbastama.com.tr/GoldenTrace.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/PBKDF2.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsresindonusturici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/HMAC256.html</loc>
+    <loc>https://ebubekirbastama.com.tr/asciiartolusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/aesencode_decode.html</loc>
+    <loc>https://ebubekirbastama.com.tr/rich_text_to.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/base64encoder.html</loc>
+    <loc>https://ebubekirbastama.com.tr/tersresimdonusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/base64decode.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebspdftoimage.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/sha1encode.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebstxtbirlestirici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/md5.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsotolinkolusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EbsSHA-256exeHashhesaplayici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebscsvtoexcel.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSbcrypt.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSWebpConvert.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/GoldenTrace.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsxmltotext.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsresindonusturici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsultragorselboyutdusurme.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/asciiartolusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBS-Gorsel-Duzenleyici/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/rich_text_to.html</loc>
+    <loc>https://ebubekirbastama.com.tr/instagram_gorsel_video_tasarim_araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/tersresimdonusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-gorsel-bolme-araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebspdftoimage.html</loc>
+    <loc>https://ebubekirbastama.com.tr/tools/exif-editor/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebstxtbirlestirici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/yuzgizleme/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsotolinkolusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBS-ProLight-Studio-ColorLab/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebscsvtoexcel.html</loc>
+    <loc>https://ebubekirbastama.com.tr/eskiz.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSWebpConvert.html</loc>
+    <loc>https://ebubekirbastama.com.tr/kose-yazisi-tasarim-editoru-haber-basligi-olusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsxmltotext.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-haber-tasarim-araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsultragorselboyutdusurme.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-haber-resim-olusturucu/ebs-haber-tasarim-araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-gorsel-bolme-araci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebubekirbastama-pastel-studio.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/tools/exif-editor/</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-news-studio-pro.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/yuzgizleme/</loc>
+    <loc>https://ebubekirbastama.com.tr/instagram-grid-olusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBS-ProLight-Studio-ColorLab/</loc>
+    <loc>https://ebubekirbastama.com.tr/feather-blend-images.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/eskiz.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-vektor-analyzer-olusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/kose-yazisi-tasarim-editoru-haber-basligi-olusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsrenkanalizindirmeotomasyonu/index.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-haber-tasarim-araci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebskolajolusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-haber-resim-olusturucu/ebs-haber-tasarim-araci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsrandomkolajolusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebubekirbastama-pastel-studio.html</loc>
+    <loc>https://ebubekirbastama.com.tr/svg-parcala-tek-dosya.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-news-studio-pro.html</loc>
+    <loc>https://ebubekirbastama.com.tr/resim-parcala-renk-analiz.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/instagram-grid-olusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSpdftoimage/index.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/feather-blend-images.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSFlipbook/index.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-vektor-analyzer-olusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsallwep.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsrenkanalizindirmeotomasyonu/index.html</loc>
+    <loc>https://ebubekirbastama.com.tr/filigran_araci_ultimate_ebubekirbastama.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebskolajolusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsphotoshop.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsrandomkolajolusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsimageresize.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/svg-parcala-tek-dosya.html</loc>
+    <loc>https://ebubekirbastama.com.tr/image-goruntuleyici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/resim-parcala-renk-analiz.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsmansetolusturici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSpdftoimage/index.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsocr.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSFlipbook/index.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebstemplatematching.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsallwep.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsssim.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/filigran_araci_ultimate_ebubekirbastama.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsrspnimg.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsphotoshop.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebspdfgoruntuleyici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsimageresize.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebspdftotextpro.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/image-goruntuleyici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSPDFOkuyucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsmansetolusturici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ses_temizleyici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsocr.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-render-studio-pro.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebstemplatematching.html</loc>
+    <loc>https://ebubekirbastama.com.tr/vidagrade-gpu/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsssim.html</loc>
+    <loc>https://ebubekirbastama.com.tr/video-blur-studio.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsrspnimg.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-milisaniye-video-kesme-araci-duzeltilmis/video-kesme-araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebspdfgoruntuleyici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_video_sestemzileme/video_renk_araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebspdftotextpro.html</loc>
+    <loc>https://ebubekirbastama.com.tr/haber-ozetleyici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSPDFOkuyucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/podcast-studio.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-render-studio-pro.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_dip_ses_temizleme/video-ses-temizleme-mikser-waveform.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/vidagrade-gpu/</loc>
+    <loc>https://ebubekirbastama.com.tr/video-ses-yukseltici-ve-blur-editor.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/video-blur-studio.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_video_kesme/ebsvideototext.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-milisaniye-video-kesme-araci-duzeltilmis/video-kesme-araci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_video_kesme/ebsconverter.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_video_sestemzileme/video_renk_araci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_video_kesme/dikey_yatay.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/haber-ozetleyici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_video_kesme/ebsvidoekesme.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/podcast-studio.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsvideokesici/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_dip_ses_temizleme/video-ses-temizleme-mikser-waveform.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-video-ses-duzenleyici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/video-ses-yukseltici-ve-blur-editor.html</loc>
+    <loc>https://ebubekirbastama.com.tr/metin-seslendirme-araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_video_kesme/ebsvideototext.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSYoutubeCanl%C4%B1Yayin.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_video_kesme/ebsconverter.html</loc>
+    <loc>https://ebubekirbastama.com.tr/videodanresimcikarma.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_video_kesme/dikey_yatay.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsvideo_face_4k_zip_preview.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_video_kesme/ebsvidoekesme.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBS_Kutuphane_Otomasyonu/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsvideokesici/</loc>
+    <loc>https://ebubekirbastama.com.tr/CipherQR.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-video-ses-duzenleyici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/Ebs_Stok_Takip_Sistemi/index.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/metin-seslendirme-araci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/egitilebilir-ai-asistan.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSYoutubeCanl%C4%B1Yayin.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsgoogleprintscreen.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/videodanresimcikarma.html</loc>
+    <loc>https://ebubekirbastama.com.tr/tutanakayiklayici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsvideo_face_4k_zip_preview.html</loc>
+    <loc>https://ebubekirbastama.com.tr/tutanakayiklayicii.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/Ebs_Stok_Takip_Sistemi/index.html</loc>
+    <loc>https://ebubekirbastama.com.tr/htaccess-toplu-guncelleme-araci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/egitilebilir-ai-asistan.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsUUIDcikarici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsgoogleprintscreen.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebstakipetmeyenleribulma.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/tutanakayiklayici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsgoogleonizleme.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/tutanakayiklayicii.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebstestaraci.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/htaccess-toplu-guncelleme-araci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsiptplbanscript.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsUUIDcikarici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/code-beautifier.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebstakipetmeyenleribulma.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsregex.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsgoogleonizleme.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsformatjson.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebstestaraci.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebscodeeditor.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsiptplbanscript.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-code-viewer.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/code-beautifier.html</loc>
+    <loc>https://ebubekirbastama.com.tr/CurltoPhp/index.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsregex.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSLuhn.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsformatjson.html</loc>
+    <loc>https://ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebscodeeditor.html</loc>
+    <loc>https://ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs-code-viewer.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebshtmlclear.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/CurltoPhp/index.html</loc>
+    <loc>https://ebubekirbastama.com.tr/LinkAcici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSLuhn.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_makale_dizay.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Detayli_Decode.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebskaristirici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/urlencodedecode/Url_Encode_Decode.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebslog.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebshtmlclear.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-belge-masasi.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/LinkAcici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/metin-donusturucu.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_makale_dizay.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebswordacici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebskaristirici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsword.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebslog.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsrsslisteleyici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/metin-donusturucu.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebscsvparsertext.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebswordacici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebscsvparser.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsword.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebszipgoruntuleyici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsrsslisteleyici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EbsYoutubeAcici/EbsYoutubeAcici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebscsvparsertext.html</loc>
+    <loc>https://ebubekirbastama.com.tr/binance.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebscsvparser.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebscsvmarge.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebszipgoruntuleyici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/youtube_responsive_link_creater.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EbsYoutubeAcici/EbsYoutubeAcici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-guvenli-whatsapp/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/binance.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-live-studio/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebscsvmarge.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-WebRTC-mesajli/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/youtube_responsive_link_creater.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs-live-webrtc/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebstaray%C4%B1c%C4%B1sesikaydetme.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebstaray%C4%B1c%C4%B1sesikaydetme.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSScreenVideoSaveSound.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSScreenVideoSaveSound.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBSScreenVideoSave.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBSScreenVideoSave.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/beykoz2026/index.html</loc>
+    <loc>https://ebubekirbastama.com.tr/beykoz2026/index.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsgeciskelimeler.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsgeciskelimeler.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebssubdomaintakeover.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebssubdomaintakeover.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebskelimehesaplayici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebskelimehesaplayici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/EBS-Google-Link-Kaldirici.html</loc>
+    <loc>https://ebubekirbastama.com.tr/EBS-Google-Link-Kaldirici.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/RandomNameorSurnameCreate.html</loc>
+    <loc>https://ebubekirbastama.com.tr/RandomNameorSurnameCreate.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/taksitakip.html</loc>
+    <loc>https://ebubekirbastama.com.tr/taksitakip.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/mekke.html</loc>
+    <loc>https://ebubekirbastama.com.tr/mekke.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebstakip.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebstakip.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebsbul.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebsbul.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/darg-drop.html</loc>
+    <loc>https://ebubekirbastama.com.tr/darg-drop.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/barcode.html</loc>
+    <loc>https://ebubekirbastama.com.tr/barcode.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html</loc>
+    <loc>https://ebubekirbastama.com.tr/PursaklarToplanmaMerkezleri.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs121518.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs121518.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_assembly_egitimi/</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_assembly_egitimi/</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/ebs_assembly_egitimi/decompiler.html</loc>
+    <loc>https://ebubekirbastama.com.tr/ebs_assembly_egitimi/decompiler.html</loc>
   </url>
   <url>
-    <loc>https://www.ebubekirbastama.com.tr/CipherQR.html</loc>
+    <loc>https://ebubekirbastama.com.tr/youtube-shorts-onizleme-araci.html</loc>
   </url>
 </urlset>
