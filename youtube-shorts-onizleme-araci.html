@@ -1,0 +1,3179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Shorts Toplu Önizleme Aracı | Ebubekir Bastama</title>
+    <meta name="description" content="YouTube Shorts linklerini toplu olarak iframe ile önizleyin, videoları seçin, yönetin ve istemediğiniz bağlantıları listeden anında kaldırın.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="theme-color" content="#080b12">
+    <meta name="color-scheme" content="dark">
+
+
+    <link rel="canonical" href="https://www.ebubekirbastama.com.tr/youtube-shorts-onizleme-araci.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="Ebubekir Bastama">
+    <meta property="og:title" content="YouTube Shorts Toplu Önizleme Aracı">
+    <meta property="og:description" content="YouTube Shorts linklerini toplu olarak önizleyin, seçin ve yönetin.">
+    <meta property="og:url" content="https://www.ebubekirbastama.com.tr/youtube-shorts-onizleme-araci.html">
+
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="YouTube Shorts Toplu Önizleme Aracı">
+    <meta name="twitter:description" content="YouTube Shorts bağlantılarını toplu olarak iframe üzerinden önizleyin ve yönetin.">
+
+
+
+    <script type="application/ld+json">
+        { "@context": "https://schema.org", "@type": "WebApplication", "name": "YouTube Shorts Toplu Önizleme Aracı", "url": "https://www.ebubekirbastama.com.tr/youtube-shorts-onizleme-araci.html", "description": "YouTube Shorts bağlantılarını toplu olarak iframe
+        ile önizlemek ve yönetmek için ücretsiz web aracı.", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web", "browserRequirements": "JavaScript destekleyen modern bir web tarayıcısı", "inLanguage": "tr-TR", "isAccessibleForFree":
+        true }
+    </script>
+
+    <style>
+        :root {
+
+            --bg: #080b12;
+
+            --panel: #10141e;
+
+            --panel2: #151a26;
+
+            --panel3: #1b2130;
+
+            --panel4: #202737;
+
+            --border: rgba(255,255,255,.08);
+
+            --borderHover: rgba(255,255,255,.19);
+
+            --text: #f4f6fb;
+
+            --muted: #8e98aa;
+
+            --muted2: #626d80;
+
+            --red: #ff0033;
+
+            --redHover: #ff2149;
+
+            --blue: #557cff;
+
+            --green: #29c780;
+
+            --orange: #ff9f43;
+
+            --radius: 16px;
+
+            --grid-size: 255px;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            color: var(--text);
+
+            background:
+
+                radial-gradient(
+                    circle at 10% 0%,
+                    rgba(85,124,255,.10),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 0%,
+                    rgba(255,0,51,.08),
+                    transparent 28%
+                ),
+
+                var(--bg);
+
+            font-family:
+
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+        }
+
+
+        button,
+        input,
+        textarea {
+
+            font-family: inherit;
+        }
+
+
+        button {
+
+            user-select: none;
+        }
+
+
+        a {
+
+            color: inherit;
+        }
+
+
+   
+
+        .app {
+
+            width: min(1920px, 96%);
+
+            margin: 0 auto;
+
+            padding: 25px 0 60px;
+        }
+
+
+
+
+        .site-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .brand-logo {
+
+            width: 54px;
+
+            height: 54px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 16px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #ff1745,
+                    #c60028
+                );
+
+            box-shadow:
+
+                0 12px 35px
+                rgba(255,0,51,.24);
+
+            font-size: 25px;
+
+            font-weight: 900;
+        }
+
+
+        .brand-text h1 {
+
+            margin: 0;
+
+            font-size: 24px;
+
+            line-height: 1.15;
+
+            letter-spacing: -.5px;
+        }
+
+
+        .brand-text p {
+
+            margin:
+
+                5px 0 0;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        .domain-badge {
+
+            color: var(--muted);
+
+            background:
+
+                rgba(255,255,255,.035);
+
+            border:
+
+                1px solid var(--border);
+
+            padding:
+
+                8px 12px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+        }
+
+
+
+        .panel {
+
+            background:
+
+                rgba(16,20,30,.93);
+
+            border:
+
+                1px solid var(--border);
+
+            border-radius:
+
+                var(--radius);
+
+            box-shadow:
+
+                0 18px 50px
+                rgba(0,0,0,.24);
+
+            backdrop-filter:
+
+                blur(14px);
+        }
+
+
+
+        .input-panel {
+
+            padding: 18px;
+
+            margin-bottom: 16px;
+        }
+
+
+        .input-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .input-title {
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+
+        .input-counter {
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+
+        #urlList {
+
+            display: block;
+
+            width: 100%;
+
+            min-height: 160px;
+
+            max-height: 450px;
+
+            padding: 15px;
+
+            resize: vertical;
+
+            outline: 0;
+
+            color: #e3e7ef;
+
+            background: #090c13;
+
+            border:
+
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            font-size: 13px;
+
+            line-height: 1.55;
+
+            transition: .2s;
+        }
+
+
+        #urlList:focus {
+
+            border-color:
+
+                rgba(85,124,255,.6);
+
+            box-shadow:
+
+                0 0 0 3px
+                rgba(85,124,255,.08);
+        }
+
+
+        #urlList::placeholder {
+
+            color: #525d70;
+        }
+
+
+
+        .actions {
+
+            display: flex;
+
+            gap: 8px;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            margin-top: 13px;
+        }
+
+
+        .btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            min-height: 39px;
+
+            padding:
+
+                9px 14px;
+
+            cursor: pointer;
+
+            border-radius: 10px;
+
+            border:
+
+                1px solid transparent;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            transition: .15s;
+        }
+
+
+        .btn:hover {
+
+            transform:
+
+                translateY(-1px);
+        }
+
+
+        .btn:active {
+
+            transform:
+
+                translateY(0);
+        }
+
+
+        .btn-primary {
+
+            color: #fff;
+
+            background: var(--red);
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+
+                var(--redHover);
+        }
+
+
+        .btn-dark {
+
+            color: #e4e8f0;
+
+            background:
+
+                var(--panel3);
+
+            border-color:
+
+                var(--border);
+        }
+
+
+        .btn-dark:hover {
+
+            background:
+
+                #242c3d;
+
+            border-color:
+
+                var(--borderHover);
+        }
+
+
+        .btn-danger {
+
+            color: #ff708d;
+
+            background:
+
+                rgba(255,0,51,.11);
+
+            border-color:
+
+                rgba(255,0,51,.20);
+        }
+
+
+        .btn-danger:hover {
+
+            background:
+
+                rgba(255,0,51,.18);
+        }
+
+
+        .btn-warning {
+
+            color: #ffc581;
+
+            background:
+
+                rgba(255,159,67,.10);
+
+            border-color:
+
+                rgba(255,159,67,.18);
+        }
+
+
+        .btn:disabled {
+
+            opacity: .4;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+
+        /* =========================================================
+           TOOLBAR
+        ========================================================== */
+
+        .toolbar {
+
+            position: sticky;
+
+            top: 10px;
+
+            z-index: 100;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            flex-wrap: wrap;
+
+            padding: 11px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .stats {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-right: auto;
+
+            flex-wrap: wrap;
+        }
+
+
+        .stat {
+
+            min-height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+
+                0 11px;
+
+            color: var(--muted);
+
+            background: #090c13;
+
+            border:
+
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            font-size: 11px;
+        }
+
+
+        .stat strong {
+
+            color: #fff;
+
+            font-size: 13px;
+        }
+
+
+        .search-box {
+
+            width: 220px;
+
+            height: 38px;
+
+            outline: none;
+
+            padding:
+
+                0 12px;
+
+            color: #fff;
+
+            background: #090c13;
+
+            border:
+
+                1px solid var(--border);
+
+            border-radius: 9px;
+        }
+
+
+        .search-box:focus {
+
+            border-color:
+
+                rgba(85,124,255,.55);
+        }
+
+
+        /* =========================================================
+           VIDEO GRID
+        ========================================================== */
+
+        .video-grid {
+
+            display: grid;
+
+            grid-template-columns:
+
+                repeat(
+                    auto-fill,
+                    minmax(
+                        var(--grid-size),
+                        1fr
+                    )
+                );
+
+            gap: 16px;
+        }
+
+
+        /* =========================================================
+           VIDEO CARD
+        ========================================================== */
+
+        .video-card {
+
+            min-width: 0;
+
+            overflow: hidden;
+
+            background:
+
+                var(--panel);
+
+            border:
+
+                1px solid var(--border);
+
+            border-radius: 15px;
+
+            transition:
+
+                border-color .16s,
+                box-shadow .16s,
+                transform .16s;
+        }
+
+
+        .video-card:hover {
+
+            border-color:
+
+                var(--borderHover);
+
+            box-shadow:
+
+                0 18px 40px
+                rgba(0,0,0,.28);
+        }
+
+
+        .video-card.selected {
+
+            border-color:
+
+                rgba(255,0,51,.75);
+
+            box-shadow:
+
+                0 0 0 2px
+                rgba(255,0,51,.10);
+        }
+
+
+        .video-card.hidden {
+
+            display: none;
+        }
+
+
+        /* =========================================================
+           CARD TOP
+        ========================================================== */
+
+        .card-top {
+
+            min-height: 45px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+
+                0 10px;
+
+            background:
+
+                var(--panel2);
+
+            border-bottom:
+
+                1px solid var(--border);
+        }
+
+
+        .select-checkbox {
+
+            width: 18px;
+
+            height: 18px;
+
+            flex: 0 0 auto;
+
+            cursor: pointer;
+
+            accent-color:
+
+                var(--red);
+        }
+
+
+        .card-number {
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+
+        .short-badge {
+
+            margin-left: auto;
+
+            padding:
+
+                4px 7px;
+
+            color: #ff6d89;
+
+            background:
+
+                rgba(255,0,51,.09);
+
+            border:
+
+                1px solid
+                rgba(255,0,51,.12);
+
+            border-radius: 6px;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: .5px;
+        }
+
+
+        .icon-btn {
+
+            width: 31px;
+
+            height: 31px;
+
+            display: grid;
+
+            place-items: center;
+
+            padding: 0;
+
+            cursor: pointer;
+
+            color: var(--muted);
+
+            background:
+
+                transparent;
+
+            border: 0;
+
+            border-radius: 8px;
+
+            transition: .15s;
+        }
+
+
+        .icon-btn:hover {
+
+            color: #fff;
+
+            background:
+
+                rgba(255,255,255,.07);
+        }
+
+
+        .icon-btn.delete:hover {
+
+            color: #ff627f;
+
+            background:
+
+                rgba(255,0,51,.12);
+        }
+
+
+        /* =========================================================
+           IFRAME
+        ========================================================== */
+
+        .video-wrapper {
+
+            position: relative;
+
+            width: 100%;
+
+            aspect-ratio: 9 / 16;
+
+            background: #000;
+        }
+
+
+        .video-wrapper iframe {
+
+            display: block;
+
+            width: 100%;
+
+            height: 100%;
+
+            border: 0;
+
+            background: #000;
+        }
+
+
+        /* =========================================================
+           CARD FOOTER
+        ========================================================== */
+
+        .card-footer {
+
+            padding: 10px;
+        }
+
+
+        .video-id {
+
+            overflow: hidden;
+
+            margin-bottom: 9px;
+
+            color: var(--muted2);
+
+            font-family:
+
+                Consolas,
+                Monaco,
+                monospace;
+
+            font-size: 11px;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .card-actions {
+
+            display: grid;
+
+            grid-template-columns:
+
+                1fr 1fr;
+
+            gap: 7px;
+        }
+
+
+        .card-btn {
+
+            min-height: 35px;
+
+            padding:
+
+                5px 8px;
+
+            cursor: pointer;
+
+            color: #dce1eb;
+
+            background:
+
+                var(--panel3);
+
+            border:
+
+                1px solid var(--border);
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            transition: .15s;
+        }
+
+
+        .card-btn:hover {
+
+            background:
+
+                #252d40;
+
+            border-color:
+
+                var(--borderHover);
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================== */
+
+        .empty-state {
+
+            min-height: 270px;
+
+            display: grid;
+
+            place-items: center;
+
+            text-align: center;
+
+            padding: 30px;
+
+            color: var(--muted);
+
+            border:
+
+                1px dashed
+                rgba(255,255,255,.13);
+
+            border-radius:
+
+                var(--radius);
+        }
+
+
+        .empty-state .icon {
+
+            margin-bottom: 10px;
+
+            font-size: 45px;
+        }
+
+
+        .empty-state h2 {
+
+            margin:
+
+                0 0 7px;
+
+            color: #e7ebf4;
+
+            font-size: 19px;
+        }
+
+
+        .empty-state p {
+
+            max-width: 550px;
+
+            margin: 0;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           SEO CONTENT
+        ========================================================== */
+
+        .seo-content {
+
+            margin-top: 45px;
+
+            padding: 25px;
+        }
+
+
+        .seo-content h2 {
+
+            margin-top: 0;
+
+            font-size: 20px;
+        }
+
+
+        .seo-content h3 {
+
+            margin:
+
+                25px 0 8px;
+
+            font-size: 16px;
+        }
+
+
+        .seo-content p {
+
+            max-width: 950px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.75;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================== */
+
+        footer {
+
+            margin-top: 30px;
+
+            padding:
+
+                20px 5px;
+
+            text-align: center;
+
+            color: #596477;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           TOAST
+        ========================================================== */
+
+        .toast {
+
+            position: fixed;
+
+            right: 23px;
+
+            bottom: 23px;
+
+            z-index: 9999;
+
+            min-width: 220px;
+
+            max-width: 400px;
+
+            padding:
+
+                12px 15px;
+
+            color: #fff;
+
+            background:
+
+                #1b2130;
+
+            border:
+
+                1px solid var(--border);
+
+            border-radius: 11px;
+
+            box-shadow:
+
+                0 18px 45px
+                rgba(0,0,0,.45);
+
+            font-size: 12px;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transform:
+
+                translateY(15px);
+
+            transition: .22s;
+        }
+
+
+        .toast.show {
+
+            opacity: 1;
+
+            transform:
+
+                translateY(0);
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================== */
+
+        @media (max-width: 900px) {
+
+            .domain-badge {
+                display: none;
+            }
+
+
+            .toolbar {
+                position: static;
+            }
+
+
+            .search-box {
+
+                order: 20;
+
+                width: 100%;
+            }
+
+
+            :root {
+                --grid-size: 210px;
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .app {
+
+                width: 97%;
+
+                padding-top: 15px;
+            }
+
+
+            .brand-logo {
+
+                width: 46px;
+
+                height: 46px;
+
+                border-radius: 13px;
+            }
+
+
+            .brand-text h1 {
+
+                font-size: 18px;
+            }
+
+
+            .brand-text p {
+
+                font-size: 11px;
+            }
+
+
+            :root {
+
+                --grid-size: 160px;
+            }
+
+
+            .video-grid {
+
+                gap: 8px;
+            }
+
+
+            .card-actions {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .btn {
+
+                padding:
+
+                    9px 10px;
+            }
+
+
+            .seo-content {
+
+                padding: 18px;
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <noscript>
+
+        <div style="
+        padding:20px;
+        background:#7f001b;
+        color:white;
+        text-align:center;
+        font-family:Arial,sans-serif;
+    ">
+            Bu aracın çalışabilmesi için JavaScript etkin olmalıdır.
+        </div>
+
+    </noscript>
+
+
+
+    <div class="app">
+
+
+        <!-- =========================================================
+         HEADER
+    ========================================================== -->
+
+        <header class="site-header">
+
+            <div class="brand">
+
+                <div class="brand-logo">
+                    ▶
+                </div>
+
+                <div class="brand-text">
+
+                    <h1>
+                    YouTube Shorts Toplu Önizleme
+                </h1>
+
+                    <p>
+                        Linklerinizi toplu görüntüleyin ve yönetin
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="domain-badge">
+
+                ebubekirbastama.com.tr
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+        <main>
+
+
+            <!-- =====================================================
+             URL GİRİŞ PANELİ
+        ====================================================== -->
+
+            <section class="panel input-panel" aria-label="YouTube Shorts URL listesi">
+
+                <div class="input-header">
+
+                    <div class="input-title">
+
+                        YouTube URL Listesi
+
+                    </div>
+
+
+                    <div class="input-counter" id="lineCount">
+
+                        0 bağlantı
+
+                    </div>
+
+                </div>
+
+
+                <textarea id="urlList" spellcheck="false" aria-label="YouTube Shorts URL listesi" placeholder="YouTube Shorts linklerini alt alta yapıştırın...
+
+https://www.youtube.com/shorts/FcUwTkGu_Z8
+https://www.youtube.com/shorts/DbcxrGzKTiE
+https://www.youtube.com/shorts/M-xlsRPRB5s"></textarea>
+
+
+                <div class="actions">
+
+
+                    <button type="button" class="btn btn-primary" onclick="createPreview()">
+
+                        ▶ Önizlemeleri Oluştur
+
+                    </button>
+
+
+                    <button type="button" class="btn btn-dark" id="selectAllButton" onclick="toggleSelectAll()">
+
+                        ☑ Tümünü Seç
+
+                    </button>
+
+
+                    <button type="button" class="btn btn-dark" onclick="clearSelection()">
+
+                        □ Seçimi Kaldır
+
+                    </button>
+
+
+                    <button type="button" class="btn btn-danger" id="removeSelectedButton" onclick="removeSelected()" disabled>
+
+                        🗑 Seçilenleri Sil
+
+                    </button>
+
+
+                    <button type="button" class="btn btn-warning" onclick="stopAllVideos()">
+
+                        ■ Videoları Durdur
+
+                    </button>
+
+
+                    <button type="button" class="btn btn-dark" onclick="clearAll()">
+
+                        ✕ Listeyi Temizle
+
+                    </button>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =====================================================
+             TOOLBAR
+        ====================================================== -->
+
+            <section class="panel toolbar" aria-label="Video araç çubuğu">
+
+
+                <div class="stats">
+
+
+                    <div class="stat">
+
+                        Video
+
+                        <strong id="videoCount">
+                        0
+                    </strong>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        Seçili
+
+                        <strong id="selectedCount">
+                        0
+                    </strong>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        Görünen
+
+                        <strong id="visibleCount">
+                        0
+                    </strong>
+
+                    </div>
+
+
+                </div>
+
+
+                <input type="search" id="searchInput" class="search-box" placeholder="Video ID veya URL ara..." aria-label="Videolarda ara" oninput="filterVideos()">
+
+
+                <button type="button" class="btn btn-dark" onclick="setGridSize('small')">
+
+                    ▦ Küçük
+
+                </button>
+
+
+                <button type="button" class="btn btn-dark" onclick="setGridSize('medium')">
+
+                    ▦ Orta
+
+                </button>
+
+
+                <button type="button" class="btn btn-dark" onclick="setGridSize('large')">
+
+                    ▦ Büyük
+
+                </button>
+
+
+            </section>
+
+
+
+            <!-- =====================================================
+             VIDEO LISTESI
+        ====================================================== -->
+
+            <section id="videoGrid" class="video-grid" aria-live="polite"></section>
+
+
+
+            <!-- =====================================================
+             EMPTY STATE
+        ====================================================== -->
+
+            <section id="emptyState" class="empty-state">
+
+                <div>
+
+                    <div class="icon">
+
+                        🎬
+
+                    </div>
+
+                    <h2>
+
+                    Henüz video eklenmedi
+
+                </h2>
+
+                    <p>
+
+                        YouTube Shorts bağlantılarınızı yukarıdaki alana alt alta yapıştırın ve "Önizlemeleri Oluştur" butonuna basın.
+
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =====================================================
+             SEO İÇERİĞİ
+        ====================================================== -->
+
+            <section class="panel seo-content">
+
+                <h2>
+                YouTube Shorts Toplu Önizleme Aracı
+            </h2>
+
+                <p>
+
+                    Bu araç, çok sayıda YouTube Shorts bağlantısını tek bir ekranda toplu olarak görüntülemek için hazırlanmıştır. YouTube Shorts URL'lerini alt alta yapıştırarak videoları dikey iframe görünümünde hızlı şekilde inceleyebilirsiniz.
+
+                </p>
+
+
+                <h3>
+                Toplu Shorts bağlantıları nasıl görüntülenir?
+            </h3>
+
+                <p>
+
+                    YouTube Shorts bağlantılarını URL alanına her satırda bir bağlantı olacak şekilde ekleyin. Önizlemeleri oluşturduğunuzda geçerli bağlantılar otomatik olarak algılanır ve video kartları halinde ekrana getirilir.
+
+                </p>
+
+
+                <h3>
+                Videoları listeden kaldırma
+            </h3>
+
+                <p>
+
+                    İstemediğiniz videoları tek tek silebilir veya birden fazla videoyu seçerek toplu kaldırma işlemi yapabilirsiniz. Bir video kaldırıldığında ilgili URL de bağlantı listesinden eş zamanlı olarak silinir. Diğer açık videolar yeniden yüklenmez.
+
+                </p>
+
+            </section>
+
+
+        </main>
+
+
+
+        <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+        <footer>
+
+            YouTube Shorts Toplu Önizleme Aracı · ebubekirbastama.com.tr
+
+        </footer>
+
+
+    </div>
+
+
+
+    <!-- =============================================================
+     TOAST
+============================================================== -->
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+
+
+    <script>
+        "use strict";
+        
+        
+        /* ==============================================================
+           STATE
+        ============================================================== */
+        
+        let videos = [];
+        
+        let selectedVideos = new Set();
+        
+        
+        const STORAGE_KEY =
+            "youtubeShortsPreviewLinksV3";
+        
+        
+        const GRID_STORAGE_KEY =
+            "youtubeShortsGridSizeV3";
+        
+        
+        
+        /* ==============================================================
+           YOUTUBE VIDEO ID BUL
+        ============================================================== */
+        
+        function getYouTubeID(url) {
+        
+            if (!url) {
+                return null;
+            }
+        
+        
+            const value =
+                url.trim();
+        
+        
+            const patterns = [
+        
+                /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/i,
+        
+                /youtube\.com\/watch\?.*?[?&]?v=([a-zA-Z0-9_-]{11})/i,
+        
+                /youtu\.be\/([a-zA-Z0-9_-]{11})/i,
+        
+                /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/i
+        
+            ];
+        
+        
+            for (const pattern of patterns) {
+        
+                const match =
+                    value.match(pattern);
+        
+        
+                if (match) {
+        
+                    return match[1];
+        
+                }
+        
+            }
+        
+        
+            return null;
+        }
+        
+        
+        
+        /* ==============================================================
+           TEXTAREA -> VIDEOS
+        ============================================================== */
+        
+        function parseURLs() {
+        
+            const textarea =
+                document.getElementById("urlList");
+        
+        
+            const lines =
+                textarea.value
+                    .split(/\r?\n/)
+                    .map(
+                        line =>
+                            line.trim()
+                    )
+                    .filter(Boolean);
+        
+        
+            const found = [];
+        
+            const usedIDs =
+                new Set();
+        
+        
+            lines.forEach(url => {
+        
+                const id =
+                    getYouTubeID(url);
+        
+        
+                if (!id) {
+                    return;
+                }
+        
+        
+                /*
+                 * Aynı video farklı URL formatlarında
+                 * birden fazla kez eklenmiş olabilir.
+                 */
+        
+                if (usedIDs.has(id)) {
+                    return;
+                }
+        
+        
+                usedIDs.add(id);
+        
+        
+                /*
+                 * Kullanıcının yazdığı URL'yi koruyoruz.
+                 *
+                 * Böylece silme sonrasında textarea
+                 * kullanıcının orijinal URL biçimini korur.
+                 */
+        
+                found.push({
+        
+                    id: id,
+        
+                    url: url
+        
+                });
+        
+            });
+        
+        
+            return found;
+        }
+        
+        
+        
+        /* ==============================================================
+           ÖNİZLEMELERİ OLUŞTUR
+        
+           Bu işlem kullanıcı özellikle butona bastığında
+           tüm grid'i yeniden oluşturabilir.
+        
+           Silme işlemlerinde bu fonksiyon ÇAĞRILMAZ.
+        ============================================================== */
+        
+        function createPreview() {
+        
+            videos =
+                parseURLs();
+        
+        
+            selectedVideos.clear();
+        
+        
+            /*
+             * URL listesindeki geçersiz ve tekrar eden
+             * bağlantıları temizleyip senkronize ediyoruz.
+             */
+        
+            syncTextarea();
+        
+        
+            renderInitialVideos();
+        
+        
+            saveLinks();
+        
+        
+            showToast(
+                videos.length +
+                " video önizlemeye hazırlandı."
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           İLK RENDER
+        
+           Yalnızca:
+           - Önizlemeleri Oluştur
+           - Sayfa ilk açılışı
+        
+           sırasında kullanılır.
+        ============================================================== */
+        
+        function renderInitialVideos() {
+        
+            const grid =
+                document.getElementById(
+                    "videoGrid"
+                );
+        
+        
+            grid.innerHTML = "";
+        
+        
+            videos.forEach(
+                (video, index) => {
+        
+                    const card =
+                        createVideoCard(
+                            video,
+                            index
+                        );
+        
+        
+                    grid.appendChild(
+                        card
+                    );
+        
+                }
+            );
+        
+        
+            updateEmptyState();
+        
+            updateStats();
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TEK VIDEO KARTI OLUŞTUR
+        ============================================================== */
+        
+        function createVideoCard(
+            video,
+            index
+        ) {
+        
+            const article =
+                document.createElement(
+                    "article"
+                );
+        
+        
+            article.className =
+                "video-card";
+        
+        
+            article.dataset.id =
+                video.id;
+        
+        
+            article.dataset.url =
+                video.url;
+        
+        
+            /*
+             * Privacy-enhanced YouTube embed.
+             *
+             * enablejsapi=1:
+             * videoları yeniden yüklemeden
+             * stopVideo komutu gönderebilmemizi sağlar.
+             */
+        
+            const embedURL =
+        
+                "https://www.youtube-nocookie.com/embed/" +
+        
+                encodeURIComponent(
+                    video.id
+                ) +
+        
+                "?rel=0" +
+        
+                "&playsinline=1" +
+        
+                "&enablejsapi=1";
+        
+        
+            /*
+             * Video ID sadece izin verilen YouTube
+             * karakterlerinden geldiği için HTML içine
+             * güvenli şekilde eklenebilir.
+             */
+        
+            article.innerHTML = `
+        
+                <div class="card-top">
+        
+                    <input
+                        type="checkbox"
+                        class="select-checkbox"
+                        aria-label="Videoyu seç"
+                    >
+        
+                    <span class="card-number">
+                        #${index + 1}
+                    </span>
+        
+                    <span class="short-badge">
+                        SHORT
+                    </span>
+        
+                    <button
+                        type="button"
+                        class="icon-btn delete"
+                        title="Videoyu listeden kaldır"
+                        aria-label="Videoyu listeden kaldır"
+                    >
+                        🗑
+                    </button>
+        
+                </div>
+        
+        
+                <div class="video-wrapper">
+        
+                    <iframe
+                        src="${embedURL}"
+                        title="YouTube Shorts video ${index + 1}"
+                        loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allow="
+                            accelerometer;
+                            autoplay;
+                            clipboard-write;
+                            encrypted-media;
+                            gyroscope;
+                            picture-in-picture;
+                            web-share
+                        "
+                        allowfullscreen
+                    ></iframe>
+        
+                </div>
+        
+        
+                <div class="card-footer">
+        
+                    <div
+                        class="video-id"
+                        title="${video.id}"
+                    >
+                        ${video.id}
+                    </div>
+        
+        
+                    <div class="card-actions">
+        
+                        <button
+                            type="button"
+                            class="card-btn open-youtube"
+                        >
+                            ▶ YouTube'da Aç
+                        </button>
+        
+        
+                        <button
+                            type="button"
+                            class="card-btn copy-link"
+                        >
+                            ⧉ Linki Kopyala
+                        </button>
+        
+                    </div>
+        
+                </div>
+            `;
+        
+        
+            /*
+             * Checkbox
+             */
+        
+            const checkbox =
+                article.querySelector(
+                    ".select-checkbox"
+                );
+        
+        
+            checkbox.addEventListener(
+                "change",
+                function() {
+        
+                    toggleSelection(
+                        video.id,
+                        checkbox.checked
+                    );
+        
+                }
+            );
+        
+        
+            /*
+             * Tek video sil
+             */
+        
+            article
+                .querySelector(
+                    ".delete"
+                )
+                .addEventListener(
+                    "click",
+                    function() {
+        
+                        removeVideo(
+                            video.id
+                        );
+        
+                    }
+                );
+        
+        
+            /*
+             * YouTube
+             */
+        
+            article
+                .querySelector(
+                    ".open-youtube"
+                )
+                .addEventListener(
+                    "click",
+                    function() {
+        
+                        openVideo(
+                            video.id
+                        );
+        
+                    }
+                );
+        
+        
+            /*
+             * Link kopyala
+             */
+        
+            article
+                .querySelector(
+                    ".copy-link"
+                )
+                .addEventListener(
+                    "click",
+                    function() {
+        
+                        copyURL(
+                            video.id
+                        );
+        
+                    }
+                );
+        
+        
+            return article;
+        }
+        
+        
+        
+        /* ==============================================================
+           TEK VIDEO SEÇ
+        ============================================================== */
+        
+        function toggleSelection(
+            id,
+            checked
+        ) {
+        
+            if (checked) {
+        
+                selectedVideos.add(
+                    id
+                );
+        
+            } else {
+        
+                selectedVideos.delete(
+                    id
+                );
+        
+            }
+        
+        
+            const card =
+                getCardByID(id);
+        
+        
+            if (card) {
+        
+                card.classList.toggle(
+                    "selected",
+                    checked
+                );
+        
+            }
+        
+        
+            updateStats();
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TÜMÜNÜ SEÇ / SEÇİMİ KALDIR
+        
+           ÖNEMLİ:
+           renderInitialVideos() çağrılmaz.
+        
+           Iframe'ler olduğu yerde kalır.
+        ============================================================== */
+        
+        function toggleSelectAll() {
+        
+            if (videos.length === 0) {
+                return;
+            }
+        
+        
+            const shouldSelect =
+                selectedVideos.size !==
+                videos.length;
+        
+        
+            if (shouldSelect) {
+        
+                videos.forEach(
+                    video => {
+        
+                        selectedVideos.add(
+                            video.id
+                        );
+        
+                    }
+                );
+        
+            } else {
+        
+                selectedVideos.clear();
+        
+            }
+        
+        
+            document
+                .querySelectorAll(
+                    ".video-card"
+                )
+                .forEach(card => {
+        
+                    const id =
+                        card.dataset.id;
+        
+        
+                    const checkbox =
+                        card.querySelector(
+                            ".select-checkbox"
+                        );
+        
+        
+                    const selected =
+                        selectedVideos.has(id);
+        
+        
+                    checkbox.checked =
+                        selected;
+        
+        
+                    card.classList.toggle(
+                        "selected",
+                        selected
+                    );
+        
+                });
+        
+        
+            updateStats();
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           SEÇİMİ TEMİZLE
+        
+           IFRAME'LER DEĞİŞMEZ
+        ============================================================== */
+        
+        function clearSelection() {
+        
+            selectedVideos.clear();
+        
+        
+            document
+                .querySelectorAll(
+                    ".video-card"
+                )
+                .forEach(card => {
+        
+                    card.classList.remove(
+                        "selected"
+                    );
+        
+        
+                    const checkbox =
+                        card.querySelector(
+                            ".select-checkbox"
+                        );
+        
+        
+                    if (checkbox) {
+        
+                        checkbox.checked =
+                            false;
+        
+                    }
+        
+                });
+        
+        
+            updateStats();
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TEK VIDEO SİL
+        
+           KRİTİK NOKTA:
+           Grid yeniden oluşturulmuyor.
+        
+           Yalnızca bu karta ait DOM elemanı kaldırılır.
+        ============================================================== */
+        
+        function removeVideo(id) {
+        
+            /*
+             * State'ten kaldır
+             */
+        
+            videos =
+                videos.filter(
+                    video =>
+                        video.id !== id
+                );
+        
+        
+            selectedVideos.delete(
+                id
+            );
+        
+        
+            /*
+             * SADECE ilgili kartı kaldır.
+             *
+             * Diğer iframe'lere hiçbir işlem yapılmaz.
+             */
+        
+            const card =
+                getCardByID(id);
+        
+        
+            if (card) {
+        
+                card.remove();
+        
+            }
+        
+        
+            /*
+             * URL textarea senkronizasyonu
+             */
+        
+            syncTextarea();
+        
+        
+            /*
+             * Kart sıra numaralarını güncelle
+             */
+        
+            updateCardNumbers();
+        
+        
+            /*
+             * Sayaç / boş ekran
+             */
+        
+            updateEmptyState();
+        
+            updateStats();
+        
+        
+            /*
+             * Tarayıcı kaydı
+             */
+        
+            saveLinks();
+        
+        
+            showToast(
+                "Video listeden kaldırıldı."
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           SEÇİLENLERİ TOPLU SİL
+        
+           YALNIZCA seçilen DOM kartları kaldırılır.
+        
+           Kalan iframe'ler yeniden oluşturulmaz.
+        ============================================================== */
+        
+        function removeSelected() {
+        
+            if (
+                selectedVideos.size === 0
+            ) {
+        
+                return;
+        
+            }
+        
+        
+            const idsToRemove =
+                new Set(
+                    selectedVideos
+                );
+        
+        
+            const removedCount =
+                idsToRemove.size;
+        
+        
+            /*
+             * State
+             */
+        
+            videos =
+                videos.filter(
+                    video =>
+                        !idsToRemove.has(
+                            video.id
+                        )
+                );
+        
+        
+            /*
+             * SADECE seçilen kartları kaldır.
+             */
+        
+            idsToRemove.forEach(id => {
+        
+                const card =
+                    getCardByID(id);
+        
+        
+                if (card) {
+        
+                    card.remove();
+        
+                }
+        
+            });
+        
+        
+            selectedVideos.clear();
+        
+        
+            syncTextarea();
+        
+        
+            updateCardNumbers();
+        
+        
+            updateEmptyState();
+        
+        
+            updateStats();
+        
+        
+            saveLinks();
+        
+        
+            showToast(
+        
+                removedCount +
+        
+                " video listeden kaldırıldı."
+        
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           ID İLE KART BUL
+        ============================================================== */
+        
+        function getCardByID(id) {
+        
+            /*
+             * Video ID sadece:
+             * A-Z
+             * a-z
+             * 0-9
+             * _
+             * -
+             *
+             * içerdiği için selector güvenlidir.
+             */
+        
+            return document.querySelector(
+        
+                '.video-card[data-id="' +
+        
+                id +
+        
+                '"]'
+        
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           KART NUMARALARINI DÜZELT
+        
+           #1
+           #2
+           #4
+        
+           gibi kalmasın.
+        ============================================================== */
+        
+        function updateCardNumbers() {
+        
+            const cards =
+                document.querySelectorAll(
+                    ".video-card"
+                );
+        
+        
+            cards.forEach(
+                (card, index) => {
+        
+                    const number =
+                        card.querySelector(
+                            ".card-number"
+                        );
+        
+        
+                    if (number) {
+        
+                        number.textContent =
+                            "#" +
+                            (index + 1);
+        
+                    }
+        
+                }
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TEXTAREA SENKRONİZASYONU
+        ============================================================== */
+        
+        function syncTextarea() {
+        
+            const textarea =
+                document.getElementById(
+                    "urlList"
+                );
+        
+        
+            textarea.value =
+        
+                videos
+                    .map(
+                        video =>
+                            video.url
+                    )
+                    .join("\n");
+        
+        
+            updateLineCount();
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           URL SAYACI
+        ============================================================== */
+        
+        function updateLineCount() {
+        
+            const textarea =
+                document.getElementById(
+                    "urlList"
+                );
+        
+        
+            const count =
+        
+                textarea.value
+                    .split(/\r?\n/)
+                    .filter(
+                        line =>
+                            line.trim()
+                    )
+                    .length;
+        
+        
+            document.getElementById(
+                "lineCount"
+            ).textContent =
+        
+                count +
+        
+                " bağlantı";
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           ARAMA / FİLTRE
+        ============================================================== */
+        
+        function filterVideos() {
+        
+            const input =
+                document.getElementById(
+                    "searchInput"
+                );
+        
+        
+            const query =
+                input.value
+                    .trim()
+                    .toLowerCase();
+        
+        
+            const cards =
+                document.querySelectorAll(
+                    ".video-card"
+                );
+        
+        
+            let visibleCount = 0;
+        
+        
+            cards.forEach(card => {
+        
+                const id =
+                    (
+                        card.dataset.id ||
+                        ""
+                    )
+                    .toLowerCase();
+        
+        
+                const url =
+                    (
+                        card.dataset.url ||
+                        ""
+                    )
+                    .toLowerCase();
+        
+        
+                const visible =
+        
+                    !query ||
+        
+                    id.includes(query) ||
+        
+                    url.includes(query);
+        
+        
+                card.classList.toggle(
+                    "hidden",
+                    !visible
+                );
+        
+        
+                if (visible) {
+        
+                    visibleCount++;
+        
+                }
+        
+            });
+        
+        
+            document.getElementById(
+                "visibleCount"
+            ).textContent =
+                visibleCount;
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           İSTATİSTİKLER
+        ============================================================== */
+        
+        function updateStats() {
+        
+            document.getElementById(
+                "videoCount"
+            ).textContent =
+                videos.length;
+        
+        
+            document.getElementById(
+                "selectedCount"
+            ).textContent =
+                selectedVideos.size;
+        
+        
+            document.getElementById(
+                "removeSelectedButton"
+            ).disabled =
+        
+                selectedVideos.size === 0;
+        
+        
+            const selectButton =
+                document.getElementById(
+                    "selectAllButton"
+                );
+        
+        
+            if (
+                videos.length > 0 &&
+                selectedVideos.size ===
+                videos.length
+            ) {
+        
+                selectButton.textContent =
+                    "☐ Tüm Seçimi Kaldır";
+        
+            } else {
+        
+                selectButton.textContent =
+                    "☑ Tümünü Seç";
+        
+            }
+        
+        
+            /*
+             * Arama sonucundaki görünür sayısını
+             * tekrar hesapla.
+             */
+        
+            filterVideos();
+        
+        
+            updateLineCount();
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           BOŞ EKRAN
+        ============================================================== */
+        
+        function updateEmptyState() {
+        
+            const empty =
+                document.getElementById(
+                    "emptyState"
+                );
+        
+        
+            if (
+                videos.length === 0
+            ) {
+        
+                empty.style.display =
+                    "grid";
+        
+            } else {
+        
+                empty.style.display =
+                    "none";
+        
+            }
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           YOUTUBE'DA AÇ
+        ============================================================== */
+        
+        function openVideo(id) {
+        
+            const url =
+        
+                "https://www.youtube.com/shorts/" +
+        
+                encodeURIComponent(id);
+        
+        
+            window.open(
+                url,
+                "_blank",
+                "noopener,noreferrer"
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           LINK KOPYALA
+        ============================================================== */
+        
+        async function copyURL(id) {
+        
+            const video =
+                videos.find(
+                    item =>
+                        item.id === id
+                );
+        
+        
+            if (!video) {
+                return;
+            }
+        
+        
+            const url =
+                video.url;
+        
+        
+            try {
+        
+                await navigator.clipboard
+                    .writeText(url);
+        
+        
+                showToast(
+                    "Video bağlantısı kopyalandı."
+                );
+        
+            } catch (error) {
+        
+                /*
+                 * HTTP ortamlarında clipboard API
+                 * çalışmazsa fallback.
+                 */
+        
+                const temp =
+                    document.createElement(
+                        "textarea"
+                    );
+        
+        
+                temp.value =
+                    url;
+        
+        
+                temp.style.position =
+                    "fixed";
+        
+        
+                temp.style.opacity =
+                    "0";
+        
+        
+                document.body.appendChild(
+                    temp
+                );
+        
+        
+                temp.select();
+        
+        
+                document.execCommand(
+                    "copy"
+                );
+        
+        
+                temp.remove();
+        
+        
+                showToast(
+                    "Video bağlantısı kopyalandı."
+                );
+        
+            }
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TÜM VİDEOLARI DURDUR
+        
+           IFRAME RELOAD YAPILMAZ.
+        
+           YouTube iframe API'ye stopVideo komutu gönderilir.
+        ============================================================== */
+        
+        function stopAllVideos() {
+        
+            const frames =
+                document.querySelectorAll(
+                    ".video-card iframe"
+                );
+        
+        
+            const command =
+                JSON.stringify({
+        
+                    event:
+                        "command",
+        
+                    func:
+                        "stopVideo",
+        
+                    args:
+                        ""
+        
+                });
+        
+        
+            frames.forEach(frame => {
+        
+                try {
+        
+                    frame.contentWindow
+                        .postMessage(
+                            command,
+                            "https://www.youtube-nocookie.com"
+                        );
+        
+                } catch (error) {
+        
+                    console.warn(
+                        "Video durdurulamadı:",
+                        error
+                    );
+        
+                }
+        
+            });
+        
+        
+            showToast(
+                "Videolara durdurma komutu gönderildi."
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TÜM LİSTEYİ TEMİZLE
+        ============================================================== */
+        
+        function clearAll() {
+        
+            if (
+                videos.length === 0 &&
+                !document
+                    .getElementById(
+                        "urlList"
+                    )
+                    .value
+                    .trim()
+            ) {
+        
+                return;
+        
+            }
+        
+        
+            const confirmed =
+                window.confirm(
+                    "Tüm video listesini temizlemek istediğinize emin misiniz?"
+                );
+        
+        
+            if (!confirmed) {
+        
+                return;
+        
+            }
+        
+        
+            videos = [];
+        
+            selectedVideos.clear();
+        
+        
+            /*
+             * Kullanıcı tüm listeyi silmek istediği için
+             * tüm iframe'lerin kaldırılması normal.
+             */
+        
+            document.getElementById(
+                "videoGrid"
+            ).innerHTML = "";
+        
+        
+            document.getElementById(
+                "urlList"
+            ).value = "";
+        
+        
+            document.getElementById(
+                "searchInput"
+            ).value = "";
+        
+        
+            localStorage.removeItem(
+                STORAGE_KEY
+            );
+        
+        
+            updateEmptyState();
+        
+            updateStats();
+        
+        
+            showToast(
+                "Tüm liste temizlendi."
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           GRID BOYUTU
+        ============================================================== */
+        
+        function setGridSize(size) {
+        
+            let value =
+                "255px";
+        
+        
+            if (
+                size === "small"
+            ) {
+        
+                value =
+                    "185px";
+        
+            }
+        
+        
+            if (
+                size === "medium"
+            ) {
+        
+                value =
+                    "255px";
+        
+            }
+        
+        
+            if (
+                size === "large"
+            ) {
+        
+                value =
+                    "340px";
+        
+            }
+        
+        
+            document
+                .documentElement
+                .style
+                .setProperty(
+                    "--grid-size",
+                    value
+                );
+        
+        
+            localStorage.setItem(
+                GRID_STORAGE_KEY,
+                value
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           LOCAL STORAGE
+        ============================================================== */
+        
+        function saveLinks() {
+        
+            const links =
+                videos.map(
+                    video =>
+                        video.url
+                );
+        
+        
+            localStorage.setItem(
+        
+                STORAGE_KEY,
+        
+                JSON.stringify(
+                    links
+                )
+        
+            );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           SAYFA AÇILINCA ESKİ LİSTEYİ YÜKLE
+        ============================================================== */
+        
+        function loadSavedLinks() {
+        
+            try {
+        
+                const raw =
+                    localStorage.getItem(
+                        STORAGE_KEY
+                    );
+        
+        
+                if (!raw) {
+                    return;
+                }
+        
+        
+                const saved =
+                    JSON.parse(raw);
+        
+        
+                if (
+                    !Array.isArray(saved) ||
+                    saved.length === 0
+                ) {
+        
+                    return;
+        
+                }
+        
+        
+                document.getElementById(
+                    "urlList"
+                ).value =
+                    saved.join("\n");
+        
+        
+                videos =
+                    parseURLs();
+        
+        
+                renderInitialVideos();
+        
+            } catch (error) {
+        
+                console.warn(
+                    "Kayıtlı liste yüklenemedi:",
+                    error
+                );
+        
+            }
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           GRID AYARINI YÜKLE
+        ============================================================== */
+        
+        function loadGridSize() {
+        
+            const value =
+                localStorage.getItem(
+                    GRID_STORAGE_KEY
+                );
+        
+        
+            if (!value) {
+                return;
+            }
+        
+        
+            document
+                .documentElement
+                .style
+                .setProperty(
+                    "--grid-size",
+                    value
+                );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TOAST
+        ============================================================== */
+        
+        let toastTimer =
+            null;
+        
+        
+        function showToast(message) {
+        
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+        
+        
+            toast.textContent =
+                message;
+        
+        
+            toast.classList.add(
+                "show"
+            );
+        
+        
+            clearTimeout(
+                toastTimer
+            );
+        
+        
+            toastTimer =
+                setTimeout(
+                    function() {
+        
+                        toast.classList.remove(
+                            "show"
+                        );
+        
+                    },
+                    2200
+                );
+        
+        }
+        
+        
+        
+        /* ==============================================================
+           TEXTAREA INPUT
+        ============================================================== */
+        
+        document
+            .getElementById(
+                "urlList"
+            )
+            .addEventListener(
+                "input",
+                updateLineCount
+            );
+        
+        
+        
+        /* ==============================================================
+           BAŞLANGIÇ
+        ============================================================== */
+        
+        loadGridSize();
+        
+        loadSavedLinks();
+        
+        updateLineCount();
+        
+        updateEmptyState();
+        
+        updateStats();
+    </script>
+
+
+</body>
+
+</html>
