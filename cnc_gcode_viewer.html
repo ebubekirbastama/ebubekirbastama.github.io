@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="tr" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Online CNC G-code Görüntüleyici | TAP, NC ve GCODE Viewer</title>
+
+  <meta name="description" content="TAP, NC, GCODE, CNC ve TXT dosyalarındaki CNC takım yollarını tarayıcıda ücretsiz görüntüleyin. G0, G1, G2, G3 hareketlerini, çalışma alanını ve Z aralığını analiz edin.">
+  <meta name="keywords" content="CNC G-code görüntüleyici, G-code viewer, TAP viewer, NC viewer, CNC takım yolu, G0 G1 G2 G3, online G-code görüntüleyici, CNC program görüntüleyici">
+  <meta name="author" content="Ebubekir Bastama">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="theme-color" content="#0a0f16">
+  <meta name="application-name" content="CNC G-code Görüntüleyici">
+  <meta name="apple-mobile-web-app-title" content="G-code Viewer">
+
+  <link rel="canonical" href="https://www.ebubekirbastama.com.tr/">
+
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ebubekir Bastama">
+  <meta property="og:title" content="Online CNC G-code Görüntüleyici">
+  <meta property="og:description" content="TAP, NC, GCODE, CNC ve TXT dosyalarındaki takım yollarını doğrudan tarayıcıda görüntüleyin ve analiz edin.">
+  <meta property="og:url" content="https://www.ebubekirbastama.com.tr/">
+  <meta property="og:image" content="https://www.ebubekirbastama.com.tr/og-cnc-gcode-viewer.jpg">
+  <meta property="og:image:alt" content="Online CNC G-code Görüntüleyici">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Online CNC G-code Görüntüleyici">
+  <meta name="twitter:description" content="CNC takım yollarını tarayıcıda ücretsiz görüntüleyin. TAP, NC, GCODE, CNC ve TXT desteği.">
+  <meta name="twitter:image" content="https://www.ebubekirbastama.com.tr/og-cnc-gcode-viewer.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Online CNC G-code Görüntüleyici",
+    "url": "https://www.ebubekirbastama.com.tr/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "browserRequirements": "JavaScript destekli modern web tarayıcısı",
+    "inLanguage": "tr-TR",
+    "description": "TAP, NC, GCODE, CNC ve TXT dosyalarındaki CNC takım yollarını tarayıcıda görüntülemek için ücretsiz web uygulaması.",
+    "author": {
+      "@type": "Person",
+      "name": "Ebubekir Bastama",
+      "url": "https://www.ebubekirbastama.com.tr/"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "TRY"
+    },
+    "featureList": [
+      "TAP, NC, GCODE, CNC ve TXT dosya desteği",
+      "G0 hızlı hareket gösterimi",
+      "G1, G2 ve G3 kesim yolu gösterimi",
+      "Yakınlaştırma ve sürükleme",
+      "Çalışma alanı ölçümü",
+      "Z aralığı analizi"
+    ]
+  }
+  </script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#090d13;
+      --surface:#101722;
+      --surface-2:#151e2b;
+      --surface-3:#0c121b;
+      --border:#243244;
+      --text:#e9eef5;
+      --muted:#8fa0b5;
+      --gold:#f0c75e;
+      --gold-2:#ffd978;
+      --rapid:#6f7f92;
+      --danger:#ff6b6b;
+      --shadow:0 18px 50px rgba(0,0,0,.28);
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(240,199,94,.08), transparent 30%),
+        linear-gradient(180deg,#0a0f16,#080c11);
+      color:var(--text);
+      font-family:Inter,Segoe UI,system-ui,-apple-system,sans-serif;
+      overflow:hidden;
+    }
+
+    .app-shell{
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .topbar{
+      min-height:74px;
+      padding:14px 18px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:rgba(11,16,24,.82);
+      backdrop-filter:blur(16px);
+      position:relative;
+      z-index:20;
+    }
+
+    .brand-mark{
+      width:42px;height:42px;border-radius:13px;
+      display:grid;place-items:center;
+      background:linear-gradient(145deg,#f7db87,#b88b26);
+      color:#14100a;
+      box-shadow:0 8px 26px rgba(240,199,94,.22);
+      font-size:1.2rem;font-weight:900;
+    }
+
+    .brand-title{
+      font-weight:800;
+      letter-spacing:-.02em;
+      line-height:1.15;
+    }
+
+    .brand-subtitle{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+
+    .toolbar .btn{
+      border-radius:12px;
+      padding:.62rem .9rem;
+      font-weight:650;
+    }
+
+    .btn-gold{
+      --bs-btn-color:#17120a;
+      --bs-btn-bg:var(--gold);
+      --bs-btn-border-color:var(--gold);
+      --bs-btn-hover-color:#17120a;
+      --bs-btn-hover-bg:var(--gold-2);
+      --bs-btn-hover-border-color:var(--gold-2);
+    }
+
+    .btn-soft{
+      background:#151e2a;
+      border:1px solid #29384c;
+      color:#e8eef6;
+    }
+    .btn-soft:hover{background:#1b2736;border-color:#40556f;color:#fff}
+
+    .workspace{
+      flex:1;
+      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 390px;
+      gap:12px;
+      padding:12px;
+    }
+
+    .viewer-card,.side-card{
+      min-height:0;
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:18px;
+      background:linear-gradient(180deg,rgba(16,23,34,.97),rgba(10,15,23,.98));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .viewer-card{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .canvas-wrap{
+      position:relative;
+      flex:1;
+      min-height:0;
+      background:#0a0f16;
+      overflow:hidden;
+      cursor:grab;
+    }
+    .canvas-wrap.dragging{cursor:grabbing}
+
+    #toolpathSvg{
+      width:100%;
+      height:100%;
+      display:block;
+      user-select:none;
+      touch-action:none;
+    }
+
+    .grid-line{stroke:#17202b;stroke-width:.7;vector-effect:non-scaling-stroke}
+    .axis-line{stroke:#435164;stroke-width:1.15;vector-effect:non-scaling-stroke}
+    .rapid-line{
+      fill:none;stroke:var(--rapid);stroke-width:1.15;
+      stroke-dasharray:6 6;vector-effect:non-scaling-stroke;opacity:.9;
+    }
+    .cut-line{
+      fill:none;stroke:var(--gold);stroke-width:1.7;
+      vector-effect:non-scaling-stroke;
+      filter:drop-shadow(0 0 2px rgba(240,199,94,.2));
+    }
+    .origin-line{stroke:var(--danger);stroke-width:1.25;vector-effect:non-scaling-stroke}
+
+    .empty-state{
+      position:absolute;inset:0;
+      display:flex;align-items:center;justify-content:center;
+      pointer-events:none;
+    }
+    .empty-inner{
+      width:min(520px,80%);
+      padding:34px;
+      border:1px dashed #34445b;
+      border-radius:18px;
+      text-align:center;
+      background:rgba(17,24,35,.68);
+    }
+    .drop-icon{
+      width:68px;height:68px;margin:0 auto 16px;
+      display:grid;place-items:center;border-radius:20px;
+      background:rgba(240,199,94,.1);
+      color:var(--gold);
+      font-size:1.8rem;
+      border:1px solid rgba(240,199,94,.2);
+    }
+
+    .viewer-footer{
+      display:flex;gap:10px;align-items:center;justify-content:space-between;
+      padding:10px 14px;
+      border-top:1px solid rgba(255,255,255,.06);
+      background:#0c121a;
+      color:var(--muted);
+      font-size:.82rem;
+    }
+
+    .coord-pill,.legend-pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:.42rem .66rem;border-radius:999px;
+      background:#111925;border:1px solid #253246;
+      color:#c7d0dc;
+      white-space:nowrap;
+    }
+
+    .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+    .dot.cut{background:var(--gold)}
+    .dot.rapid{background:var(--rapid)}
+    .dot.origin{background:var(--danger)}
+
+    .side-card{
+      display:flex;
+      flex-direction:column;
+    }
+
+    .side-head{
+      padding:16px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .file-name{
+      font-weight:750;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .meta-muted{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+
+    .stat-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+      margin-top:14px;
+    }
+
+    .stat{
+      padding:12px;
+      border-radius:13px;
+      background:linear-gradient(180deg,#151f2d,#111925);
+      border:1px solid #26364b;
+    }
+    .stat .k{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em}
+    .stat .v{font-size:1rem;font-weight:800;margin-top:2px}
+
+    .code-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 14px;
+      border-top:1px solid rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:#0f1620;
+    }
+
+    #codeView{
+      flex:1;
+      min-height:0;
+      margin:0;
+      padding:14px;
+      overflow:auto;
+      background:#0a0f16;
+      color:#dce5ef;
+      font:12.5px/1.58 "Cascadia Code","Consolas",monospace;
+      white-space:pre;
+      tab-size:2;
+    }
+
+    .drop-active::after{
+      content:"Dosyayı bırak";
+      position:absolute;inset:16px;
+      display:grid;place-items:center;
+      border-radius:16px;
+      border:2px dashed var(--gold);
+      background:rgba(10,15,22,.82);
+      color:var(--gold);
+      font-size:1.4rem;
+      font-weight:800;
+      z-index:15;
+    }
+
+    .toast-container{z-index:2000}
+
+    @media (max-width: 980px){
+      body{overflow:auto}
+      .app-shell{height:auto;min-height:100vh}
+      .workspace{grid-template-columns:1fr;min-height:calc(100vh - 74px)}
+      .viewer-card{min-height:65vh}
+      .side-card{min-height:520px}
+    }
+
+    @media (max-width: 640px){
+      .topbar{padding:10px 12px}
+      .brand-subtitle{display:none}
+      .workspace{padding:8px}
+      .toolbar .btn span{display:none}
+      .workspace{gap:8px}
+      .viewer-footer{align-items:flex-start;flex-direction:column}
+      .side-card{min-height:500px}
+    }
+  </style>
+</head>
+
+<body>
+<div class="app-shell">
+  <header class="topbar d-flex align-items-center justify-content-between gap-3">
+    <div class="d-flex align-items-center gap-3 min-w-0">
+      <div class="brand-mark"><i class="bi bi-bezier2"></i></div>
+      <div class="min-w-0">
+        <h1 class="brand-title h5 mb-0">Online CNC G-code Görüntüleyici</h1>
+        <div class="brand-subtitle">TAP, NC ve GCODE takım yollarını tarayıcıda anında incele</div>
+      </div>
+    </div>
+
+    <div class="toolbar d-flex align-items-center gap-2">
+      <input id="fileInput" type="file" accept=".tap,.nc,.gcode,.cnc,.txt" hidden>
+      <button class="btn btn-gold" id="openBtn">
+        <i class="bi bi-folder2-open me-md-2"></i><span>Dosya Aç</span>
+      </button>
+      <button class="btn btn-soft" id="fitBtn" title="Ekrana sığdır (F)">
+        <i class="bi bi-arrows-fullscreen me-md-2"></i><span>Ekrana Sığdır</span>
+      </button>
+      <button class="btn btn-soft" id="resetBtn" title="Görünümü sıfırla">
+        <i class="bi bi-arrow-counterclockwise"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <section class="viewer-card" id="viewerCard">
+      <div class="canvas-wrap" id="canvasWrap">
+        <svg id="toolpathSvg" xmlns="http://www.w3.org/2000/svg">
+          <g id="world">
+            <g id="gridLayer"></g>
+            <g id="pathLayer"></g>
+            <g id="originLayer"></g>
+          </g>
+        </svg>
+
+        <div class="empty-state" id="emptyState">
+          <div class="empty-inner">
+            <div class="drop-icon"><i class="bi bi-file-earmark-code"></i></div>
+            <h5 class="mb-2">G-code dosyanı buraya bırak</h5>
+            <p class="text-secondary mb-3">
+              .tap, .nc, .gcode, .cnc ve .txt dosyalarını destekler.
+            </p>
+            <button class="btn btn-gold px-4" id="emptyOpenBtn">
+              <i class="bi bi-upload me-2"></i>Dosya Seç
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="viewer-footer">
+        <div class="d-flex flex-wrap gap-2">
+          <span class="legend-pill"><span class="dot cut"></span> Kesim G1/G2/G3</span>
+          <span class="legend-pill"><span class="dot rapid"></span> Hızlı hareket G0</span>
+          <span class="legend-pill"><span class="dot origin"></span> Orijin</span>
+        </div>
+        <div class="d-flex gap-2">
+          <span class="coord-pill"><i class="bi bi-crosshair"></i><span id="coords">X: — &nbsp; Y: —</span></span>
+          <span class="coord-pill"><i class="bi bi-zoom-in"></i><span id="zoomLabel">100%</span></span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-head">
+        <div class="d-flex align-items-start justify-content-between gap-2">
+          <div class="min-w-0">
+            <div class="meta-muted mb-1">DOSYA</div>
+            <div class="file-name" id="fileName">Henüz dosya açılmadı</div>
+          </div>
+          <span class="badge rounded-pill text-bg-warning" id="statusBadge">Hazır</span>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat"><div class="k">Toplam hareket</div><div class="v" id="statMoves">—</div></div>
+          <div class="stat"><div class="k">Kesim</div><div class="v" id="statCut">—</div></div>
+          <div class="stat"><div class="k">G0</div><div class="v" id="statRapid">—</div></div>
+          <div class="stat"><div class="k">Alan</div><div class="v" id="statArea">—</div></div>
+          <div class="stat" style="grid-column:1 / -1"><div class="k">Z aralığı</div><div class="v" id="statZ">—</div></div>
+        </div>
+      </div>
+
+
+      <section class="px-3 pt-3" aria-labelledby="seoAboutTitle">
+        <div class="p-3 rounded-4 border" style="background:#111925;border-color:#26364b!important">
+          <h2 id="seoAboutTitle" class="h6 fw-bold mb-2">CNC G-code dosyalarını online görüntüleyin</h2>
+          <p class="meta-muted mb-0">
+            Bu araç; <strong>.tap</strong>, <strong>.nc</strong>, <strong>.gcode</strong>,
+            <strong>.cnc</strong> ve <strong>.txt</strong> dosyalarındaki CNC takım yollarını
+            tarayıcı üzerinde görselleştirir. G0 hızlı hareketleri ile G1, G2 ve G3 kesim
+            hareketlerini ayırt eder; çalışma alanı ve Z aralığı bilgilerini gösterir.
+            Dosyanız tarayıcınızda işlenir.
+          </p>
+        </div>
+      </section>
+
+      <div class="code-head">
+        <div>
+          <div class="fw-bold">G-code</div>
+          <div class="meta-muted" id="lineInfo">0 satır</div>
+        </div>
+        <button class="btn btn-sm btn-soft" id="copyBtn" title="Kodu kopyala">
+          <i class="bi bi-copy"></i>
+        </button>
+      </div>
+
+      <pre id="codeView">// G-code burada görünecek…</pre>
+    </aside>
+  </main>
+  <footer class="px-3 pb-2 text-center small text-secondary">
+    <span>Online CNC G-code Görüntüleyici · </span>
+    <a href="https://www.ebubekirbastama.com.tr/" class="link-warning text-decoration-none" rel="home">ebubekirbastama.com.tr</a>
+  </footer>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast border-0 shadow" role="alert">
+    <div class="toast-header bg-dark text-light border-secondary">
+      <i class="bi bi-info-circle text-warning me-2"></i>
+      <strong class="me-auto">G-code Viewer</strong>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+    </div>
+    <div class="toast-body" id="toastBody"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  const $ = s => document.querySelector(s);
+  const svg = $('#toolpathSvg');
+  const world = $('#world');
+  const gridLayer = $('#gridLayer');
+  const pathLayer = $('#pathLayer');
+  const originLayer = $('#originLayer');
+  const canvasWrap = $('#canvasWrap');
+
+  let state = {
+    moves: [],
+    minZ: 0,
+    maxZ: 0,
+    bounds: null,
+    sourceText: '',
+    scale: 1,
+    tx: 0,
+    ty: 0,
+    dragging: false,
+    lastX: 0,
+    lastY: 0,
+    fitScale: 1
+  };
+
+  class GCodeParser {
+    constructor(){ this.reset(); }
+
+    reset(){
+      this.x = 0; this.y = 0; this.z = 0;
+      this.motion = 0;
+      this.absolute = true;
+      this.unitsScale = 1;
+    }
+
+    stripComments(line){
+      return line.replace(/\([^)]*\)/g,'').split(';',1)[0].trim().toUpperCase();
+    }
+
+    parse(text){
+      this.reset();
+      const moves = [];
+      let minZ = this.z, maxZ = this.z;
+      const lines = text.split(/\r?\n/);
+      const wordRe = /([A-Z])\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+))/gi;
+
+      lines.forEach((raw, idx) => {
+        const clean = this.stripComments(raw);
+        if(!clean) return;
+
+        const words = [];
+        let match;
+        wordRe.lastIndex = 0;
+        while((match = wordRe.exec(clean)) !== null){
+          words.push([match[1].toUpperCase(), parseFloat(match[2])]);
+        }
+        if(!words.length) return;
+
+        const values = {};
+        const gcodes = [];
+
+        for(const [letter, value] of words){
+          if(letter === 'G') gcodes.push(Math.round(value));
+          else values[letter] = value;
+        }
+
+        for(const g of gcodes){
+          if([0,1,2,3].includes(g)) this.motion = g;
+          else if(g === 90) this.absolute = true;
+          else if(g === 91) this.absolute = false;
+          else if(g === 20) this.unitsScale = 25.4;
+          else if(g === 21) this.unitsScale = 1.0;
+        }
+
+        const sx=this.x, sy=this.y, sz=this.z;
+        const target = (axis,current) => {
+          if(!(axis in values)) return current;
+          const v = values[axis] * this.unitsScale;
+          return this.absolute ? v : current + v;
+        };
+
+        const tx = target('X',this.x);
+        const ty = target('Y',this.y);
+        const tz = target('Z',this.z);
+        const hasXY = ('X' in values) || ('Y' in values);
+
+        if(hasXY){
+          if(this.motion === 0 || this.motion === 1){
+            moves.push({
+              kind:this.motion===0?'rapid':'cut',
+              start:{x:sx,y:sy}, end:{x:tx,y:ty},
+              lineNo:idx+1, source:raw
+            });
+          } else if(this.motion === 2 || this.motion === 3){
+            const points = this.arcPoints(
+              sx,sy,tx,ty,
+              values.I,values.J,values.R,
+              this.motion===2
+            );
+            let prev = {x:sx,y:sy};
+            for(const p of points){
+              moves.push({kind:'cut',start:prev,end:p,lineNo:idx+1,source:raw});
+              prev = p;
+            }
+          }
+        }
+
+        this.x=tx; this.y=ty; this.z=tz;
+        minZ=Math.min(minZ,this.z);
+        maxZ=Math.max(maxZ,this.z);
+      });
+
+      return {moves,minZ,maxZ};
+    }
+
+    arcPoints(sx,sy,ex,ey,i,j,r,clockwise){
+      let cx,cy;
+
+      if(i !== undefined || j !== undefined){
+        cx = sx + (i || 0) * this.unitsScale;
+        cy = sy + (j || 0) * this.unitsScale;
+      } else if(r !== undefined){
+        const radius = Math.abs(r) * this.unitsScale;
+        const dx=ex-sx, dy=ey-sy;
+        const chord=Math.hypot(dx,dy);
+        if(chord===0 || chord>2*radius) return [{x:ex,y:ey}];
+
+        const mx=(sx+ex)/2, my=(sy+ey)/2;
+        const h=Math.sqrt(Math.max(0,radius*radius-(chord/2)**2));
+        const ux=-dy/chord, uy=dx/chord;
+        const c1={x:mx+ux*h,y:my+uy*h};
+        const c2={x:mx-ux*h,y:my-uy*h};
+
+        const sweepFor = c => {
+          const a0=Math.atan2(sy-c.y,sx-c.x);
+          const a1=Math.atan2(ey-c.y,ex-c.x);
+          return clockwise ? mod(a0-a1,Math.PI*2) : mod(a1-a0,Math.PI*2);
+        };
+
+        const candidates=[{c:c1,s:sweepFor(c1)},{c:c2,s:sweepFor(c2)}];
+        const wantMajor=r<0;
+        candidates.sort((a,b) =>
+          Math.abs((a.s>Math.PI?1:0)-(wantMajor?1:0)) -
+          Math.abs((b.s>Math.PI?1:0)-(wantMajor?1:0))
+        );
+        cx=candidates[0].c.x; cy=candidates[0].c.y;
+      } else {
+        return [{x:ex,y:ey}];
+      }
+
+      const radius=Math.hypot(sx-cx,sy-cy);
+      if(radius<=1e-12) return [{x:ex,y:ey}];
+
+      const a0=Math.atan2(sy-cy,sx-cx);
+      const a1=Math.atan2(ey-cy,ex-cx);
+      let sweep = clockwise
+        ? -mod(a0-a1,Math.PI*2)
+        : mod(a1-a0,Math.PI*2);
+
+      if(Math.abs(sweep)<1e-12 && (Math.abs(ex-sx)>1e-12 || Math.abs(ey-sy)>1e-12)){
+        sweep=clockwise?-2*Math.PI:2*Math.PI;
+      }
+
+      let segments=Math.max(12,Math.floor(Math.abs(sweep)*radius/4));
+      segments=Math.min(720,segments);
+
+      const out=[];
+      for(let n=1;n<=segments;n++){
+        const a=a0+sweep*(n/segments);
+        out.push({x:cx+radius*Math.cos(a), y:cy+radius*Math.sin(a)});
+      }
+      if(out.length) out[out.length-1]={x:ex,y:ey};
+      return out;
+    }
+  }
+
+  const mod=(a,n)=>((a%n)+n)%n;
+  const parser = new GCodeParser();
+
+  function svgEl(name,attrs={}){
+    const el=document.createElementNS('http://www.w3.org/2000/svg',name);
+    for(const [k,v] of Object.entries(attrs)) el.setAttribute(k,String(v));
+    return el;
+  }
+
+  function renderMoves(){
+    pathLayer.innerHTML='';
+    originLayer.innerHTML='';
+    gridLayer.innerHTML='';
+
+    const moves=state.moves;
+    if(!moves.length){
+      state.bounds=null;
+      $('#emptyState').style.display='flex';
+      return;
+    }
+
+    $('#emptyState').style.display='none';
+
+    const rapidPath=[];
+    const cutPath=[];
+    const xs=[], ys=[];
+
+    for(const mv of moves){
+      const s={x:mv.start.x,y:-mv.start.y};
+      const e={x:mv.end.x,y:-mv.end.y};
+      xs.push(s.x,e.x); ys.push(s.y,e.y);
+      const cmd=`M ${s.x} ${s.y} L ${e.x} ${e.y}`;
+      (mv.kind==='rapid'?rapidPath:cutPath).push(cmd);
+    }
+
+    if(rapidPath.length){
+      pathLayer.appendChild(svgEl('path',{d:rapidPath.join(' '),class:'rapid-line'}));
+    }
+    if(cutPath.length){
+      pathLayer.appendChild(svgEl('path',{d:cutPath.join(' '),class:'cut-line'}));
+    }
+
+    originLayer.appendChild(svgEl('line',{x1:-12,y1:0,x2:12,y2:0,class:'origin-line'}));
+    originLayer.appendChild(svgEl('line',{x1:0,y1:-12,x2:0,y2:12,class:'origin-line'}));
+
+    const minX=Math.min(...xs), maxX=Math.max(...xs);
+    const minY=Math.min(...ys), maxY=Math.max(...ys);
+    state.bounds={minX,maxX,minY,maxY,width:Math.max(1,maxX-minX),height:Math.max(1,maxY-minY)};
+
+    drawGrid();
+    fitAll();
+  }
+
+  function drawGrid(){
+    gridLayer.innerHTML='';
+    if(!state.bounds) return;
+
+    const b=state.bounds;
+    const targetLines=18;
+    const span=Math.max(b.width,b.height);
+    const raw=Math.max(span/targetLines,0.001);
+    const power=10**Math.floor(Math.log10(raw));
+    const choices=[1,2,5,10].map(v=>v*power);
+    const grid=choices.reduce((a,b)=>Math.abs(b-raw)<Math.abs(a-raw)?b:a);
+
+    const margin=grid*12;
+    const left=Math.floor((b.minX-margin)/grid)*grid;
+    const right=Math.ceil((b.maxX+margin)/grid)*grid;
+    const top=Math.floor((b.minY-margin)/grid)*grid;
+    const bottom=Math.ceil((b.maxY+margin)/grid)*grid;
+
+    for(let x=left;x<=right+grid*.1;x+=grid){
+      gridLayer.appendChild(svgEl('line',{x1:x,y1:top,x2:x,y2:bottom,class:'grid-line'}));
+    }
+    for(let y=top;y<=bottom+grid*.1;y+=grid){
+      gridLayer.appendChild(svgEl('line',{x1:left,y1:y,x2:right,y2:y,class:'grid-line'}));
+    }
+
+    gridLayer.appendChild(svgEl('line',{x1:0,y1:top,x2:0,y2:bottom,class:'axis-line'}));
+    gridLayer.appendChild(svgEl('line',{x1:left,y1:0,x2:right,y2:0,class:'axis-line'}));
+  }
+
+  function applyTransform(){
+    world.setAttribute('transform',`translate(${state.tx} ${state.ty}) scale(${state.scale})`);
+    const pct=Math.round((state.scale/state.fitScale)*100);
+    $('#zoomLabel').textContent=`${pct}%`;
+  }
+
+  function fitAll(){
+    if(!state.bounds) return;
+    const rect=svg.getBoundingClientRect();
+    if(!rect.width || !rect.height) return;
+
+    const pad=70;
+    const b=state.bounds;
+    const sx=(rect.width-pad*2)/b.width;
+    const sy=(rect.height-pad*2)/b.height;
+    const scale=Math.max(0.0001,Math.min(sx,sy));
+
+    const cx=(b.minX+b.maxX)/2;
+    const cy=(b.minY+b.maxY)/2;
+    state.scale=scale;
+    state.fitScale=scale;
+    state.tx=rect.width/2-cx*scale;
+    state.ty=rect.height/2-cy*scale;
+    applyTransform();
+  }
+
+  function resetView(){
+    fitAll();
+  }
+
+  function loadText(text,fileName='dosya.gcode'){
+    try{
+      const parsed=parser.parse(text);
+      state.sourceText=text;
+      state.moves=parsed.moves;
+      state.minZ=parsed.minZ;
+      state.maxZ=parsed.maxZ;
+
+      $('#fileName').textContent=fileName;
+      $('#codeView').textContent=text || '// Boş dosya';
+      $('#lineInfo').textContent=`${text.split(/\r?\n/).length} satır`;
+
+      const rapid=state.moves.filter(m=>m.kind==='rapid').length;
+      const cut=state.moves.filter(m=>m.kind==='cut').length;
+      $('#statMoves').textContent=state.moves.length.toLocaleString('tr-TR');
+      $('#statCut').textContent=cut.toLocaleString('tr-TR');
+      $('#statRapid').textContent=rapid.toLocaleString('tr-TR');
+
+      if(state.moves.length){
+        const xs=state.moves.flatMap(m=>[m.start.x,m.end.x]);
+        const ys=state.moves.flatMap(m=>[m.start.y,m.end.y]);
+        const w=Math.max(...xs)-Math.min(...xs);
+        const h=Math.max(...ys)-Math.min(...ys);
+        $('#statArea').textContent=`${w.toFixed(3)} × ${h.toFixed(3)} mm`;
+        $('#statZ').textContent=`${state.minZ.toFixed(3)} … ${state.maxZ.toFixed(3)} mm`;
+        $('#statusBadge').textContent='Yüklendi';
+        $('#statusBadge').className='badge rounded-pill text-bg-success';
+      }else{
+        $('#statArea').textContent='—';
+        $('#statZ').textContent=`${state.minZ.toFixed(3)} … ${state.maxZ.toFixed(3)} mm`;
+        $('#statusBadge').textContent='XY yok';
+        $('#statusBadge').className='badge rounded-pill text-bg-secondary';
+        toast('Görüntülenecek XY hareketi bulunamadı.');
+      }
+
+      renderMoves();
+    }catch(err){
+      $('#statusBadge').textContent='Hata';
+      $('#statusBadge').className='badge rounded-pill text-bg-danger';
+      toast('Dosya işlenemedi: '+err.message);
+      console.error(err);
+    }
+  }
+
+  function handleFile(file){
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=()=>loadText(String(reader.result||''),file.name);
+    reader.onerror=()=>toast('Dosya okunamadı.');
+    reader.readAsText(file);
+  }
+
+  function openDialog(){ $('#fileInput').click(); }
+
+  $('#openBtn').addEventListener('click',openDialog);
+  $('#emptyOpenBtn').addEventListener('click',openDialog);
+  $('#fileInput').addEventListener('change',e=>handleFile(e.target.files[0]));
+  $('#fitBtn').addEventListener('click',fitAll);
+  $('#resetBtn').addEventListener('click',resetView);
+
+  $('#copyBtn').addEventListener('click',async()=>{
+    if(!state.sourceText) return toast('Kopyalanacak G-code yok.');
+    try{
+      await navigator.clipboard.writeText(state.sourceText);
+      toast('G-code panoya kopyalandı.');
+    }catch{
+      toast('Tarayıcı pano erişimine izin vermedi.');
+    }
+  });
+
+  ['dragenter','dragover'].forEach(type=>{
+    canvasWrap.addEventListener(type,e=>{
+      e.preventDefault();
+      $('#viewerCard').classList.add('drop-active');
+    });
+  });
+
+  ['dragleave','drop'].forEach(type=>{
+    canvasWrap.addEventListener(type,e=>{
+      e.preventDefault();
+      $('#viewerCard').classList.remove('drop-active');
+    });
+  });
+
+  canvasWrap.addEventListener('drop',e=>{
+    handleFile(e.dataTransfer.files[0]);
+  });
+
+  svg.addEventListener('wheel',e=>{
+    if(!state.bounds) return;
+    e.preventDefault();
+    const rect=svg.getBoundingClientRect();
+    const mx=e.clientX-rect.left;
+    const my=e.clientY-rect.top;
+
+    const old=state.scale;
+    const factor=e.deltaY<0?1.16:1/1.16;
+    const next=Math.min(Math.max(old*factor,state.fitScale*.08),state.fitScale*80);
+
+    const wx=(mx-state.tx)/old;
+    const wy=(my-state.ty)/old;
+    state.scale=next;
+    state.tx=mx-wx*next;
+    state.ty=my-wy*next;
+    applyTransform();
+  },{passive:false});
+
+  svg.addEventListener('pointerdown',e=>{
+    if(!state.bounds) return;
+    state.dragging=true;
+    state.lastX=e.clientX;
+    state.lastY=e.clientY;
+    canvasWrap.classList.add('dragging');
+    svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove',e=>{
+    const rect=svg.getBoundingClientRect();
+    if(state.bounds){
+      const sx=e.clientX-rect.left;
+      const sy=e.clientY-rect.top;
+      const wx=(sx-state.tx)/state.scale;
+      const wy=(sy-state.ty)/state.scale;
+      $('#coords').innerHTML=`X: ${wx.toFixed(3)} &nbsp; Y: ${(-wy).toFixed(3)}`;
+    }
+
+    if(!state.dragging) return;
+    state.tx += e.clientX-state.lastX;
+    state.ty += e.clientY-state.lastY;
+    state.lastX=e.clientX;
+    state.lastY=e.clientY;
+    applyTransform();
+  });
+
+  function stopDrag(){
+    state.dragging=false;
+    canvasWrap.classList.remove('dragging');
+  }
+  svg.addEventListener('pointerup',stopDrag);
+  svg.addEventListener('pointercancel',stopDrag);
+
+  window.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='o'){
+      e.preventDefault();
+      openDialog();
+    }
+    if(e.key.toLowerCase()==='f' && !e.ctrlKey && !e.metaKey){
+      e.preventDefault();
+      fitAll();
+    }
+  });
+
+  window.addEventListener('resize',()=>{
+    if(state.bounds) fitAll();
+  });
+
+  function toast(message){
+    $('#toastBody').textContent=message;
+    bootstrap.Toast.getOrCreateInstance($('#liveToast'),{delay:2400}).show();
+  }
+
+})();
+</script>
+</body>
+</html>
