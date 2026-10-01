@@ -31,7 +31,7 @@ section{padding:54px 0;background:linear-gradient(180deg,#0c0d0a,#090a08)}.label
 /* PRODUCTS */
 .products-section{padding-top:48px}.gallery{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.product{position:relative;overflow:hidden;border-radius:9px;border:1px solid #74511d;background:#11120f}.product .photo{height:300px;overflow:hidden;position:relative}.product img{width:100%;height:100%;object-fit:cover;transition:.4s}.product:hover img{transform:scale(1.045)}.zoom{position:absolute;right:10px;bottom:10px;width:28px;height:28px;border-radius:50%;background:#090a08;border:1px solid #dec25f;display:grid;place-items:center;font-size:13px;z-index:3}.product-meta{padding:10px 5px 4px}.product-meta strong{font-size:12px;display:block}.product-meta span{font-size:10px;color:var(--muted)}.all-btn{border:1px solid #a87524;border-radius:22px;padding:9px 18px;color:#eec25c;font-size:11px;font-weight:800;white-space:nowrap}
 /* PROCESS */
-.process-wrap{display:grid;grid-template-columns:360px 1fr;gap:44px;align-items:center}.steps{display:grid;grid-template-columns:repeat(4,1fr);position:relative}.steps:before{content:"";position:absolute;left:8%;right:8%;top:34px;height:1px;background:#9f6e1f}.step{padding:0 18px;position:relative;z-index:2}.num{width:64px;height:64px;border-radius:50%;border:1px solid #f0b53a;background:#0b0c09;display:grid;place-items:center;font-size:23px;color:var(--gold2);box-shadow:0 0 18px rgba(239,174,46,.24);margin-bottom:18px}.step h3{font-size:13px;margin:0 0 6px}.step .index{color:#d39b2f;font-size:10px;margin-right:5px}.step p{font-size:10.5px;color:var(--muted);margin:0;line-height:1.45}
+.process-wrap{display:grid;grid-template-columns:360px 1fr;gap:44px;align-items:center}.steps{display:grid;grid-template-columns:repeat(4,1fr);position:relative}.steps:before{content:"";position:absolute;left:8%;right:8%;top:34px;height:1px;background:#9f6e1f}.step{padding:0 18px;position:relative;z-index:2}.num{width:64px;height:64px;border-radius:50%;border:1px solid #f0b53a;background:radial-gradient(circle at 50% 35%,#18170f 0%,#0b0c09 68%);display:grid;place-items:center;color:var(--gold2);box-shadow:0 0 18px rgba(239,174,46,.24),inset 0 0 18px rgba(239,174,46,.05);margin-bottom:18px}.num svg{width:27px;height:27px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px rgba(255,197,76,.28))}.step h3{font-size:13px;margin:0 0 6px}.step .index{color:#d39b2f;font-size:10px;margin-right:5px}.step p{font-size:10.5px;color:var(--muted);margin:0;line-height:1.45}
 /* VIDEOS */
 .video-layout{display:grid;grid-template-columns:360px 1fr;gap:42px;align-items:center}.video-intro .copy{max-width:315px;margin:18px 0 20px}.videos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.video-card{overflow:hidden;border:1px solid #654719;border-radius:9px;background:#11120f}.video-shell{position:relative;aspect-ratio:16/9;background:#000}.video-shell video{width:100%;height:100%;object-fit:cover}.play-badge{position:absolute;inset:0;margin:auto;width:52px;height:52px;border-radius:50%;border:1px solid #f2be54;background:rgba(13,12,9,.68);display:grid;place-items:center;color:white;font-size:20px;pointer-events:none}.duration{position:absolute;right:8px;bottom:7px;padding:3px 6px;border-radius:5px;background:#0a0a08;color:white;font-size:10px}.vmeta{padding:10px 4px 2px}.vmeta h3{font-size:12px;margin:0}.vmeta p{font-size:10px;color:var(--muted);margin:2px 0 0}
 /* CONTACT */
@@ -39,6 +39,12 @@ section{padding:54px 0;background:linear-gradient(180deg,#0c0d0a,#090a08)}.label
 .formbox{border:1px solid #674a1c;background:linear-gradient(145deg,#151611,#0e0f0c);border-radius:9px;padding:14px}.field{position:relative}.field i{position:absolute;left:13px;top:13px;color:var(--gold2);font-style:normal;font-size:12px}input,textarea{width:100%;border:1px solid #34352e;background:#1a1b17;color:#fff;border-radius:5px;padding:11px 12px 11px 35px;font:inherit;font-size:11px;outline:none}input:focus,textarea:focus{border-color:#9e711f;box-shadow:0 0 0 2px rgba(230,170,50,.08)}textarea{height:72px;resize:none}.formbox form{display:grid;gap:7px}.send{height:38px;border:1px solid #f2c35c;border-radius:8px;background:linear-gradient(180deg,#ffd66b,#d69721);color:#171006;font-weight:900}.map{min-height:255px;border:1px solid #674a1c;border-radius:9px;overflow:hidden}.map iframe{width:100%;height:100%;min-height:255px;border:0;filter:sepia(.1) saturate(.8) contrast(1.05)}
 /* FOOTER */
 footer{background:#090a08;padding:28px 0}.foot{display:grid;grid-template-columns:1.3fr 1fr .7fr .8fr;gap:28px;align-items:center}.footbrand{display:flex;align-items:center;gap:14px}.footbrand img{width:58px;height:58px;object-fit:cover;border-radius:5px}.footbrand strong{font-size:22px}.footbrand p{font-size:10px;color:var(--muted);max-width:180px;margin:3px 0 0}.foot h4{font-size:11px;margin:0 0 7px}.footlinks{display:grid;grid-template-columns:1fr 1fr;gap:3px 22px}.footlinks a,.copyright{font-size:9px;color:#c3bdaf}.socials{display:flex;gap:11px}.socials span{width:27px;height:27px;border:1px solid #68685e;border-radius:50%;display:grid;place-items:center;font-size:10px}.backtop{margin-left:auto;width:35px;height:35px;border:1px solid #af7d25;border-radius:50%;display:grid;place-items:center;color:var(--gold2)}
+
+.zoom{cursor:pointer;color:#fff;padding:0;font-family:inherit}.zoom:hover{background:var(--gold);color:#100b03;transform:scale(1.08)}
+.contact-mini{color:inherit;text-decoration:none;transition:.25s}.contact-mini:hover{color:#fff;transform:translateY(-2px)}
+.form-note{font-size:9px;line-height:1.45;color:#8f9089;padding:2px 4px 0}
+.model-modal{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:22px;opacity:0;visibility:hidden;transition:.28s ease}.model-modal.open{opacity:1;visibility:visible}.model-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(12px)}.model-modal-dialog{position:relative;width:min(1080px,96vw);max-height:90vh;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.55fr);overflow:hidden;border:1px solid rgba(238,184,70,.58);border-radius:18px;background:linear-gradient(145deg,#171712,#090a08);box-shadow:0 0 0 1px rgba(255,209,110,.06),0 35px 100px rgba(0,0,0,.75),0 0 55px rgba(229,164,44,.13);transform:translateY(18px) scale(.985);transition:.3s cubic-bezier(.2,.8,.2,1)}.model-modal.open .model-modal-dialog{transform:none}.model-modal-media{min-height:520px;background:#050604}.model-modal-media img{width:100%;height:100%;max-height:82vh;object-fit:contain;display:block}.model-modal-info{padding:42px 32px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid rgba(226,167,55,.25);background:radial-gradient(circle at 100% 0%,rgba(226,167,55,.11),transparent 40%)}.model-modal-info h3{font-size:38px;margin:13px 0 12px;color:#fff}.model-modal-info p{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 28px}.model-modal-close{position:absolute;right:14px;top:14px;z-index:5;width:42px;height:42px;border-radius:50%;border:1px solid rgba(239,191,84,.55);background:rgba(8,9,7,.8);color:#f6cd6e;font-size:27px;line-height:1;cursor:pointer;backdrop-filter:blur(8px)}body.modal-open{overflow:hidden}
+@media(max-width:760px){.model-modal-dialog{grid-template-columns:1fr;max-height:92vh;overflow:auto}.model-modal-media{min-height:0;height:52vh}.model-modal-info{border-left:0;border-top:1px solid rgba(226,167,55,.25);padding:25px 20px}.model-modal-info h3{font-size:30px}}
 .reveal{opacity:0;transform:translateY(22px);transition:.75s cubic-bezier(.2,.8,.2,1)}.reveal.show{opacity:1;transform:none}
 @media(max-width:1120px){.navlinks{display:none}.services-wrap,.process-wrap,.video-layout{grid-template-columns:1fr}.service-grid{grid-template-columns:repeat(2,1fr)}.gallery{grid-template-columns:repeat(3,1fr)}.contact-layout{grid-template-columns:1fr 1fr}.contact-intro{grid-column:1/-1}.foot{grid-template-columns:1fr 1fr}.trustgrid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.nav{height:70px}.brand{min-width:auto;font-size:18px}.brand img{width:44px;height:44px}.quote-btn{padding:10px 13px;font-size:11px}.hero{padding-top:70px;min-height:690px;background-position:65% center}.hero:before{background:linear-gradient(180deg,rgba(4,5,4,.48) 0%,rgba(4,5,4,.62) 25%,rgba(4,5,4,.93) 74%,rgba(4,5,4,.98) 100%)}.hero-copy{align-self:flex-end;width:100%;padding:260px 0 48px}.hero h1{font-size:50px}.hero p{font-size:14px}.trustgrid{grid-template-columns:1fr}.trustitem{border-right:0;border-bottom:1px solid rgba(230,170,50,.15)}section{padding:45px 0}.services-wrap,.process-wrap,.video-layout{gap:28px}.service-grid,.videos{grid-template-columns:1fr}.service-card{grid-template-columns:105px 1fr}.service-card img{width:105px}.gallery{grid-template-columns:repeat(2,1fr)}.product .photo{height:255px}.steps{grid-template-columns:1fr 1fr;gap:22px}.steps:before{display:none}.section-head{align-items:flex-start;flex-direction:column}.contact-layout{grid-template-columns:1fr}.contact-icons{grid-template-columns:1fr}.contact-mini{border-right:0;border-bottom:1px solid rgba(230,170,50,.18);padding-bottom:8px}.foot{grid-template-columns:1fr}.backtop{margin-left:0}}
@@ -47,9 +53,9 @@ footer{background:#090a08;padding:28px 0}.foot{display:grid;grid-template-column
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Hatem CNC","telephone":"+90 546 242 06 66","address":{"@type":"PostalAddress","streetAddress":"Ahi Evran, 233. Sk. 12/1","postalCode":"06935","addressLocality":"Sincan","addressRegion":"Ankara","addressCountry":"TR"},"description":"CNC kapı üretimi, kanal açma, model işleme, ebatlama ve seri üretim."}</script>
 </head>
 <body>
-<header class="topbar"><div class="container nav"><a class="brand" href="#home"><img src="assets/img/logo.jpg" alt="Hatem CNC logo"><span>HATEM CNC</span></a><nav class="navlinks"><a href="#home">Ana Sayfa</a><a href="#services">Hizmetlerimiz</a><a href="#products">Ürünler</a><a href="#videos">Videolar</a><a href="#about">Hakkımızda</a><a href="#contact">İletişim</a></nav><a class="quote-btn" href="tel:+905462420666">☎ &nbsp; Teklif Al</a></div></header>
+<header class="topbar"><div class="container nav"><a class="brand" href="#home"><img src="assets/img/logo.jpg" alt="Hatem CNC logo"><span>HATEM CNC</span></a><nav class="navlinks"><a href="#home">Ana Sayfa</a><a href="#services">Hizmetlerimiz</a><a href="#products">Ürünler</a><a href="#videos">Videolar</a><a href="#about">Hakkımızda</a><a href="#contact">İletişim</a></nav><a class="quote-btn smart-contact" href="https://wa.me/905462420666" data-mobile-href="tel:+905462420666" data-desktop-href="https://wa.me/905462420666" target="_blank" rel="noopener">☎ &nbsp; Teklif Al</a></div></header>
 
-<section class="hero" id="home"><div class="container"><div class="hero-copy reveal"><div class="eyebrow">MODERN ÜRETİM | SINIRSIZ TASARIM</div><h1 class="serif"><span class="gold">CNC Kapı Üretiminde</span><br>Güç, Estetik ve<br>Hassasiyet</h1><p>Hatem CNC olarak, modern CNC teknolojisi ile kapı üretiminde estetik tasarımları, yüksek hassasiyet ve kaliteli işçilikle buluşturuyoruz.</p><div class="hero-actions"><a class="gold-btn" href="tel:+905462420666">Teklif Al &nbsp;→</a><a class="outline-btn" href="#products">Üretimi İncele &nbsp;▶</a></div></div></div></section>
+<section class="hero" id="home"><div class="container"><div class="hero-copy reveal"><div class="eyebrow">MODERN ÜRETİM | SINIRSIZ TASARIM</div><h1 class="serif"><span class="gold">CNC Kapı Üretiminde</span><br>Güç, Estetik ve<br>Hassasiyet</h1><p>Hatem CNC olarak, modern CNC teknolojisi ile kapı üretiminde estetik tasarımları, yüksek hassasiyet ve kaliteli işçilikle buluşturuyoruz.</p><div class="hero-actions"><a class="gold-btn smart-contact" href="https://wa.me/905462420666" data-mobile-href="tel:+905462420666" data-desktop-href="https://wa.me/905462420666" target="_blank" rel="noopener">Teklif Al &nbsp;→</a><a class="outline-btn" href="#products">Üretimi İncele &nbsp;▶</a></div></div></div></section>
 <div class="trustbar"><div class="container trustgrid"><div class="trustitem"><div class="trust-icon">◎</div><div><strong>Yüksek Hassasiyet</strong><span>CNC Teknolojisi</span></div></div><div class="trustitem"><div class="trust-icon">♜</div><div><strong>Modern Üretim</strong><span>Güçlü Altyapı</span></div></div><div class="trustitem"><div class="trust-icon">✣</div><div><strong>Özel Tasarım</strong><span>Sınırsız Model</span></div></div><div class="trustitem"><div class="trust-icon">▣</div><div><strong>Toplu Üretim</strong><span>Zamanında Teslim</span></div></div><div class="trustitem"><div class="trust-icon">♧</div><div><strong>Kaliteli Malzeme</strong><span>Uzun Ömürlü Ürünler</span></div></div></div></div>
 <div class="goldline"></div>
 
@@ -64,15 +70,20 @@ footer{background:#090a08;padding:28px 0}.foot{display:grid;grid-template-column
 <div class="goldline"></div>
 
 <section id="products" class="products-section"><div class="container"><div class="section-head reveal"><div><div class="label">ÜRÜNLERİMİZDEN ÖRNEKLER</div><h2 class="title">CNC Kapı Modelleri <span class="gold-rule"></span></h2></div><p class="copy">Modern tasarımlar, yüksek hassasiyet ve kaliteli işçilik ile üretilen CNC kapı modellerimizden bazı örnekler.</p><a class="all-btn" href="#contact">Tüm Ürünleri Gör &nbsp;→</a></div><div class="gallery reveal">
-<div class="product"><div class="photo"><img src="assets/img/model1.jpg" alt="Desenli CNC Kapı"><span class="zoom">⌕</span></div><div class="product-meta"><strong>Desenli CNC Kapı</strong><span>Modern ve şık tasarımlar</span></div></div>
-<div class="product"><div class="photo"><img src="assets/img/model2.jpg" alt="Özel Tasarım Kapı"><span class="zoom">⌕</span></div><div class="product-meta"><strong>Özel Tasarım Kapı</strong><span>Estetik model işleme</span></div></div>
-<div class="product"><div class="photo"><img src="assets/img/model3.jpg" alt="Klasik ve modern modeller"><span class="zoom">⌕</span></div><div class="product-meta"><strong>Klasik & Modern Modeller</strong><span>Farklı tasarım seçenekleri</span></div></div>
-<div class="product"><div class="photo"><img src="assets/img/model4.jpg" alt="Toplu üretim"><span class="zoom">⌕</span></div><div class="product-meta"><strong>Toplu Üretim</strong><span>Yüksek adetli siparişler</span></div></div>
-<div class="product"><div class="photo"><img src="assets/img/model5.jpg" alt="CNC İşleme"><span class="zoom">⌕</span></div><div class="product-meta"><strong>CNC İşleme</strong><span>Hassas ve kaliteli üretim</span></div></div>
+<div class="product"><div class="photo"><img src="assets/img/model1.jpg" alt="Desenli CNC Kapı"><button class="zoom" type="button" aria-label="Desenli CNC Kapı görselini büyüt" data-image="assets/img/model1.jpg" data-title="Desenli CNC Kapı" data-desc="Modern ve şık tasarımlar">⌕</button></div><div class="product-meta"><strong>Desenli CNC Kapı</strong><span>Modern ve şık tasarımlar</span></div></div>
+<div class="product"><div class="photo"><img src="assets/img/model2.jpg" alt="Özel Tasarım Kapı"><button class="zoom" type="button" aria-label="Özel Tasarım Kapı görselini büyüt" data-image="assets/img/model2.jpg" data-title="Özel Tasarım Kapı" data-desc="Estetik model işleme">⌕</button></div><div class="product-meta"><strong>Özel Tasarım Kapı</strong><span>Estetik model işleme</span></div></div>
+<div class="product"><div class="photo"><img src="assets/img/model3.jpg" alt="Klasik ve modern modeller"><button class="zoom" type="button" aria-label="Klasik ve modern modeller görselini büyüt" data-image="assets/img/model3.jpg" data-title="Klasik & Modern Modeller" data-desc="Farklı tasarım seçenekleri">⌕</button></div><div class="product-meta"><strong>Klasik & Modern Modeller</strong><span>Farklı tasarım seçenekleri</span></div></div>
+<div class="product"><div class="photo"><img src="assets/img/model4.jpg" alt="Toplu üretim"><button class="zoom" type="button" aria-label="Toplu üretim görselini büyüt" data-image="assets/img/model4.jpg" data-title="Toplu Üretim" data-desc="Yüksek adetli siparişler">⌕</button></div><div class="product-meta"><strong>Toplu Üretim</strong><span>Yüksek adetli siparişler</span></div></div>
+<div class="product"><div class="photo"><img src="assets/img/model5.jpg" alt="CNC İşleme"><button class="zoom" type="button" aria-label="CNC İşleme görselini büyüt" data-image="assets/img/model5.jpg" data-title="CNC İşleme" data-desc="Hassas ve kaliteli üretim">⌕</button></div><div class="product-meta"><strong>CNC İşleme</strong><span>Hassas ve kaliteli üretim</span></div></div>
 </div></div></section>
 <div class="goldline"></div>
 
-<section id="about"><div class="container process-wrap"><div class="reveal"><div class="label">ÜRETİM SÜRECİMİZ</div><h2 class="title">Fikirden Kapınıza<br>Profesyonel Süreç</h2></div><div class="steps reveal"><div class="step"><div class="num">✎</div><h3><span class="index">01</span>Tasarım</h3><p>İhtiyacınızı belirliyor, en uygun tasarımı oluşturuyoruz.</p></div><div class="step"><div class="num">⚙</div><h3><span class="index">02</span>CNC İşleme</h3><p>Modern CNC makinelerimizle yüksek hassasiyetle üretiyoruz.</p></div><div class="step"><div class="num">◇</div><h3><span class="index">03</span>Kontrol</h3><p>Tüm ürünleri kalite kontrol sürecinden geçiriyoruz.</p></div><div class="step"><div class="num">▣</div><h3><span class="index">04</span>Teslimat</h3><p>Zamanında ve güvenli şekilde teslim ediyoruz.</p></div></div></div></section>
+<section id="about"><div class="container process-wrap"><div class="reveal"><div class="label">ÜRETİM SÜRECİMİZ</div><h2 class="title">Fikirden Kapınıza<br>Profesyonel Süreç</h2></div><div class="steps reveal">
+<div class="step"><div class="num" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4l10.6-10.6a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m13.8 8.2 3 3"/><path d="M14 4h6v6"/></svg></div><h3><span class="index">01</span>Tasarım</h3><p>İhtiyacınızı belirliyor, en uygun tasarımı oluşturuyoruz.</p></div>
+<div class="step"><div class="num" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5h3v14H4Z"/><path d="M17 4h3v16h-3"/><path d="M7 8h10M7 16h10"/><circle cx="12" cy="12" r="2.5"/><path d="M12 9.5V6M12 18v-3.5"/></svg></div><h3><span class="index">02</span>CNC İşleme</h3><p>Modern CNC makinelerimizle yüksek hassasiyetle üretiyoruz.</p></div>
+<div class="step"><div class="num" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 4.6-2.9 8-7 10-4.1-2-7-5.4-7-10V6l7-3Z"/><path d="m8.7 12.1 2.1 2.1 4.6-4.8"/></svg></div><h3><span class="index">03</span>Kontrol</h3><p>Tüm ürünleri kalite kontrol sürecinden geçiriyoruz.</p></div>
+<div class="step"><div class="num" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h11v10H3Z"/><path d="M14 10h3l4 4v3h-7Z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M5 4h6"/></svg></div><h3><span class="index">04</span>Teslimat</h3><p>Zamanında ve güvenli şekilde teslim ediyoruz.</p></div>
+</div></div></section>
 <div class="goldline"></div>
 
 <section id="videos"><div class="container video-layout"><div class="video-intro reveal"><div class="label">VİDEOLARIMIZ</div><h2 class="title">Üretim Aşamalarımızı<br>Keşfedin</h2><p class="copy">CNC üretim sürecimizi, makine çalışmalarımızı ve kapı modellerimizi videolarımızda izleyin.</p><a class="gold-btn" href="#videos">Tüm Videoları İzle &nbsp;→</a></div><div class="videos reveal">
@@ -82,16 +93,79 @@ footer{background:#090a08;padding:28px 0}.foot{display:grid;grid-template-column
 </div></div></section>
 <div class="goldline"></div>
 
-<section id="contact" class="contact-section"><div class="container contact-layout"><div class="contact-intro reveal"><div class="label">İLETİŞİM</div><h2 class="title">Hemen İletişime Geçin</h2><p class="copy">Projeleriniz, özel üretim talepleriniz ve fiyat teklifleri için bizimle iletişime geçebilirsiniz. Ekibimiz size en kısa sürede dönüş yapacaktır.</p><div class="contact-icons"><div class="contact-mini"><div class="ci">☎</div><b>0546 242 06 66</b><span>Bizi Arayın</span></div><div class="contact-mini"><div class="ci">✉</div><b>info@hatemcnc.com</b><span>E-Posta Gönderin</span></div><div class="contact-mini"><div class="ci">⌖</div><b>Sincan / Ankara</b><span>Atölyemizi Ziyaret Edin</span></div></div></div>
-<div class="formbox reveal"><form onsubmit="event.preventDefault();alert('Form servisi bağlandığında mesaj gönderilebilir.');"><div class="field"><i>♙</i><input required placeholder="Adınız Soyadınız"></div><div class="field"><i>⌕</i><input required placeholder="Telefon Numaranız"></div><div class="field"><i>✉</i><input type="email" placeholder="E-posta Adresiniz"></div><div class="field"><i>▱</i><textarea placeholder="Mesajınız"></textarea></div><button class="send" type="submit">Gönder &nbsp;→</button></form></div>
-<div class="map reveal"><iframe loading="lazy" src="https://www.google.com/maps?q=Ahi%20Evran%20233.%20Sk.%2012%2F1%20Sincan%20Ankara&output=embed" title="Hatem CNC Harita"></iframe></div></div></section>
+<section id="contact" class="contact-section"><div class="container contact-layout"><div class="contact-intro reveal"><div class="label">İLETİŞİM</div><h2 class="title">Hemen İletişime Geçin</h2><p class="copy">Projeleriniz, özel üretim talepleriniz ve fiyat teklifleri için bizimle iletişime geçebilirsiniz. Ekibimiz size en kısa sürede dönüş yapacaktır.</p><div class="contact-icons"><a class="contact-mini smart-contact" href="https://wa.me/905462420666" data-mobile-href="tel:+905462420666" data-desktop-href="https://wa.me/905462420666" target="_blank" rel="noopener"><div class="ci">☎</div><b>0546 242 06 66</b><span class="contact-action-label">WhatsApp ile Yazın</span></a><div class="contact-mini"><div class="ci">✉</div><b>info@hatemcnc.com</b><span>E-Posta Gönderin</span></div><div class="contact-mini"><div class="ci">⌖</div><b>Sincan / Ankara</b><span>Atölyemizi Ziyaret Edin</span></div></div></div>
+<div class="formbox reveal"><form id="whatsappForm"><div class="field"><i>♙</i><input id="waName" required autocomplete="name" placeholder="Adınız Soyadınız"></div><div class="field"><i>⌕</i><input id="waPhone" required inputmode="tel" autocomplete="tel" placeholder="Telefon Numaranız"></div><div class="field"><i>✉</i><input id="waEmail" type="email" autocomplete="email" placeholder="E-posta Adresiniz (opsiyonel)"></div><div class="field"><i>▱</i><textarea id="waMessage" required placeholder="Projeniz, adet, ölçü veya istediğiniz model hakkında kısa bilgi yazın"></textarea></div><button class="send" type="submit">WhatsApp'tan Gönder &nbsp;→</button><div class="form-note">Mesajınız doğrudan Hatem CNC WhatsApp hattında açılır; form verileri sunucuya kaydedilmez.</div></form></div>
+<div class="map reveal"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Hatem%20CNC%2C%2039.9647263%2C32.5666217&z=17&output=embed" title="Hatem CNC - Sincan Ankara Harita"></iframe></div></div></section>
 <div class="goldline"></div>
 
 <footer><div class="container foot"><div class="footbrand"><img src="assets/img/logo.jpg" alt="Hatem CNC"><div><strong>HATEM <span class="gold">CNC</span></strong><p>CNC Kapı üretiminde estetik, kalite ve güven.</p></div></div><div><h4>Hızlı Linkler</h4><div class="footlinks"><a href="#home">Ana Sayfa</a><a href="#about">Hakkımızda</a><a href="#services">Hizmetlerimiz</a><a href="#videos">Videolar</a><a href="#products">Ürünler</a><a href="#contact">İletişim</a></div></div><div><h4>Sosyal Medya</h4><div class="socials"><span>▶</span><span>◎</span><span>f</span></div></div><div style="display:flex;align-items:center;gap:14px;justify-content:flex-end"><div class="copyright">Tüm Hakları Saklıdır.<br>Hatem CNC © <span id="year"></span></div><a class="backtop" href="#home">↑</a></div></div></footer>
+
+<div class="model-modal" id="modelModal" aria-hidden="true">
+  <div class="model-modal-backdrop" data-close-modal></div>
+  <div class="model-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modelModalTitle">
+    <button class="model-modal-close" type="button" aria-label="Kapat" data-close-modal>×</button>
+    <div class="model-modal-media"><img id="modelModalImage" src="" alt=""></div>
+    <div class="model-modal-info">
+      <span class="label">HATEM CNC MODEL GALERİSİ</span>
+      <h3 id="modelModalTitle" class="serif"></h3>
+      <p id="modelModalDesc"></p>
+      <a class="gold-btn model-wa" id="modelModalWhatsapp" href="#" target="_blank" rel="noopener">Bu Model İçin WhatsApp'tan Teklif Al →</a>
+    </div>
+  </div>
+</div>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 document.querySelectorAll('.video-shell video').forEach(v=>{const shell=v.closest('.video-shell');v.addEventListener('play',()=>shell.querySelector('.play-badge').style.opacity='0');v.addEventListener('pause',()=>shell.querySelector('.play-badge').style.opacity='1')});
-document.querySelectorAll('a[href^="tel:"]').forEach(a=>a.addEventListener('click',()=>{if(typeof gtag==='function')gtag('event','phone_click',{event_category:'contact'})}));
+// Masaüstünde telefon aksiyonlarını WhatsApp'a, mobilde telefon aramasına yönlendir.
+function applySmartContactLinks(){
+  const isMobile = window.matchMedia('(max-width: 767px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  document.querySelectorAll('.smart-contact').forEach(a=>{
+    a.href = isMobile ? a.dataset.mobileHref : a.dataset.desktopHref;
+    if(isMobile){ a.removeAttribute('target'); } else { a.target = '_blank'; }
+    const label=a.querySelector('.contact-action-label');
+    if(label) label.textContent = isMobile ? 'Telefonla Arayın' : 'WhatsApp ile Yazın';
+  });
+}
+applySmartContactLinks();
+window.addEventListener('resize',applySmartContactLinks);
+
+// CNC model galerisi: modern lightbox/modal.
+const modal=document.getElementById('modelModal');
+const modalImg=document.getElementById('modelModalImage');
+const modalTitle=document.getElementById('modelModalTitle');
+const modalDesc=document.getElementById('modelModalDesc');
+const modalWa=document.getElementById('modelModalWhatsapp');
+function closeModelModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
+document.querySelectorAll('.zoom').forEach(btn=>btn.addEventListener('click',()=>{
+  const title=btn.dataset.title||'CNC Kapı Modeli';
+  modalImg.src=btn.dataset.image; modalImg.alt=title; modalTitle.textContent=title; modalDesc.textContent=btn.dataset.desc||'';
+  modalWa.href='https://wa.me/905462420666?text='+encodeURIComponent('Merhaba Hatem CNC, '+title+' modeli hakkında fiyat ve üretim bilgisi almak istiyorum.');
+  modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('modal-open');
+}));
+document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',closeModelModal));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModelModal();});
+
+// İletişim formunu WhatsApp mesajına çevir.
+document.getElementById('whatsappForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('waName').value.trim();
+  const phone=document.getElementById('waPhone').value.trim();
+  const email=document.getElementById('waEmail').value.trim();
+  const message=document.getElementById('waMessage').value.trim();
+  const text=[
+    'Merhaba Hatem CNC, web sitenizden teklif almak istiyorum.',
+    '',
+    'Ad Soyad: '+name,
+    'Telefon: '+phone,
+    email ? 'E-posta: '+email : '',
+    '',
+    'Talep / Proje:',
+    message
+  ].filter(Boolean).join('\n');
+  const url='https://wa.me/905462420666?text='+encodeURIComponent(text);
+  if(typeof gtag==='function')gtag('event','whatsapp_form_submit',{event_category:'contact'});
+  window.open(url,'_blank','noopener');
+});
 </script>
 </body></html>
