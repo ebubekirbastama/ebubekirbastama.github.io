@@ -1,5 +1,5 @@
 /* Offline app shell: update CACHE_VERSION when publishing a new release. */
-const CACHE_VERSION = 'ebs-prompter-v2';
+const CACHE_VERSION = 'ebs-prompter-v3';
 const APP_SHELL = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_VERSION).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));

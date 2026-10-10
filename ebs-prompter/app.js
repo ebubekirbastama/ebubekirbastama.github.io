@@ -3,23 +3,4 @@
 editor.addEventListener('input',()=>{stop();matched=-1;target=offset=seconds=0;clock();render(true)});for(const id of settingIds){$(id).addEventListener('input',()=>{if(id==='mode'){reset();$('voiceInfo').textContent=$('mode').value==='voice'?'Başlat düğmesiyle mikrofonu açın.':'Sabit hızlı otomatik kaydırma seçildi.'}render(false)})}$('play').onclick=$('miniPlay').onclick=play;$('reset').onclick=reset;$('full').onclick=full;$('exitFull').onclick=exitFull;$('example').onclick=()=>{stop();editor.value=example;matched=-1;target=offset=seconds=0;render(true);clock()};$('clear').onclick=()=>{if(confirm('Metin temizlensin mi?')){stop();editor.value='';matched=-1;target=offset=seconds=0;render(true);clock()}};$('download').onclick=()=>{const a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\ufeff'+editor.value],{type:'text/plain;charset=utf-8'}));a.href=u;a.download='EBS-Prompter-Metin.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};$('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>15*1024*1024)throw Error('Dosya 15 MB sınırını aşıyor');let content;if(/\.txt$/i.test(file.name))content=await file.text();else if(/\.docx$/i.test(file.name)){if(!window.mammoth)throw Error('Word okuyucu yüklenmedi; internet bağlantısını kontrol edin');content=(await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()})).value}else throw Error('Yalnızca .txt veya .docx yükleyin');if(!content.trim())throw Error('Boş dosya');stop();editor.value=content.trim();matched=-1;target=offset=seconds=0;render(true);clock();status(file.name+' yüklendi.')}catch(err){status(err.message,true)}finally{e.target.value=''}};window.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select')||e.target.isContentEditable)return;if(['Space','KeyF','KeyR','ArrowUp','ArrowDown'].includes(e.code))e.preventDefault();if(e.code==='Space')play();if(e.code==='KeyR')reset();if(e.code==='KeyF')full();if(e.code==='Escape')exitFull();if(['ArrowUp','ArrowDown'].includes(e.code)){$('speed').value=bound(+$('speed').value+(e.code==='ArrowUp'?5:-5),5,150);render()}});document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)fullUI(false)});window.addEventListener('resize',locate);screen.addEventListener('pointerdown',e=>{drag={y:e.clientY,start:offset};screen.setPointerCapture(e.pointerId)});screen.addEventListener('pointermove',e=>{if(!drag)return;stop();offset=bound(drag.start+drag.y-e.clientY,0,max());target=offset;locate()});for(const name of ['pointerup','pointercancel','lostpointercapture'])screen.addEventListener(name,()=>drag=null);restore();render(true);clock();if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
 
-// Progressive Web App installation and registration
-let deferredInstallPrompt = null;
-window.addEventListener('beforeinstallprompt', (event) => {
-  event.preventDefault();
-  deferredInstallPrompt = event;
-  const installButton = document.getElementById('installApp');
-  if (installButton) installButton.hidden = false;
-});
-window.addEventListener('appinstalled', () => {
-  deferredInstallPrompt = null;
-  const installButton = document.getElementById('installApp');
-  if (installButton) installButton.hidden = true;
-});
-document.getElementById('installApp')?.addEventListener('click', async () => {
-  if (!deferredInstallPrompt) return;
-  const promptEvent = deferredInstallPrompt;
-  deferredInstallPrompt = null;
-  document.getElementById('installApp').hidden = true;
-  await promptEvent.prompt();
-});
+// Kurulum istemini tarayıcı yönetir; beforeinstallprompt engellenmez.
