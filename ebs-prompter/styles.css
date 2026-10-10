@@ -1,0 +1,344 @@
+
+:root {
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  color:#eaf0ff;
+  background:#080d1a}
+* {
+  box-sizing:border-box}
+body {
+  margin:0}
+button,input,textarea,select {
+  font:inherit}
+button {
+  cursor:pointer;
+  border:1px solid #334365;
+  border-radius:11px;
+  background:#202f4d;
+  color:#edf3ff;
+  padding:11px 15px;
+  font-weight:650}
+button:hover {
+  background:#314366}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible {
+  outline:3px solid #91b7ff}
+header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 3vw;
+  background:#111a30;
+  border-bottom:1px solid #26314d}
+h1 {
+  font-size:19px;
+  margin:0}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:12px}
+.brandmark {
+  padding:13px;
+  background:#4979ef;
+  border-radius:12px;
+  font-weight:900}
+.sub,.hint {
+  font-size:12px;
+  color:#aabbd8}
+.layout {
+  display:grid;
+  grid-template-columns:minmax(290px,385px) minmax(0,1fr);
+  gap:18px;
+  max-width:1680px;
+  margin:auto;
+  padding:20px}
+.panel,.stage {
+  background:#111a2d;
+  border:1px solid #2b3754;
+  border-radius:17px;
+  overflow:hidden}
+.panel {
+  padding:20px;
+  align-self:start}
+h2 {
+  font-size:17px;
+  margin:0 0 9px}
+.help {
+  font-size:12px;
+  color:#a4b7d3;
+  line-height:1.6}
+.section {
+  margin-top:22px}
+textarea {
+  width:100%;
+  height:220px;
+  resize:vertical;
+  background:#090f1f;
+  color:#f0f4ff;
+  border:1px solid #354664;
+  border-radius:11px;
+  padding:12px;
+  line-height:1.65}
+.controls {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px}
+.file-btn {
+  background:#202f4d;
+  border:1px solid #334365;
+  border-radius:11px;
+  padding:11px 15px;
+  font-size:13px;
+  font-weight:650;
+  cursor:pointer}
+.file-btn input {
+  display:none}
+.field {
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin:15px 0 5px;
+  color:#b2c4e4}
+.field strong {
+  color:white}
+input[type=range] {
+  width:100%;
+  accent-color:#7da5ff}
+select {
+  width:100%;
+  border:1px solid #354664;
+  background:#0b1427;
+  color:#fff;
+  border-radius:10px;
+  padding:12px}
+.voicebox {
+  background:#14253e;
+  border:1px solid #35547e;
+  padding:14px;
+  border-radius:12px}
+.voicebox h3 {
+  font-size:14px;
+  margin:0 0 10px}
+.switches {
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  font-size:12px}
+.switches label {
+  display:flex;
+  gap:5px;
+  align-items:center}
+.status {
+  padding:13px;
+  border-radius:11px;
+  background:#173341;
+  color:#c9efff;
+  font-size:12px;
+  line-height:1.5;
+  margin-top:18px}
+.status.error {
+  background:#421b28;
+  color:#ffd3d7}
+.stage {
+  display:flex;
+  flex-direction:column;
+  min-height:640px}
+.stage-top {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  padding:16px}
+.meters {
+  font-size:12px;
+  color:#a6b7d5}
+.progress {
+  height:4px;
+  background:#2b3751}
+.progress>div {
+  height:100%;
+  width:0;
+  background:#7099ff}
+.screen-wrap {
+  flex:1;
+  padding:16px;
+  display:flex;
+  min-height:450px}
+.screen {
+  flex:1;
+  position:relative;
+  overflow:hidden;
+  background:#030405;
+  border:1px solid #35415b;
+  border-radius:10px;
+  min-height:420px;
+  touch-action:pan-y}
+.screen.light {
+  background:#f9f8f6}
+.script {
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  padding:0 6%;
+  font-size:46px;
+  font-weight:700;
+  line-height:1.5;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  text-align:center;
+  color:#fff;
+  will-change:transform}
+.screen.light .script {
+  color:#151515}
+.script .spoken {
+  color:#8ab4ff}
+.script .active-word {
+  background:#326fe9;
+  color:#fff;
+  border-radius:4px}
+.guide {
+  position:absolute;
+  top:32%;
+  left:0;
+  right:0;
+  border-top:2px solid #f75072;
+  pointer-events:none}
+.screen.noguide .guide {
+  display:none}
+.screen.light .spoken {
+  color:#1a59bd}
+.stage-controls {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:0 16px 14px}
+.stage-controls button {
+  flex:1}
+.primary {
+  background:#4879f5;
+  border-color:#4879f5}
+.hint {
+  padding:0 16px 17px;
+  line-height:1.6}
+.mini {
+  display:none;
+  position:fixed;
+  right:14px;
+  bottom:14px;
+  z-index:20;
+  gap:8px;
+  opacity:.65}
+.mini:hover {
+  opacity:1}
+.fullscreen header,.fullscreen .panel,.fullscreen .stage-top,.fullscreen .stage-controls,.fullscreen .hint {
+  display:none}
+.fullscreen .layout {
+  padding:0;
+  display:block;
+  max-width:none}
+.fullscreen .stage {
+  border:none;
+  border-radius:0;
+  height:100dvh;
+  min-height:100dvh}
+.fullscreen .screen-wrap {
+  padding:0;
+  min-height:0}
+.fullscreen .screen {
+  min-height:0;
+  border:0;
+  border-radius:0}
+.fullscreen .mini {
+  display:flex}
+footer {
+  text-align:center;
+  color:#8091b2;
+  font-size:11px;
+  padding:16px}
+.fullscreen footer {
+  display:none}
+@media(max-width:980px) {
+  .layout {
+  grid-template-columns:1fr}
+.stage {
+  order:0}
+.panel {
+  order:1}
+}
+@media(max-width:600px) {
+  header {
+  padding:12px}
+.layout {
+  padding:8px;
+  gap:9px}
+.panel {
+  padding:15px}
+.stage {
+  min-height:520px}
+.screen-wrap {
+  padding:9px;
+  min-height:350px}
+.screen {
+  min-height:330px}
+.script {
+  padding:0 16px}
+.stage-controls {
+  padding:0 9px 10px}
+.sub {
+  display:none}
+}
+
+
+/* SEO information and installation area */
+.info-section {
+  max-width:1400px;
+  margin:12px auto 36px;
+  padding:24px;
+  color:#cbd8f0;
+  line-height:1.7}
+
+.info-section h2 {
+  font-size:24px;
+  color:#fff;
+  line-height:1.3}
+
+.info-section h3 {
+  font-size:17px;
+  color:#fff}
+
+.info-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+  margin:24px 0}
+
+.info-grid section,.install-box {
+  background:#111a2d;
+  border:1px solid #2b3754;
+  border-radius:14px;
+  padding:20px}
+
+.info-section p {
+  margin:10px 0}
+
+#installApp {
+  background:#4879f5;
+  border-color:#4879f5;
+  margin:6px 0}
+
+#installApp[hidden] {
+  display:none}
+
+@media(max-width:750px) {
+  .info-grid {
+  grid-template-columns:1fr}
+.info-section {
+  padding:16px}
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+  scroll-behavior:auto!important;
+  transition:none!important}
+}
+

@@ -1,7 +1,282 @@
-<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b1020"><title>EBS Prompter | Voice Follow</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><style>
-:root{font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:#eaf0ff;background:#080d1a}*{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid #334365;border-radius:11px;background:#202f4d;color:#edf3ff;padding:11px 15px;font-weight:650}button:hover{background:#314366}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #91b7ff}header{display:flex;align-items:center;justify-content:space-between;padding:18px 3vw;background:#111a30;border-bottom:1px solid #26314d}h1{font-size:19px;margin:0}.brand{display:flex;align-items:center;gap:12px}.brandmark{padding:13px;background:#4979ef;border-radius:12px;font-weight:900}.sub,.hint{font-size:12px;color:#aabbd8}.layout{display:grid;grid-template-columns:minmax(290px,385px) minmax(0,1fr);gap:18px;max-width:1680px;margin:auto;padding:20px}.panel,.stage{background:#111a2d;border:1px solid #2b3754;border-radius:17px;overflow:hidden}.panel{padding:20px;align-self:start}h2{font-size:17px;margin:0 0 9px}.help{font-size:12px;color:#a4b7d3;line-height:1.6}.section{margin-top:22px}textarea{width:100%;height:220px;resize:vertical;background:#090f1f;color:#f0f4ff;border:1px solid #354664;border-radius:11px;padding:12px;line-height:1.65}.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.file-btn{background:#202f4d;border:1px solid #334365;border-radius:11px;padding:11px 15px;font-size:13px;font-weight:650;cursor:pointer}.file-btn input{display:none}.field{display:flex;justify-content:space-between;font-size:12px;margin:15px 0 5px;color:#b2c4e4}.field strong{color:white}input[type=range]{width:100%;accent-color:#7da5ff}select{width:100%;border:1px solid #354664;background:#0b1427;color:#fff;border-radius:10px;padding:12px}.voicebox{background:#14253e;border:1px solid #35547e;padding:14px;border-radius:12px}.voicebox h3{font-size:14px;margin:0 0 10px}.switches{display:flex;flex-wrap:wrap;gap:12px;font-size:12px}.switches label{display:flex;gap:5px;align-items:center}.status{padding:13px;border-radius:11px;background:#173341;color:#c9efff;font-size:12px;line-height:1.5;margin-top:18px}.status.error{background:#421b28;color:#ffd3d7}.stage{display:flex;flex-direction:column;min-height:640px}.stage-top{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:16px}.meters{font-size:12px;color:#a6b7d5}.progress{height:4px;background:#2b3751}.progress>div{height:100%;width:0;background:#7099ff}.screen-wrap{flex:1;padding:16px;display:flex;min-height:450px}.screen{flex:1;position:relative;overflow:hidden;background:#030405;border:1px solid #35415b;border-radius:10px;min-height:420px;touch-action:pan-y}.screen.light{background:#f9f8f6}.script{position:absolute;top:0;left:0;right:0;padding:0 6%;font-size:46px;font-weight:700;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;text-align:center;color:#fff;will-change:transform}.screen.light .script{color:#151515}.script .spoken{color:#8ab4ff}.script .active-word{background:#326fe9;color:#fff;border-radius:4px}.guide{position:absolute;top:32%;left:0;right:0;border-top:2px solid #f75072;pointer-events:none}.screen.noguide .guide{display:none}.screen.light .spoken{color:#1a59bd}.stage-controls{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 14px}.stage-controls button{flex:1}.primary{background:#4879f5;border-color:#4879f5}.hint{padding:0 16px 17px;line-height:1.6}.mini{display:none;position:fixed;right:14px;bottom:14px;z-index:20;gap:8px;opacity:.65}.mini:hover{opacity:1}.fullscreen header,.fullscreen .panel,.fullscreen .stage-top,.fullscreen .stage-controls,.fullscreen .hint{display:none}.fullscreen .layout{padding:0;display:block;max-width:none}.fullscreen .stage{border:none;border-radius:0;height:100dvh;min-height:100dvh}.fullscreen .screen-wrap{padding:0;min-height:0}.fullscreen .screen{min-height:0;border:0;border-radius:0}.fullscreen .mini{display:flex}footer{text-align:center;color:#8091b2;font-size:11px;padding:16px}.fullscreen footer{display:none}@media(max-width:980px){.layout{grid-template-columns:1fr}.stage{order:0}.panel{order:1}}@media(max-width:600px){header{padding:12px}.layout{padding:8px;gap:9px}.panel{padding:15px}.stage{min-height:520px}.screen-wrap{padding:9px;min-height:350px}.screen{min-height:330px}.script{padding:0 16px}.stage-controls{padding:0 9px 10px}.sub{display:none}}
-</style></head><body><header><div class="brand"><span class="brandmark">EBS</span><div><h1>EBS Prompter</h1><div class="sub">Profesyonel teleprompter · Voice Follow</div></div></div><span class="sub">Haber · Sunum · Video · Canlı Yayın</span></header><main class="layout"><aside class="panel"><h2>Metin stüdyosu</h2><div class="help">Metninizi yazın, yapıştırın veya TXT / Word DOCX olarak aktarın.</div><div class="section"><div class="field"><label for="editor">Konuşma metni</label><strong id="count">0 kelime</strong></div><textarea id="editor" placeholder="Konuşmanızı buraya yazın..."></textarea><div class="controls"><label class="file-btn">↑ Dosya yükle<input id="file" type="file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></label><button id="example">Örnek</button><button id="download">TXT indir</button><button id="clear">Temizle</button></div><p class="help">Word .docx desteklenir; eski .doc desteklenmez.</p></div><div class="section voicebox"><h3>🎙 EBS Voice Follow</h3><label class="field" for="mode">Okuma modu</label><select id="mode"><option value="auto">Sabit hızda otomatik kaydır</option><option value="voice">Sesimi takip et · Türkçe</option></select><p id="voiceInfo" class="help" aria-live="polite">Sesli modda konuştuğunuz kelimeler metinle eşleştirilir ve kaydırma otomatik yapılır.</p></div><div class="section"><h2>Okuma ayarları</h2><div class="field"><label for="speed">Kaydırma hızı (sabit mod)</label><strong id="speedNum"></strong></div><input id="speed" type="range" min="5" max="150" value="35"><div class="field"><label for="font">Yazı boyutu</label><strong id="fontNum"></strong></div><input id="font" type="range" min="20" max="100" step="2" value="46"><div class="field"><label for="line">Satır aralığı</label><strong id="lineNum"></strong></div><input id="line" type="range" min="1.1" max="2.2" step="0.1" value="1.5"></div><div class="section"><h2>Görüntü seçenekleri</h2><div class="switches"><label><input id="mirror" type="checkbox">Ayna</label><label><input id="guide" type="checkbox" checked>Okuma çizgisi</label><label><input id="light" type="checkbox">Açık tema</label><label><input id="loop" type="checkbox">Tekrar oynat</label></div></div><div id="status" class="status" role="status">Hazır. Metin ekleyip Başlat'a basın.</div></aside><section class="stage"><div class="stage-top"><h2>Canlı prompter</h2><div class="meters"><span id="timer">00:00</span> · <span id="percentage">%0</span></div></div><div class="progress"><div id="progress"></div></div><div class="screen-wrap"><div id="screen" class="screen"><div id="script" class="script"></div><div class="guide"></div></div></div><div class="stage-controls"><button id="play" class="primary">▶ Başlat</button><button id="reset">↺ Baştan al</button><button id="full">⛶ Tam ekran</button></div><div class="hint">Boşluk: başlat / duraklat · F: tam ekran · R: başa dön · ↑ ↓: hız. Mikrofon özelliği HTTPS gerektirir ve desteklenen tarayıcılarda çalışır. Bazı tarayıcılar ses verilerini konuşma tanıma servisine gönderebilir.</div></section></main><div class="mini"><button id="miniPlay">⏯</button><button id="exitFull">✕ Çık</button></div><footer>© EBS Prompter · ebubekirbastama.com.tr</footer><script src="https://cdn.jsdelivr.net/npm/mammoth@1.11.0/mammoth.browser.min.js" defer></script><script>
-(()=>{'use strict';const $=id=>document.getElementById(id),editor=$('editor'),screen=$('screen'),script=$('script');let running=false,offset=0,target=0,last=null,seconds=0,raf=0,rec=null,listening=false,retry=0,matched=-1,words=[],drag=null;const settingIds=['mode','speed','font','line','mirror','guide','light','loop'];const example='Merhaba. EBS Prompter sesli takip özelliğine hoş geldiniz.\n\nBu uygulama konuşmanızı dinleyerek okuduğunuz kelimeleri takip eder. Siz durduğunuzda metin de durur. Yeniden konuştuğunuzda kaldığınız yerden devam eder.\n\nİyi yayınlar dileriz!';const bound=(n,a,b)=>Math.max(a,Math.min(b,n));function norm(s){return s.toLocaleLowerCase('tr-TR').replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ş/g,'s').replace(/ç/g,'c').replace(/ö/g,'o').replace(/ü/g,'u').replace(/[^a-z0-9]/g,'')}function status(s,error=false){$('status').textContent=s;$('status').classList.toggle('error',error)}function max(){return Math.max(0,script.offsetHeight+screen.clientHeight*.72)}function locate(){script.style.top=screen.clientHeight*.32+'px';script.style.transform=`translate3d(0,${-offset}px,0) ${$('mirror').checked?'scaleX(-1)':''}`;const p=bound(offset/Math.max(1,max())*100,0,100);$('progress').style.width=p+'%';$('percentage').textContent='%'+Math.round(p)}function build(){script.replaceChildren();words=[];const parts=(editor.value.trim()||'Metninizi ekleyin ve okumaya başlayın.').match(/\s+|\S+/g)||[];for(const part of parts){if(/^\s+$/.test(part)){script.append(document.createTextNode(part));continue}const span=document.createElement('span');span.textContent=part;script.append(span);words.push({node:span,token:norm(part)})}paint()}function paint(){for(let i=0;i<words.length;i++){words[i].node.classList.toggle('spoken',i<matched);words[i].node.classList.toggle('active-word',i===matched)}}function save(){try{localStorage.setItem('ebs-prompter-voice-v1',JSON.stringify({content:editor.value,settings:Object.fromEntries(settingIds.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]))}))}catch{}}function restore(){try{const d=JSON.parse(localStorage.getItem('ebs-prompter-voice-v1')||localStorage.getItem('ebs-prompter-v1')||'null');if(!d)return;editor.value=d.content||'';for(const id of settingIds){if(d.settings?.[id]!==undefined){if($(id).type==='checkbox')$(id).checked=!!d.settings[id];else $(id).value=d.settings[id]}}}catch{}}function render(rebuild=false){if(rebuild)build();script.style.fontSize=$('font').value+'px';script.style.lineHeight=$('line').value;$('fontNum').textContent=$('font').value+' px';$('speedNum').textContent=$('speed').value+' px/sn';$('lineNum').textContent=(+$('line').value).toFixed(1);$('count').textContent=(editor.value.trim().match(/\S+/g)||[]).length+' kelime';screen.classList.toggle('light',$('light').checked);screen.classList.toggle('noguide',!$('guide').checked);offset=bound(offset,0,max());locate();save()}function clock(){$('timer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(Math.floor(seconds%60)).padStart(2,'0')}function updateButtons(){$('play').textContent=running?'Ⅱ Duraklat':'▶ Başlat';$('miniPlay').textContent=running?'Ⅱ':'▶'}function stop(){running=false;listening=false;clearTimeout(retry);if(rec){const r=rec;rec=null;try{r.abort()}catch{}}cancelAnimationFrame(raf);last=null;updateButtons()}function reset(){stop();matched=-1;target=offset=seconds=0;paint();clock();locate();status('Baştan başlatmaya hazır.')}function tick(t){if(!running)return;if(last!==null){const dt=Math.min(.1,(t-last)/1000);seconds+=dt;if($('mode').value==='voice'){const distance=target-offset;offset+=bound(distance,0,Math.max(1,Math.min(500,Math.abs(distance)*5))*dt);if(Math.abs(distance)<1)offset=target}else{offset+=Number($('speed').value)*dt;if(offset>=max()){offset=max();if($('loop').checked){offset=0;seconds=0}else{stop();status('Metin tamamlandı.')}}}clock();locate()}last=t;if(running)raf=requestAnimationFrame(tick)}function match(transcript){const tokens=(transcript.match(/[\p{L}\p{N}]+/gu)||[]).map(norm).filter(Boolean);if(!tokens.length)return;const next=matched+1;let winner=-1,scoreBest=0;for(let i=Math.max(0,next-3);i<Math.min(words.length,next+75);i++){let points=0,agree=0;for(let j=0;j<Math.min(5,tokens.length);j++){if(words[i-j]?.token===tokens[tokens.length-1-j]){points+=j===0?3:2;agree++}}if(i<next)points-=4;if(i>next+25)points-=2;if(agree===1&&tokens.at(-1)?.length<5)points-=2;if(points>scoreBest){scoreBest=points;winner=i}}if(winner>=next&&scoreBest>=3){matched=winner;paint();target=bound(words[winner].node.offsetTop-screen.clientHeight*.04,0,max());$('voiceInfo').textContent=`🎙 Takip: ${winner+1}/${words.length} kelime · ${words[winner].node.textContent}`;if(winner===words.length-1)$('voiceInfo').textContent='Metnin sonuna ulaşıldı. Okuma tamamlandı.'}}function startVoice(){const Speech=window.SpeechRecognition||window.webkitSpeechRecognition;if(!Speech){stop();status('Ses tanıma bu tarayıcıda desteklenmiyor. Sabit hız modunu seçin.',true);return}if(!running||!listening)return;const r=new Speech();rec=r;r.lang='tr-TR';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;let complete='';r.onresult=e=>{if(!listening||rec!==r)return;let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const value=e.results[i][0].transcript;if(e.results[i].isFinal)complete+=' '+value;else interim+=' '+value}match((complete+' '+interim).trim())};r.onerror=e=>{if(!listening)return;if(['not-allowed','service-not-allowed','audio-capture','network'].includes(e.error)){stop();status('Mikrofon veya ses tanıma hatası: '+e.error+'. HTTPS ve izinleri kontrol edin.',true);$('voiceInfo').textContent='Sesli takip durdu. Sabit hızlı mod kullanılabilir.'}};r.onend=()=>{if(rec!==r)return;rec=null;if(listening&&running)retry=setTimeout(startVoice,500)};try{r.start();$('voiceInfo').textContent='🎙 Dinleniyor. Metninizi yüksek sesle okuyun.'}catch(e){stop();status('Ses tanıma başlatılamadı: '+e.message,true)}}function play(){if(running){stop();status('Duraklatıldı.');return}if(!editor.value.trim()){status('Önce metin ekleyin.',true);return}if(offset>=max())offset=0;running=true;last=null;updateButtons();if($('mode').value==='voice'){listening=true;startVoice();status('Sesli takip modu etkin.')}else status('Sabit hızlı okuma başladı.');if(running)raf=requestAnimationFrame(tick)}function fullUI(on){document.body.classList.toggle('fullscreen',on);requestAnimationFrame(locate)}async function full(){if(document.body.classList.contains('fullscreen')){exitFull();return}fullUI(true);try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch{}requestAnimationFrame(locate)}function exitFull(){fullUI(false);if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
-editor.addEventListener('input',()=>{stop();matched=-1;target=offset=seconds=0;clock();render(true)});for(const id of settingIds){$(id).addEventListener('input',()=>{if(id==='mode'){reset();$('voiceInfo').textContent=$('mode').value==='voice'?'Başlat düğmesiyle mikrofonu açın.':'Sabit hızlı otomatik kaydırma seçildi.'}render(false)})}$('play').onclick=$('miniPlay').onclick=play;$('reset').onclick=reset;$('full').onclick=full;$('exitFull').onclick=exitFull;$('example').onclick=()=>{stop();editor.value=example;matched=-1;target=offset=seconds=0;render(true);clock()};$('clear').onclick=()=>{if(confirm('Metin temizlensin mi?')){stop();editor.value='';matched=-1;target=offset=seconds=0;render(true);clock()}};$('download').onclick=()=>{const a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\ufeff'+editor.value],{type:'text/plain;charset=utf-8'}));a.href=u;a.download='EBS-Prompter-Metin.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};$('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>15*1024*1024)throw Error('Dosya 15 MB sınırını aşıyor');let content;if(/\.txt$/i.test(file.name))content=await file.text();else if(/\.docx$/i.test(file.name)){if(!window.mammoth)throw Error('Word okuyucu yüklenmedi; internet bağlantısını kontrol edin');content=(await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()})).value}else throw Error('Yalnızca .txt veya .docx yükleyin');if(!content.trim())throw Error('Boş dosya');stop();editor.value=content.trim();matched=-1;target=offset=seconds=0;render(true);clock();status(file.name+' yüklendi.')}catch(err){status(err.message,true)}finally{e.target.value=''}};window.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select')||e.target.isContentEditable)return;if(['Space','KeyF','KeyR','ArrowUp','ArrowDown'].includes(e.code))e.preventDefault();if(e.code==='Space')play();if(e.code==='KeyR')reset();if(e.code==='KeyF')full();if(e.code==='Escape')exitFull();if(['ArrowUp','ArrowDown'].includes(e.code)){$('speed').value=bound(+$('speed').value+(e.code==='ArrowUp'?5:-5),5,150);render()}});document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)fullUI(false)});window.addEventListener('resize',locate);screen.addEventListener('pointerdown',e=>{drag={y:e.clientY,start:offset};screen.setPointerCapture(e.pointerId)});screen.addEventListener('pointermove',e=>{if(!drag)return;stop();offset=bound(drag.start+drag.y-e.clientY,0,max());target=offset;locate()});for(const name of ['pointerup','pointercancel','lostpointercapture'])screen.addEventListener(name,()=>drag=null);restore();render(true);clock();if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
-})();
-</script></body></html>
+<!doctype html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+  <meta content="#0b1020" name="theme-color"/>
+  <title>
+   &Uuml;cretsiz Online Teleprompter ve Ses Takipli Prompter | EBS Prompter
+  </title>
+  <link href="manifest.webmanifest" rel="manifest"/>
+  <meta content="EBS Prompter ile &uuml;cretsiz online teleprompter kullan&inodot;n. T&uuml;rk&ccedil;e ses takibi, otomatik metin kayd&inodot;rma, ayna modu, tam ekran ve Word dosyas&inodot; deste&gbreve;i. Android ve masa&uuml;st&uuml;ne kurun." name="description"/>
+  <meta content="index, follow, max-image-preview:large" name="robots"/>
+  <meta content="Ebubekir Bastama" name="author"/>
+  <link href="https://ebubekirbastama.com.tr/prompter/" rel="canonical"/>
+  <meta content="website" property="og:type"/>
+  <meta content="tr_TR" property="og:locale"/>
+  <meta content="EBS Prompter" property="og:site_name"/>
+  <meta content="EBS Prompter | &Uuml;cretsiz Ses Takipli Online Teleprompter" property="og:title"/>
+  <meta content="Sesinizi takip eden &uuml;cretsiz T&uuml;rk&ccedil;e teleprompter: metin kayd&inodot;rma, ayna modu, tam ekran ve cihaz&inodot;n&inodot;za kurulum." property="og:description"/>
+  <meta content="https://ebubekirbastama.com.tr/prompter/" property="og:url"/>
+  <meta content="https://ebubekirbastama.com.tr/prompter/og-image.png" property="og:image"/>
+  <meta content="1200" property="og:image:width"/>
+  <meta content="630" property="og:image:height"/>
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="EBS Prompter | &Uuml;cretsiz Online Teleprompter" name="twitter:title"/>
+  <meta content="Ses takipli, &uuml;cretsiz T&uuml;rk&ccedil;e prompter. Masa&uuml;st&uuml; ve mobil cihazlara kurun." name="twitter:description"/>
+  <meta content="https://ebubekirbastama.com.tr/prompter/og-image.png" name="twitter:image"/>
+  <meta content="EBS Prompter" name="application-name"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="EBS Prompter" name="apple-mobile-web-app-title"/>
+  <link href="icons/apple-touch-icon.png" rel="apple-touch-icon"/>
+  <link href="icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
+  <link href="styles.css" rel="stylesheet"/>
+  <script type="application/ld+json">
+   {"@context":"https://schema.org","@type":"WebApplication","name":"EBS Prompter","url":"https://ebubekirbastama.com.tr/prompter/","description":"Türkçe ses takipli, ücretsiz online teleprompter ve prompter uygulaması.","applicationCategory":"MultimediaApplication","operatingSystem":"Android, Windows, macOS, Linux, iOS, iPadOS","inLanguage":"tr-TR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"},"author":{"@type":"Person","name":"Ebubekir Bastama"}}
+  </script>
+ </head>
+ <body>
+  <header>
+   <div class="brand">
+    <span class="brandmark">
+     EBS
+    </span>
+    <div>
+     <h1>
+      EBS Prompter
+     </h1>
+     <p class="sub">
+      Profesyonel teleprompter &middot; Voice Follow
+     </p>
+    </div>
+   </div>
+   <span class="sub">
+    Haber &middot; Sunum &middot; Video &middot; Canl&inodot; Yay&inodot;n
+   </span>
+  </header>
+  <main class="layout">
+   <aside class="panel">
+    <h2>
+     Metin st&uuml;dyosu
+    </h2>
+    <p class="help">
+     Metninizi yaz&inodot;n, yap&inodot;&scedil;t&inodot;r&inodot;n veya TXT / Word DOCX olarak aktar&inodot;n.
+    </p>
+    <div class="section">
+     <div class="field">
+      <label for="editor">
+       Konu&scedil;ma metni
+      </label>
+      <strong id="count">
+       0 kelime
+      </strong>
+     </div>
+     <textarea id="editor" placeholder="Konu&scedil;man&inodot;z&inodot; buraya yaz&inodot;n..."></textarea>
+     <div class="controls">
+      <label class="file-btn">
+       &uarr; Dosya y&uuml;kle
+       <input accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-label="TXT veya DOCX dosyas&inodot; se&ccedil;" id="file" type="file"/>
+      </label>
+      <button id="example" type="button">
+       &Ouml;rnek
+      </button>
+      <button id="download" type="button">
+       TXT indir
+      </button>
+      <button id="clear" type="button">
+       Temizle
+      </button>
+     </div>
+     <p class="help">
+      Word .docx desteklenir; eski .doc desteklenmez.
+     </p>
+    </div>
+    <div class="section voicebox">
+     <h3>
+      🎙 EBS Voice Follow
+     </h3>
+     <label class="field" for="mode">
+      Okuma modu
+     </label>
+     <select id="mode">
+      <option value="auto">
+       Sabit h&inodot;zda otomatik kayd&inodot;r
+      </option>
+      <option value="voice">
+       Sesimi takip et &middot; T&uuml;rk&ccedil;e
+      </option>
+     </select>
+     <p aria-live="polite" class="help" id="voiceInfo">
+      Sesli modda konu&scedil;tu&gbreve;unuz kelimeler metinle e&scedil;le&scedil;tirilir ve kayd&inodot;rma otomatik yap&inodot;l&inodot;r.
+     </p>
+    </div>
+    <div class="section">
+     <h2>
+      Okuma ayarlar&inodot;
+     </h2>
+     <div class="field">
+      <label for="speed">
+       Kayd&inodot;rma h&inodot;z&inodot; (sabit mod)
+      </label>
+      <strong id="speedNum">
+      </strong>
+     </div>
+     <input id="speed" max="150" min="5" type="range" value="35"/>
+     <div class="field">
+      <label for="font">
+       Yaz&inodot; boyutu
+      </label>
+      <strong id="fontNum">
+      </strong>
+     </div>
+     <input id="font" max="100" min="20" step="2" type="range" value="46"/>
+     <div class="field">
+      <label for="line">
+       Sat&inodot;r aral&inodot;&gbreve;&inodot;
+      </label>
+      <strong id="lineNum">
+      </strong>
+     </div>
+     <input id="line" max="2.2" min="1.1" step="0.1" type="range" value="1.5"/>
+    </div>
+    <div class="section">
+     <h2>
+      G&ouml;r&uuml;nt&uuml; se&ccedil;enekleri
+     </h2>
+     <div class="switches">
+      <label>
+       <input id="mirror" type="checkbox"/>
+       Ayna
+      </label>
+      <label>
+       <input checked="" id="guide" type="checkbox"/>
+       Okuma &ccedil;izgisi
+      </label>
+      <label>
+       <input id="light" type="checkbox"/>
+       A&ccedil;&inodot;k tema
+      </label>
+      <label>
+       <input id="loop" type="checkbox"/>
+       Tekrar oynat
+      </label>
+     </div>
+    </div>
+    <div class="status" id="status" role="status">
+     Haz&inodot;r. Metin ekleyip Ba&scedil;lat'a bas&inodot;n.
+    </div>
+   </aside>
+   <section class="stage">
+    <div class="stage-top">
+     <h2>
+      Canl&inodot; prompter
+     </h2>
+     <div class="meters">
+      <span id="timer">
+       00:00
+      </span>
+      &middot;
+      <span id="percentage">
+       %0
+      </span>
+     </div>
+    </div>
+    <div class="progress">
+     <div aria-label="Okuma ilerlemesi" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" id="progress" role="progressbar">
+     </div>
+    </div>
+    <div class="screen-wrap">
+     <div aria-label="Teleprompter okuma ekran&inodot;" class="screen" id="screen" tabindex="0">
+      <div class="script" id="script">
+      </div>
+      <div class="guide">
+      </div>
+     </div>
+    </div>
+    <div class="stage-controls">
+     <button class="primary" id="play" type="button">
+      ▶ Ba&scedil;lat
+     </button>
+     <button aria-label="Metni ba&scedil;tan al" id="reset" type="button">
+      &olarr; Ba&scedil;tan al
+     </button>
+     <button aria-label="Tam ekrana ge&ccedil;" id="full" type="button">
+      ⛶ Tam ekran
+     </button>
+    </div>
+    <div class="hint">
+     Bo&scedil;luk: ba&scedil;lat / duraklat &middot; F: tam ekran &middot; R: ba&scedil;a d&ouml;n &middot; &uarr; &darr;: h&inodot;z. Mikrofon &ouml;zelli&gbreve;i HTTPS gerektirir ve desteklenen taray&inodot;c&inodot;larda &ccedil;al&inodot;&scedil;&inodot;r. Baz&inodot; taray&inodot;c&inodot;lar ses verilerini konu&scedil;ma tan&inodot;ma servisine g&ouml;nderebilir.
+    </div>
+   </section>
+  </main>
+  <div aria-label="Tam ekran kontrolleri" class="mini">
+   <button aria-label="Okumay&inodot; ba&scedil;lat veya duraklat" id="miniPlay" type="button">
+    ⏯
+   </button>
+   <button aria-label="Tam ekrandan &ccedil;&inodot;k" id="exitFull" type="button">
+    ✕ &Ccedil;&inodot;k
+   </button>
+  </div>
+  <section aria-labelledby="about-title" class="info-section">
+   <h2 id="about-title">
+    &Uuml;cretsiz Online Teleprompter &ndash; EBS Prompter
+   </h2>
+   <p>
+    EBS Prompter, haber sunumlar&inodot;, video &ccedil;ekimleri, canl&inodot; yay&inodot;nlar, konu&scedil;malar ve ders anlat&inodot;mlar&inodot; i&ccedil;in geli&scedil;tirilmi&scedil; &uuml;cretsiz T&uuml;rk&ccedil;e teleprompter uygulamas&inodot;d&inodot;r. Haz&inodot;rlad&inodot;&gbreve;&inodot;n&inodot;z metni ekran &uuml;zerinde ak&inodot;c&inodot; bi&ccedil;imde okuyabilir, kayd&inodot;rma h&inodot;z&inodot;n&inodot; ve yaz&inodot; boyutunu ayarlayabilirsiniz.
+   </p>
+   <div class="info-grid">
+    <section>
+     <h3>
+      Ses takipli prompter
+     </h3>
+     <p>
+      Desteklenen taray&inodot;c&inodot;larda mikrofon izni vererek T&uuml;rk&ccedil;e konu&scedil;man&inodot;zla metni e&scedil;le&scedil;tirebilirsiniz. Ses tan&inodot;ma taray&inodot;c&inodot;ya ve ba&gbreve;lant&inodot; durumuna ba&gbreve;l&inodot;d&inodot;r.
+     </p>
+    </section>
+    <section>
+     <h3>
+      Video, haber ve sunum i&ccedil;in
+     </h3>
+     <p>
+      Otomatik kayd&inodot;rma, ayna modu, tam ekran, okuma &ccedil;izgisi, TXT ve Word DOCX i&ccedil;e aktarma &ouml;zelliklerini kullan&inodot;n.
+     </p>
+    </section>
+    <section>
+     <h3>
+      Android, tablet ve bilgisayara y&uuml;kleyin
+     </h3>
+     <p>
+      Uygulamay&inodot; uyumlu taray&inodot;c&inodot;lar&inodot;n kurulum se&ccedil;ene&gbreve;iyle ana ekran&inodot;n&inodot;za veya masa&uuml;st&uuml;n&uuml;ze ekleyebilirsiniz. Daha &ouml;nce a&ccedil;&inodot;lm&inodot;&scedil; uygulaman&inodot;n temel &ouml;zellikleri &ccedil;evrimd&inodot;&scedil;&inodot; da kullan&inodot;labilir; sesli tan&inodot;ma ve Word i&ccedil;e aktarma internet gerektirebilir.
+     </p>
+    </section>
+   </div>
+   <div aria-labelledby="install-title" class="install-box">
+    <h3 id="install-title">
+     EBS Prompter'&inodot; cihaz&inodot;n&inodot;za kurun
+    </h3>
+    <button hidden="" id="installApp" type="button">
+     Uygulamay&inodot; y&uuml;kle
+    </button>
+    <p id="installHelp">
+     Android Chrome: taray&inodot;c&inodot; men&uuml;s&uuml;nden
+     <strong>
+      Uygulamay&inodot; y&uuml;kle
+     </strong>
+     veya
+     <strong>
+      Ana ekrana ekle
+     </strong>
+     se&ccedil;ene&gbreve;ini kullan&inodot;n. Bilgisayarda Chrome/Edge adres &ccedil;ubu&gbreve;undaki y&uuml;kleme simgesini kullan&inodot;n. iPhone/iPad Safari'de Payla&scedil; &rarr; Ana Ekrana Ekle'yi se&ccedil;in.
+    </p>
+   </div>
+  </section>
+  <footer>
+   &copy; EBS Prompter &middot; ebubekirbastama.com.tr
+  </footer>
+  <script crossorigin="anonymous" defer="" src="https://cdn.jsdelivr.net/npm/mammoth@1.11.0/mammoth.browser.min.js">
+  </script>
+  <script defer="True" src="app.js">
+  </script>
+ </body>
+</html>
