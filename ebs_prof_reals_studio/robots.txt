@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ebubekirbastama.com.tr/sitemap.xml
