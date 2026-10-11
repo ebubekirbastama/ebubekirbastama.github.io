@@ -1,5 +1,5 @@
 /* Reels Studio – service worker (çevrimdışı çalışma). Güncelleme için V sürümünü artırın. */
-const V='reels-studio-v1';
+const V='reels-studio-v3';
 const FILES=['./','index.html','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png','icons/icon-maskable-512.png','icons/apple-touch-icon.png'];
 const U=f=>new URL(f,self.registration.scope).href;
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(FILES.map(f=>c.add(U(f)).catch(()=>{})))).then(()=>self.skipWaiting()))});
