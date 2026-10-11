@@ -1,0 +1,55 @@
+{
+  "id": "./",
+  "name": "Reels Studio – Online Video Tasarım Aracı",
+  "short_name": "Reels Studio",
+  "description": "Tarayıcıda çalışan online video tasarım aracı: Instagram Reels, YouTube Shorts, TikTok, X ve Facebook için haber, milletvekili konuşması ve magazin taslakları.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#06080d",
+  "theme_color": "#0c1019",
+  "lang": "tr",
+  "dir": "ltr",
+  "categories": [
+    "multimedia",
+    "productivity",
+    "photo"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/masaustu.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Reels Studio editörü"
+    },
+    {
+      "src": "screenshots/mobil.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Reels Studio mobil görünüm"
+    }
+  ]
+}
