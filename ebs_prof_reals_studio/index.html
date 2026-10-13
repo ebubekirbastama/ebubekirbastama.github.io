@@ -91,21 +91,21 @@ const FONTS=['Arial','Georgia','Impact','Trebuchet MS','Verdana','Tahoma','Times
 let L=[],S={vv:1,mv:.3,per:4},A={},IM={},sel=null,vid=null,imgs=[],mus=null,T=0,run=0,c0=0,rec=null,drag=null,G=[],hist=[],n=0,ac,dst,gv,gm,wt;
 const R=(x,y,w,h,o)=>({k:'rect',x,y,w,h,c1:'#ffffff',...o}),X=(t,x,y,w,h,o)=>({k:'text',t,x,y,w,h,s:60,c:'#ffffff',f:'Arial',b:1,a:'left',lh:1.2,...o}),M=(x,y,w,h,o)=>({k:'media',x,y,w,h,r:0,fit:'cover',...o});
 const TP={
-'📰 Haber':()=>({S:{bg:'#0b2a7a',gr:1,bg2:'#050b26'},L:[R(40,110,420,90,{c1:'#e3121b',sk:26,shd:1,an:'left'}),X('KANAL ADI',50,110,380,90,{s:44,a:'center',an:'left'}),X('››››',60,220,300,110,{s:120}),M(50,350,1030,780),R(70,960,1010,190,{c1:'#e3121b',sk:34,shd:1,an:'right',ad:.3}),X('BAŞLIK BURAYA YAZILIR',130,965,890,180,{s:66,a:'center',up:1,af:1,an:'right',ad:.3}),R(120,1250,6,260,{c1:'#e3121b'}),X('Haber metni burada yer alır. Ekranda istediğiniz gibi taşıyıp boyutlandırın.',165,1240,820,300,{s:46,b:0,i:1,v:'top',lh:1.35,an:'fade',ad:.8}),R(790,1640,560,560,{c1:'#8b1f3c',r:280,o:.7})]}),
-'🚨 Son Dakika':()=>({S:{bg:'#000'},L:[M(0,0,1080,1920),R(0,900,1080,1020,{c1:'#000000',fade:1,rv:1,o:.92}),R(0,1200,560,100,{c1:'#e3121b',sk:24,an:'left'}),X('SON DAKİKA',20,1200,500,100,{s:54,a:'center',an:'left'}),X('Haber başlığı buraya',60,1320,960,300,{s:78,up:1,af:1,v:'top',an:'up',ad:.3}),R(0,1760,1080,160,{c1:'#c4000a'}),X('KANAL ADI • www.site.com',40,1760,1000,160,{s:46,a:'center'})]}),
-'🎤 Vekil Konuşması':()=>({S:{bg:'#0d1b2a',gr:1,bg2:'#1b3a5c'},L:[X('MİLLETVEKİLİ AÇIKLAMASI',60,100,960,70,{s:38,c:'#f2c14e'}),R(60,170,200,8,{c1:'#f2c14e'}),M(60,230,960,900,{r:36,bw:8,bc:'#ffffff'}),R(60,1090,960,200,{c1:'#f2c14e',r:24,shd:1,an:'up',ad:.2}),X('Ad Soyad',100,1100,880,100,{s:64,c:'#0d1b2a',an:'up',ad:.2}),X('İl Milletvekili • Parti',100,1190,880,80,{s:38,c:'#0d1b2a',b:0,an:'up',ad:.2}),X('“',60,1280,200,200,{s:260,c:'#f2c14e',f:'Georgia',o:.8}),X('Konuşmanın öne çıkan cümlesi burada yer alır.',100,1420,880,360,{s:54,i:1,b:0,v:'top',lh:1.3,an:'fade',ad:.7}),X('KANAL ADI',60,1820,960,60,{s:32,c:'#8ea2bf',a:'center'})]}),
-'💬 Röportaj':()=>({S:{bg:'#f4efe6'},L:[R(0,0,1080,420,{c1:'#c1121f'}),M(330,230,420,420,{r:210,bw:14,bc:'#f4efe6'}),X('Konuk Adı Soyadı',60,700,960,90,{s:64,c:'#14213d',a:'center'}),X('Unvan / Kurum',60,790,960,60,{s:36,b:0,c:'#c1121f',a:'center'}),X('“',60,850,960,230,{s:300,c:'#c1121f',a:'center',f:'Georgia'}),X('Alıntı cümlesi burada yer alır.',90,1080,900,600,{s:58,i:1,b:0,c:'#14213d',a:'center',v:'top',lh:1.3,an:'fade',ad:.5}),R(0,1780,1080,140,{c1:'#14213d'}),X('KANAL ADI',0,1780,1080,140,{s:44,a:'center'})]}),
+'📰 Haber':()=>({S:{bg:'#0b2a7a',gr:1,bg2:'#050b26'},L:[R(40,110,420,90,{c1:'#e3121b',sk:26,shd:1,an:'left'}),X('HABER',50,110,380,90,{s:44,a:'center',an:'left'}),X('››››',60,220,300,110,{s:120}),M(50,350,1030,780),R(70,960,1010,190,{c1:'#e3121b',sk:34,shd:1,an:'right',ad:.3}),X('BAŞLIK BURAYA YAZILIR',130,965,890,180,{s:66,a:'center',up:1,af:1,an:'right',ad:.3}),R(120,1250,6,260,{c1:'#e3121b'}),X('Haber metni burada yer alır. Ekranda istediğiniz gibi taşıyıp boyutlandırın.',165,1240,820,300,{s:46,b:0,i:1,v:'top',lh:1.35,an:'fade',ad:.8}),R(790,1640,560,560,{c1:'#8b1f3c',r:280,o:.7})]}),
+'🚨 Son Dakika':()=>({S:{bg:'#000'},L:[M(0,0,1080,1920),R(0,900,1080,1020,{c1:'#000000',fade:1,rv:1,o:.92}),R(0,1200,560,100,{c1:'#e3121b',sk:24,an:'left'}),X('SON DAKİKA',20,1200,500,100,{s:54,a:'center',an:'left'}),X('Haber başlığı buraya',60,1320,960,300,{s:78,up:1,af:1,v:'top',an:'up',ad:.3}),R(0,1760,1080,160,{c1:'#c4000a'}),X('CANLI • SON DAKİKA • GÜNCEL',40,1760,1000,160,{s:46,a:'center'})]}),
+'🎤 Vekil Konuşması':()=>({S:{bg:'#0d1b2a',gr:1,bg2:'#1b3a5c'},L:[X('MİLLETVEKİLİ AÇIKLAMASI',60,100,960,70,{s:38,c:'#f2c14e'}),R(60,170,200,8,{c1:'#f2c14e'}),M(60,230,960,900,{r:36,bw:8,bc:'#ffffff'}),R(60,1090,960,200,{c1:'#f2c14e',r:24,shd:1,an:'up',ad:.2}),X('Ad Soyad',100,1100,880,100,{s:64,c:'#0d1b2a',an:'up',ad:.2}),X('İl Milletvekili • Parti',100,1190,880,80,{s:38,c:'#0d1b2a',b:0,an:'up',ad:.2}),X('“',60,1280,200,200,{s:260,c:'#f2c14e',f:'Georgia',o:.8}),X('Konuşmanın öne çıkan cümlesi burada yer alır.',100,1420,880,360,{s:54,i:1,b:0,v:'top',lh:1.3,an:'fade',ad:.7})]}),
+'💬 Röportaj':()=>({S:{bg:'#f4efe6'},L:[R(0,0,1080,420,{c1:'#c1121f'}),M(330,230,420,420,{r:210,bw:14,bc:'#f4efe6'}),X('Konuk Adı Soyadı',60,700,960,90,{s:64,c:'#14213d',a:'center'}),X('Unvan / Kurum',60,790,960,60,{s:36,b:0,c:'#c1121f',a:'center'}),X('“',60,850,960,230,{s:300,c:'#c1121f',a:'center',f:'Georgia'}),X('Alıntı cümlesi burada yer alır.',90,1080,900,600,{s:58,i:1,b:0,c:'#14213d',a:'center',v:'top',lh:1.3,an:'fade',ad:.5}),R(0,1780,1080,140,{c1:'#14213d'}),X('RÖPORTAJ',0,1780,1080,140,{s:44,a:'center'})]}),
 '✨ Modern Cam':()=>({S:{bg:'#10131a'},L:[M(0,0,1080,1920,{bl:40}),M(0,380,1080,1000,{fit:'contain'}),R(60,1400,960,380,{c1:'#ffffff',o:.16,r:48,sw:2,sc:'#ffffff',an:'up'}),R(100,1440,230,60,{c1:'#ff3d71',r:30}),X('YENİ',100,1440,230,60,{s:30,a:'center'}),X('Başlık burada',100,1520,880,140,{s:66,af:1,v:'top',an:'up',ad:.2}),X('Alt başlık / açıklama',100,1665,880,90,{s:36,b:0,o:.85})]}),
 '📣 Duyuru':()=>({S:{bg:'#2a0a5e',gr:1,bg2:'#f0504a'},L:[X('DUYURU',60,120,960,130,{s:120,a:'center',f:'Impact',b:0,an:'down'}),M(90,320,900,900,{r:60,bw:12,bc:'#ffffff'}),R(120,1180,840,150,{c1:'#ffd23f',r:75,shd:1,an:'up'}),X('12 EKİM • 20:00',120,1180,840,150,{s:64,c:'#2a0a5e',a:'center',an:'up'}),X('Etkinlik adı ve yer bilgisi burada',100,1400,880,260,{s:60,a:'center',af:1,an:'fade',ad:.6}),X('www.siteadi.com',60,1780,960,70,{s:38,a:'center',b:0})]}),
-'⚽ Spor':()=>({S:{bg:'#04210f',gr:1,bg2:'#000000'},L:[X('SPOR',60,90,300,80,{s:54,c:'#ffd400'}),M(0,200,1080,880),R(0,1000,1080,170,{c1:'#ffd400',sk:50,an:'left'}),X('MAÇ BAŞLIĞI',60,1000,960,170,{s:70,c:'#04210f',a:'center',up:1,af:1,an:'left'}),R(140,1250,800,200,{c1:'#ffffff',o:.1,r:30,sw:2,sc:'#ffd400'}),X('TAKIM A',160,1260,260,180,{s:40,a:'center',af:1}),X('2 - 1',420,1250,240,200,{s:90,c:'#ffd400',a:'center'}),X('TAKIM B',660,1260,260,180,{s:40,a:'center',af:1}),X('Maç özeti ve detaylar burada.',100,1500,880,260,{s:46,b:0,a:'center',v:'top'}),X('KANAL ADI',0,1820,1080,60,{s:34,a:'center',c:'#8ea2bf'})]}),
+'⚽ Spor':()=>({S:{bg:'#04210f',gr:1,bg2:'#000000'},L:[X('SPOR',60,90,300,80,{s:54,c:'#ffd400'}),M(0,200,1080,880),R(0,1000,1080,170,{c1:'#ffd400',sk:50,an:'left'}),X('MAÇ BAŞLIĞI',60,1000,960,170,{s:70,c:'#04210f',a:'center',up:1,af:1,an:'left'}),R(140,1250,800,200,{c1:'#ffffff',o:.1,r:30,sw:2,sc:'#ffd400'}),X('TAKIM A',160,1260,260,180,{s:40,a:'center',af:1}),X('2 - 1',420,1250,240,200,{s:90,c:'#ffd400',a:'center'}),X('TAKIM B',660,1260,260,180,{s:40,a:'center',af:1}),X('Maç özeti ve detaylar burada.',100,1500,880,260,{s:46,b:0,a:'center',v:'top'})]}),
 '💹 Ekonomi':()=>({S:{bg:'#07162b',gr:1,bg2:'#0c3b2e'},L:[X('PİYASALAR',60,100,700,90,{s:56,c:'#2ee59d'}),R(60,190,260,8,{c1:'#2ee59d'}),M(60,260,960,640,{r:30}),R(60,960,460,260,{c1:'#ffffff',o:.08,r:28,sw:2,sc:'#2ee59d'}),X('DOLAR',90,980,400,70,{s:40,b:0,c:'#8ea2bf'}),X('00,00',90,1050,400,140,{s:100,c:'#2ee59d'}),R(560,960,460,260,{c1:'#ffffff',o:.08,r:28,sw:2,sc:'#2ee59d'}),X('EURO',590,980,400,70,{s:40,b:0,c:'#8ea2bf'}),X('00,00',590,1050,400,140,{s:100,c:'#2ee59d'}),X('Ekonomi başlığı',60,1280,960,260,{s:68,up:1,af:1,v:'top'}),X('Kısa açıklama metni.',60,1560,960,240,{s:42,b:0,o:.85,v:'top'})]}),
 '🕯 Anma':()=>({S:{bg:'#0a0a0a'},L:[X('BAŞSAĞLIĞI',90,130,900,100,{s:56,a:'center',f:'Georgia',b:0}),M(90,260,900,1080),R(90,1380,900,3,{c1:'#ffffff'}),X('Ad Soyad',90,1410,900,110,{s:76,a:'center',f:'Georgia',b:0}),X('1950 - 2026',90,1520,900,70,{s:44,a:'center',c:'#bbbbbb',b:0}),X('Allah rahmet eylesin',90,1620,900,120,{s:48,i:1,a:'center',f:'Georgia',b:0,c:'#dddddd',an:'fade',ad:.6})]}),
 '💖 Magazin':()=>({S:{bg:'#2b0a4a',gr:1,bg2:'#ff2d87'},L:[R(0,0,1080,160,{c1:'#ffe14d'}),X('MAGAZİN',0,0,1080,160,{s:84,c:'#2b0a4a',a:'center',f:'Impact',b:0}),M(70,230,940,1000,{r:50,bw:10,bc:'#ffe14d'}),R(90,1120,520,110,{c1:'#ff2d87',r:55,shd:1,an:'left'}),X('SICAK GELİŞME',90,1120,520,110,{s:38,a:'center',an:'left'}),X('Magazin başlığı',70,1290,940,300,{s:76,af:1,v:'top',an:'up',ad:.2,sh:1}),X('Detay metni',70,1600,940,200,{s:42,b:0,o:.9,v:'top'}),X('@kullaniciadi',0,1820,1080,60,{s:36,a:'center'})]}),
 '🏷 İndirim':()=>({S:{bg:'#d90429',gr:1,bg2:'#8d0801'},L:[X('BÜYÜK',60,120,960,120,{s:100,a:'center',f:'Impact',b:0}),X('İNDİRİM',60,230,960,200,{s:190,c:'#ffd23f',a:'center',f:'Impact',b:0,an:'zoom'}),M(140,480,800,700,{r:40,bw:10,bc:'#ffffff'}),R(640,1060,360,360,{c1:'#ffd23f',r:180,shd:1,an:'zoom',ad:.4}),X('%50',640,1060,360,360,{s:120,c:'#d90429',a:'center',f:'Impact',b:0,an:'zoom',ad:.4}),X('Ürün adı / kampanya detayı',80,1470,920,200,{s:60,a:'center',af:1,v:'top'}),R(260,1700,560,120,{c1:'#ffffff',r:60}),X('HEMEN İNCELE',260,1700,560,120,{s:46,c:'#d90429',a:'center'})]}),
 '📝 Altyazılı':()=>({S:{bg:'#000000'},L:[M(0,0,1080,1920),R(0,1300,1080,620,{c1:'#000000',fade:1,rv:1,o:.85}),X('@kanal',0,90,1080,70,{s:36,a:'center',o:.8,sh:1}),X('Altyazı / konuşma metni buraya yazılır',70,1560,940,260,{s:62,a:'center',af:1,sh:1,an:'fade'})]}),
-'🖥 YouTube Klasik':()=>({d:[1920,1080],S:{bg:'#000000'},L:[M(0,0,1920,1080),R(0,700,1920,380,{c1:'#000000',fade:1,rv:1,o:.85}),R(80,840,900,100,{c1:'#ff0000',sk:20,an:'left'}),X('Ad Soyad',100,840,860,100,{s:56,an:'left'}),R(80,940,1100,70,{c1:'#ffffff',sk:20,an:'left',ad:.2}),X('Unvan / Konum',100,940,1060,70,{s:34,c:'#111111',b:0,an:'left',ad:.2}),X('KANAL',1560,50,300,70,{s:44,a:'right',sh:1})]}),
-'📺 Yatay Haber':()=>({d:[1920,1080],S:{bg:'#050b26'},L:[M(0,0,1920,1080),R(0,820,1920,260,{c1:'#050b26',o:.92}),R(0,820,1920,10,{c1:'#e3121b'}),R(60,785,420,80,{c1:'#e3121b',sk:22,an:'left'}),X('SON DAKİKA',60,785,420,80,{s:40,a:'center',an:'left'}),X('Haber başlığı burada',70,885,1780,180,{s:80,up:1,af:1,v:'top',an:'up',ad:.2}),X('KANAL',1560,40,300,70,{s:44,a:'right',sh:1})]}),
-'🎞 Yatay Bölünmüş':()=>({d:[1920,1080],S:{bg:'#0b2a7a',gr:1,bg2:'#050b26'},L:[M(760,0,1160,1080,{an:'right'}),R(80,160,120,10,{c1:'#ffd23f'}),X('BAŞLIK BURAYA',80,200,620,480,{s:80,up:1,af:1,v:'top',an:'left',ad:.2}),X('Açıklama metni burada yer alır.',80,720,620,260,{s:36,b:0,v:'top',o:.85,an:'fade',ad:.7}),X('KANAL',80,60,300,60,{s:36,c:'#ffd23f'})]}),
+'🖥 YouTube Klasik':()=>({d:[1920,1080],S:{bg:'#000000'},L:[M(0,0,1920,1080),R(0,700,1920,380,{c1:'#000000',fade:1,rv:1,o:.85}),R(80,840,900,100,{c1:'#ff0000',sk:20,an:'left'}),X('Ad Soyad',100,840,860,100,{s:56,an:'left'}),R(80,940,1100,70,{c1:'#ffffff',sk:20,an:'left',ad:.2}),X('Unvan / Konum',100,940,1060,70,{s:34,c:'#111111',b:0,an:'left',ad:.2}),X('YOUTUBE',1560,50,300,70,{s:44,a:'right',sh:1})]}),
+'📺 Yatay Haber':()=>({d:[1920,1080],S:{bg:'#050b26'},L:[M(0,0,1920,1080),R(0,820,1920,260,{c1:'#050b26',o:.92}),R(0,820,1920,10,{c1:'#e3121b'}),R(60,785,420,80,{c1:'#e3121b',sk:22,an:'left'}),X('SON DAKİKA',60,785,420,80,{s:40,a:'center',an:'left'}),X('Haber başlığı burada',70,885,1780,180,{s:80,up:1,af:1,v:'top',an:'up',ad:.2}),X('SON DAKİKA',1520,40,340,70,{s:44,a:'right',sh:1})]}),
+'🎞 Yatay Bölünmüş':()=>({d:[1920,1080],S:{bg:'#0b2a7a',gr:1,bg2:'#050b26'},L:[M(760,0,1160,1080,{an:'right'}),R(80,160,120,10,{c1:'#ffd23f'}),X('BAŞLIK BURAYA',80,200,620,480,{s:80,up:1,af:1,v:'top',an:'left',ad:.2}),X('Açıklama metni burada yer alır.',80,720,620,260,{s:36,b:0,v:'top',o:.85,an:'fade',ad:.7}),X('GÜNDEM',80,60,300,60,{s:36,c:'#ffd23f'})]}),
 '⬜ Boş':()=>({S:{bg:'#000'},L:[M(0,0,1080,1920)]})};
 const snap=()=>JSON.stringify({L,S,W,H}),commit=()=>{hist.push(snap());if(hist.length>60)hist.shift()};
 function undo(){if(hist.length<2)return;hist.pop();const o=JSON.parse(hist[hist.length-1]);setSize(o.W||W,o.H||H,0);L=o.L;S=o.S;sel=null;syncFm();ui()}
@@ -378,67 +378,79 @@ const PKC=[
 {n:'Habercilik',a:'#e3121b',on:'#ffffff',ta:'#c4101a',a2:'#ffd23f',d:'#0a1a44',d2:'#040a1e',l:'#f3f5fa',ink:'#0b1630',tag:'HABER',tag2:'ÖZEL DOSYA',h:'Haber başlığı buraya yazılır',s:'Haberin kısa özeti burada yer alır. Ayrıntıları kendi cümlelerinizle yazın.'},
 {n:'Milletvekili Konuşmaları',a:'#c9a24b',on:'#0d1b2a',ta:'#8a5a00',a2:'#f2c14e',d:'#13263d',d2:'#070f19',l:'#f6f1e7',ink:'#14213d',tag:'MECLİS GÜNDEMİ',tag2:'AÇIKLAMA',h:'Vekilin açıklaması burada yer alır',s:'Öne çıkan ifadeyi buraya yazın. Yayımlamadan önce alıntıyı doğrulayın.',pn:'AD SOYAD',pr:'İl Milletvekili • Parti'},
 {n:'Magazin',a:'#ff2d87',on:'#ffffff',ta:'#d0176a',a2:'#ffd23f',d:'#2a0f4d',d2:'#12061f',l:'#fff4f9',ink:'#2b0a4a',tag:'MAGAZİN',tag2:'GÜNDEMDE',h:'Gündeme damga vuran gelişme',s:'Ayrıntılar ve açıklamalar burada yer alır.'}];
-const PKS=['Manşet','Minimal','Dinamik'];
+const PKS=['Manşet','Minimal','Dinamik','Alıntı','Eğik Kesim','Prestij'];
 function PK(ci,si,W,H,pi){
- const pt=pi!=null?PARTIES[pi]:null,c=pt?{...PKC[1],...pt,s:PKC[1].s,tag:pt.s.toUpperCase(),tag2:'MECLİS KONUŞMASI',pr:'Milletvekili • '+pt.s}:PKC[ci],r=Math.round,mn=Math.min(W,H),u=mn/1080,m=r(mn*.05),P=H/W>=1.2,LS=W/H>=1.5,vk=!!c.pn,L=[],S={vv:1,mv:.3,per:6,tk:[ci,si,pi]};
- const T=(n,t,x,y,w,h,s,col,o)=>X(t,r(x),r(y),r(w),r(h),{s:r(s*u),c:col,af:1,n,...o}),B=(n,x,y,w,h,o)=>R(r(x),r(y),r(w),r(h),{n,...o}),D=(n,x,y,w,h,o)=>M(r(x),r(y),r(w),r(h),{n,...o}),
- F=(x,y,w,col,o)=>[B('Kanal çizgisi',x,y-16*u,w,2,{c1:col,o:.22}),T('Kanal','KANAL / LOGO',x,y,w*.6,56*u,30,col,{a:'left',...o})],
- bu=(x,y)=>ci==2?[PO(st(12,.8),r(x),r(y),r(190*u),r(190*u),{c1:c.a2,shd:1,rot:10,n:'Rozet'}),T('Rozet yazısı','SICAK',x,y,190*u,190*u,40,'#2a0f4d',{a:'center',rot:10,f:'Impact',b:0,af:0})]:[];
- const lgo=(x,y,bw,bh,al)=>pt?plogo(pt,x,y,bw,bh,al):[];
+ const pt=pi!=null?PARTIES[pi]:null,c=pt?{...PKC[1],...pt,s:PKC[1].s,tag:pt.s.toUpperCase(),tag2:'MECLİS KONUŞMASI',pr:'Milletvekili • '+pt.s}:PKC[ci],r=Math.round,mn=Math.min(W,H),u=mn/1080,m=r(mn*.055),P=H/W>=1.2,LS=W/H>=1.5,vk=!!c.pn,L=[],S={vv:1,mv:.3,per:6,tk:[ci,si,pi]};
+ const T=(n,t,x,y,w,h,s,col,o)=>X(t,r(x),r(y),r(w),r(h),{s:r(s*u),c:col,af:1,n,...o}),B=(n,x,y,w,h,o)=>R(r(x),r(y),r(w),r(h),{n,...o}),D=(n,x,y,w,h,o)=>M(r(x),r(y),r(w),r(h),{n,...o}),PG=(n,pts,x,y,w,h,o)=>PO(pts,r(x),r(y),r(w),r(h),{n,...o}),
+ lgo=(x,y,bw,bh,al)=>pt?plogo(pt,x,y,bw,bh,al):[],hi=c.hi||c.a2,
+ qd=(R_,o,col)=>PG('Işık',Array.from({length:21},(_,i)=>{const a=i/20*Math.PI/2;return[1-Math.sin(a),1-Math.cos(a)]}).concat([[1,1]]),W-R_,H-R_,R_,R_,{c1:col,o}),
+ bu=(x,y)=>ci==2?[PO(st(12,.8),r(x),r(y),r(190*u),r(190*u),{c1:c.a2,shd:1,rot:10,n:'Rozet'}),T('Rozet yazısı','SICAK',x,y,190*u,190*u,40,'#2a0f4d',{a:'center',rot:10,f:'Impact',b:0,af:0})]:[],
+ pe=(x,y,w,ns,rs,nc,rc,al)=>[T('Ad Soyad',c.pn,x,y,w,ns*1.3*u,ns,nc,{a:al||'left'}),T('Unvan',c.pr,x,y+ns*1.3*u,w,rs*1.4*u,rs,rc,{a:al||'left',b:0})];
  if(si==0){S.bg=c.d;S.gr=1;S.bg2=c.d2;
-  if(LS){const lw=r(W*.42),fy=H-m-56*u,pl=vk?r(112*u):0,y0=fy-pl-20*u,ty=m+110*u,hh=H*(vk?.3:.36),sy=ty+hh+16*u;
-   L.push(D('Medya',lw,0,W-lw,H,{}),B('Dikey çizgi',lw-8*u,0,8*u,H,{c1:c.a}),B('Etiket zemin',m,m,360*u,68*u,{c1:c.a,sk:r(18*u),an:'left'}),T('Etiket',c.tag,m,m,360*u,68*u,32,c.on,{a:'center',up:1,an:'left'}),
-    T('Başlık',c.h,m,ty,lw-2*m,hh,72,'#ffffff',{v:'bot',lh:1.12,an:'up',ad:.2}),T('Özet',c.s,m,sy,lw-2*m,(vk?y0-16*u:fy-16*u)-sy,36,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}));
-   if(vk)L.push(B('Kişi levhası',m,y0,lw-2*m,pl,{c1:c.a}),T('Ad Soyad',c.pn,m+20*u,y0+8*u,lw-2*m-40*u,54*u,40,c.on,{a:'left'}),T('Unvan',c.pr,m+20*u,y0+62*u,lw-2*m-40*u,42*u,30,c.on,{a:'left',b:0}));
-   L.push(...F(m,fy,lw-2*m,'#ffffff'));
-  }else{const tb=H*(P?.06:.08),my=tb+m,mh=H*(P?(vk?.43:.46):(vk?.35:.41)),pl=vk?112*u:0,fy=H-m-56*u;
-   L.push(B('Üst bant',0,0,W,tb,{c1:c.a}),T('Etiket',c.tag,m,0,W-2*m,tb,34,c.on,{a:'center',up:1}),D('Medya',m,my,W-2*m,mh,{r:r(26*u),bw:r(6*u),bc:c.a}));
-   if(vk)L.push(B('Kişi levhası',m,my+mh,W-2*m,pl,{c1:c.a}),T('Ad Soyad',c.pn,m+24*u,my+mh,(W-2*m)*.52,pl,44,c.on,{a:'left'}),T('Unvan',c.pr,m+(W-2*m)*.5,my+mh,(W-2*m)*.5-24*u,pl,28,c.on,{a:'right',b:0}));
-   else L.push(B('Etiket 2 zemin',m+28*u,my+mh-32*u,300*u,64*u,{c1:c.a,sk:r(20*u),shd:1,an:'left'}),T('Etiket 2',c.tag2,m+28*u,my+mh-32*u,300*u,64*u,28,c.on,{a:'center',up:1,an:'left'}));
-   const zy=my+mh+pl+(vk?34:56)*u,zh=fy-28*u-zy;
-   L.push(T('Başlık',c.h,m,zy,W-2*m,zh*.52,P?100:78,'#ffffff',{v:'top',lh:1.12,an:'up',ad:.2}),B('Vurgu çizgisi',m,zy+zh*.54,120*u,6*u,{c1:c.a}),T('Özet',c.s,m,zy+zh*.6,W-2*m,zh*.4,P?44:36,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}),...F(m,fy,W-2*m,'#ffffff'),...bu(W-m-170*u,my-40*u));
+  if(LS){const lw=r(W*.44),cw2=lw-2*m,ch=150*u,cy=H-m-ch,ty=m+150*u,hh=H*.3,sy=ty+hh+14*u;
+   L.push(D('Medya',lw,0,W-lw,H,{}),B('Dikey çizgi',lw-8*u,0,8*u,H,{c1:c.a}),B('Etiket zemin',m,m,420*u,68*u,{c1:c.a,sk:r(18*u),an:'left'}),T('Etiket',c.tag,m,m,420*u,68*u,32,c.on,{a:'center',up:1,an:'left'}),T('Etiket 2',c.tag2,m,m+84*u,cw2,44*u,30,hi,{a:'left',b:0,up:1}),
+    T('Başlık',c.h,m,ty,cw2,hh,72,'#ffffff',{v:'bot',lh:1.12,an:'up',ad:.2}),T('Özet',c.s,m,sy,cw2,(vk?cy-20*u:H-m)-sy,36,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}));
+   if(vk)L.push(B('Kişi kartı',m,cy,cw2,ch,{c1:'#ffffff',r:r(24*u),shd:1}),B('Kart vurgusu',m+22*u,cy+ch*.22,8*u,ch*.56,{c1:c.a,r:4}),...pe(m+48*u,cy+ch*.14,cw2-48*u-(pt?270*u:24*u),44,32,c.ink,c.ta),...lgo(m+cw2-250*u-16*u,cy+14*u,250*u,ch-28*u,'rm'));
+  }else{const hb=H*(P?.07:.09),my=hb+m*.8,mh=H*(P?.44:(vk?.36:.4)),ch=(vk?(P?170:140):0)*u,cy=my+mh-ch*.38,zy=my+mh+(vk?ch*.62+36*u:56*u),zh=H-m-24*u-zy;
+   L.push(B('Üst bant',0,0,W,hb,{c1:c.a}),B('Üst çizgi',0,hb,W,6*u,{c1:'#ffffff',o:.18}),T('Etiket',c.tag,m,0,W*.5-m,hb,34,c.on,{a:'left',up:1}),T('Etiket 2',c.tag2,W*.5,0,W*.5-m,hb,30,c.on,{a:'right',b:0,up:1,o:.85}),D('Medya',m,my,W-2*m,mh,{r:r(30*u),bw:r(5*u),bc:c.a}));
+   if(vk)L.push(B('Kişi kartı',m+28*u,cy,W-2*m-56*u,ch,{c1:'#ffffff',r:r(26*u),shd:1}),B('Kart vurgusu',m+54*u,cy+ch*.2,9*u,ch*.6,{c1:c.a,r:4}),...pe(m+84*u,cy+ch*.14,W-2*m-84*u-56*u-(pt?310*u:24*u),48,30,c.ink,c.ta),...lgo(W-m-28*u-300*u-16*u,cy+14*u,300*u,ch-28*u,'rm'));
+   L.push(T('Başlık',c.h,m,zy,W-2*m,zh*.54,P?100:78,'#ffffff',{v:'top',lh:1.12,an:'up',ad:.2}),B('Vurgu çizgisi',m,zy+zh*.56,120*u,6*u,{c1:c.a}),T('Özet',c.s,m,zy+zh*.62,W-2*m,zh*.38,P?44:36,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}),...bu(W-m-170*u,my-40*u));
   }
- }else if(si==1){S.bg=c.l;
-  if(LS){const lw=r(W*.44),fy=H-m-56*u,pl=vk?96*u:0,y0=fy-pl-18*u,ty=m+100*u,hh=H*.34,sy=ty+hh+12*u;
-   L.push(D('Medya',lw,m,W-lw-m,H-2*m,{r:r(34*u)}),B('Üst çizgi',m,m,lw-2*m,6*u,{c1:c.a}),T('Etiket',c.tag,m,m+22*u,lw-2*m,56*u,32,c.ta,{a:'left',up:1}),
-    T('Başlık',c.h,m,ty,lw-2*m,hh,66,c.ink,{v:'bot',lh:1.12}),T('Özet',c.s,m,sy,lw-2*m,(vk?y0:fy-16*u)-sy-10*u,34,'#4a5568',{b:0,v:'top',lh:1.3}));
-   if(vk)L.push(B('Kişi çizgisi',m,y0,6*u,pl,{c1:c.a}),T('Ad Soyad',c.pn,m+22*u,y0,lw-2*m-22*u,52*u,38,c.ink,{a:'left'}),T('Unvan',c.pr,m+22*u,y0+52*u,lw-2*m-22*u,42*u,30,c.ta,{a:'left',b:0}));
-   L.push(...F(m,fy,lw-2*m,c.ink,{o:.65}));
-  }else{const my=m+96*u,mh=H*(P?(vk?.43:.46):(vk?.34:.38)),pl=vk?96*u:0,fy=H-m-56*u;
-   L.push(B('Üst çizgi',m,m,W-2*m,6*u,{c1:c.a}),T('Etiket',c.tag,m,m+22*u,(W-2*m)*.6,56*u,32,c.ta,{a:'left',up:1}),D('Medya',m,my,W-2*m,mh,{r:r(36*u)}));
-   if(vk)L.push(B('Kişi çizgisi',m,my+mh+24*u,6*u,pl,{c1:c.a}),T('Ad Soyad',c.pn,m+22*u,my+mh+24*u,W-2*m-22*u,52*u,42,c.ink,{a:'left'}),T('Unvan',c.pr,m+22*u,my+mh+76*u,W-2*m-22*u,42*u,30,c.ta,{a:'left',b:0}));
-   else L.push(B('Etiket 2 zemin',m+28*u,my+mh-30*u,250*u,60*u,{c1:c.a,r:r(30*u)}),T('Etiket 2',c.tag2,m+28*u,my+mh-30*u,250*u,60*u,26,c.on,{a:'center',up:1}));
-   const zy=my+mh+(vk?pl+48:56)*u,zh=fy-28*u-zy;
-   L.push(T('Başlık',c.h,m,zy,W-2*m,zh*.52,P?96:74,c.ink,{v:'top',lh:1.12}),T('Özet',c.s,m,zy+zh*.58,W-2*m,zh*.42,P?42:34,'#4a5568',{b:0,v:'top',lh:1.3}),...F(m,fy,W-2*m,c.ink,{o:.65}),B('Nokta',W-m-24*u,fy+16*u,24*u,24*u,{c1:c.a,r:12}),...bu(W-m-170*u,my-40*u));
+ }else if(si==1){S.bg=c.l;const off=26*u;
+  if(LS){const lw=r(W*.44),cw2=lw-2*m,mw=W-lw-m-off,y0=H-m-110*u,ty=m+140*u,hh=H*.3,sy=ty+hh+12*u;
+   L.push(B('Medya gölge',lw+off,m+off,mw,H-2*m-off,{c1:c.a,r:r(36*u)}),D('Medya',lw,m,mw,H-2*m-off,{r:r(36*u)}),B('Etiket zemin',m,m,380*u,64*u,{c1:c.a,r:r(32*u)}),T('Etiket',c.tag,m,m,380*u,64*u,32,c.on,{a:'center',up:1}),T('Etiket 2',c.tag2,m,m+80*u,cw2,40*u,30,'#6b7280',{a:'left',b:0,up:1}),
+    T('Başlık',c.h,m,ty,cw2,hh,66,c.ink,{v:'bot',lh:1.12}),T('Özet',c.s,m,sy,cw2,(vk?y0-24*u:H-m)-sy,34,'#4a5568',{b:0,v:'top',lh:1.3}));
+   if(vk)L.push(B('Kişi çizgisi',m,y0,8*u,100*u,{c1:c.a,r:4}),...pe(m+26*u,y0,cw2-26*u-(pt?230*u:0),42,32,c.ink,c.ta),...lgo(lw-m-220*u,y0-20*u,220*u,140*u,'rm'));
+  }else{const ph=64*u,my=m+104*u,mw=W-2*m-off,mh=H*(P?.42:(vk?.32:.36)),ny=my+mh+off+34*u,pb=vk?100*u:0,zy=ny+(vk?pb+44*u:20*u),zh=H-m-24*u-zy;
+   L.push(B('Etiket zemin',m,m,380*u,ph,{c1:c.a,r:r(ph/2)}),T('Etiket',c.tag,m,m,380*u,ph,32,c.on,{a:'center',up:1}),T('Etiket 2',c.tag2,m+400*u,m,W-2*m-400*u,ph,30,'#6b7280',{a:'right',b:0,up:1}),B('Medya gölge',m+off,my+off,mw,mh,{c1:c.a,r:r(36*u)}),D('Medya',m,my,mw,mh,{r:r(36*u)}));
+   if(vk)L.push(B('Kişi çizgisi',m,ny,8*u,pb,{c1:c.a,r:4}),...pe(m+28*u,ny+4*u,W-2*m-28*u-(pt?320*u:0),46,30,c.ink,c.ta),...lgo(W-m-300*u,ny-26*u,300*u,150*u,'rm'));
+   L.push(T('Başlık',c.h,m,zy,W-2*m,zh*.55,P?104:80,c.ink,{v:'top',lh:1.1}),T('Özet',c.s,m,zy+zh*.6,W-2*m,zh*.4,P?42:34,'#4a5568',{b:0,v:'top',lh:1.3}),B('Alt vurgu',m,H-m-8*u,140*u,8*u,{c1:c.a,r:4}),...bu(W-m-170*u,my-50*u));
   }
- } else if(si==3){S.bg=c.d;S.gr=1;S.bg2=c.d2;const bs=r(170*u),side=LS||!P,qs='Konuşmanın öne çıkan cümlesi burada yer alır.',hl=c.hi||c.a;
-  if(side){const lw=r(W*.36),x0=lw+m,cw2=W-lw-2*m,fy=H-m-56*u,ny=fy-140*u;
-   L.push(D('Medya',0,0,lw,H,{}),B('Dikey çizgi',lw-8*u,0,8*u,H,{c1:c.a}),...lgo(x0,m,r(Math.min(cw2,300*u)),bs,'lt'),
-    T('Tırnak','“',x0,m+bs+63*u,200*u,150*u,240,hl,{a:'left',f:'Georgia',b:0,af:0,lh:.5}),T('Alıntı',qs,x0,m+bs+215*u,cw2,ny-(m+bs+215*u)-20*u,P?60:56,'#ffffff',{i:1,b:0,f:'Georgia',v:'top',lh:1.28,an:'fade',ad:.4}),
-    B('Kişi çizgisi',x0,ny,6*u,108*u,{c1:c.a}),T('Ad Soyad',c.pn,x0+22*u,ny,cw2-22*u,62*u,44,'#ffffff',{a:'left'}),T('Unvan',c.pr,x0+22*u,ny+62*u,cw2-22*u,44*u,30,hl,{a:'left',b:0}),...F(x0,fy,cw2,'#ffffff'));
-  }else{const D2=r(Math.min(W*.5,H*.24)),my=m+bs+40*u,ny=my+D2+30*u,qy=ny+165*u,fy=H-m-56*u;
-   L.push(...lgo(m,m,r(300*u),bs,'lt'),T('Parti adı',pt?pt.n.toUpperCase():c.tag,W*.5,m,W*.5-m,bs,28,'#ffffffcc',{a:'right',up:1}),D('Medya',(W-D2)/2,my,D2,D2,{r:r(D2/2),bw:r(8*u),bc:c.a}),
-    T('Ad Soyad',c.pn,m,ny,W-2*m,62*u,50,'#ffffff',{a:'center'}),T('Unvan',c.pr,m,ny+62*u,W-2*m,44*u,30,hl,{a:'center',b:0}),T('Tırnak','“',m,qy+49*u,W-2*m,150*u,240,hl,{a:'center',f:'Georgia',b:0,af:0,lh:.5}),
-    T('Alıntı',qs,m+20*u,qy+200*u,W-2*m-40*u,fy-24*u-(qy+200*u),64,'#ffffff',{i:1,b:0,f:'Georgia',a:'center',v:'top',lh:1.28,an:'fade',ad:.4}),...F(m,fy,W-2*m,'#ffffff'));
-  }
- }
-else{S.bg='#000000';const cw=LS?W*.62:W-2*m;let y=H-m-34*u;
-  L.push(D('Medya',0,0,W,H,{}),B('Alt gölge',0,H*(LS?.2:.36),W,H*(LS?.8:.64),{c1:c.d2,fade:1,rv:1,o:.96}),B('Üst gölge',0,0,W,H*.16,{c1:'#000000',fade:1,o:.55}),T('Kanal','KANAL / LOGO',W-m-320*u,m,320*u,56*u,30,'#ffffff',{a:'right',sh:1}));
+ }else if(si==2){S.bg='#000000';const cw=LS?W*.62:W-2*m;let y=H-m-34*u;
+  L.push(D('Medya',0,0,W,H,{}),B('Alt gölge',0,H*(LS?.2:.36),W,H*(LS?.8:.64),{c1:c.d2,fade:1,rv:1,o:.96}),B('Üst gölge',0,0,W,H*.16,{c1:'#000000',fade:1,o:.55}),...lgo(m,m,300*u,180*u,'lt'));
   const sh=(P?180:140)*u;y-=sh;L.push(T('Özet',c.s,m,y,cw,sh,P?44:LS?38:36,'#e6ebf5',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}));
-  if(vk){y-=98*u;L.push(T('Ad Soyad',c.pn,m,y,cw,52*u,40,'#ffffff',{a:'left',sh:1}),T('Unvan',c.pr,m,y+52*u,cw,40*u,30,c.hi||c.a2,{a:'left',b:0,sh:1}))}
+  if(vk){y-=98*u;L.push(...pe(m,y,cw,40,30,'#ffffff',hi).map(l=>({...l,sh:1})))}
   const hh=H*(P?.19:LS?.24:.2);y-=hh+10*u;L.push(T('Başlık',c.h,m,y,cw,hh,P?96:LS?88:74,'#ffffff',{v:'bot',lh:1.12,an:'up',ad:.2}));
   y-=84*u;L.push(B('Etiket zemin',m,y,380*u,64*u,{c1:c.a,sk:r(20*u),shd:1,an:'left'}),T('Etiket',c.tag,m,y,380*u,64*u,30,c.on,{a:'center',up:1,an:'left'}),B('Alt vurgu',m,H-m-8*u,140*u,8*u,{c1:c.a}),...bu(W-m-170*u,m+90*u));
+ }else if(si==3){S.bg=c.d;S.gr=1;S.bg2=c.d2;const bs=r(170*u),side=LS||!P,qs='Konuşmanın öne çıkan cümlesi burada yer alır.',hl=hi;
+  if(side){const lw=r(W*.36),x0=lw+m,cw2=W-lw-2*m,fy=H-m,ny=fy-130*u;
+   L.push(D('Medya',0,0,lw,H,{}),B('Dikey çizgi',lw-8*u,0,8*u,H,{c1:c.a}),...lgo(x0,m,r(Math.min(cw2,300*u)),bs,'lt'),
+    T('Tırnak','“',x0,m+bs+63*u,200*u,150*u,240,hl,{a:'left',f:'Georgia',b:0,af:0,lh:.5}),T('Alıntı',qs,x0,m+bs+215*u,cw2,ny-(m+bs+215*u)-20*u,P?60:56,'#ffffff',{i:1,b:0,f:'Georgia',v:'top',lh:1.28,an:'fade',ad:.4}),B('Kişi çizgisi',x0,ny,6*u,108*u,{c1:c.a}),...pe(x0+22*u,ny,cw2-22*u,44,30,'#ffffff',hl));
+  }else{const D2=r(Math.min(W*.5,H*.24)),my=m+bs+40*u,ny=my+D2+30*u,qy=ny+165*u,fy=H-m;
+   L.push(...lgo(m,m,r(300*u),bs,'lt'),T('Parti adı',pt?pt.n.toUpperCase():c.tag,W*.5,m,W*.5-m,bs,28,'#ffffffcc',{a:'right',up:1}),D('Medya',(W-D2)/2,my,D2,D2,{r:r(D2/2),bw:r(8*u),bc:c.a}),...pe(m,ny,W-2*m,50,30,'#ffffff',hl,'center'),T('Tırnak','“',m,qy+49*u,W-2*m,150*u,240,hl,{a:'center',f:'Georgia',b:0,af:0,lh:.5}),
+    T('Alıntı',qs,m+20*u,qy+200*u,W-2*m-40*u,fy-24*u-(qy+200*u),64,'#ffffff',{i:1,b:0,f:'Georgia',a:'center',v:'top',lh:1.28,an:'fade',ad:.4}));
+  }
+ }else if(si==4){S.bg=c.d;S.gr=1;S.bg2=c.d2;const sw=16*u;
+  if(LS){const vw=r(W*.58),tx=vw+r(m*.7),cw2=W-tx-m,x0=vw*.88,w2=vw*.12+sw,hh=H*.3,sy=m+140*u+hh+12*u,py=H-m-(vk?110*u:0);
+   L.push(D('Medya',0,0,vw,H,{pts:[[0,0],[1,0],[.88,1],[0,1]]}),B('Üst gölge',0,0,vw,H*.3,{c1:'#000000',fade:1,o:.45}),PG('Eğik çizgi',[[vw*.12/w2,0],[1,0],[sw/w2,1],[0,1]],x0,0,w2,H,{c1:c.a}),...lgo(m,m,300*u,170*u,'lt'),
+    B('Etiket zemin',tx,m,380*u,64*u,{c1:c.a,sk:r(20*u),an:'left'}),T('Etiket',c.tag,tx,m,380*u,64*u,32,c.on,{a:'center',up:1,an:'left'}),T('Etiket 2',c.tag2,tx,m+80*u,cw2,40*u,30,hi,{a:'left',b:0,up:1}),T('Başlık',c.h,tx,m+140*u,cw2,hh,64,'#ffffff',{v:'bot',lh:1.12,an:'up',ad:.2}));
+   if(vk)L.push(...pe(tx,py,cw2,42,32,'#ffffff',hi));
+   L.push(T('Özet',c.s,tx,sy,cw2,py-sy-16*u,34,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}),...bu(vw-190*u-m,m+190*u));
+  }else{const Hm=r(H*(P?.5:.4)),k=.8,y0=Hm*k,hh=Hm+sw-y0,hy=Hm+70*u,h2=H*.2,py=hy+h2+8*u,sy=py+(vk?110*u:0);
+   L.push(D('Medya',0,0,W,Hm,{pts:[[0,0],[1,0],[1,k],[0,1]]}),B('Üst gölge',0,0,W,Hm*.32,{c1:'#000000',fade:1,o:.5}),PG('Eğik çizgi',[[0,(Hm-y0)/hh],[1,0],[1,sw/hh],[0,1]],0,y0,W,hh,{c1:c.a}),...lgo(m,m,300*u,180*u,'lt'),
+    B('Etiket zemin',m,Hm-26*u,400*u,64*u,{c1:c.a,sk:r(20*u),shd:1,an:'left'}),T('Etiket',c.tag,m,Hm-26*u,400*u,64*u,32,c.on,{a:'center',up:1,an:'left'}),T('Etiket 2',c.tag2,W*.45,Hm-26*u,W*.55-m,64*u,30,hi,{a:'right',b:0,up:1}),T('Başlık',c.h,m,hy,W-2*m,h2,P?96:74,'#ffffff',{v:'top',lh:1.1,an:'up',ad:.2}));
+   if(vk)L.push(...pe(m,py,W-2*m,44,30,'#ffffff',hi));
+   L.push(T('Özet',c.s,m,sy,W-2*m,H-m-20*u-sy,P?42:34,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}),...bu(W-m-170*u,m+90*u));
+  }
+ }else{S.bg=c.d;S.gr=1;S.bg2=c.d2;
+  L.push(qd(r(640*u),.22,c.a),qd(r(430*u),.16,c.a2));
+  if(LS){const lw=r(W*.44),cw2=lw-2*m,y0=H-m-110*u,ty=m+140*u,hh=H*.3,sy=ty+hh+12*u;
+   L.push(D('Medya',lw,m,W-lw-m,H-2*m,{r:r(52*u)}),B('Neon halka',lw,m,W-lw-m,H-2*m,{c1:c.a,nf:1,sw:r(5*u),glow:1,r:r(52*u)}),T('Ok','››››',m,m,200*u,70*u,56,c.a,{a:'left'}),T('Etiket',c.tag,m+210*u,m,cw2-210*u,70*u,32,'#ffffff',{a:'left',up:1}),T('Etiket 2',c.tag2,m,m+80*u,cw2,40*u,30,hi,{a:'left',b:0,up:1}),
+    T('Başlık',c.h,m,ty,cw2,hh,70,'#ffffff',{v:'bot',lh:1.1,an:'up',ad:.2}),T('Özet',c.s,m,sy,cw2,(vk?y0-24*u:H-m)-sy,34,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}));
+   if(vk)L.push(...pe(m,y0,cw2-(pt?240*u:0),42,32,'#ffffff',hi),...lgo(lw-m-220*u,y0-20*u,220*u,140*u,'rm'));
+  }else{const my=m+100*u,mh=H*(P?.5:(vk?.4:.44)),gh=H*(P?.2:.24),gy=my+mh-gh-28*u,y=my+mh+40*u,sy=y+(vk?150*u:0);
+   L.push(T('Ok','››››',m,m,200*u,80*u,64,c.a,{a:'left'}),T('Etiket',c.tag,m+210*u,m,W*.6-m-218*u,80*u,32,'#ffffff',{a:'left',up:1}),T('Etiket 2',c.tag2,W*.6,m,W*.4-m,80*u,30,hi,{a:'right',b:0,up:1}),
+    D('Medya',m,my,W-2*m,mh,{r:r(60*u)}),B('Neon halka',m,my,W-2*m,mh,{c1:c.a,nf:1,sw:r(5*u),glow:1,r:r(60*u)}),B('Cam panel',m+28*u,gy,W-2*m-56*u,gh,{c1:'#000000',o:.55,r:r(36*u),sw:2,sc:'#ffffff'}),B('Panel vurgusu',m+54*u,gy+gh*.18,9*u,gh*.64,{c1:c.a,r:4}),
+    T('Başlık',c.h,m+84*u,gy+12*u,W-2*m-56*u-84*u-24*u,gh-24*u,P?80:62,'#ffffff',{v:'mid',lh:1.1}));
+   if(vk)L.push(...pe(m,y,W-2*m-(pt?330*u:0),48,30,'#ffffff',hi),...lgo(W-m-300*u,y-20*u,300*u,150*u,'rm'));
+   L.push(T('Özet',c.s,m,sy,W-2*m,H-m-20*u-sy,P?42:34,'#d7deee',{b:0,v:'top',lh:1.3,an:'fade',ad:.6}),...bu(W-m-170*u,my+10*u));
+  }
  }
- if(pt){const dec=PO([[1,0],[1,1],[0,1]],W-r(360*u),H-r(360*u),r(360*u),r(360*u),{c1:si==1?c.a:c.a2,o:si==1?.1:.14,n:'Dekor'}),
-  ad=L.find(l=>l.n=='Ad Soyad'),un=L.find(l=>l.n=='Unvan'),pv=L.find(l=>l.n=='Kişi levhası'),pc=L.find(l=>l.n=='Kişi çizgisi');
-  if(si==0&&pv){const bw=r((LS?240:300)*u),bh=r((LS?160:190)*u);pv.c1='#ffffff';ad.c=c.ink;un.c=c.ta;ad.x=un.x=pv.x+r(24*u);ad.y=pv.y+r(6*u);ad.h=r(58*u);un.y=ad.y+r(56*u);un.h=r(46*u);ad.w=un.w=pv.w-bw-r(56*u);ad.a=un.a='left';
-   L.push(...lgo(pv.x+pv.w-bw-r(16*u),pv.y+pv.h-bh-r(8*u),bw,bh,'rb'));L.unshift(dec)}
-  else if(si==1&&pc){const bw=r((LS?220:300)*u),bh=r((LS?130:170)*u),right=LS?W*.44-m:W-m;ad.w=un.w=right-pc.x-r(22*u)-bw-r(20*u);L.push(...lgo(right-bw,pc.y+pc.h-bh,bw,bh,'rb'));L.unshift(dec)}
-  else if(si==2)L.push(...lgo(m,m,r(300*u),r(180*u),'lt'));else L.unshift(dec)}
+ if(si<2||si==3)L.unshift(PG('Dekor',[[1,0],[1,1],[0,1]],W-360*u,H-360*u,360*u,360*u,{c1:si==1?c.a:c.a2,o:si==1?.1:.14}));
  return{S,L}}
 
 function regen(){const[a,b,pi]=S.tk,o=PK(a,b,W,H,pi);o.L.forEach(l=>{const q=L.find(x=>x.k=='text'&&l.k=='text'&&x.n&&x.n==l.n);if(q)l.t=q.t});S={...S,...o.S};L=o.L;sel=null;commit();ui()}
-PKC.forEach((c,ci)=>{const row=document.createElement('div');row.className='pkr';row.innerHTML='<span>'+c.n+'</span>';PKS.forEach((n,si)=>{const x=document.createElement('button');x.className='b';x.textContent=n;x.onclick=()=>setT(PK(ci,si,W,H));row.append(x)});$('pk').append(row)});
+PKC.forEach((c,ci)=>{const row=document.createElement('div');row.className='pkr';row.innerHTML='<span>'+c.n+'</span>';PKS.forEach((n,si)=>{if(si==3&&ci!=1)return;const x=document.createElement('button');x.className='b';x.textContent=n;x.onclick=()=>setT(PK(ci,si,W,H));row.append(x)});$('pk').append(row)});
 let edL=null,panL=null;const FT=$('ft'),ed=$('ed');
 /* ---------- Siyasi partiler ---------- */
 const PARTIES=[
@@ -488,9 +500,9 @@ function ftSync(){const l=sel;if(!l)return;FT.querySelectorAll('input').forEach(
 function ftPos(){if(FT.hidden||!sel)return;const cr=cv.getBoundingClientRect(),wr=$('cw').getBoundingClientRect(),k=cr.width/W,l=sel;let x=cr.left-wr.left+l.x*k,y=cr.top-wr.top+l.y*k-FT.offsetHeight-8;if(y<2)y=cr.top-wr.top+(l.y+l.h)*k+8;x=Math.max(2,Math.min(x,wr.width-FT.offsetWidth-2));y=Math.max(2,Math.min(y,wr.height-FT.offsetHeight-2));FT.style.left=x+'px';FT.style.top=y+'px'}
 /* ---------- Açılır-kapanır paneller + parti menüsü ---------- */
 PARTIES.forEach((p,pi)=>{const d=document.createElement('div');d.className='pty c';const h=document.createElement('button');h.className='pth';h.title=p.n;h.innerHTML='<img src="'+PLOGO[p.k].d+'" alt="" style="height:22px;width:auto;max-width:34px;object-fit:contain;border-radius:3px"><span>'+p.s+'</span>';h.onclick=()=>d.classList.toggle('c');const b=document.createElement('div');b.className='ptb';
- ['Manşet','Minimal','Dinamik','Alıntı'].forEach((n,si)=>{const x=document.createElement('button');x.className='b';x.textContent=n;x.onclick=()=>setT(PK(1,si,W,H,pi));b.append(x)});d.append(h,b);$('pt').append(d)});
+ PKS.forEach((n,si)=>{const x=document.createElement('button');x.className='b';x.textContent=n;x.onclick=()=>setT(PK(1,si,W,H,pi));b.append(x)});d.append(h,b);$('pt').append(d)});
 document.querySelectorAll('.ac').forEach(a=>{const k=a.dataset.k;let st={};try{st=JSON.parse(localStorage.getItem('rs_ac')||'{}')}catch(e){}if(st[k]!==undefined?st[k]:a.dataset.c=='1')a.classList.add('c');a.querySelector('.ach').onclick=()=>{a.classList.toggle('c');st[k]=a.classList.contains('c')?1:0;try{localStorage.setItem('rs_ac',JSON.stringify(st))}catch(e){}}});
-fit();$('fm').value=0;{const o=TP['📰 Haber']();o.d=[1080,1920];setT(o)}tick();
+fit();$('fm').value=0;setT(PK(0,5,W,H));tick();
 </script>
 <script>if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
 </body></html>
