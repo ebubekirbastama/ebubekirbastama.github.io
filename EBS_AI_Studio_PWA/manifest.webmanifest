@@ -1,0 +1,32 @@
+{
+  "id": "./",
+  "name": "EBS AI Studio Pro",
+  "short_name": "EBS Studio",
+  "description": "EBS — Ebubekir Baştama tarafından geliştirilen tarayıcı tabanlı video ve ses işleme stüdyosu",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080d17",
+  "theme_color": "#080d17",
+  "categories": [
+    "productivity",
+    "video",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
