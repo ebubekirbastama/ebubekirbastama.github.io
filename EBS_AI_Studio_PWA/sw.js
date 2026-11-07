@@ -1,5 +1,5 @@
 /* EBS AI Studio Pro — installable application shell. */
-const VERSION = 'ebs-studio-static-v8' ;
+const VERSION = 'ebs-studio-static-v9' ;
 const SHELL = new URL('./', self.registration.scope);
 const CACHE = VERSION + '-shell';
 self.addEventListener('install', event => {
@@ -8,6 +8,7 @@ self.addEventListener('install', event => {
     new URL('manifest.webmanifest', SHELL).href,
     new URL('main.js', SHELL).href,
     new URL('ffmpeg-worker.js', SHELL).href,
+    new URL('demucs-worker.js', SHELL).href,
     new URL('style.css', SHELL).href,
     new URL('icons/icon-192.png', SHELL).href,
     new URL('icons/icon-512.png', SHELL).href
