@@ -1,10 +1,5 @@
-/* EBS AI Studio Pro — same-origin worker entry point for @ffmpeg/ffmpeg UMD 0.12.15.
- * FFmpeg's UMD webpack worker bundle is loaded in this classic worker.
- * Do not replace this with a blob: classWorkerURL.
+/* EBS AI Studio Pro — module Worker entry, no importScripts.
+ * FFmpeg 0.12.15 ESM worker handles message protocol.
+ * Served from same origin, works from subdirectories on GitHub Pages.
  */
-try {
-  importScripts('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/814.ffmpeg.js');
-} catch (error) {
-  console.error('EBS FFmpeg worker yüklenemedi:', error);
-  throw error;
-}
+import 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js';

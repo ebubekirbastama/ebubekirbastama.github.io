@@ -1,5 +1,5 @@
 /* EBS AI Studio Pro — installable application shell. */
-const VERSION = 'ebs-studio-static-v5' ;
+const VERSION = 'ebs-studio-static-v8' ;
 const SHELL = new URL('./', self.registration.scope);
 const CACHE = VERSION + '-shell';
 self.addEventListener('install', event => {
@@ -31,8 +31,8 @@ self.addEventListener('fetch', event => {
     return;
   }
   if (!/\.(?:js|css|png|svg|webmanifest|ico)$/i.test(url.pathname))return;
-  event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
+  event.respondWith(fetch(request).then(response => {
     if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache => cache.put(request,copy)));}
     return response;
-  })));
+  }).catch(async () => (await caches.match(request)) || Response.error()));
 });

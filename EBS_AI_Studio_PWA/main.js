@@ -46,11 +46,10 @@ function addFiles(files){if(state.running)return;let added=0; for(const f of Arr
 function remove(id){if(state.running)return;const i=state.jobs.findIndex(j=>j.id===id);if(i<0)return;if(state.jobs[i].result)URL.revokeObjectURL(state.jobs[i].result.url);for(const ex of state.jobs[i].extras||[])URL.revokeObjectURL(ex.url);state.jobs.splice(i,1);render();$('overall').textContent=`0 / ${state.jobs.length} video tamamlandı`;}
 function reset(){if(state.running)return;for(const job of state.jobs){if(job.result)URL.revokeObjectURL(job.result.url);for(const ex of job.extras||[])URL.revokeObjectURL(ex.url);}state.jobs=[];render();$('overall').textContent='0 / 0 video tamamlandı';$('totalBar').style.width='0%';setStatus('Liste temizlendi.');}
 async function loadFFmpeg(){if(state.ffmpeg && state.loaded)return state.ffmpeg;setStatus('FFmpeg WebAssembly motoru indiriliyor (ilk açılışta yaklaşık 30 MB)…');if (!ffmpegLib()?.FFmpeg) throw Error('FFmpeg kitaplığı yüklenemedi. CDN erişimini kontrol edin.');const ffmpeg=new (ffmpegLib().FFmpeg)();state.ffmpeg=ffmpeg;ffmpeg.on('progress',({progress:pr})=>{const job=state.jobs[state.current];if(job && state.running){progress(job,.78+Math.min(1,Math.max(0,pr))*.20,'Video işleniyor');setStatus(`${state.current+1}/${state.jobs.length} · ${job.file.name} · Video işleniyor`);}});
- const coreBase='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
- // Important: ffmpeg-core.js must be loaded as a classic UMD script by importScripts.
- // A blob: URL here triggers Webpack's `Cannot find module blob:...` fallback.
- // The FFmpeg class worker starts from this app's own origin; no remote Worker URL.
- const classWorkerURL=new URL('./ffmpeg-worker.js',document.baseURI).href;
+ const coreBase='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
+ // Module worker loads ESM ffmpeg-core (importScripts cannot run in module workers).
+ // Worker entry point stays same-origin so GitHub Pages subpaths remain supported.
+ const classWorkerURL=new URL('./ffmpeg-worker.js?v=20261107-3',document.baseURI).href;
  try {
   await ffmpeg.load({
    classWorkerURL,
@@ -116,7 +115,6 @@ async function processJob(ffmpeg,job,i){
  const toDelete=[inputName,outName,rawName,voiceName,backgroundName];let vocal=null,background=null;
  try{
   progress(job,.02,'Kaynak kontrol ediliyor');setStatus(`${i+1}/${state.jobs.length} · ${job.file.name}`);
-  if(job.file.size>850*1024*1024)throw new Error('Dosya 850 MB sınırını aşıyor; tarayıcı belleği için çok büyük.');
   await ffmpeg.writeFile(inputName,await fetchFile(job.file));
   const needsAI=settings.mode!=='Orijinal sesi koru'||settings.vocalWav||settings.backgroundWav;
   if(needsAI){
