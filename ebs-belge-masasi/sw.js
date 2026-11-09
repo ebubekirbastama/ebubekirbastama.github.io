@@ -1,5 +1,5 @@
-const CACHE='ebs-belge-masasi-v2';
-const SHELL=['./ebs-belge-masasi.html','./manifest.webmanifest','./ebs-icon-192.png','./ebs-icon-512.png'];
+const CACHE='ebs-belge-masasi-v4-suite-icons';
+const SHELL=['./ebs-belge-masasi.html','./manifest.webmanifest','./ebs-icon-192.png','./ebs-icon-512.png','./ebs-icon.svg'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',event=>{

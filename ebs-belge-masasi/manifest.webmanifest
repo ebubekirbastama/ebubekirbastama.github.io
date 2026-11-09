@@ -1,7 +1,7 @@
 {
   "name": "EBS Belge Masası",
   "short_name": "EBS Belge Masası",
-  "description": "Word Excel PDF ve sunum görüntüleyici",
+  "description": "Word, Excel, PDF, PowerPoint ve diğer ofis belgeleri için birleşik EBS Belge Masası",
   "id": "./ebs-belge-masasi.html",
   "start_url": "./ebs-belge-masasi.html",
   "scope": "./",
@@ -10,6 +10,12 @@
   "theme_color": "#1f5c45",
   "lang": "tr",
   "icons": [
+    {
+      "src": "./ebs-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "./ebs-icon-192.png",
       "sizes": "192x192",

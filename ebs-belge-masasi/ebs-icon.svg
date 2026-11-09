@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#164E3B"/><stop offset="1" stop-color="#0A302A"/></linearGradient><filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="11" stdDeviation="13" flood-color="#061F1C" flood-opacity=".42"/></filter></defs>
+<rect width="512" height="512" rx="105" fill="url(#bg)"/>
+<path d="M62 390h388" stroke="#8ABBA9" stroke-opacity=".20" stroke-width="2"/>
+<!-- rear ppt card -->
+<g filter="url(#shadow)" transform="rotate(11 331 216)"><rect x="273" y="91" width="139" height="202" rx="17" fill="#FFF7ED"/><path d="M376 91v37h36" fill="#FED7AA"/><rect x="290" y="155" width="104" height="101" rx="10" fill="#F0A05C"/><path d="M341 169a35 35 0 1 0 35 35h-35z" fill="#FFF1DF"/><path d="M349 165v32h32a33 33 0 0 0-32-32" fill="#BE561C"/></g>
+<!-- rear pdf card -->
+<g filter="url(#shadow)" transform="rotate(-11 172 206)"><rect x="100" y="98" width="139" height="201" rx="17" fill="#FFF5F3"/><path d="M202 98v36h37" fill="#FFD9D5"/><rect x="118" y="159" width="104" height="72" rx="11" fill="#D8544A"/><text x="170" y="205" font-size="35" font-weight="800" font-family="Arial,sans-serif" text-anchor="middle" fill="white">PDF</text><path d="M121 249h96" stroke="#DCA39F" stroke-width="10" stroke-linecap="round"/></g>
+<!-- Word card -->
+<g filter="url(#shadow)" transform="rotate(-5 198 250)"><rect x="133" y="150" width="160" height="209" rx="18" fill="#F4F9FF"/><path d="M248 150v41h45" fill="#D9E8FC"/><rect x="150" y="206" width="124" height="126" rx="11" fill="#2464B0"/><text x="212" y="285" font-size="85" font-weight="800" text-anchor="middle" font-family="Arial,sans-serif" fill="white">W</text></g>
+<!-- Excel card front -->
+<g filter="url(#shadow)" transform="rotate(5 316 284)"><rect x="235" y="190" width="159" height="207" rx="18" fill="#F3FFF8"/><path d="M351 190v42h43" fill="#D2F0DE"/><rect x="252" y="245" width="125" height="124" rx="11" fill="#168153"/><path d="M315 258v97M265 307h99" stroke="#91CEAA" stroke-width="5"/><text x="288" y="302" font-size="46" font-weight="800" text-anchor="middle" font-family="Arial,sans-serif" fill="white">X</text><path d="M325 273h37M325 288h37M325 322h37M325 340h37" stroke="#B6E4C8" stroke-width="5" stroke-linecap="round"/></g>
+<rect x="160" y="399" width="192" height="60" rx="27" fill="#F7F5E9"/><text x="256" y="443" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="47" letter-spacing="4" fill="#154B39">EBS</text>
+</svg>
