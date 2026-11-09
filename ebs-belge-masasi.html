@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1f5c45">
+<link rel="manifest" href="./manifest.webmanifest">
 <!-- =====================================================
      EBS BELGE MASASI - SEO
 ===================================================== -->
@@ -349,7 +351,16 @@
   }
   .filemeta .fname{ font-weight:600; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:38vw; }
   .filemeta .fsub{ font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace; }
-  .viewer-actions{ display:flex; gap:8px; }
+  .viewer-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .action-btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:5px;padding:8px 11px;cursor:pointer;font:600 12px 'Space Grotesk',sans-serif;}
+  .action-btn:hover{background:var(--emerald);color:white;}
+  .action-btn[disabled]{opacity:.5;cursor:not-allowed;}
+  .action-btn.active{background:var(--emerald);color:white;}
+  [contenteditable="true"]{outline:1px dashed rgba(31,92,69,.4);outline-offset:-2px;}
+  [contenteditable="true"]:focus{outline:2px solid var(--emerald);background:#f6fbf8;}
+  .sheet-info{font-size:12px;color:var(--ink-soft);padding:0 0 10px;}
+  .sheet-table-scroll table{width:max-content;min-width:100%;}
+  .sheet-table-scroll td{min-width:76px;}
   .icon-btn{
     border:1px solid var(--line); background:var(--paper); color:var(--ink);
     width:34px;height:34px; border-radius:5px; display:flex;align-items:center;justify-content:center;
@@ -500,6 +511,7 @@
       <input type="file" id="fileInput" accept=".doc,.docx,.xls,.xlsx,.xlsm,.xlsb,.ppt,.pptx,.odt,.ods,.odp,.csv,.rtf,.pdf">
     </div>
 
+    <button type="button" class="btn-select" id="installBtn" hidden style="background:var(--emerald);color:#fff;border-color:var(--emerald);">Bilgisayara Uygulama Olarak Kur</button>
     <div class="supported-list">
       <h3>Format Desteği</h3>
       <div class="sup-row"><span class="sup-tag">DOCX</span><span class="sup-state full">tam önizleme + resim</span></div>
@@ -528,6 +540,9 @@
         </div>
       </div>
       <div class="viewer-actions">
+        <button class="action-btn" type="button" id="copyAllBtn" title="Tüm belgeyi kopyala">Tümünü Kopyala</button>
+        <button class="action-btn" type="button" id="editBtn" title="Metin veya hücreleri düzenle">Düzenle</button>
+        <button class="action-btn" type="button" id="saveBtn" title="Düzenlemeyi dışa aktar">Farklı Kaydet</button>
         <button class="icon-btn" id="zoomOutBtn" title="Küçült"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></button>
         <button class="icon-btn" id="zoomInBtn" title="Büyüt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
         <button class="icon-btn" id="closeBtn" title="Kapat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
@@ -568,6 +583,16 @@ const historyList = document.getElementById('historyList');
 const toast = document.getElementById('toast');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
+const copyAllBtn = document.getElementById('copyAllBtn');
+const editBtn = document.getElementById('editBtn');
+const saveBtn = document.getElementById('saveBtn');
+const installBtn = document.getElementById('installBtn');
+let currentFile = null;
+let currentWorkbook = null;
+let activeSheetName = null;
+let editable = false;
+let currentPdf = null;
+let installedPrompt = null;
 
 let zoomLevel = 100;
 let sessionFiles = [];
@@ -621,6 +646,34 @@ fileInput.addEventListener('change', e=>{
   if(e.target.files[0]) handleFile(e.target.files[0]);
 });
 closeBtn.addEventListener('click', resetViewer);
+copyAllBtn.addEventListener('click', copyAllContent);
+editBtn.addEventListener('click', toggleEditing);
+saveBtn.addEventListener('click', saveEditedDocument);
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); installedPrompt=e; installBtn.hidden=false; });
+window.addEventListener('appinstalled', ()=>{installBtn.hidden=true; installedPrompt=null;showToast('Uygulama kuruldu.');});
+installBtn.addEventListener('click', async()=>{
+  if(!installedPrompt){ showToast('Chrome veya Edge menüsünden Uygulamayı yükle seçeneğini kullanın.'); return; }
+  const prompt=installedPrompt;installedPrompt=null;installBtn.hidden=true;await prompt.prompt();
+});
+if('serviceWorker' in navigator && location.protocol==='https:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));
+}
+if('launchQueue' in window){
+  window.launchQueue.setConsumer(async params=>{
+    for(const handle of (params.files||[])){
+      try { await handleFile(await handle.getFile()); } catch(err){console.error(err);showToast('Dosya açılamadı.');}
+    }
+  });
+}
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='c' && viewerHead.style.display!=='none'){
+    const selection=window.getSelection();
+    if(selection && !selection.isCollapsed) return;
+    const tag=document.activeElement?.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||document.activeElement?.isContentEditable) return;
+    e.preventDefault();copyAllContent();
+  }
+});
 zoomInBtn.addEventListener('click', ()=> applyZoom(10));
 zoomOutBtn.addEventListener('click', ()=> applyZoom(-10));
 
@@ -631,6 +684,8 @@ function applyZoom(delta){
 }
 
 function resetViewer(){
+  currentFile=null; currentWorkbook=null;activeSheetName=null;currentPdf=null;editable=false;
+  editBtn.classList.remove('active');editBtn.textContent='Düzenle';
   viewerBody.innerHTML = '';
   viewerBody.appendChild(emptyState);
   viewerHead.style.display = 'none';
@@ -654,11 +709,13 @@ function addHistory(file){
   sessionFiles.unshift(file.name);
   sessionFiles = sessionFiles.slice(0,6);
   historyBox.style.display = 'block';
-  historyList.innerHTML = sessionFiles.map(n=>`<div class="history-item"><span class="dot"></span><span>${n}</span></div>`).join('');
+  historyList.replaceChildren(...sessionFiles.map(n=>{const row=document.createElement('div');row.className='history-item';const dot=document.createElement('span');dot.className='dot';const label=document.createElement('span');label.textContent=n;row.append(dot,label);return row;}));
 }
 
 async function handleFile(file){
   const e = ext(file.name);
+  currentFile=file;currentWorkbook=null;activeSheetName=null;currentPdf=null;editable=false;
+  editBtn.classList.remove('active');editBtn.textContent='Düzenle';
   addHistory(file);
 
   try{
@@ -677,6 +734,7 @@ async function handleFile(file){
       setHeader(file, 'Elektronik Tablo');
       const arrayBuffer = await file.arrayBuffer();
       const wb = XLSX.read(arrayBuffer, {type:'array'});
+      currentWorkbook=wb;
       renderWorkbook(wb);
     }
     else if(e === 'pptx'){
@@ -704,41 +762,148 @@ async function handleFile(file){
     }
   }catch(err){
     console.error(err);
-    viewerBody.innerHTML = `<div class="limited-note"><strong>Dosya açılamadı</strong>${err.message || 'Beklenmeyen bir hata oluştu. Dosyanın bozuk olmadığından emin olun.'}</div>`;
+    viewerBody.innerHTML = `<div class="limited-note"><strong>Dosya açılamadı</strong>${escapeHtml(err.message || 'Beklenmeyen bir hata oluştu. Dosyanın bozuk olmadığından emin olun.')}</div>`;
     showToast('Bir hata oluştu, konsolu kontrol edin.');
   }
 }
 
-function renderWorkbook(wb){
-  const wrap = document.createElement('div');
-  wrap.className = 'sheet-wrap';
-  const tabs = document.createElement('div');
-  tabs.className = 'sheet-tabs';
-  const scroll = document.createElement('div');
-  scroll.className = 'sheet-table-scroll';
-
-  wb.SheetNames.forEach((name, i)=>{
-    const tab = document.createElement('button');
-    tab.className = 'sheet-tab' + (i===0 ? ' active' : '');
-    tab.textContent = name;
-    tab.onclick = ()=>{
-      tabs.querySelectorAll('.sheet-tab').forEach(t=>t.classList.remove('active'));
-      tab.classList.add('active');
-      scroll.innerHTML = sheetToTable(wb.Sheets[name]);
-    };
-    tabs.appendChild(tab);
-  });
-
-  scroll.innerHTML = sheetToTable(wb.Sheets[wb.SheetNames[0]]);
-  wrap.appendChild(tabs);
-  wrap.appendChild(scroll);
-  viewerBody.innerHTML = '';
-  viewerBody.appendChild(wrap);
+// Yalnızca dolu hücreler: !ref genişliğine göre boş 15.000 satırı oluşturmayız.
+function populatedRows(sheet){
+  const rows=new Map(); let maxColumn=0;
+  for(const [address,cell] of Object.entries(sheet)){
+    if(address[0]==='!' || !/^[A-Z]+[1-9]\d*$/.test(address)) continue;
+    if(!cell || cell.t==='z' || cell.v===undefined || cell.v===null || String(cell.v).trim()==='') continue;
+    const pos=XLSX.utils.decode_cell(address);
+    if(!rows.has(pos.r)) rows.set(pos.r,new Map());
+    rows.get(pos.r).set(pos.c,cell);
+    maxColumn=Math.max(maxColumn,pos.c);
+  }
+  return {rows:[...rows.entries()].sort((a,b)=>a[0]-b[0]),maxColumn};
 }
-
-function sheetToTable(sheet){
-  const html = XLSX.utils.sheet_to_html(sheet, {id:'grid', editable:false});
-  return html.replace('<table', '<table class="grid-table"');
+function getCellText(cell){
+  if(!cell) return '';
+  if(cell.w!==undefined && cell.w!==null) return String(cell.w);
+  return cell.v===undefined||cell.v===null?'':String(cell.v);
+}
+function renderWorkbook(wb){
+  const wrap=document.createElement('div');wrap.className='sheet-wrap';
+  const tabs=document.createElement('div');tabs.className='sheet-tabs';
+  const info=document.createElement('div');info.className='sheet-info';
+  const scroll=document.createElement('div');scroll.className='sheet-table-scroll';
+  function selectSheet(name){
+    activeSheetName=name;
+    tabs.querySelectorAll('.sheet-tab').forEach(t=>t.classList.toggle('active',t.dataset.name===name));
+    renderSheetTable(wb.Sheets[name],scroll,info);
+  }
+  wb.SheetNames.forEach(name=>{
+    const tab=document.createElement('button');tab.type='button';tab.className='sheet-tab';
+    tab.dataset.name=name;tab.textContent=name;tab.addEventListener('click',()=>selectSheet(name));tabs.appendChild(tab);
+  });
+  wrap.append(tabs,info,scroll);viewerBody.replaceChildren(wrap);
+  if(wb.SheetNames.length)selectSheet(wb.SheetNames[0]);
+}
+function renderSheetTable(sheet,container,info){
+  const {rows,maxColumn}=populatedRows(sheet);
+  info.textContent=`${rows.length.toLocaleString('tr-TR')} veri içeren satır gösteriliyor · Boş satırlar atlandı · ${activeSheetName}`;
+  container.replaceChildren();
+  if(!rows.length){container.textContent='Bu sayfada veri bulunamadı.';return;}
+  const table=document.createElement('table');table.className='grid-table';
+  const thead=document.createElement('thead');const hr=document.createElement('tr');
+  const corner=document.createElement('th');corner.textContent='#';hr.appendChild(corner);
+  for(let c=0;c<=maxColumn;c++){const th=document.createElement('th');th.textContent=XLSX.utils.encode_col(c);hr.appendChild(th);}
+  thead.appendChild(hr);table.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  for(const [rowIndex,cells] of rows){
+    const tr=document.createElement('tr');
+    const rowHeader=document.createElement('th');rowHeader.textContent=String(rowIndex+1);tr.appendChild(rowHeader);
+    for(let c=0;c<=maxColumn;c++){
+      const td=document.createElement('td');const cell=cells.get(c);
+      td.textContent=getCellText(cell);
+      td.dataset.addr=XLSX.utils.encode_cell({r:rowIndex,c});
+      td.contentEditable=String(editable);
+      td.addEventListener('input',()=>{
+        const value=td.textContent||'';
+        if(value.trim()===''){delete sheet[td.dataset.addr];}
+        else {sheet[td.dataset.addr]={t:'s',v:value};}
+      });
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);container.appendChild(table);
+}
+function toggleEditing(){
+  if(!currentFile) return;
+  const type=ext(currentFile.name);
+  if(!['docx','xlsx','xls','xlsm','xlsb','csv','ods','odt','odp','pptx'].includes(type)){
+    showToast('Bu format için düzenleme desteklenmiyor.');return;
+  }
+  editable=!editable;
+  editBtn.classList.toggle('active',editable);
+  editBtn.textContent=editable?'Düzenlemeyi Bitir':'Düzenle';
+  if(currentWorkbook){
+    viewerBody.querySelectorAll('.grid-table td[data-addr]').forEach(td=>td.contentEditable=String(editable));
+  } else {
+    viewerBody.querySelectorAll('.doc-surface, .slide-body, .sheet-table-scroll td').forEach(el=>{
+      el.contentEditable=String(editable);
+    });
+  }
+  showToast(editable?'Düzenleme açık. Hücrelere veya metne tıklayın.':'Düzenleme kapatıldı.');
+}
+function workbookToText(){
+  const parts=[];
+  for(const name of currentWorkbook.SheetNames){
+    const {rows,maxColumn}=populatedRows(currentWorkbook.Sheets[name]);
+    if(currentWorkbook.SheetNames.length>1)parts.push('### '+name);
+    for(const [,cells] of rows){
+      const values=[];
+      for(let c=0;c<=maxColumn;c++)values.push(getCellText(cells.get(c)));
+      parts.push(values.join('\t'));
+    }
+    if(currentWorkbook.SheetNames.length>1)parts.push('');
+  }
+  return parts.join('\n').trim();
+}
+async function copyAllContent(){
+  if(!currentFile)return;
+  let value='';
+  if(currentWorkbook){value=workbookToText();}
+  else if(currentPdf){
+    showToast('PDF metni hazırlanıyor…');
+    const lines=[];
+    for(let i=1;i<=currentPdf.numPages;i++){
+      const page=await currentPdf.getPage(i);const content=await page.getTextContent();
+      lines.push(content.items.map(x=>x.str||'').join(' '));
+    }
+    value=lines.join('\n\n');
+  } else {
+    value=viewerBody.querySelector('.doc-surface, .slide-grid, .sheet-wrap')?.innerText||'';
+  }
+  if(!value.trim()){showToast('Kopyalanabilecek metin bulunamadı.');return;}
+  try{await navigator.clipboard.writeText(value);showToast('Tüm içerik panoya kopyalandı.');}
+  catch(_){
+    const ta=document.createElement('textarea');ta.value=value;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();
+    const ok=document.execCommand('copy');ta.remove();showToast(ok?'Tüm içerik kopyalandı.':'Kopyalama başarısız. HTTPS üzerinde deneyin.');
+  }
+}
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+async function saveEditedDocument(){
+  if(!currentFile)return;
+  const name=currentFile.name.replace(/\.[^.]+$/,'');
+  if(currentWorkbook){
+    const binary=XLSX.write(currentWorkbook,{bookType:'xlsx',type:'array'});
+    downloadBlob(new Blob([binary],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),name+'-duzenlenmis.xlsx');
+  }else if(viewerBody.querySelector('.doc-surface')){
+    const content=viewerBody.querySelector('.doc-surface').innerHTML;
+    const markup='<!doctype html><html lang="tr"><head><meta charset="utf-8"></head><body>'+content+'</body></html>';
+    downloadBlob(new Blob([markup],{type:'text/html;charset=utf-8'}),name+'-duzenlenmis.html');
+    showToast('Word biçiminde değil, düzenlenebilir HTML olarak kaydedildi.');return;
+  }else{
+    showToast('Bu belge türü için dışa aktarma henüz desteklenmiyor.');return;
+  }
+  showToast('Düzenlenen dosya indirildi.');
 }
 
 async function renderPptx(file){
@@ -808,7 +973,7 @@ async function renderOpenDocument(file, type){
     const wrap = document.createElement('div');
     wrap.className = 'sheet-wrap';
     let html = '<div class="sheet-table-scroll"><table class="grid-table"><tbody>';
-    rows.slice(0,500).forEach(r=>{
+    rows.filter(r=>/<text:p[^>]*>[^<\s][^<]*<\/text:p>/.test(r[1])).slice(0,500).forEach(r=>{
       const cells = Array.from(r[1].matchAll(/<text:p[^>]*>([^<]*)<\/text:p>/g)).map(c=>c[1]);
       html += '<tr>' + cells.map(c=>`<td>${escapeHtml(c)}</td>`).join('') + '</tr>';
     });
@@ -834,6 +999,7 @@ async function renderOpenDocument(file, type){
 async function renderPdf(file){
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+  currentPdf=pdf;
 
   const wrap = document.createElement('div');
   wrap.className = 'pdf-wrap';
