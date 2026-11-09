@@ -1,0 +1,61 @@
+{
+  "name": "EBS Belge Masası",
+  "short_name": "EBS Belge Masası",
+  "description": "Word Excel PDF ve sunum görüntüleyici",
+  "id": "./ebs-belge-masasi.html",
+  "start_url": "./ebs-belge-masasi.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f7",
+  "theme_color": "#1f5c45",
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "./ebs-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./ebs-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./ebs-belge-masasi.html",
+      "name": "EBS ile Belge Aç",
+      "accept": {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+          ".docx"
+        ],
+        "application/vnd.ms-excel": [
+          ".xls"
+        ],
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+          ".xlsx"
+        ],
+        "application/vnd.ms-excel.sheet.macroEnabled.12": [
+          ".xlsm"
+        ],
+        "text/csv": [
+          ".csv"
+        ],
+        "application/pdf": [
+          ".pdf"
+        ],
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation": [
+          ".pptx"
+        ],
+        "application/vnd.oasis.opendocument.text": [
+          ".odt"
+        ],
+        "application/vnd.oasis.opendocument.spreadsheet": [
+          ".ods"
+        ]
+      }
+    }
+  ]
+}
