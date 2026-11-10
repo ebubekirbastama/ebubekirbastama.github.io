@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1B2938"/><stop offset="1" stop-color="#0B1019"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFF0BD"/><stop offset=".5" stop-color="#E7BD73"/><stop offset="1" stop-color="#AC7738"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="21" y="21" width="470" height="470" rx="96" fill="none" stroke="#C79A58" stroke-opacity=".28" stroke-width="4"/>
+  <path d="M256 92 410 255 256 420 102 255Z" fill="#E5BD72" fill-opacity=".055" stroke="url(#gold)" stroke-width="23" stroke-linejoin="round"/>
+  <path d="m170 317 69-147 44 94 58-37" fill="none" stroke="url(#gold)" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="170" cy="317" r="17" fill="#F9E2AA"/><circle cx="239" cy="170" r="17" fill="#F9E2AA"/><circle cx="283" cy="264" r="17" fill="#F9E2AA"/><circle cx="341" cy="227" r="17" fill="#F9E2AA"/>
+  <path d="m354 102 8 22 22 8-22 8-8 22-8-22-22-8 22-8z" fill="#FFE9AB"/>
+</svg>
