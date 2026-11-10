@@ -1,179 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ASCII Art Oluşturucu</title>
-    <style>
-        /* Google Fonts'tan Poppins */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-        /* Reset ve temel ayarlar */
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            font-family: 'Poppins', Arial, sans-serif;
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 40px 20px;
-        }
-        .container {
-            background: #fff;
-            max-width: 720px;
-            width: 100%;
-            border-radius: 16px;
-            padding: 30px 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            transition: box-shadow 0.3s ease;
-        }
-        .container:hover {
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-        }
-        h1 {
-            font-weight: 600;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #3a1c71;
-            text-align: center;
-            user-select: none;
-        }
-
-        label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 6px;
-            color: #555;
-        }
-
-        input[type="text"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 14px 18px;
-            border-radius: 10px;
-            border: 1.8px solid #ddd;
-            font-size: 1rem;
-            font-family: 'Courier New', Courier, monospace;
-            transition: border-color 0.3s ease;
-            outline-offset: 2px;
-        }
-        input[type="text"]:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 8px rgba(102,126,234,0.5);
-            outline: none;
-        }
-
-        textarea {
-            height: 180px;
-            resize: vertical;
-            font-family: monospace;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        button {
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border: none;
-            color: #fff;
-            font-weight: 600;
-            padding: 14px 28px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.35s ease, box-shadow 0.35s ease;
-            user-select: none;
-            box-shadow: 0 8px 15px rgba(102,126,234,0.4);
-            margin-top: 10px;
-            display: inline-block;
-        }
-        button:hover {
-            background: linear-gradient(90deg, #764ba2, #667eea);
-            box-shadow: 0 12px 20px rgba(118,75,162,0.6);
-        }
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .preview {
-            background-color: #1e1e2f;
-            color: #a9b1d6;
-            padding: 20px;
-            border-radius: 12px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1rem;
-            white-space: pre-wrap;
-            word-break: break-word;
-            max-height: 300px;
-            overflow-y: auto;
-            user-select: text;
-            box-shadow: inset 0 0 12px #44475a;
-            margin-bottom: 24px;
-            line-height: 1.2;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 20px 10px;
-                align-items: stretch;
-            }
-            .container {
-                padding: 25px 20px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            button {
-                width: 100%;
-                padding: 14px 0;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="Ebubekir Bastama">
+<meta name="description" content="Ücretsiz online ASCII Art oluşturucu: Metinlerinizi 5 farklı stil ile ASCII yazıya dönüştürün. Canlı önizleme, HTML kodu, kopyalama ve TXT indirme.">
+<title>ASCII Art Oluşturucu | Ücretsiz Online ASCII Yazı – EBS Tools</title>
+<link rel="canonical" href="https://ebubekirbastama.com.tr/asciiartolusturucu.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="EBS Free Tools">
+<meta property="og:title" content="ASCII Art Oluşturucu – Ücretsiz Online ASCII Yazı">
+<meta property="og:description" content="Metninizi saniyeler içinde 5 farklı ASCII fontuyla dönüştürün. Ücretsiz, hızlı ve tarayıcıda çalışan araç.">
+<meta property="og:url" content="https://ebubekirbastama.com.tr/asciiartolusturucu.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ASCII Art Oluşturucu | EBS Free Tools">
+<meta name="twitter:description" content="Ücretsiz ASCII sanat yazısı oluşturun, kopyalayın veya TXT/HTML olarak indirin.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"ASCII Art Oluşturucu","url":"https://ebubekirbastama.com.tr/asciiartolusturucu.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":"tr-TR","description":"Metinleri farklı ASCII yazı stillerine dönüştüren ücretsiz çevrim içi araç.","offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"},"creator":{"@type":"Person","name":"Ebubekir Bastama"}}</script>
+<style>
+:root{--bg:#080d18;--panel:#111827;--panel2:#141e30;--line:#28364a;--text:#f2f5fb;--muted:#9ba9c0;--accent:#6ee7c7;--gold:#e2bd7a;--blue:#8aa9ff;--radius:19px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse 65% 40% at 82% -10%,#173a4b55,transparent 75%),radial-gradient(ellipse 45% 35% at 1% 23%,#2f305337,transparent 80%),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--text);min-height:100vh;line-height:1.5}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.shell{max-width:1260px;margin:auto;padding:0 28px}.topbar{border-bottom:1px solid #ffffff14;background:#0a1120b8;backdrop-filter:blur(12px)}.topinner{height:74px;display:flex;justify-content:space-between;align-items:center;gap:15px}.brand{display:flex;align-items:center;gap:13px;font-size:15px;font-weight:750;letter-spacing:.04em}.brandlogo{height:40px;width:40px;display:grid;place-items:center;color:#06131a;background:linear-gradient(135deg,#bdf7df,#70d1ba);border-radius:12px;font-size:14px;letter-spacing:-.06em;box-shadow:0 6px 25px #2ae7b424}.brand small{display:block;font-size:10px;color:var(--muted);letter-spacing:.17em;font-weight:600}.headlink{font-size:13px;color:#bcc9db;padding:10px 13px;border:1px solid #ffffff25;border-radius:9px}.headlink:hover{border-color:var(--accent);color:#fff}.hero{padding:69px 0 45px;max-width:920px}.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--accent);font-size:11px;letter-spacing:.19em;font-weight:800;text-transform:uppercase}.eyebrow:before{content:"";height:7px;width:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}h1{font-size:clamp(36px,5vw,66px);line-height:1.07;letter-spacing:-.065em;margin:19px 0 17px;font-weight:800}h1 em{font-style:normal;background:linear-gradient(110deg,#bbf4dc 10%,#78a5fa 85%);color:transparent;background-clip:text}.lead{font-size:16px;color:var(--muted);max-width:690px;margin:0;line-height:1.85}.hero-tags{display:flex;gap:11px;flex-wrap:wrap;margin-top:26px}.tag{font-size:12px;border:1px solid #304154;background:#142033a3;color:#c5d4e5;border-radius:999px;padding:7px 12px}.workspace{display:grid;grid-template-columns:minmax(310px,.86fr) minmax(0,1.4fr);gap:20px;align-items:start}.card{background:linear-gradient(160deg,#152034f5,#111a29f9);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 18px 55px #00000022}.controls{padding:28px}.panelheading{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;gap:12px}.paneltitle{font-size:17px;font-weight:750;letter-spacing:-.025em}.step{font-family:ui-monospace,monospace;font-size:11px;color:var(--gold);letter-spacing:.1em}.field{margin:0 0 22px}.field label{font-size:13px;font-weight:660;display:block;margin-bottom:9px;color:#dfe7f3}.field small{font-size:11px;color:var(--muted);display:block;margin-top:8px}input[type=text],select,textarea{width:100%;border:1px solid #33445b;border-radius:11px;background:#0b1422;color:#f0f5fc;padding:13px 14px;outline:none;transition:border-color .15s,box-shadow .15s}input[type=text]:focus,select:focus,textarea:focus{border-color:#69d5c1;box-shadow:0 0 0 3px #69d5c118}textarea{resize:vertical}input[type=range]{accent-color:#7ee6ce;width:100%}.formrow{display:grid;grid-template-columns:1fr 1fr;gap:14px}.colorbox{display:flex;align-items:center;gap:10px;border:1px solid #33445b;border-radius:11px;background:#0b1422;padding:7px 10px;min-height:48px}.colorbox input{border:none;padding:0;background:transparent;width:36px;height:28px;cursor:pointer}.colorbox span{font-family:ui-monospace,monospace;color:#bbcadb;font-size:12px}.rangehead{display:flex;justify-content:space-between;align-items:center}.rangehead output{color:var(--accent);font-family:ui-monospace,monospace}.button{border-radius:11px;display:inline-flex;justify-content:center;align-items:center;gap:9px;padding:12px 15px;font-weight:700;font-size:13px;border:1px solid #42526a;background:#1b2a3d;color:#eff5ff;transition:transform .15s,background .15s,border-color .15s}.button:hover{transform:translateY(-1px);background:#273a50;border-color:#71809a}.button.primary{background:linear-gradient(125deg,#aaf5da,#70cfba);color:#082820;border-color:transparent;box-shadow:0 9px 24px #49ddb42a}.button.primary:hover{background:#b9ffe5}.button.full{width:100%}.control-actions{display:grid;grid-template-columns:1fr auto;gap:10px}.control-actions .button{min-height:45px}.rightpane{display:grid;gap:20px;min-width:0}.outputcard{overflow:hidden}.outhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 21px;border-bottom:1px solid var(--line)}.outtitle{font-size:15px;font-weight:750}.status{font-size:11px;color:var(--accent);display:flex;align-items:center;gap:7px}.status:before{content:"";width:6px;height:6px;border-radius:100%;background:currentColor}.previewstage{background:#090e17;margin:16px;border:1px solid #27344a;border-radius:12px;overflow:auto;min-height:228px;max-height:420px;padding:23px 19px;scrollbar-color:#405770 #0b1421}.previewstage pre{margin:0;display:block;width:max-content;min-width:100%;font-size:12px;line-height:1.22;font-family:Consolas,"Courier New",monospace;white-space:pre;tab-size:2}.outfoot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 20px 18px}.muted{color:var(--muted);font-size:12px}.actionrow{display:flex;flex-wrap:wrap;gap:9px}.codepad{padding:17px 20px 22px}.tabs{display:flex;gap:7px;margin-bottom:13px}.tab{background:transparent;border:1px solid #37475f;color:#aebed3;padding:7px 12px;border-radius:8px;font-size:12px}.tab[aria-selected=true]{color:#091b1a;background:var(--accent);border-color:var(--accent);font-weight:750}.codepad textarea{font-family:Consolas,monospace;font-size:11px;line-height:1.5;min-height:138px;max-height:270px;white-space:pre;overflow:auto;resize:vertical}.codeactions{margin-top:11px;display:flex;gap:9px;flex-wrap:wrap}.inform{margin:50px 0 65px;display:grid;grid-template-columns:1fr 1fr;gap:20px}.infocard{padding:25px 28px}.infocard h2{margin:0 0 10px;font-size:17px;letter-spacing:-.02em}.infocard p{color:var(--muted);font-size:13px;line-height:1.8;margin:0}.infocard ul{margin:0;padding-left:19px;color:var(--muted);font-size:13px;line-height:1.9}.footer{border-top:1px solid #ffffff16;padding:24px 0 33px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#8b9bb1}.toast{position:fixed;right:20px;bottom:20px;padding:12px 17px;color:#08231d;background:#aaf5d9;border-radius:11px;font-size:13px;font-weight:700;box-shadow:0 15px 40px #0005;opacity:0;transform:translateY(15px);transition:.2s;pointer-events:none;z-index:2}.toast.show{opacity:1;transform:translateY(0)}@media(max-width:900px){.workspace{grid-template-columns:1fr}.hero{padding-top:47px}.previewstage pre{font-size:11px}}@media(max-width:580px){.shell{padding:0 15px}.topinner{height:65px}.headlink{font-size:11px}.hero{padding:40px 0 29px}h1{font-size:38px}.lead{font-size:14px}.controls{padding:20px}.outhead{padding:16px}.previewstage{margin:11px;padding:15px 12px}.inform{grid-template-columns:1fr;margin-top:26px}.outfoot{padding:0 15px 16px}.codepad{padding:15px}.actionrow .button{flex:1}.formrow{gap:9px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
-    <div class="container" role="main" aria-label="ASCII Art Oluşturucu">
-        <h1>ASCII Art Oluşturucu</h1>
-
-        <div class="form-group">
-            <label for="textInput">Metin</label>
-            <input type="text" id="textInput" placeholder="Metin girin" value="Ebubekir Bastama" aria-describedby="textHelp" />
-        </div>
-
-        <div class="form-group">
-            <label for="fontSelect">Yazı Tipi</label>
-            <select id="fontSelect" aria-describedby="fontHelp">
-                <option value="block">Block</option>
-                <option value="banner" disabled>Banner (Yakında)</option>
-                <option value="standard" disabled>Standard (Yakında)</option>
-                <option value="shadow" disabled>Shadow (Yakında)</option>
-            </select>
-        </div>
-
-        <button type="button" onclick="generateAsciiArt()" aria-label="ASCII art oluştur">Oluştur</button>
-
-        <h3>Önizleme</h3>
-        <div class="preview" id="preview" aria-live="polite" aria-atomic="true" tabindex="0"></div>
-
-        <h3>HTML Kodu</h3>
-        <textarea id="htmlOutput" readonly aria-label="ASCII art HTML kodu"></textarea>
-
-        <button type="button" onclick="copyToClipboard('htmlOutput')" aria-label="HTML kodunu kopyala">HTML Kopyala</button>
-    </div>
-
-    <script>
-        // ASCII fontları (sadece block örnek olarak)
-        const fonts = {
+<header class="topbar"><div class="shell topinner"><a class="brand" href="https://ebubekirbastama.com.tr/" aria-label="EBS araç merkezine dön"><span class="brandlogo">EBS</span><span>EBS FREE TOOLS<small>CREATIVE UTILITIES</small></span></a><a class="headlink" href="https://ebubekirbastama.com.tr/">← Tüm Araçlar</a></div></header>
+<main class="shell">
+<section class="hero" aria-labelledby="pageTitle"><span class="eyebrow">DİJİTAL YAZI STÜDYOSU</span><h1 id="pageTitle">Metnini sanata <em>dönüştür.</em></h1><p class="lead">ASCII Art Oluşturucu ile yazılarını etkileyici karakter sanatına çevir. Stili belirle, sonucu anında gör, tek tıkla kopyala veya indir. Tamamen ücretsiz.</p><div class="hero-tags"><span class="tag">✦ 5 farklı stil</span><span class="tag">⚡ Anlık önizleme</span><span class="tag">⌘ HTML &amp; TXT çıktı</span><span class="tag">◈ Tarayıcıda güvenli işlem</span></div></section>
+<div class="workspace">
+<section class="card controls" aria-labelledby="controlTitle"><div class="panelheading"><span class="paneltitle" id="controlTitle">Oluşturma paneli</span><span class="step">01 / AYARLAR</span></div>
+<div class="field"><label for="textInput">Dönüştürülecek metin</label><textarea id="textInput" rows="4" maxlength="500" autocomplete="off" spellcheck="false" placeholder="Birden fazla satır yazabilirsiniz..." aria-describedby="inputHelp">Ebubekir Bastama
+</textarea><small id="inputHelp">Enter tuşuyla yeni satır ekleyin. Her satır ayrı ASCII yazısına dönüşür; boş satırlar korunur. En fazla 500 karakter.</small></div>
+<div class="field"><label for="fontSelect">ASCII yazı stili</label><select id="fontSelect"><option value="block">Block — klasik</option><option value="banner">Banner — kalın</option><option value="standard">Standard — terminal</option><option value="shadow">Shadow — gölgeli</option><option value="minimal">Minimal — kompakt</option></select></div>
+<div class="formrow"><div class="field"><label for="colorInput">Yazı rengi</label><div class="colorbox"><input type="color" id="colorInput" value="#89f0d2" aria-label="Önizleme yazı rengini seç"><span id="colorHex">#89F0D2</span></div></div><div class="field"><label for="spacing">Harf boşluğu</label><div class="rangehead"><span class="muted">Aralık</span><output id="spacingValue" for="spacing">1</output></div><input type="range" id="spacing" min="0" max="4" value="1"></div></div>
+<div class="control-actions"><button class="button primary" id="generateBtn" type="button">✦ ASCII Oluştur</button><button class="button" type="button" id="resetBtn" title="Ayarları sıfırla">↺ Sıfırla</button></div>
+</section>
+<div class="rightpane">
+<section class="card outputcard" aria-labelledby="previewTitle"><div class="outhead"><span class="outtitle" id="previewTitle">Canlı önizleme</span><span class="status" id="previewStatus">Hazır</span></div><div class="previewstage" id="previewStage" role="region" aria-label="ASCII art önizlemesi" tabindex="0"><pre id="preview"></pre></div><div class="outfoot"><span class="muted" id="charCount">0 karakter · 0 satır</span><div class="actionrow"><button id="copyArtBtn" type="button" class="button">⧉ Metni kopyala</button><button id="downloadTxtBtn" type="button" class="button">↓ TXT indir</button></div></div></section>
+<section class="card" aria-labelledby="codeTitle"><div class="outhead"><span class="outtitle" id="codeTitle">Dışa aktarma / Kod</span><span class="step">02 / ÇIKTI</span></div><div class="codepad"><div class="tabs" role="tablist" aria-label="Çıktı formatı"><button class="tab" id="tabHtml" type="button" role="tab" aria-selected="true" aria-controls="codeOutput" data-mode="html">HTML kodu</button><button class="tab" id="tabText" type="button" role="tab" aria-selected="false" aria-controls="codeOutput" data-mode="text">Düz metin</button></div><label for="codeOutput" class="muted" id="codeLabel">Web sitenize ekleyebileceğiniz güvenli HTML çıktısı</label><textarea id="codeOutput" rows="6" readonly spellcheck="false" aria-labelledby="codeLabel"></textarea><div class="codeactions"><button class="button primary" type="button" id="copyCodeBtn">⧉ Kodu kopyala</button><button class="button" type="button" id="downloadHtmlBtn">↓ HTML indir</button></div></div></section>
+</div></div>
+<section class="inform" aria-label="ASCII art hakkında bilgiler"><article class="card infocard"><h2>ASCII Art Nedir?</h2><p>ASCII Art, harfler, sayılar ve özel karakterler kullanılarak yapılan metin tabanlı görsel sanattır. Terminal ekranları, README dosyaları, yazılım projeleri ve sosyal medya profillerinde dekoratif başlık oluşturmak için kullanılabilir.</p></article><article class="card infocard"><h2>Nasıl kullanılır?</h2><ul><li>Metninizi giriş kutusuna yazın.</li><li>Beş stilden birini seçin ve boşluğu ayarlayın.</li><li>Oluşan sanat yazısını kopyalayın veya TXT / HTML indirin.</li><li>Biçimin korunması için sabit genişlikli yazı tipi kullanın.</li></ul></article></section>
+</main><footer class="shell footer"><span>© <span id="year">2026</span> Ebubekir Bastama · EBS Free Tools</span><span>Gizlilik odaklı · Metinleriniz sunucuya gönderilmez.</span></footer><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+        const originalFonts = {
             block: {
                 A: [" █████╗ ", "██╔══██╗", "███████║", "██╔══██║", "██║  ██║", "╚═╝  ╚═╝"],
                 B: ["██████╗ ", "██╔══██╗", "██████╔╝", "██╔══██╗", "██████╔╝", "╚═════╝ "],
@@ -204,53 +76,32 @@
                 " ": ["  ", "  ", "  ", "  ", "  ", "  "]
             }
         };
-
-        function generateAsciiArt() {
-            const textInput = document.getElementById('textInput');
-            const fontSelect = document.getElementById('fontSelect');
-            const preview = document.getElementById('preview');
-            const htmlOutput = document.getElementById('htmlOutput');
-
-            const text = textInput.value.toUpperCase();
-            const fontType = fontSelect.value;
-            const font = fonts[fontType];
-
-            if (!font) {
-                alert('Seçilen yazı tipi bulunamadı!');
-                return;
-            }
-
-            let asciiArt = [];
-            for (let i = 0; i < 6; i++) {
-                let line = '';
-                for (let char of text) {
-                    line += font[char] ? (font[char][i] || '  ') : '  ';
-                }
-                asciiArt.push(line);
-            }
-
-            const artText = asciiArt.join('\n');
-            preview.textContent = artText;
-            htmlOutput.value = `<pre style="font-family: monospace; white-space: pre;">${artText}</pre>`;
-
-            // Focus preview for accessibility
-            preview.focus();
-        }
-
-        function copyToClipboard(elementId) {
-            const element = document.getElementById(elementId);
-            element.select();
-            element.setSelectionRange(0, 99999); // Mobil için
-            navigator.clipboard.writeText(element.value).then(() => {
-                alert('Kopyalandı!');
-            }).catch(() => {
-                // fallback
-                document.execCommand('copy');
-                alert('Kopyalandı!');
-            });
-        }
-
-        window.onload = generateAsciiArt;
-    </script>
+// 5x7 terminal piksel glifleri; kalan stiller bu gliflerden bağımsız şekilde işlenir.
+const bitmap = {
+A:['01110','10001','10001','11111','10001','10001','10001'],B:['11110','10001','10001','11110','10001','10001','11110'],C:['01111','10000','10000','10000','10000','10000','01111'],D:['11110','10001','10001','10001','10001','10001','11110'],E:['11111','10000','10000','11110','10000','10000','11111'],F:['11111','10000','10000','11110','10000','10000','10000'],G:['01111','10000','10000','10111','10001','10001','01111'],H:['10001','10001','10001','11111','10001','10001','10001'],I:['11111','00100','00100','00100','00100','00100','11111'],J:['00111','00010','00010','00010','10010','10010','01100'],K:['10001','10010','10100','11000','10100','10010','10001'],L:['10000','10000','10000','10000','10000','10000','11111'],M:['10001','11011','10101','10101','10001','10001','10001'],N:['10001','11001','10101','10011','10001','10001','10001'],O:['01110','10001','10001','10001','10001','10001','01110'],P:['11110','10001','10001','11110','10000','10000','10000'],Q:['01110','10001','10001','10001','10101','10010','01101'],R:['11110','10001','10001','11110','10100','10010','10001'],S:['01111','10000','10000','01110','00001','00001','11110'],T:['11111','00100','00100','00100','00100','00100','00100'],U:['10001','10001','10001','10001','10001','10001','01110'],V:['10001','10001','10001','10001','10001','01010','00100'],W:['10001','10001','10001','10101','10101','10101','01010'],X:['10001','10001','01010','00100','01010','10001','10001'],Y:['10001','10001','01010','00100','00100','00100','00100'],Z:['11111','00001','00010','00100','01000','10000','11111'],
+'0':['01110','10011','10101','10101','11001','10001','01110'],'1':['00100','01100','00100','00100','00100','00100','01110'],'2':['01110','10001','00001','00010','00100','01000','11111'],'3':['11110','00001','00001','01110','00001','00001','11110'],'4':['00010','00110','01010','10010','11111','00010','00010'],'5':['11111','10000','10000','11110','00001','00001','11110'],'6':['01111','10000','10000','11110','10001','10001','01110'],'7':['11111','00001','00010','00100','01000','01000','01000'],'8':['01110','10001','10001','01110','10001','10001','01110'],'9':['01110','10001','10001','01111','00001','00001','11110'],
+'!':['00100','00100','00100','00100','00100','00000','00100'],'?':['01110','10001','00001','00010','00100','00000','00100'],'.':['00000','00000','00000','00000','00000','00110','00110'],',':['00000','00000','00000','00000','00110','00110','00100'],'-':['00000','00000','00000','11111','00000','00000','00000'],'_':['00000','00000','00000','00000','00000','00000','11111'],':':['00000','00100','00100','00000','00100','00100','00000'],'/':['00001','00001','00010','00100','01000','10000','10000'],'+':['00000','00100','00100','11111','00100','00100','00000'],' ':['000','000','000','000','000','000','000']};
+const $=id=>document.getElementById(id);
+const input=$('textInput'),fontSelect=$('fontSelect'),colorInput=$('colorInput'),spacing=$('spacing'),preview=$('preview'),codeOutput=$('codeOutput');
+let rawArt='',htmlArt='',mode='html',toastTimer;
+function normalizeText(text){return text.replace(/İ/g,'I').replace(/ı/g,'i').replace(/Ğ/g,'G').replace(/ğ/g,'g').replace(/Ü/g,'U').replace(/ü/g,'u').replace(/Ş/g,'S').replace(/ş/g,'s').replace(/Ö/g,'O').replace(/ö/g,'o').replace(/Ç/g,'C').replace(/ç/g,'c').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toUpperCase();}
+function escapeHtml(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function renderBlock(text,gap){const font=originalFonts.block;const rows=Array.from({length:6},()=>[]);for(const char of text){const glyph=font[char];const resolved=glyph|| (char===' '?font[' ']:null);for(let i=0;i<6;i++)rows[i].push(resolved?resolved[i]:'   ');}return rows.map(r=>r.join(' '.repeat(gap)).trimEnd()).join('\n');}
+function bitmapArt(text,style,gap){const rows=Array.from({length:style==='shadow'?8:7},()=>[]);for(const char of text){const glyph=bitmap[char]||bitmap['?'];let render= glyph.map(row=>[...row].map(c=>c==='1'?'█':' '));if(style==='banner')render=render.map(row=>row.flatMap(c=>[c,c]));if(style==='minimal')render=render.map(row=>row.map(c=>c==='█'?'▪':' '));if(style==='shadow'){const w=render[0].length;const out=Array.from({length:8},()=>Array(w+1).fill(' '));for(let y=0;y<7;y++)for(let x=0;x<w;x++)if(render[y][x]==='█'){out[y+1][x+1]='░';out[y][x]='█';}render=out;}for(let i=0;i<rows.length;i++)rows[i].push((render[i]||[]).join(''));}return rows.map(r=>r.join(' '.repeat(gap)).trimEnd()).join('\n');}
+function makeHtml(art,color){return '<pre style="margin:0;overflow-x:auto;font-family:Consolas,\'Courier New\',monospace;white-space:pre;line-height:1.2;color:'+color+';">'+escapeHtml(art)+'</pre>';}
+function generate(){const txt=normalizeText(input.value.replace(/\r\n?/g,'\n').slice(0,500));const gap=Number(spacing.value);const lines=txt.split('\n');const rowHeight=fontSelect.value==='block'?6:fontSelect.value==='shadow'?8:7;rawArt=txt.trim()?lines.map(line=>line?(fontSelect.value==='block'?renderBlock(line,gap):bitmapArt(line,fontSelect.value,gap)):Array(rowHeight).fill('').join('\n')).join('\n\n'):'';preview.textContent=rawArt||'Metninizi yazın; ASCII sanatınız burada görünecek.';preview.style.color=colorInput.value;htmlArt=makeHtml(rawArt,colorInput.value);codeOutput.value=mode==='html'?htmlArt:rawArt;$('previewStatus').textContent=rawArt?'Oluşturuldu':'Metin bekleniyor';$('charCount').textContent=txt.length+' karakter · '+(rawArt?rawArt.split('\n').length:0)+' satır';$('spacingValue').value=gap;$('colorHex').textContent=colorInput.value.toUpperCase();}
+function setTab(next){mode=next;for(const el of document.querySelectorAll('.tab'))el.setAttribute('aria-selected',String(el.dataset.mode===mode));$('codeLabel').textContent=mode==='html'?'Web sitenize ekleyebileceğiniz güvenli HTML çıktısı':'Terminal ve belgeler için düz metin çıktısı';$('copyCodeBtn').textContent=mode==='html'?'⧉ Kodu kopyala':'⧉ Metni kopyala';codeOutput.value=mode==='html'?htmlArt:rawArt;}
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500);}
+async function copyText(value){if(!value){toast('Önce bir metin oluşturun.');return;}try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(value);else{const temp=document.createElement('textarea');temp.value=value;temp.style.position='fixed';temp.style.opacity='0';document.body.appendChild(temp);temp.select();const ok=document.execCommand('copy');temp.remove();if(!ok)throw Error('Kopyalama desteklenmiyor');}toast('Panoya kopyalandı.');}catch(e){toast('Otomatik kopyalama yapılamadı; kod alanından seçip kopyalayın.');}}
+function download(filename,text,type){if(!rawArt){toast('Önce bir metin oluşturun.');return;}const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Dosya indiriliyor.');}
+for(const el of [input,fontSelect,colorInput,spacing])el.addEventListener('input',generate);
+$('generateBtn').addEventListener('click',()=>{generate();toast('ASCII art oluşturuldu.');});
+$('resetBtn').addEventListener('click',()=>{input.value='Ebubekir Bastama\nYeni satır ve yaz';fontSelect.value='block';colorInput.value='#89f0d2';spacing.value='1';generate();toast('Ayarlar sıfırlandı.');});
+$('copyArtBtn').addEventListener('click',()=>copyText(rawArt));$('copyCodeBtn').addEventListener('click',()=>copyText(mode==='html'?htmlArt:rawArt));
+$('downloadTxtBtn').addEventListener('click',()=>download('ebs-ascii-art.txt',rawArt,'text/plain;charset=utf-8'));
+$('downloadHtmlBtn').addEventListener('click',()=>download('ebs-ascii-art.html','<!doctype html>\n<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ASCII Art</title></head><body style="background:#0b1422;padding:24px">'+htmlArt+'</body></html>','text/html;charset=utf-8'));
+for(const el of document.querySelectorAll('.tab'))el.addEventListener('click',()=>setTab(el.dataset.mode));
+$('year').textContent=new Date().getFullYear();generate();
+</script>
 </body>
 </html>
