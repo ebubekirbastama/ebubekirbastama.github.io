@@ -7,6 +7,7 @@
   const status = $('status'), progressWrap = $('progressWrap'), progressText = $('progressText');
   const progressPercent = $('progressPercent'), progressBar = $('progressBar'), progressFill = $('progressFill');
   const installBtn = $('installBtn');
+  const installLabel = $('installLabel');
   let files = [], busy = false, installPrompt = null;
   const MAX_FILES = 100;
   const ext = { 'image/png':'png', 'image/jpeg':'jpg', 'image/webp':'webp', 'image/avif':'avif', 'image/bmp':'bmp' };
@@ -162,11 +163,42 @@
     finally{busy=false;paint();}
   });
 
-  if('serviceWorker' in navigator && location.protocol==='https:'){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+  // Relative service-worker scope supports hosting at the domain root or in a subfolder.
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js', {scope:'./'}).catch(error => {
+      console.warn('PWA servis çalışanı kaydedilemedi:', error);
+    }));
   }
-  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;installBtn.hidden=false;});
-  installBtn.addEventListener('click',async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installBtn.hidden=true;});
-  window.addEventListener('appinstalled',()=>{installPrompt=null;installBtn.hidden=true;});
+  function installed() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+  function updateInstallLabel() {
+    if(installed()) { installBtn.hidden=true; return; }
+    installBtn.hidden=false;
+    installLabel.textContent = installPrompt ? 'Uygulamayı yükle' : 'Yükleme seçenekleri';
+  }
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault(); installPrompt=e; updateInstallLabel();
+  });
+  installBtn.addEventListener('click',async()=>{
+    if(installed())return;
+    if(installPrompt){
+      const p=installPrompt; installPrompt=null;
+      try{await p.prompt();await p.userChoice;}catch(error){console.warn('Kurulum penceresi açılamadı:',error);}
+      updateInstallLabel();return;
+    }
+    // Some browsers do not expose beforeinstallprompt; still offer actionable steps.
+    const ios=/iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isSecure=location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1';
+    const instructions=!isSecure
+      ? 'Uygulama yükleme için siteyi HTTPS üzerinden veya localhost adresinde açın. Dosyayı doğrudan file:// olarak açarsanız PWA yükleme çalışmaz.'
+      : ios
+        ? 'Safari\'de Paylaş düğmesine dokunun, ardından Ana Ekrana Ekle seçeneğini kullanın.'
+        : 'Tarayıcı menüsündeki Uygulamayı yükle / Sayfayı uygulama olarak yükle seçeneğini deneyin. Chrome ve Edge\'de adres çubuğundaki yükleme simgesi de kullanılabilir. Seçenek yoksa tarayıcı siteyi henüz kurulabilir olarak değerlendirmemiş olabilir.';
+    announce(instructions, !isSecure);
+    $('donusturucu').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  window.addEventListener('appinstalled',()=>{installPrompt=null;updateInstallLabel();announce('Uygulama yüklendi.');});
+  updateInstallLabel();
   paint();
 })();

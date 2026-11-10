@@ -7,3 +7,9 @@ html, body { max-width: 100%; overflow-x: clip; }
 .ambient { position: fixed; }
 
 .format-hint,.support-note{font-size:11px;line-height:1.6;color:#92a9c4;margin:11px 0 0}.support-note{margin:12px 0 16px}.format-hint{max-width:310px}
+
+/* v2.1: header removed, install action available at all times */
+.panel-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px}
+.panel-actions .install-btn{white-space:nowrap}
+.panel-actions .install-btn[hidden]{display:flex}
+@media(max-width:620px){.panel-actions{width:100%;justify-content:flex-start}.panel-actions .install-btn{font-size:12px;padding:10px 12px}.panel-top{gap:16px}}
