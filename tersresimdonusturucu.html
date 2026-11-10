@@ -1,177 +1,435 @@
-<!DOCTYPE html>
-<html lang="tr" data-bs-theme="light">
+<!doctype html>
+<html lang="tr" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Toplu Renk Tersleyici</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0a1120">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="Ebubekir Baştama">
+  <meta name="description" content="Ücretsiz online toplu renk tersleyici: Görsellerin renklerini ters çevirin, siyah-beyaz negatif oluşturun, sonuçları tek tek veya ZIP olarak indirin. Kurulum ve sunucuya yükleme gerekmez.">
+  <meta name="keywords" content="renk tersleyici, fotoğraf renk tersleme, resim negatif yapma, siyah beyaz tersleme, toplu fotoğraf düzenleme, image inverter, ücretsiz online resim aracı">
+  <!-- Gerçek yayın adresiniz farklıysa canonical, og:url ve JSON-LD url alanlarını değiştirin. -->
+  <link rel="canonical" href="https://www.ebubekirbastama.com.tr/renk-tersleyici.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="Ebubekir Baştama">
+  <meta property="og:title" content="Toplu Renk Tersleyici | Ücretsiz Online Görsel Aracı">
+  <meta property="og:description" content="Birden fazla görselin renklerini anında tersleyin. Önizleyin, karşılaştırın, PNG veya ZIP olarak indirin.">
+  <meta property="og:url" content="https://www.ebubekirbastama.com.tr/renk-tersleyici.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Toplu Renk Tersleyici | Ebubekir Baştama">
+  <meta name="twitter:description" content="Görsellerinizi tarayıcıda güvenle tersleyin; toplu PNG ve ZIP indirme.">
+  <title>Toplu Renk Tersleyici – Online Fotoğraf Negatif Yapma | Ebubekir Baştama</title>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Toplu Renk Tersleyici",
+    "url":"https://www.ebubekirbastama.com.tr/renk-tersleyici.html",
+    "description":"Birden fazla görselin renklerini tarayıcı içinde tersleyen ücretsiz online araç.",
+    "applicationCategory":"MultimediaApplication",
+    "operatingSystem":"Any",
+    "browserRequirements":"JavaScript etkin bir modern web tarayıcısı",
+    "inLanguage":"tr-TR",
+    "isAccessibleForFree":true,
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"},
+    "creator":{"@type":"Person","name":"Ebubekir Baştama","url":"https://www.ebubekirbastama.com.tr/"}
+  }
+  </script>
   <style>
-    .img-preview {
-      width: 100%;
-      height: auto;
-      max-height: 400px;
-      object-fit: contain;
-      background: #f8f9fa;
-      border: 1px solid #ccc;
-      padding: 5px;
-    }
-    #dropZone {
-      border: 2px dashed #ccc;
-      padding: 30px;
-      text-align: center;
-      color: #999;
-      margin-bottom: 20px;
-      transition: all 0.3s ease-in-out;
-    }
-    #dropZone.dragover {
-      border-color: #007bff;
-      background-color: #e9f7ff;
-      color: #333;
-    }
-        body {
-      background: url(https://ebubekirbastama.com.tr/circles.webp);
-    }
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-synthesis:none}
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);line-height:1.55;transition:background .2s,color .2s}
+    html[data-theme="dark"]{--bg:#080e1a;--surface:#101a2b;--surface2:#152137;--border:#2a3952;--text:#f3f7ff;--muted:#a2b0c5;--accent:#75e4dd;--accent2:#86a5ff;--button:#b9fff1;--buttonText:#071821;--shadow:0 18px 60px rgba(0,0,0,.22);--grid:rgba(255,255,255,.028)}
+    html[data-theme="light"]{--bg:#f5f8fc;--surface:#fff;--surface2:#f0f5fa;--border:#dbe4ef;--text:#152338;--muted:#52637c;--accent:#087e82;--accent2:#3f5bb8;--button:#0b626d;--buttonText:#fff;--shadow:0 18px 60px rgba(23,42,73,.09);--grid:rgba(13,35,64,.025)}
+    button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}
+    button:focus-visible,a:focus-visible,input:focus-visible,.drop-zone:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}
+    a{color:inherit;text-decoration:none}a:hover{color:var(--accent)}
+    .backdrop{position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse 640px 420px at 10% -5%,rgba(78,156,198,.14),transparent),radial-gradient(ellipse 650px 460px at 97% 18%,rgba(91,69,175,.11),transparent),linear-gradient(90deg,var(--grid) 1px,transparent 1px),linear-gradient(var(--grid) 1px,transparent 1px);background-size:auto,auto,32px 32px,32px 32px}
+    .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+    .topbar{border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--bg) 90%,transparent)}
+    .topbar-inner{min-height:74px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+    .brand{display:flex;align-items:center;gap:13px;font-weight:800;letter-spacing:-.04em;font-size:1.13rem}
+    .brand-mark{width:39px;height:39px;display:grid;place-items:center;border-radius:13px;color:#0b2023;background:linear-gradient(135deg,#9df5de,#93a8ff);font-size:1.35rem}
+    .brand small{display:block;font-size:.7rem;font-weight:600;letter-spacing:.11em;color:var(--muted);text-transform:uppercase}
+    .top-actions{display:flex;align-items:center;gap:10px}
+    .pill,.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:12px;border:1px solid var(--border);font-weight:650;white-space:nowrap;transition:transform .16s,border-color .16s,background .16s}
+    .pill{background:var(--surface);color:var(--text);padding:9px 13px;font-size:.87rem}
+    .btn{padding:12px 18px;background:var(--surface2);color:var(--text)}
+    .btn:not(:disabled):hover,.pill:hover{transform:translateY(-1px);border-color:var(--accent)}
+    .btn-primary{background:var(--button);color:var(--buttonText);border-color:transparent}
+    .btn-outline{background:transparent}
+    .btn-danger{color:#ffb1b1}
+    main{padding-bottom:65px}
+    .hero{padding:65px 0 35px;max-width:780px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-size:.78rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    h1{font-size:clamp(2.2rem,5.4vw,4.25rem);line-height:1.09;letter-spacing:-.06em;margin:16px 0 18px;font-weight:830}
+    .gradient-text{background:linear-gradient(95deg,var(--accent),var(--accent2));color:transparent;background-clip:text;-webkit-background-clip:text}
+    .lead{font-size:1.07rem;color:var(--muted);max-width:650px;margin:0}
+    .trustline{display:flex;flex-wrap:wrap;gap:9px 21px;margin-top:25px;color:var(--muted);font-size:.86rem}
+    .trustline span::before{content:'✓';color:var(--accent);font-weight:900;margin-right:8px}
+    .tool-panel{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:25px;box-shadow:var(--shadow)}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}
+    h2{font-size:1.35rem;letter-spacing:-.035em;margin:0}
+    .muted{color:var(--muted)}.small{font-size:.84rem}
+    .drop-zone{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:225px;border:1.5px dashed var(--border);border-radius:17px;background:var(--surface2);padding:25px;transition:.18s;cursor:pointer}
+    .drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface2))}
+    .upload-icon{display:grid;place-items:center;border:1px solid var(--border);background:var(--surface);width:58px;height:58px;border-radius:17px;font-size:1.6rem;margin-bottom:13px}
+    .drop-zone strong{font-size:1.08rem}.drop-zone p{margin:5px 0 0;color:var(--muted);font-size:.9rem}
+    .drop-zone .choose{margin-top:16px;padding:8px 17px;color:var(--buttonText);background:var(--button);border-radius:9px;font-weight:700;font-size:.9rem}
+    .drop-zone input{display:none}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:23px}
+    .filter-actions,.download-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;color:var(--muted);font-size:.88rem;flex-wrap:wrap}
+    .progress{height:5px;border-radius:20px;overflow:hidden;background:var(--surface2);margin-top:9px;display:none}
+    .progress.show{display:block}.progress>span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}
+    .gallery-header{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:42px 0 18px}
+    .gallery-header p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+    .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .image-card{background:var(--surface);border:1px solid var(--border);border-radius:17px;overflow:hidden;min-width:0;box-shadow:0 7px 25px rgba(0,0,0,.05)}
+    .image-stage{position:relative;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;padding:13px;background:repeating-conic-gradient(from 45deg,#cbd5e1 0 25%,#eff3f8 0 50%) 50%/20px 20px}
+    .image-stage img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+    .image-chip{position:absolute;left:10px;top:10px;padding:4px 9px;border-radius:8px;background:rgba(4,12,25,.75);color:white;font-size:.7rem;backdrop-filter:blur(8px)}
+    .card-content{padding:14px}
+    .file-name{font-size:.89rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-meta{color:var(--muted);font-size:.77rem;margin:4px 0 12px}
+    .card-buttons{display:flex;gap:8px}
+    .card-buttons .btn{padding:8px 10px;font-size:.8rem;flex:1;min-width:0}
+    .empty-state{border:1px dashed var(--border);border-radius:16px;padding:36px;text-align:center;color:var(--muted)}
+    .empty-state strong{display:block;color:var(--text);font-size:1.02rem}
+    .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:42px 0}
+    .info-card{border:1px solid var(--border);background:var(--surface);padding:22px;border-radius:16px}
+    .info-card span{font-size:1.45rem}.info-card h3{margin:13px 0 8px;font-size:1rem}.info-card p{margin:0;font-size:.86rem;color:var(--muted)}
+    .seo-copy{max-width:850px;margin:45px auto 0}.seo-copy h2{margin:25px 0 10px}.seo-copy p{color:var(--muted);margin:0 0 12px}
+    details{border:1px solid var(--border);border-radius:12px;padding:15px 18px;margin:10px 0;background:var(--surface)}
+    summary{font-weight:700;cursor:pointer}details p{margin:10px 0 0}
+    footer{border-top:1px solid var(--border);padding:30px 0 40px;color:var(--muted);font-size:.83rem}
+    .footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+    .toast{position:fixed;bottom:24px;right:24px;z-index:50;max-width:min(440px,calc(100vw - 32px));padding:13px 17px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;box-shadow:var(--shadow);color:var(--text);display:none}
+    .toast.show{display:block}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:950px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{align-items:start;flex-direction:column}.info-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){.wrap{padding:0 16px}.topbar-inner{min-height:66px}.brand{font-size:.95rem}.top-actions a{display:none}.hero{padding:44px 0 28px}.tool-panel{padding:16px}.drop-zone{min-height:205px}.gallery{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.panel-header{align-items:start;flex-direction:column}.filter-actions,.download-actions{width:100%}.filter-actions .btn{flex:1}.download-actions .btn{flex:1}.gallery-header{margin-top:32px}.trustline{gap:9px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
 </head>
 <body>
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>🎨 Toplu Renk Tersleyici</h3>
-    <button id="themeToggle" class="btn btn-outline-dark btn-sm">🌙 Dark Mode</button>
-  </div>
-
-  <div id="dropZone" class="rounded">📂 Buraya sürükle bırak yap veya aşağıdan dosya seç</div>
-  <input type="file" class="form-control mb-3" id="imageInput" multiple accept="image/*">
-
-  <div class="d-flex gap-2 flex-wrap mb-4">
-    <button id="btnInvertAll" class="btn btn-dark">🌓 Tüm Renkleri Tersle</button>
-    <button id="btnBWInvertAll" class="btn btn-secondary">🔁 Siyah/Beyaz Tersle</button>
-    <button id="btnDownloadZip" class="btn btn-success">⬇️ ZIP Olarak İndir</button>
-  </div>
-
-  <div id="previewContainer" class="row gy-4"></div>
-</div>
-
+  <div class="backdrop" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="https://www.ebubekirbastama.com.tr/" aria-label="Ebubekir Baştama ana sayfa">
+        <span class="brand-mark" aria-hidden="true">◈</span><span>Ebubekir Baştama<small>Online araçlar</small></span>
+      </a>
+      <div class="top-actions">
+        <a class="pill" href="https://www.ebubekirbastama.com.tr/">↗ Ana Sayfa</a>
+        <button id="themeToggle" class="pill" type="button" aria-label="Açık temaya geç">☀ Açık tema</button>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="eyebrow">✦ Ücretsiz • Tarayıcı tabanlı görsel aracı</div>
+      <h1 id="pageTitle">Renkleri ters çevir.<br><span class="gradient-text">Görselleri dönüştür.</span></h1>
+      <p class="lead">Birden fazla fotoğrafı tek seferde negatif görsele dönüştürün veya siyah-beyaz tonları tersleyin. Önizleme yapın, tek tek indirin ya da tümünü ZIP dosyası olarak alın.</p>
+      <div class="trustline"><span>Sunucuya yükleme yok</span><span>Toplu işlem</span><span>PNG çıktı</span><span>Ücretsiz kullanım</span></div>
+    </section>
+    <section class="tool-panel" aria-labelledby="toolTitle">
+      <div class="panel-header"><div><h2 id="toolTitle">Görsellerinizi ekleyin</h2><div class="muted small">JPEG, PNG, WebP, GIF (ilk kare), AVIF ve tarayıcınızın desteklediği diğer görseller</div></div><span class="pill" id="countBadge">0 görsel</span></div>
+      <div id="dropZone" class="drop-zone" role="button" tabindex="0" aria-label="Görsel seçmek için tıklayın veya görselleri bu alana sürükleyin">
+        <div class="upload-icon" aria-hidden="true">↥</div><strong>Dosyalarınızı buraya sürükleyin</strong><p>veya bilgisayarınızdan birden fazla görsel seçin</p><span class="choose">+ Görsel seç</span>
+      </div>
+      <input id="imageInput" class="sr-only" type="file" accept="image/*" multiple aria-label="Görsel dosyaları seç">
+      <div class="toolbar">
+        <div class="filter-actions" aria-label="Toplu görsel işlemleri">
+          <button id="btnInvertAll" class="btn btn-primary" type="button" disabled>◐ Renkleri tersle</button>
+          <button id="btnBWInvertAll" class="btn" type="button" disabled>◑ Siyah / beyaz tersle</button>
+          <button id="btnResetAll" class="btn btn-outline" type="button" disabled>↺ Sıfırla</button>
+        </div>
+        <div class="download-actions">
+          <button id="btnClear" class="btn btn-outline btn-danger" type="button" disabled>✕ Temizle</button>
+          <button id="btnDownloadZip" class="btn" type="button" disabled>↓ ZIP indir</button>
+        </div>
+      </div>
+      <div class="status"><span id="statusText" role="status" aria-live="polite">Başlamak için görsel yükleyin.</span><span id="progressLabel" aria-hidden="true"></span></div>
+      <div id="progressTrack" class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="İşlem ilerlemesi"><span id="progressFill"></span></div>
+    </section>
+    <section aria-labelledby="galleryTitle">
+      <div class="gallery-header"><div><h2 id="galleryTitle">Görsel galerisi</h2><p>Yüklediğiniz ve işlediğiniz görseller burada görüntülenir.</p></div></div>
+      <div id="previewContainer" class="gallery" aria-live="off"><div class="empty-state" style="grid-column:1/-1"><strong>Henüz görsel eklenmedi</strong>Görsellerinizi sürükleyip bırakın veya dosya seçin.</div></div>
+    </section>
+    <div class="info-grid">
+      <article class="info-card"><span aria-hidden="true">▣</span><h3>Toplu dönüşüm</h3><p>Çok sayıda görsele aynı renk işlemini bir tıkla uygulayın. İşlem sırası korunur.</p></article>
+      <article class="info-card"><span aria-hidden="true">◇</span><h3>Yerel ve gizli</h3><p>Görselleriniz tarayıcınızda işlenir; bu araç görsellerinizi bir sunucuya göndermez.</p></article>
+      <article class="info-card"><span aria-hidden="true">⇩</span><h3>Tek tıkla indirme</h3><p>İşlenmiş her görseli PNG olarak veya tamamını bir ZIP arşivinde indirin.</p></article>
+    </div>
+    <section class="seo-copy" aria-labelledby="whatTitle">
+      <h2 id="whatTitle">Online renk tersleyici nedir?</h2>
+      <p>Renk tersleme, görseldeki her RGB rengini karşıt (negatif) renge dönüştürür. Örneğin beyaz siyaha, siyah beyaza dönüşür. Fotoğraf, grafik, tasarım ve dijital içerik çalışmalarında hızlı negatif görüntüler elde etmek için kullanılabilir.</p>
+      <h2>Sık sorulan sorular</h2>
+      <details><summary>Görsellerim internete yükleniyor mu?</summary><p>Hayır. Görselleriniz cihazınızda, JavaScript ve Canvas teknolojileriyle işlenir. Yalnızca sayfanın çalışması için gerekli JSZip kütüphanesi CDN üzerinden indirilir.</p></details>
+      <details><summary>Toplu işlem ve ZIP indirme ücretsiz mi?</summary><p>Evet. Birden fazla görsel yükleyebilir, renklere filtre uygulayabilir ve sonuçları ZIP dosyası olarak indirebilirsiniz.</p></details>
+      <details><summary>Orijinal görselin boyutu korunur mu?</summary><p>Evet, işlenebilen görsellerin piksel genişliği ve yüksekliği korunur. Çıktılar PNG biçiminde kaydedilir. Animasyonlu GIF dosyalarında yalnızca ilk kare işlenir.</p></details>
+    </section>
+  </main>
+  <footer><div class="wrap footer-inner"><span>© <span id="year"></span> Ebubekir Baştama. Tüm hakları saklıdır.</span><a href="https://www.ebubekirbastama.com.tr/">www.ebubekirbastama.com.tr</a></div></footer>
+  <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 <script>
-  const allImages = [];
+'use strict';
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    input: $('imageInput'), drop: $('dropZone'), gallery: $('previewContainer'), count: $('countBadge'),
+    status: $('statusText'), progress: $('progressTrack'), fill: $('progressFill'), progressLabel: $('progressLabel'),
+    invert: $('btnInvertAll'), bw: $('btnBWInvertAll'), reset: $('btnResetAll'), clear: $('btnClear'),
+    zip: $('btnDownloadZip'), theme: $('themeToggle'), toast: $('toast')
+  };
+  const items = [];
+  let busy = false;
+  let generation = 0;
+  const MAX_FILES = 100;
+  const MAX_FILE_BYTES = 30 * 1024 * 1024;
+  $('year').textContent = String(new Date().getFullYear());
 
-  function handleFiles(files) {
-    const container = document.getElementById('previewContainer');
-    container.innerHTML = '';
-    allImages.length = 0;
-
-    Array.from(files).forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const col = document.createElement('div');
-        col.className = 'col-lg-4 col-md-6';
-
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.className = 'img-preview mb-2';
-        img.dataset.index = index;
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        allImages.push({ img, canvas, ctx, original: e.target.result });
-
-        col.appendChild(img);
-        container.appendChild(col);
-      };
-      reader.readAsDataURL(file);
-    });
+  function toast(message) {
+    els.toast.textContent = message;
+    els.toast.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => els.toast.classList.remove('show'), 4200);
   }
-
-  document.getElementById('imageInput').addEventListener('change', function(event) {
-    handleFiles(event.target.files);
-  });
-
-  const dropZone = document.getElementById('dropZone');
-  dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
-  });
-
-  dropZone.addEventListener('dragleave', e => {
-    dropZone.classList.remove('dragover');
-  });
-
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('dragover');
-    handleFiles(e.dataTransfer.files);
-  });
-
-  function applyFilterToAll(mode) {
-    allImages.forEach(({ img, canvas, ctx, original }) => {
-      const tempImg = new Image();
-      tempImg.onload = () => {
-        canvas.width = tempImg.width;
-        canvas.height = tempImg.height;
-        ctx.drawImage(tempImg, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-
-        if (mode === 'invert') {
-          for (let i = 0; i < data.length; i += 4) {
-            data[i] = 255 - data[i];
-            data[i + 1] = 255 - data[i + 1];
-            data[i + 2] = 255 - data[i + 2];
-          }
-        } else if (mode === 'bw-invert') {
-          for (let i = 0; i < data.length; i += 4) {
-            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            const isDark = avg < 50;
-            const isLight = avg > 205;
-            if (isDark) data[i] = data[i + 1] = data[i + 2] = 255;
-            else if (isLight) data[i] = data[i + 1] = data[i + 2] = 0;
-          }
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-        img.src = canvas.toDataURL();
-      };
-      tempImg.src = original;
-    });
+  function setStatus(message) { els.status.textContent = message; }
+  function updateButtons() {
+    const has = items.length > 0;
+    [els.invert, els.bw, els.reset, els.clear, els.zip].forEach(btn => btn.disabled = busy || !has);
+    els.drop.setAttribute('aria-disabled', String(busy));
+    els.count.textContent = `${items.length} görsel`;
   }
-
-  document.getElementById('btnInvertAll').addEventListener('click', () => applyFilterToAll('invert'));
-  document.getElementById('btnBWInvertAll').addEventListener('click', () => applyFilterToAll('bw-invert'));
-
-  document.getElementById('btnDownloadZip').addEventListener('click', () => {
-    const zip = new JSZip();
-    const folder = zip.folder('terslenmis_resimler');
-
-    let processed = 0;
-
-    allImages.forEach(({ img }, index) => {
-      fetch(img.src)
-        .then(res => res.blob())
-        .then(blob => {
-          folder.file(`resim-${index + 1}.png`, blob);
-          processed++;
-          if (processed === allImages.length) {
-            zip.generateAsync({ type: 'blob' }).then(content => {
-              const a = document.createElement('a');
-              a.href = URL.createObjectURL(content);
-              a.download = 'resimler.zip';
-              a.click();
-            });
-          }
-        });
-    });
-  });
-
-  // Dark Mode Toggle
-  const themeBtn = document.getElementById("themeToggle");
-  themeBtn.addEventListener("click", () => {
-    const html = document.documentElement;
-    const isDark = html.getAttribute("data-bs-theme") === "dark";
-    html.setAttribute("data-bs-theme", isDark ? "light" : "dark");
-    themeBtn.textContent = isDark ? "🌙 Dark Mode" : "☀️ Light Mode";
-  });
+  function setProgress(done, total, label) {
+    const percent = total ? Math.round(done / total * 100) : 0;
+    els.progress.classList.toggle('show', total > 0);
+    els.fill.style.width = `${percent}%`;
+    els.progress.setAttribute('aria-valuenow', String(percent));
+    els.progressLabel.textContent = total ? `${done} / ${total}` : '';
+    if (label) setStatus(label);
+  }
+  const formatSize = (bytes) => bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  const safeName = (name) => (name.replace(/\.[^.]+$/, '').replace(/[^\p{L}\p{N}_ .-]+/gu, '_').trim().slice(0, 90) || 'gorsel');
+  function clearItems() {
+    generation++;
+    for (const item of items) { URL.revokeObjectURL(item.originalUrl); if (item.outputUrl) URL.revokeObjectURL(item.outputUrl); }
+    items.length = 0;
+    render(); updateButtons(); setProgress(0, 0, 'Başlamak için görsel yükleyin.');
+    els.input.value = '';
+  }
+  function isImage(file) {
+    return file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|avif|bmp)$/i.test(file.name);
+  }
+  function render() {
+    els.gallery.replaceChildren();
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state'; empty.style.gridColumn = '1/-1';
+      empty.innerHTML = '<strong>Henüz görsel eklenmedi</strong>Görsellerinizi sürükleyip bırakın veya dosya seçin.';
+      els.gallery.append(empty); return;
+    }
+    for (const item of items) {
+      const card = document.createElement('article'); card.className = 'image-card';
+      const stage = document.createElement('div'); stage.className = 'image-stage';
+      const chip = document.createElement('span'); chip.className = 'image-chip'; chip.textContent = item.mode === 'original' ? 'Orijinal' : item.mode === 'invert' ? 'Negatif' : 'S/B negatif';
+      const img = document.createElement('img'); img.src = item.outputUrl || item.originalUrl; img.alt = `${item.file.name} önizlemesi`; img.loading = 'lazy';
+      stage.append(img, chip);
+      const content = document.createElement('div'); content.className = 'card-content';
+      const name = document.createElement('div'); name.className = 'file-name'; name.textContent = item.file.name; name.title = item.file.name;
+      const meta = document.createElement('div'); meta.className = 'file-meta'; meta.textContent = `${formatSize(item.file.size)} · ${item.width} × ${item.height} px`;
+      const buttons = document.createElement('div'); buttons.className = 'card-buttons';
+      const download = document.createElement('button'); download.type = 'button'; download.className = 'btn btn-primary'; download.textContent = '↓ PNG indir';
+      download.disabled = busy; download.addEventListener('click', () => downloadOne(item));
+      const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'btn btn-outline'; remove.textContent = 'Kaldır'; remove.disabled = busy;
+      remove.addEventListener('click', () => removeOne(item));
+      buttons.append(download, remove); content.append(name, meta, buttons); card.append(stage, content); els.gallery.append(card);
+    }
+  }
+  async function decodeImage(url) {
+    const image = new Image();
+    image.decoding = 'async';
+    image.src = url;
+    if (typeof image.decode === 'function') {
+      await image.decode();
+    } else {
+      await new Promise((resolve, reject) => { image.onload = resolve; image.onerror = reject; });
+    }
+    if (!image.naturalWidth || !image.naturalHeight) throw new Error('Görsel açılamadı.');
+    return image;
+  }
+  async function addFiles(fileList) {
+    if (busy) return;
+    const inputFiles = Array.from(fileList || []);
+    if (!inputFiles.length) return;
+    const valid = inputFiles.filter(isImage);
+    const limited = valid.filter(file => file.size <= MAX_FILE_BYTES);
+    const rejected = inputFiles.length - limited.length;
+    const available = Math.max(0, MAX_FILES - items.length);
+    const accepted = limited.slice(0, available);
+    if (!accepted.length) { toast('Uygun dosya yok veya 100 görsel sınırına ulaşıldı (dosya başına en fazla 30 MB).'); return; }
+    busy = true; updateButtons();
+    const batch = generation;
+    let failed = 0;
+    for (let index = 0; index < accepted.length; index++) {
+      const file = accepted[index];
+      const originalUrl = URL.createObjectURL(file);
+      try {
+        const decoded = await decodeImage(originalUrl);
+        if (batch !== generation) { URL.revokeObjectURL(originalUrl); break; }
+        items.push({file, originalUrl, outputUrl: null, mode: 'original', width: decoded.naturalWidth, height: decoded.naturalHeight});
+      } catch (error) { failed++; URL.revokeObjectURL(originalUrl); }
+      setProgress(index + 1, accepted.length, 'Görseller hazırlanıyor…');
+    }
+    busy = false; render(); updateButtons();
+    setProgress(0, 0, `${items.length} görsel hazır. Dönüştürme işlemi seçebilirsiniz.`);
+    if (rejected || failed || limited.length > accepted.length) toast(`${rejected + failed + (limited.length - accepted.length)} dosya eklenemedi. Desteklenen görsel, boyut ve adet sınırını kontrol edin.`);
+    els.input.value = '';
+  }
+  function removeOne(item) {
+    if (busy) return;
+    const index = items.indexOf(item);
+    if (index < 0) return;
+    URL.revokeObjectURL(item.originalUrl);
+    if (item.outputUrl) URL.revokeObjectURL(item.outputUrl);
+    items.splice(index, 1); render(); updateButtons();
+    setStatus(items.length ? `${items.length} görsel hazır.` : 'Başlamak için görsel yükleyin.');
+  }
+  const nextPaint = () => new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+  function canvasToBlob(canvas) {
+    return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('PNG üretilemedi.')), 'image/png'));
+  }
+  async function transform(item, mode) {
+    if (mode === 'original') return null;
+    const decoded = await decodeImage(item.originalUrl);
+    const canvas = document.createElement('canvas');
+    canvas.width = decoded.naturalWidth; canvas.height = decoded.naturalHeight;
+    const ctx = canvas.getContext('2d', {willReadFrequently: true});
+    if (!ctx) throw new Error('Canvas desteklenmiyor.');
+    ctx.drawImage(decoded, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      if (mode === 'invert') {
+        data[i] = 255 - data[i]; data[i + 1] = 255 - data[i + 1]; data[i + 2] = 255 - data[i + 2];
+      } else if (mode === 'bw-invert') {
+        const luminance = 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+        // Yalnızca çok koyu ve çok açık alanları değiştir; ara tonları koru.
+        if (luminance < 50) data[i] = data[i + 1] = data[i + 2] = 255;
+        else if (luminance > 205) data[i] = data[i + 1] = data[i + 2] = 0;
+      }
+      // Alfa (data[i+3]) değeri korunur.
+    }
+    ctx.putImageData(imageData, 0, 0);
+    const blob = await canvasToBlob(canvas);
+    canvas.width = canvas.height = 0;
+    return blob;
+  }
+  async function applyToAll(mode) {
+    if (busy || !items.length) return;
+    busy = true; updateButtons(); render();
+    let failed = 0;
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      try {
+        // Her seferinde orijinal görselden işlenir; filtreler yanlışlıkla üst üste binmez.
+        const blob = await transform(item, mode);
+        const newUrl = blob ? URL.createObjectURL(blob) : null;
+        if (item.outputUrl) URL.revokeObjectURL(item.outputUrl);
+        item.outputUrl = newUrl; item.mode = mode;
+      } catch (error) { failed++; console.error(item.file.name, error); }
+      setProgress(i + 1, items.length, mode === 'original' ? 'Görseller sıfırlanıyor…' : 'Görseller dönüştürülüyor…');
+      await nextPaint();
+    }
+    busy = false; render(); updateButtons();
+    setProgress(0, 0, failed ? `${items.length - failed} görsel işlendi, ${failed} görsel işlenemedi.` : `${items.length} görsel hazır. Dilerseniz indirebilirsiniz.`);
+    if (failed) toast('Bazı görseller işlenemedi. Çok yüksek çözünürlük veya bellek sınırı söz konusu olabilir.');
+  }
+  function filename(item, usedNames) {
+    const tag = item.mode === 'original' ? 'orijinal' : item.mode === 'invert' ? 'negatif' : 'sb-negatif';
+    const base = `${safeName(item.file.name)}-${tag}`;
+    let name = `${base}.png`; let n = 2;
+    while (usedNames.has(name.toLocaleLowerCase('tr'))) name = `${base}-${n++}.png`;
+    usedNames.add(name.toLocaleLowerCase('tr'));
+    return name;
+  }
+  function triggerDownload(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+  async function blobForItem(item) {
+    if (item.mode !== 'original' && item.outputUrl) return await (await fetch(item.outputUrl)).blob();
+    // Orijinal bile indirilirken PNG olarak dönüştürülür; isim/uzantı tutarlı kalır.
+    const decoded = await decodeImage(item.originalUrl);
+    const canvas = document.createElement('canvas'); canvas.width = item.width; canvas.height = item.height;
+    const ctx = canvas.getContext('2d'); if (!ctx) throw new Error('Canvas desteklenmiyor.');
+    ctx.drawImage(decoded, 0, 0);
+    const blob = await canvasToBlob(canvas); canvas.width = canvas.height = 0; return blob;
+  }
+  async function downloadOne(item) {
+    if (busy) return;
+    try { triggerDownload(await blobForItem(item), filename(item, new Set())); }
+    catch (error) { console.error(error); toast('Bu görsel indirilemedi.'); }
+  }
+  async function downloadZip() {
+    if (busy || !items.length) return;
+    if (typeof JSZip === 'undefined') { toast('ZIP kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.'); return; }
+    busy = true; updateButtons(); render();
+    try {
+      const zip = new JSZip(); const folder = zip.folder('renk-tersleyici'); const used = new Set();
+      let failed = 0;
+      for (let i = 0; i < items.length; i++) {
+        try { folder.file(filename(items[i], used), await blobForItem(items[i])); }
+        catch (error) { failed++; console.error(error); }
+        setProgress(i + 1, items.length, 'ZIP için görseller hazırlanıyor…');
+        await nextPaint();
+      }
+      if (failed === items.length) throw new Error('ZIP içine eklenebilecek görsel yok.');
+      setStatus('ZIP arşivi oluşturuluyor…');
+      const result = await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:3}}, metadata => {
+        els.progress.classList.add('show'); els.fill.style.width = `${Math.round(metadata.percent)}%`;
+        els.progress.setAttribute('aria-valuenow', String(Math.round(metadata.percent)));
+        els.progressLabel.textContent = `%${Math.round(metadata.percent)}`;
+      });
+      triggerDownload(result, 'toplu-renk-tersleyici.zip');
+      setStatus(failed ? `ZIP indirildi; ${failed} görsel atlandı.` : 'ZIP dosyanız indirilmeye hazır.');
+      if (failed) toast(`${failed} görsel arşive eklenemedi.`);
+    } catch (error) { console.error(error); toast('ZIP oluşturulamadı. Daha az veya daha küçük görsellerle tekrar deneyin.'); setStatus('ZIP işlemi başarısız.'); }
+    finally { busy = false; updateButtons(); render(); els.progress.classList.remove('show'); els.progressLabel.textContent = ''; }
+  }
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    els.theme.textContent = theme === 'dark' ? '☀ Açık tema' : '☾ Koyu tema';
+    els.theme.setAttribute('aria-label', theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç');
+    document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#0a1120' : '#f5f8fc';
+    try { localStorage.setItem('eb-theme', theme); } catch (_) {}
+  }
+  let preferred = 'dark';
+  try { preferred = localStorage.getItem('eb-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); } catch (_) {}
+  setTheme(preferred === 'light' ? 'light' : 'dark');
+  els.theme.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+  els.drop.addEventListener('click', () => { if (!busy) els.input.click(); });
+  els.drop.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !busy) { e.preventDefault(); els.input.click(); } });
+  els.input.addEventListener('change', e => addFiles(e.target.files));
+  ['dragenter', 'dragover'].forEach(name => els.drop.addEventListener(name, e => { e.preventDefault(); if (!busy) els.drop.classList.add('dragover'); }));
+  ['dragleave', 'drop'].forEach(name => els.drop.addEventListener(name, e => { e.preventDefault(); els.drop.classList.remove('dragover'); }));
+  els.drop.addEventListener('drop', e => { if (!busy) addFiles(e.dataTransfer.files); });
+  // Tarayıcının sürüklenen dosyayı mevcut sayfanın yerine açmasını önle.
+  window.addEventListener('dragover', e => e.preventDefault());
+  window.addEventListener('drop', e => e.preventDefault());
+  els.invert.addEventListener('click', () => applyToAll('invert'));
+  els.bw.addEventListener('click', () => applyToAll('bw-invert'));
+  els.reset.addEventListener('click', () => applyToAll('original'));
+  els.clear.addEventListener('click', () => { if (!busy) clearItems(); });
+  els.zip.addEventListener('click', downloadZip);
+  updateButtons();
+})();
 </script>
 </body>
 </html>
