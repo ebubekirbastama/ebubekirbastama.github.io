@@ -1,104 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
- <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  <title>HTML Başlık ve Paragraf Dönüştürücü | Ebubekir Baştama</title>
-
-  <!-- ✅ Açıklama (SEO için) -->
-  <meta name="description" content="Rich Text içeriği otomatik olarak başlık (h2) ve paragraf (p) HTML etiketlerine dönüştürün. İçerik üreticileri, editörler ve yazılım geliştiricileri için kullanışlı bir araç.">
-
-  <!-- ✅ Anahtar Kelimeler -->
-  <meta name="keywords" content="HTML dönüştürücü, rich text parser, başlık dönüştürme, strong tag analiz, içerik editörü aracı, h2 parser, p tag üretici, Ebubekir Baştama, HTML araçları, içerik yönetimi, haber HTML formatı">
-
-  <!-- ✅ Yazar -->
-  <meta name="author" content="Ebubekir Baştama">
-
-  <!-- ✅ Dil -->
-  <meta name="language" content="tr">
-
-  <!-- ✅ Robots -->
-  <meta name="robots" content="index, follow">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-      body {
-      background: url(https://ebubekirbastama.com.tr/circles.webp);
-    }
-    textarea {
-      min-height: 200px;
-      font-family: monospace;
-    }
-    .preview-box {
-      min-height: 200px;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      background-color: #f8f9fa;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Metni değiştirmeden HTML kodunu sadeleştiren, semantik ve SEO uyumlu HTML dönüştürücü.">
+<meta name="author" content="Ebubekir Baştama">
+<title>HTML Studio — Semantik HTML Dönüştürücü</title>
+<style>
+:root{color-scheme:dark;--bg:#090e19;--panel:#101a2b;--panel2:#141f32;--line:#29364a;--text:#ecf1fb;--muted:#93a3bb;--accent:#90b8ff;--accent2:#a8e8d6;--radius:18px}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse 65% 35% at 10% -10%,#20375b 0,transparent 72%),radial-gradient(ellipse 50% 30% at 96% 2%,#17363e 0,transparent 70%),var(--bg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);min-height:100vh}button,textarea,input{font:inherit}button{cursor:pointer}button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #9cc7ff;outline-offset:2px}.wrap{max-width:1390px;margin:auto;padding:28px clamp(16px,3.8vw,54px) 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{display:flex;align-items:center;gap:11px;font-size:15px;font-weight:750;letter-spacing:.04em}.mark{width:37px;height:37px;display:grid;place-items:center;border:1px solid #577ba4;border-radius:12px;background:linear-gradient(130deg,#22395b,#182c36);color:#c6e3ff}.top-note{color:var(--muted);font-size:12px}.hero{padding:48px 0 30px;max-width:830px}.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--accent2);font-weight:750}.dot{height:6px;width:6px;border-radius:100%;background:#80e6c8;box-shadow:0 0 12px #80e6c8}.hero h1{font-size:clamp(31px,4.5vw,56px);line-height:1.11;letter-spacing:-.045em;margin:16px 0 15px;font-weight:760}.hero h1 span{color:var(--accent)}.hero p{color:#aebcd0;max-width:680px;margin:0;font-size:16px}.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:12px 0 18px}.toolbar-side{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.btn{border:1px solid #35465e;border-radius:11px;padding:10px 15px;background:#1a283e;color:var(--text);font-weight:650;transition:.15s}.btn:hover{border-color:#86b6ed;background:#253954}.btn.primary{color:#0b1625;border:1px solid #bdd4ff;background:linear-gradient(125deg,#a0c8ff,#bddaff)}.btn.primary:hover{filter:brightness(1.08)}.btn.ghost{background:transparent}.btn:disabled{opacity:.5;cursor:not-allowed}.check{color:var(--muted);font-size:13px;display:inline-flex;align-items:center;gap:9px;margin-right:8px}.check input{accent-color:#91beff;width:16px;height:16px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:19px}.pane{background:linear-gradient(165deg,#142034,#10192a);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-width:0;box-shadow:0 14px 50px #0002}.pane-head{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 19px;border-bottom:1px solid var(--line)}.pane-head strong{display:block;font-size:14px}.pane-head small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.pill{font-size:11px;color:#bdd4f7;background:#22334b;border:1px solid #355174;border-radius:30px;padding:5px 10px;white-space:nowrap}.editor{width:100%;min-height:355px;resize:vertical;background:transparent;color:#d8e3f3;border:0;padding:20px 21px;font:13px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;outline:none}.editor::placeholder{color:#70819a}.bottom{border-top:1px solid var(--line);color:var(--muted);font-size:12px;padding:11px 19px;display:flex;justify-content:space-between;gap:8px}.preview-section{margin-top:22px}.preview-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:0 0 12px}.preview-toolbar h2{font-size:16px;letter-spacing:-.01em;margin:0}.preview-toolbar span{font-size:12px;color:var(--muted)}.preview{background:#f9fbff;color:#1c2937;border-radius:var(--radius);padding:clamp(22px,3.5vw,42px);min-height:200px;overflow-wrap:anywhere;border:1px solid #cfd8e6}.preview h1,.preview h2,.preview h3,.preview h4{line-height:1.25;color:#172a45}.preview h2{font-size:23px;margin:25px 0 13px}.preview h3{font-size:19px;margin:22px 0 10px}.preview p{margin:0 0 15px}.preview a{color:#1d5fb9}.preview img{max-width:100%;height:auto}.preview blockquote{border-left:3px solid #93aaca;padding-left:17px;margin-left:0;color:#425269}.empty{color:#8492a5;text-align:center;padding:38px 12px}.tips{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}.tip{font-size:12px;color:#93a5bc;border:1px solid #29394d;padding:7px 11px;border-radius:9px}.toast{position:fixed;right:24px;bottom:24px;z-index:40;background:#203d35;color:#d4fff0;border:1px solid #4b997a;padding:11px 16px;border-radius:12px;box-shadow:0 8px 28px #0007;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateY(0)}.drop-overlay{position:fixed;inset:12px;z-index:99;background:#0d1823f2;border:3px dashed #a8caff;border-radius:24px;display:none;align-items:center;justify-content:center;text-align:center;pointer-events:none}.drop-overlay.active{display:flex}.drop-content{font-size:28px;font-weight:780}.drop-content small{display:block;font-size:15px;color:#b0c4dc;font-weight:400;margin-top:10px}.footer{margin-top:29px;color:#74869e;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}@media(max-width:850px){.cols{grid-template-columns:1fr}.editor{min-height:270px}.hero{padding-top:34px}.top-note{display:none}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
-<body class="bg-light">
-
-<div class="container py-4">
-  <h1 class="mb-4">Zengin Metin Dönüştürücü</h1>
-
-  <div class="row g-4">
-    <!-- Giriş -->
-    <div class="col-md-6">
-      <label for="inputHtml" class="form-label">Giriş HTML (Rich Text ile):</label>
-      <textarea id="inputHtml" class="form-control" placeholder="Buraya strong ve p içeren HTML yapıştır..."></textarea>
-    </div>
-
-    <!-- Çıktı -->
-    <div class="col-md-6">
-      <label for="outputHtml" class="form-label">Dönüştürülmüş HTML:</label>
-      <textarea id="outputHtml" class="form-control" readonly></textarea>
-    </div>
-  </div>
-
-  <!-- Buton -->
-  <div class="text-end mt-3">
-    <button class="btn btn-primary" onclick="convert()">Dönüştür</button>
-  </div>
-
-  <!-- Önizleme -->
-  <div class="mt-5">
-    <h2>HTML Önizleme</h2>
-    <div id="preview" class="preview-box"></div>
-  </div>
-</div>
-
+<body>
+<div class="drop-overlay" id="dropOverlay" aria-hidden="true"><div class="drop-content">⇩ HTML dosyanızı buraya bırakın<small>Sayfanın herhangi bir alanına bırakabilirsiniz.</small></div></div>
+<div class="wrap">
+ <header class="top"><div class="brand"><div class="mark">&lt;/&gt;</div> HTML STUDIO</div><span class="top-note">Haber ve içerik editörleri için semantik HTML aracı</span></header>
+ <section class="hero"><div class="eyebrow"><span class="dot"></span> Temiz kod · Korunan içerik</div><h1>Yazıya dokunmadan <span>HTML'yi sadeleştirin.</span></h1><p>Gereksiz <code>span</code>, stiller ve editör kalıntılarını kaldırın. Kalın, italik, bağlantı ve alt başlık yapılarını koruyarak yayınlamaya hazır semantik HTML elde edin.</p></section>
+ <div class="toolbar"><div class="toolbar-side"><button class="btn" id="uploadBtn" type="button">＋ HTML dosyası seç</button><input type="file" id="fileInput" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn ghost" id="exampleBtn" type="button">Örnek göster</button><label class="check" title="Tek başına kalın yazılmış paragrafları alt başlığa dönüştür"><input type="checkbox" id="headingsToggle" checked> Kalın paragrafları alt başlık yap</label></div><div class="toolbar-side"><button class="btn ghost" id="clearBtn" type="button">Temizle</button><button class="btn primary" id="convertBtn" type="button">✦ HTML'yi dönüştür</button></div></div>
+ <main class="cols"><section class="pane"><div class="pane-head"><div><strong>01 / Kaynak HTML</strong><small>Kodu yapıştırın veya bir dosya bırakın</small></div><span class="pill">GİRİŞ</span></div><textarea class="editor" id="inputHtml" spellcheck="false" aria-label="Kaynak HTML" placeholder="&lt;p&gt;&lt;strong&gt;Haber Alt Başlığı&lt;/strong&gt;&lt;/p&gt;&#10;&lt;p&gt;Metnin &lt;strong&gt;önemli kısmı&lt;/strong&gt; burada...&lt;/p&gt;"></textarea><div class="bottom"><span id="inputStats">0 karakter</span><span>Dosya veya yapıştırma</span></div></section><section class="pane"><div class="pane-head"><div><strong>02 / Temiz HTML</strong><small>İçerik korunur, gereksiz kod çıkarılır</small></div><span class="pill">ÇIKTI</span></div><textarea class="editor" id="outputHtml" readonly spellcheck="false" aria-label="Temiz HTML" placeholder="Dönüştürülen semantik HTML burada görünecek..."></textarea><div class="bottom"><span id="outputStats">Henüz çıktı yok</span><span id="savedStats">—</span></div></section></main>
+ <div class="toolbar" style="justify-content:flex-end;margin-top:16px"><div class="toolbar-side"><button class="btn" id="copyBtn" type="button">⧉ HTML'yi kopyala</button><button class="btn" id="downloadBtn" type="button">↓ HTML dosyası indir</button></div></div>
+ <section class="preview-section"><div class="preview-toolbar"><h2>Canlı içerik önizlemesi</h2><span>Temizlenmiş HTML'nin görünümü</span></div><div class="preview" id="preview"><div class="empty">Önizleme için HTML kodunu dönüştürün.</div></div></section>
+ <div class="tips"><span class="tip">✓ Metin sözcükleri değiştirilmez</span><span class="tip">✓ strong / em korunur</span><span class="tip">✓ h2 / h3 semantiği</span><span class="tip">✓ Inline stiller kaldırılır</span><span class="tip">✓ Dosya tamamen tarayıcıda işlenir</span></div>
+ <footer class="footer"><span>HTML Studio · Ebubekir Baştama</span><span>Dosyalar sunucuya yüklenmez.</span></footer>
+</div><div class="toast" role="status" aria-live="polite" id="toast"></div>
 <script>
-  function convert() {
-    const rawHtml = document.getElementById("inputHtml").value;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(rawHtml, "text/html");
-    const output = [];
-
-    doc.body.childNodes.forEach(el => {
-      if (el.nodeType === 1) {
-        if (el.tagName === 'P') {
-          const strong = el.querySelector('strong[data-start][data-end]');
-          if (strong) {
-            output.push(`<h2>${strong.textContent.trim()}</h2>`);
-            const clone = el.cloneNode(true);
-            clone.querySelector('strong')?.remove();
-            const restText = clone.textContent.trim();
-            if (restText) output.push(`<p>${restText}</p>`);
-          } else {
-            const text = el.textContent.trim();
-            if (text) output.push(`<p>${text}</p>`);
-          }
-        }
-      }
-    });
-
-    const finalHtml = output.join('\n');
-    document.getElementById("outputHtml").value = finalHtml;
-    document.getElementById("preview").innerHTML = finalHtml;
-  }
+(()=>{'use strict';
+const $=id=>document.getElementById(id);const input=$('inputHtml'),output=$('outputHtml'),preview=$('preview');let toastTimer;
+function notify(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2900)}
+function updateInput(){ $('inputStats').textContent=`${input.value.length.toLocaleString('tr-TR')} karakter`; }
+const tags=new Set(['p','h1','h2','h3','h4','h5','h6','strong','em','u','s','a','ul','ol','li','blockquote','br','hr','img','figure','figcaption','pre','code','table','thead','tbody','tr','th','td','sup','sub']);
+const banned=new Set(['script','style','iframe','object','embed','form','input','button','select','textarea','svg','math','noscript','template','meta','link','base','canvas','video','audio']);
+const blocks=new Set(['p','div','section','article','header','footer','main','aside','h1','h2','h3','h4','h5','h6','ul','ol','li','blockquote','pre','figure','figcaption','table']);
+const inline=new Set(['strong','em','u','s','a','code','sup','sub']);
+function safeURL(value,image=false){if(!value)return null;try{const v=value.trim();if(/^(https?:|mailto:|tel:)/i.test(v)&&!image)return v;if(/^https?:/i.test(v)&&image)return v;if(/^(\/|\.\/|\.\.\/|#)/.test(v)&&!image)return v;if(/^data:image\/(png|jpeg|gif|webp);base64,[a-z0-9+/=]+$/i.test(v)&&image)return v;return null}catch{return null}}
+function cleanNode(node,doc){if(node.nodeType===Node.TEXT_NODE)return doc.createTextNode(node.nodeValue);if(node.nodeType!==Node.ELEMENT_NODE)return null;let tag=node.tagName.toLowerCase();if(banned.has(tag))return null;
+ // Görsel editörlerin yalnızca CSS ile verdiği gerçek metin vurgusunu semantik etikete çevir.
+ if(tag==='span'||tag==='font'){const style=(node.getAttribute('style')||'').toLowerCase();const wrappers=[];if(/font-weight\s*:\s*(bold|bolder|[6-9]00)/.test(style))wrappers.push('strong');if(/font-style\s*:\s*italic/.test(style))wrappers.push('em');if(/text-decoration(?:-line)?\s*:[^;]*underline/.test(style))wrappers.push('u');if(/text-decoration(?:-line)?\s*:[^;]*line-through/.test(style))wrappers.push('s');const frag=doc.createDocumentFragment();for(const ch of [...node.childNodes]){const x=cleanNode(ch,doc);if(x)frag.append(x)}if(!wrappers.length)return frag;let wrapped=frag;for(const t of wrappers.reverse()){const parent=doc.createElement(t);parent.append(wrapped);wrapped=parent}return wrapped}
+ if(tag==='b')tag='strong';if(tag==='i')tag='em';if(tag==='strike'||tag==='del')tag='s';if(tag==='ins')tag='u';
+ if(tag==='div'||tag==='section'||tag==='article'||tag==='header'||tag==='footer'||tag==='main'||tag==='aside'){const frag=doc.createDocumentFragment();for(const ch of [...node.childNodes]){const x=cleanNode(ch,doc);if(x)frag.append(x)}return frag}
+ if(!tags.has(tag)){const frag=doc.createDocumentFragment();for(const ch of [...node.childNodes]){const x=cleanNode(ch,doc);if(x)frag.append(x)}return frag}
+ const el=doc.createElement(tag);if(tag==='a'){const href=safeURL(node.getAttribute('href'));if(href)el.setAttribute('href',href)}if(tag==='img'){const src=safeURL(node.getAttribute('src'),true);if(!src)return null;el.setAttribute('src',src);if(node.hasAttribute('alt'))el.setAttribute('alt',node.getAttribute('alt'));el.setAttribute('loading','lazy');return el}if(tag==='th'||tag==='td'){const span=node.getAttribute('colspan');if(span&&/^\d{1,2}$/.test(span))el.setAttribute('colspan',span)}
+ for(const ch of [...node.childNodes]){const x=cleanNode(ch,doc);if(x)el.append(x)}return el}
+function hasMeaningfulText(el){return !!el.textContent.replace(/\u00a0/g,' ').trim()||!!el.querySelector?.('img,br,hr')}
+function simplifyInline(el){for(const ch of [...el.childNodes]){if(ch.nodeType!==1)continue;simplifyInline(ch);if(inline.has(ch.tagName.toLowerCase())&&!hasMeaningfulText(ch)){ch.remove();continue}if(ch.tagName==='STRONG'&&ch.parentElement?.tagName==='STRONG'){ch.replaceWith(...ch.childNodes)}else if(ch.tagName==='EM'&&ch.parentElement?.tagName==='EM'){ch.replaceWith(...ch.childNodes)}}}
+function isBoldOnly(p){let hasStrong=false;function walk(el){for(const n of el.childNodes){if(n.nodeType===Node.TEXT_NODE){if(n.nodeValue.trim())return false}else if(n.nodeType===1){const t=n.tagName.toLowerCase();if(t==='strong'||t==='b'){hasStrong=true;continue}if(t==='br')continue;return false}}return true}return walk(p)&&hasStrong&&p.textContent.trim().length>0}
+function cleanDocument(raw,autoHeadings){const parser=new DOMParser();const source=parser.parseFromString(raw,'text/html');const doc=document.implementation.createHTMLDocument('clean');const root=doc.createElement('div');
+ for(const node of [...source.body.childNodes]){const clean=cleanNode(node,doc);if(clean)root.append(clean)}
+ // HTML kaynaklarının düz kök metinlerini paragraf içine al; sözcükleri değiştirme.
+ for(const n of [...root.childNodes])if(n.nodeType===Node.TEXT_NODE&&n.nodeValue.trim()){const p=doc.createElement('p');p.textContent=n.nodeValue;root.replaceChild(p,n)}
+ // Yalnızca tamamen kalın yazılmış paragrafları başlık olarak tanı.
+ let headingCount=0;for(const el of [...root.querySelectorAll('h1,h2,h3,h4,h5,h6')])if(el.tagName==='H2'||el.tagName==='H3')headingCount++;
+ for(const p of [...root.querySelectorAll('p')]){if(autoHeadings&&isBoldOnly(p)){const heading=doc.createElement(headingCount===0?'h2':'h3');headingCount++;heading.textContent=p.textContent;p.replaceWith(heading)}}
+ // Gereksiz boş etiketleri kaldır; metinleri, boşlukları, noktalama işaretlerini yeniden yazma.
+ for(const el of [...root.querySelectorAll('*')].reverse()){simplifyInline(el);const t=el.tagName.toLowerCase();if((t==='p'||/^h[1-6]$/.test(t)||inline.has(t))&&!hasMeaningfulText(el))el.remove()}
+ // Ardışık doğrudan satır metinlerini koru; HTML'i sadece okunur satırlara ayır.
+ return [...root.childNodes].filter(n=>n.nodeType===1||n.textContent.trim()).map(n=>n.nodeType===1?n.outerHTML:n.textContent).join('\n')}
+function convert(){const raw=input.value;if(!raw.trim()){notify('Önce HTML kodu ekleyin.');return}try{const cleaned=cleanDocument(raw,$('headingsToggle').checked);output.value=cleaned;preview.replaceChildren();if(cleaned){const tpl=document.createElement('template');tpl.innerHTML=cleaned;preview.append(tpl.content.cloneNode(true))}else preview.innerHTML='<div class="empty">Görüntülenecek içerik bulunamadı.</div>';$('outputStats').textContent=`${cleaned.length.toLocaleString('tr-TR')} karakter`;const pct=raw.length?Math.max(0,Math.round((1-cleaned.length/raw.length)*100)):0;$('savedStats').textContent=`Kod uzunluğunda %${pct} azalma`;notify('HTML başarıyla sadeleştirildi.')}catch(err){console.error(err);notify('HTML işlenirken bir hata oluştu.')}}
+async function loadFile(file){if(!file)return;if(!/\.(html?|txt)$/i.test(file.name)&&!['text/html','text/plain'].includes(file.type)){notify('Lütfen .html, .htm veya .txt dosyası seçin.');return}if(file.size>10*1024*1024){notify('Dosya 10 MB sınırını aşıyor.');return}try{input.value=await file.text();updateInput();convert();notify(`${file.name} dosyası içe aktarıldı.`)}catch{notify('Dosya okunamadı.')}}
+$('convertBtn').addEventListener('click',convert);$('uploadBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.value=''});input.addEventListener('input',updateInput);$('headingsToggle').addEventListener('change',()=>{if(input.value.trim())convert()});$('clearBtn').addEventListener('click',()=>{input.value='';output.value='';preview.innerHTML='<div class="empty">Önizleme için HTML kodunu dönüştürün.</div>';$('outputStats').textContent='Henüz çıktı yok';$('savedStats').textContent='—';updateInput();notify('Alanlar temizlendi.')});$('exampleBtn').addEventListener('click',()=>{input.value='<p><strong><span style="color: red">Fon Piyasalarına İlişkin Açıklama</span></strong></p>\n<p><span style="font-family: Arial">Mecliste <strong>önemli bir gelişme</strong> yaşandı.</span></p>\n<p><strong><span style="color:blue">Araştırma Süreci</span></strong></p>\n<p><span>Metinde <em>vurgu</em> ve <a href="https://example.com" style="color:red">bağlantı</a> korunur.</span></p>';updateInput();convert()});
+$('copyBtn').addEventListener('click',async()=>{if(!output.value){notify('Kopyalanacak HTML bulunamadı.');return}try{await navigator.clipboard.writeText(output.value);notify('Temiz HTML panoya kopyalandı.')}catch{output.focus();output.select();try{document.execCommand('copy');notify('Temiz HTML kopyalandı.')}catch{notify('Kopyalama engellendi; çıktıyı seçip kopyalayın.')}}});
+$('downloadBtn').addEventListener('click',()=>{if(!output.value){notify('İndirilecek HTML bulunamadı.');return}const html='<!doctype html>\n<html lang="tr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Temizlenmiş İçerik</title>\n</head>\n<body>\n<article>\n'+output.value+'\n</article>\n</body>\n</html>\n';const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='temizlenmis-icerik.html';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);notify('HTML dosyası oluşturuldu.')});
+// Sayfanın her yerinde sürükle / bırak; tarayıcının dosyaya yönlenmesini engelle.
+let dragDepth=0;function isFileDrag(e){return [...(e.dataTransfer?.types||[])].includes('Files')}
+window.addEventListener('dragenter',e=>{if(!isFileDrag(e))return;e.preventDefault();dragDepth++;$('dropOverlay').classList.add('active')});window.addEventListener('dragover',e=>{if(!isFileDrag(e))return;e.preventDefault();e.dataTransfer.dropEffect='copy';$('dropOverlay').classList.add('active')});window.addEventListener('dragleave',e=>{if(!isFileDrag(e))return;e.preventDefault();dragDepth=Math.max(0,dragDepth-1);if(!dragDepth)$('dropOverlay').classList.remove('active')});window.addEventListener('drop',e=>{e.preventDefault();dragDepth=0;$('dropOverlay').classList.remove('active');const files=e.dataTransfer?.files;if(files?.length)loadFile(files[0])});
+})();
 </script>
-
 </body>
 </html>
