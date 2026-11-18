@@ -14,7 +14,7 @@
 <title>EBS Belge Masası | Online PDF, Word, Excel ve PPTX Görüntüleyici</title>
 
 <meta name="description"
-      content="EBS Belge Masası ile PDF, DOCX, XLSX, XLS, PPTX, CSV, ODT, ODS ve ODP dosyalarını ücretsiz olarak tarayıcınızda görüntüleyin. Dosyalarınız sunucuya yüklenmeden cihazınızda işlenir.">
+      content="EBS Belge Masası ile PDF, DOC, DOCX, XLSX, XLS, PPT, PPTX, CSV, ODT, ODS ve ODP dosyalarını ücretsiz olarak tarayıcınızda görüntüleyin. Dosyalarınız sunucuya yüklenmeden cihazınızda işlenir.">
 
 <meta name="keywords"
       content="EBS Belge Masası, online dosya görüntüleyici, belge görüntüleyici, PDF görüntüleyici, Word görüntüleyici, DOCX görüntüleyici, Excel görüntüleyici, XLSX görüntüleyici, PowerPoint görüntüleyici, PPTX görüntüleyici, CSV görüntüleyici, ODT görüntüleyici, ODS görüntüleyici, ODP görüntüleyici, online belge açma, ofis dosyası açma, Ebubekir Bastama">
@@ -91,7 +91,7 @@
   "name": "EBS Belge Masası",
   "alternateName": "EBS Online Belge Görüntüleyici",
   "url": "https://www.ebubekirbastama.com.tr/ebs-belge-masasi.html",
-  "description": "EBS Belge Masası; PDF, DOCX, XLSX, XLS, PPTX, CSV, ODT, ODS ve ODP dosyalarını doğrudan web tarayıcısında görüntülemeye yarayan ücretsiz bir belge önizleme uygulamasıdır.",
+  "description": "EBS Belge Masası; PDF, DOC, DOCX, XLSX, XLS, PPT, PPTX, CSV, ODT, ODS ve ODP dosyalarını doğrudan web tarayıcısında görüntülemeye yarayan ücretsiz bir belge önizleme uygulamasıdır.",
   "applicationCategory": "UtilitiesApplication",
   "applicationSubCategory": "Document Viewer",
   "operatingSystem": "Windows, macOS, Linux, Android, iOS",
@@ -120,8 +120,10 @@
   "featureList": [
     "PDF dosyalarını görüntüleme",
     "DOCX Word dosyalarını görüntüleme",
+    "Eski DOC Word dosyalarının metnini görüntüleme",
     "XLSX ve XLS Excel dosyalarını görüntüleme",
     "PPTX PowerPoint dosyalarını görüntüleme",
+    "Eski PPT sunumlarının metnini görüntüleme",
     "CSV dosyalarını görüntüleme",
     "ODT dosyalarını görüntüleme",
     "ODS dosyalarını görüntüleme",
@@ -402,6 +404,33 @@
     font-family:'Space Grotesk',sans-serif; line-height:1.65; color:#1c1c1c;
     min-height:600px;
   }
+  .legacy-preview-note{font-size:12px;color:#68531a;background:#fff7de;padding:9px 12px;border-radius:4px;margin:0 0 20px;}
+  /* Eski Word belgeleri: A4 benzeri sayfa ve yazdırma düzeni */
+  .legacy-pages{padding:22px 12px 40px;background:#edf0f2;display:flex;flex-direction:column;align-items:center;gap:22px;}
+  .legacy-page{width:794px;max-width:100%;min-height:1123px;background:white;box-sizing:border-box;position:relative;box-shadow:0 8px 28px rgba(12,25,29,.16);padding:133px 73px 91px;font:16px/1.23 'Times New Roman',Times,serif;color:#111;}
+  .legacy-page-header{position:absolute;top:31px;left:28px;right:28px;height:93px;display:flex;align-items:flex-start;gap:13px;font-family:'Times New Roman',Times,serif;}
+  .legacy-page-header img{width:68px;height:90px;object-fit:contain;margin:0!important;flex:none;}
+  .legacy-brand{padding-top:4px;min-width:0;white-space:nowrap;}
+  .legacy-brand-primary{font-size:34px;font-weight:700;color:#800000;line-height:1.13;}
+  .legacy-brand-secondary{font-size:29px;line-height:1.1;}
+  .legacy-page-footer{position:absolute;bottom:24px;left:73px;right:73px;border-top:1px solid #222;padding-top:4px;font:11px/1.25 'Times New Roman',Times,serif;overflow-wrap:anywhere;}
+  .legacy-paragraph{white-space:pre-wrap;overflow-wrap:break-word;margin:0 0 10px;line-height:1.16;text-align:justify;}
+  .legacy-paragraph.legacy-heading{font-weight:bold;text-align:left;margin:10px 0 12px;}
+  .legacy-paragraph.legacy-title{font-size:18.7px;font-weight:bold;text-align:center;margin:0 0 3px;line-height:1.12;}
+  .legacy-paragraph.legacy-date{font-size:18.7px;font-weight:bold;text-align:center;margin:0 0 28px;}
+  .legacy-paragraph.legacy-signature{font-weight:bold;text-align:right;font-size:18px;margin:14px 0 0;}
+  .legacy-paragraph.legacy-signature-role{font-weight:bold;text-align:right;font-size:18px;margin:0;}
+  .legacy-paragraph.legacy-spacer{height:12px;margin:0;}
+  .legacy-layout-note{margin:18px 20px 0;padding:10px 14px;border:1px solid #d5c18d;background:#fff9e9;font-size:12px;line-height:1.5;}
+  .legacy-overflow-notice{font-size:11px;color:#ad5922;margin-top:5px;}
+  @media(max-width:850px){.legacy-pages{align-items:flex-start;overflow-x:auto}.legacy-page{max-width:none;flex:none}}
+  @media print {.legacy-layout-note{display:none}.legacy-pages{padding:0;background:#fff;gap:0}.legacy-page{box-shadow:none;break-after:page;page-break-after:always}}
+  .legacy-content{white-space:pre-wrap;overflow-wrap:anywhere;}
+  .legacy-images{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin:0 0 20px;}
+  .legacy-image{display:block;max-width:min(100%,240px);max-height:220px;object-fit:contain;margin:0!important;}
+  .legacy-image-caption{color:var(--ink-soft);font-size:12px;margin:6px 0 0;}
+  .legacy-figure{margin:0;max-width:100%;}
+
   .doc-surface img{ max-width:100%; height:auto; margin:10px 0; }
   .doc-surface table{ border-collapse:collapse; width:100%; margin:14px 0; }
   .doc-surface table td, .doc-surface table th{ border:1px solid #ddd; padding:6px 10px; font-size:14px; }
@@ -539,7 +568,7 @@
       <div class="sup-row"><span class="sup-tag"><svg class="ui-icon format-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 2.75h8L20 8v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 5 20V4.75a2 2 0 0 1 2-2z" fill="#D8544A" fill-opacity=".09" stroke="#D8544A" stroke-width="1.55" stroke-linejoin="round"/><path d="M15 2.75V8h5" stroke="#D8544A" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 16c4-8 5-8 6-2s4 4 5 1M7 18h11" stroke="#D8544A" stroke-width="1.6" stroke-linecap="round"/></svg> PDF</span><span class="sup-state full">sayfa sayfa render</span></div>
       <div class="sup-row"><span class="sup-tag"><svg class="ui-icon format-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 2.75h8L20 8v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 5 20V4.75a2 2 0 0 1 2-2z" fill="#DC7E31" fill-opacity=".09" stroke="#DC7E31" stroke-width="1.55" stroke-linejoin="round"/><path d="M15 2.75V8h5" stroke="#DC7E31" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10v5h5a5 5 0 1 1-5-5M14 9a5 5 0 0 1 5 5h-5z" fill="#DC7E31"/></svg> PPTX</span><span class="sup-state text">slayt metni + görsel</span></div>
       <div class="sup-row"><span class="sup-tag"><svg class="ui-icon format-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 2.75h8L20 8v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 5 20V4.75a2 2 0 0 1 2-2z" fill="#2464B0" fill-opacity=".09" stroke="#2464B0" stroke-width="1.55" stroke-linejoin="round"/><path d="M15 2.75V8h5" stroke="#2464B0" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 11h8M8 14h8M8 17h6" stroke="#2464B0" stroke-width="1.7" stroke-linecap="round"/></svg> ODT / ODS / ODP</span><span class="sup-state text">metin çıkarımı</span></div>
-      <div class="sup-row"><span class="sup-tag"><svg class="ui-icon format-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 2.75h8L20 8v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 5 20V4.75a2 2 0 0 1 2-2z" fill="#2464B0" fill-opacity=".09" stroke="#2464B0" stroke-width="1.55" stroke-linejoin="round"/><path d="M15 2.75V8h5" stroke="#2464B0" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 11h8M8 14h8M8 17h6" stroke="#2464B0" stroke-width="1.7" stroke-linecap="round"/></svg> DOC / PPT (eski ikili)</span><span class="sup-state limited">sınırlı — bkz. not</span></div>
+      <div class="sup-row"><span class="sup-tag"><svg class="ui-icon format-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 2.75h8L20 8v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 5 20V4.75a2 2 0 0 1 2-2z" fill="#2464B0" fill-opacity=".09" stroke="#2464B0" stroke-width="1.55" stroke-linejoin="round"/><path d="M15 2.75V8h5" stroke="#2464B0" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 11h8M8 14h8M8 17h6" stroke="#2464B0" stroke-width="1.7" stroke-linecap="round"/></svg> DOC / PPT (eski ikili)</span><span class="sup-state text">metin önizleme</span></div>
     </div>
 
     <div class="history" id="historyBox" style="display:none;">
@@ -732,7 +761,17 @@ async function handleFile(file){
   addHistory(file);
 
   try{
-    if(e === 'docx'){
+    if(e === 'doc'){
+      setLoading('Eski Word DOC dosyası çözülüyor…');
+      setHeader(file, 'Word 97–2003 Belgesi (Sayfa Önizlemesi)');
+      await renderLegacyDoc(file);
+    }
+    else if(e === 'ppt'){
+      setLoading('Eski PowerPoint dosyası çözülüyor…');
+      setHeader(file, 'PowerPoint 97–2003 (Metin Önizleme)');
+      await renderLegacyPpt(file);
+    }
+    else if(e === 'docx'){
       setLoading('DOCX ayrıştırılıyor…');
       setHeader(file, 'Word Belgesi');
       const arrayBuffer = await file.arrayBuffer();
@@ -764,10 +803,6 @@ async function handleFile(file){
       setLoading('PDF sayfaları render ediliyor…');
       setHeader(file, 'PDF Belgesi');
       await renderPdf(file);
-    }
-    else if(e === 'doc' || e === 'ppt'){
-      setHeader(file, 'Eski Ofis Formatı (İkili)');
-      renderLimitedNotice(file, e);
     }
     else{
       setHeader(file, 'Bilinmeyen Format');
@@ -848,7 +883,7 @@ function renderSheetTable(sheet,container,info){
 function toggleEditing(){
   if(!currentFile) return;
   const type=ext(currentFile.name);
-  if(!['docx','xlsx','xls','xlsm','xlsb','csv','ods','odt','odp','pptx'].includes(type)){
+  if(!['doc','docx','xlsx','xls','xlsm','xlsb','csv','ods','odt','odp','ppt','pptx'].includes(type)){
     showToast('Bu format için düzenleme desteklenmiyor.');return;
   }
   editable=!editable;
@@ -890,7 +925,7 @@ async function copyAllContent(){
     }
     value=lines.join('\n\n');
   } else {
-    value=viewerBody.querySelector('.doc-surface, .slide-grid, .sheet-wrap')?.innerText||'';
+    value=viewerBody.querySelector('.legacy-content, .doc-surface, .slide-grid, .sheet-wrap')?.innerText||'';
   }
   if(!value.trim()){showToast('Kopyalanabilecek metin bulunamadı.');return;}
   try{await navigator.clipboard.writeText(value);showToast('Tüm içerik panoya kopyalandı.');}
@@ -909,7 +944,7 @@ async function saveEditedDocument(){
     const binary=XLSX.write(currentWorkbook,{bookType:'xlsx',type:'array'});
     downloadBlob(new Blob([binary],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),name+'-duzenlenmis.xlsx');
   }else if(viewerBody.querySelector('.doc-surface')){
-    const content=viewerBody.querySelector('.doc-surface').innerHTML;
+    const content=(viewerBody.querySelector('.legacy-content')||viewerBody.querySelector('.doc-surface')).innerHTML;
     const markup='<!doctype html><html lang="tr"><head><meta charset="utf-8"></head><body>'+content+'</body></html>';
     downloadBlob(new Blob([markup],{type:'text/html;charset=utf-8'}),name+'-duzenlenmis.html');
     showToast('Word biçiminde değil, düzenlenebilir HTML olarak kaydedildi.');return;
@@ -917,6 +952,316 @@ async function saveEditedDocument(){
     showToast('Bu belge türü için dışa aktarma henüz desteklenmiyor.');return;
   }
   showToast('Düzenlenen dosya indirildi.');
+}
+
+
+/* Eski Office 97-2003 dosyaları OLE Compound File (CFB) içerir.
+   Kod dosyayı tamamen yerel bellekte açar; uzak servise veri göndermez. */
+function readOleStreams(buffer){
+  const b=new Uint8Array(buffer),v=new DataView(buffer);
+  const u16=(p)=>v.getUint16(p,true),u32=(p)=>v.getUint32(p,true);
+  if(b.length<512 || [0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1].some((x,i)=>b[i]!==x))
+    throw new Error('Geçerli bir Office 97–2003 ikili dosyası değil.');
+  const sectorSize=1<<u16(30),miniSize=1<<u16(32);
+  if(![512,4096].includes(sectorSize)||miniSize!==64)throw new Error('Desteklenmeyen OLE sektör biçimi.');
+  const FREE=0xffffffff, END=0xfffffffe, FAT=0xfffffffd, DIF=0xfffffffc;
+  const sector=(n)=>{const p=(n+1)*sectorSize;if(n>=Math.ceil(b.length/sectorSize)||p+sectorSize>b.length)throw new Error('OLE sektör sınırı aşıldı.');return b.subarray(p,p+sectorSize);};
+  const read32=(arr,p)=>new DataView(arr.buffer,arr.byteOffset,arr.byteLength).getUint32(p,true);
+  const difats=[];
+  for(let p=76;p<512;p+=4){const n=u32(p);if(n!==FREE)difats.push(n);}
+  let difNext=u32(68),difCount=u32(72);
+  for(let i=0;i<difCount&&difNext!==END;i++){
+    const sec=sector(difNext);const n=sectorSize/4-1;
+    for(let j=0;j<n;j++){const t=read32(sec,j*4);if(t!==FREE)difats.push(t);}
+    difNext=read32(sec,n*4);
+  }
+  const fat=[];
+  for(const n of difats.slice(0,u32(44))){const sec=sector(n);for(let p=0;p<sectorSize;p+=4)fat.push(read32(sec,p));}
+  const chain=(start,table,maxSteps)=>{
+    const arr=[],visited=new Set();let at=start;
+    while(at!==END&&at!==FREE){
+      if(at===FAT||at===DIF||at>=table.length||visited.has(at)||arr.length>=maxSteps)throw new Error('Bozuk OLE sektör zinciri.');
+      visited.add(at);arr.push(at);at=table[at];
+    }
+    return arr;
+  };
+  const ordinary=(start,size)=>{
+    if(size===0)return new Uint8Array(0);
+    const ids=chain(start,fat,Math.min(fat.length,Math.ceil(size/sectorSize)+4));
+    const out=new Uint8Array(size);let pos=0;
+    for(const id of ids){const part=sector(id);const n=Math.min(part.length,size-pos);if(n<=0)break;out.set(part.subarray(0,n),pos);pos+=n;}
+    if(pos<size)throw new Error('OLE akışı eksik.');return out;
+  };
+  const dirStart=u32(48),dirIds=chain(dirStart,fat,fat.length),dirBytes=new Uint8Array(dirIds.length*sectorSize);
+  dirIds.forEach((id,i)=>dirBytes.set(sector(id),i*sectorSize));
+  const entries=[];let root=null;
+  for(let p=0;p+128<=dirBytes.length;p+=128){
+    const nameLength=read32(dirBytes,p+64)&0xffff,type=dirBytes[p+66];
+    if(!type||nameLength<2||nameLength>64)continue;
+    const name=new TextDecoder('utf-16le').decode(dirBytes.subarray(p,p+nameLength-2));
+    const start=read32(dirBytes,p+116),lo=read32(dirBytes,p+120),hi=read32(dirBytes,p+124);
+    if(hi)throw new Error('4 GB üzeri dosyalar desteklenmiyor.');
+    const entry={name,type,start,size:lo};entries.push(entry);if(type===5)root=entry;
+  }
+  if(!root)throw new Error('OLE kök klasörü bulunamadı.');
+  const miniFat=[];const mfStart=u32(60),mfCount=u32(64);
+  if(mfCount&&mfStart!==END){
+    const ids=chain(mfStart,fat,mfCount+1);
+    ids.slice(0,mfCount).forEach(id=>{const sec=sector(id);for(let p=0;p<sec.length;p+=4)miniFat.push(read32(sec,p));});
+  }
+  const miniStream=root.size?ordinary(root.start,root.size):new Uint8Array(0);
+  const readMini=(entry)=>{
+    const ids=chain(entry.start,miniFat,Math.ceil(entry.size/miniSize)+4);
+    const out=new Uint8Array(entry.size);let pos=0;
+    for(const id of ids){const off=id*miniSize,n=Math.min(miniSize,entry.size-pos);if(off+n>miniStream.length)throw new Error('Mini OLE akışı kesik.');out.set(miniStream.subarray(off,off+n),pos);pos+=n;}
+    if(pos<entry.size)throw new Error('Mini OLE akışı eksik.');return out;
+  };
+  const streams={};
+  for(const entry of entries){if(entry.type!==2)continue;streams[entry.name]=entry.size<u32(56)?readMini(entry):ordinary(entry.start,entry.size);}
+  return streams;
+}
+function readLegacyWordText(streams){
+  const doc=streams.WordDocument;
+  if(!doc||doc.length<34)throw new Error('WordDocument akışı yok.');
+  const dv=new DataView(doc.buffer,doc.byteOffset,doc.byteLength);
+  const flags=dv.getUint16(10,true);
+  if(flags&0x0100)throw new Error('Şifrelenmiş DOC belgeleri desteklenmiyor.');
+  const table=streams[(flags&0x0200)?'1Table':'0Table']||streams['0Table']||streams['1Table'];
+  if(!table)throw new Error('Word tablo akışı bulunamadı.');
+  const tv=new DataView(table.buffer,table.byteOffset,table.byteLength);
+  // FIB bölümlerini sürümden bağımsız olarak uzunluk alanları üzerinden ilerlet.
+  let pos=32;const csw=dv.getUint16(pos,true);pos+=2+csw*2;
+  if(pos+2>doc.length)throw new Error('DOC FIB kesik.');
+  const cslw=dv.getUint16(pos,true);pos+=2+cslw*4;
+  if(pos+2>doc.length)throw new Error('DOC FIB kesik.');
+  const cb=dv.getUint16(pos,true);pos+=2;
+  if(cb<=33||pos+(33*8)+8>doc.length)throw new Error('DOC parça tablosu bulunamadı.');
+  const clxOffset=dv.getUint32(pos+33*8,true),clxSize=dv.getUint32(pos+33*8+4,true);
+  if(clxOffset+clxSize>table.length||!clxSize)throw new Error('DOC CLX verisi geçersiz.');
+  let p=clxOffset,end=clxOffset+clxSize;
+  while(p<end){
+    const marker=table[p++];
+    if(marker===1){if(p+2>end)break;const n=tv.getUint16(p,true);p+=2+n;continue;}
+    if(marker!==2)break;
+    if(p+4>end)break;
+    const n=tv.getUint32(p,true);p+=4;
+    if(n<16||(n-4)%12!==0||p+n>end)throw new Error('DOC metin parçası geçersiz.');
+    const count=(n-4)/12,cp=[];
+    for(let i=0;i<=count;i++)cp.push(tv.getUint32(p+i*4,true));
+    const pieces=[];const pcdbase=p+(count+1)*4;
+    for(let i=0;i<count;i++){
+      const raw=tv.getUint32(pcdbase+i*8+2,true),compressed=(raw&0x40000000)!==0;
+      const offset=(raw&0x3fffffff)/(compressed?2:1),length=cp[i+1]-cp[i];
+      if(length<0||length>20000000||offset+length*(compressed?1:2)>doc.length)continue;
+      const bytes=doc.subarray(offset,offset+length*(compressed?1:2));
+      pieces.push(new TextDecoder(compressed?'windows-1254':'utf-16le').decode(bytes));
+    }
+    return pieces.join('').replace(/\r/g,'\n').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'').trim();
+  }
+  throw new Error('DOC metin parça tablosu okunamadı.');
+}
+/* DOC görüntüleri OLE akışlarının içinde PNG/JPEG/GIF veya BMP olarak saklanabilir.
+   Her resim yalnızca kullanıcının cihazında taranır, sunucuya gönderilmez. */
+function readLegacyDocImages(streams){
+  const found=[];const seen=new Set();
+  const MAX_IMAGES=80,MAX_BYTES=16*1024*1024;
+  const pngSig=[137,80,78,71,13,10,26,10];
+  const match=(data,at,sig)=>sig.every((value,k)=>data[at+k]===value);
+  const u32be=(b,at)=>((b[at]*0x1000000)+(b[at+1]<<16)+(b[at+2]<<8)+b[at+3])>>>0;
+  const u32le=(b,at)=>(b[at]+(b[at+1]<<8)+(b[at+2]<<16)+(b[at+3]*0x1000000))>>>0;
+  for(const [streamName,bytes] of Object.entries(streams)){
+    if(found.length>=MAX_IMAGES)break;
+    if(!bytes||bytes.length<16||bytes.length>100*1024*1024)continue;
+    // Metadata akışlarında görsel aramak gereksizdir.
+    if(/^\x05|SummaryInformation|DocumentSummaryInformation/i.test(streamName))continue;
+    for(let i=0;i<bytes.length-16&&found.length<MAX_IMAGES;i++){
+      let end=0,mime='';
+      if(match(bytes,i,pngSig)){
+        let at=i+8,valid=false;
+        while(at+12<=bytes.length && at-i<=MAX_BYTES){
+          const size=u32be(bytes,at);
+          if(size>MAX_BYTES||at+12+size>bytes.length)break;
+          const t=String.fromCharCode(...bytes.subarray(at+4,at+8));
+          if(!/^[A-Za-z]{4}$/.test(t))break;
+          at+=12+size;
+          if(t==='IEND'){valid=true;break;}
+        }
+        if(valid){end=at;mime='image/png';}
+      }else if(bytes[i]===255&&bytes[i+1]===216&&bytes[i+2]===255){
+        // JPEG bitiş işaretine kadar (maks. 16 MB) ara.
+        for(let j=i+3;j+1<bytes.length&&j-i<=MAX_BYTES;j++){
+          if(bytes[j]===255&&bytes[j+1]===217){end=j+2;mime='image/jpeg';break;}
+        }
+      }else if(match(bytes,i,[71,73,70,56,57,97])||match(bytes,i,[71,73,70,56,55,97])){
+        // GIF alt bloklarını izle; baştaki ilk trailer yanlışlıkla bitiş sayılmamalı.
+        const packed=bytes[i+10],globalPalette=(packed&128)?3*(1<<((packed&7)+1)):0;
+        let at=i+13+globalPalette,valid=false;
+        while(at<bytes.length&&at-i<MAX_BYTES){
+          const tag=bytes[at++];
+          if(tag===0x3b){valid=true;break;}
+          if(tag===0x21){at++;}
+          else if(tag===0x2c){if(at+9>bytes.length)break;const f=bytes[at+8];at+=9;if(f&128)at+=3*(1<<((f&7)+1));at++;}
+          else break;
+          while(at<bytes.length){const n=bytes[at++];if(!n)break;at+=n;}
+        }
+        if(valid){end=at;mime='image/gif';}
+      }else if(bytes[i]===66&&bytes[i+1]===77&&i+26<=bytes.length){
+        const size=u32le(bytes,i+2),pixelOff=u32le(bytes,i+10),dibSize=u32le(bytes,i+14);
+        if(size>=54&&size<=MAX_BYTES&&i+size<=bytes.length&&pixelOff>=26&&pixelOff<size&&[12,40,52,56,108,124].includes(dibSize)){
+          end=i+size;mime='image/bmp';
+        }
+      }
+      if(end && end-i<=MAX_BYTES){
+        const data=bytes.subarray(i,end);
+        // Tekrarlanan ayni görüntüler dosya içinde birden çok konumda bulunabilir.
+        const key=`${mime}:${data.length}:${Array.from(data.subarray(0,32)).join(',')}:${Array.from(data.subarray(-16)).join(',')}`;
+        if(!seen.has(key)){seen.add(key);found.push({mime,bytes:data});}
+        i=end-1;
+      }
+    }
+  }
+  return found;
+}
+function bytesToDataUrl(bytes,mime){
+  const chunk=0x8000;let binary='';
+  for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));
+  return `data:${mime};base64,${btoa(binary)}`;
+}
+function renderLegacyText(text,notice,images=[]){
+  if(!text.trim()&&!images.length)throw new Error('Belgede okunabilir metin veya görsel bulunamadı.');
+  const surface=document.createElement('div');surface.className='doc-surface';
+  const info=document.createElement('p');info.className='legacy-preview-note';info.textContent=notice;surface.appendChild(info);
+  if(images.length){
+    const gallery=document.createElement('div');gallery.className='legacy-images';
+    images.forEach((item,index)=>{
+      const fig=document.createElement('figure');fig.className='legacy-figure';
+      const img=document.createElement('img');img.className='legacy-image';img.src=bytesToDataUrl(item.bytes,item.mime);
+      img.alt=`Belgeye gömülü görsel ${index+1}`;img.loading='lazy';
+      const cap=document.createElement('figcaption');cap.className='legacy-image-caption';
+      cap.textContent=`Belgedeki görsel ${index+1}`;
+      fig.append(img,cap);gallery.appendChild(fig);
+    });
+    surface.appendChild(gallery);
+  }
+  const content=document.createElement('div');content.className='legacy-content';content.textContent=text;surface.appendChild(content);
+  viewerBody.replaceChildren(surface);
+}
+/* Bu görüntüleyici DOC'un yazı akışını temel alıp paragraf ve sayfa görünümünü
+   yeniden kurar. Gerçek Word ikili karakter/paragraf stil tablolarının tamamını
+   çözmediğinden düzen, bazı belgelerde yaklaşık kalır. */
+function splitLegacyWordStories(text){
+  const parts=text.split(/\n{5,}/);
+  let body=parts[0]||text;
+  let aux=parts.slice(1).join('\n');
+  if(!aux){
+    const mark=text.lastIndexOf('\nTürk Veteriner Hekimleri Birliği\n');
+    if(mark>text.length*.65){body=text.slice(0,mark);aux=text.slice(mark+1);}
+  }
+  const auxLines=aux.split('\n').map(s=>s.trim()).filter(Boolean);
+  const header=auxLines.slice(0,2).filter(x=>!/^Adres:|^E.posta:|^Kep:/i.test(x));
+  const footer=auxLines.filter(x=>/^Adres:|^E.posta:|^Kep:/i.test(x))
+    .map(x=>x.replace(/\s*HYPERLINK\s+"?(?:mailto:)?\S+"?\s+/gi,' ').replace(/\s+/g,' ').trim());
+  return {body:body.trim(),header,footer};
+}
+function legacyParagraphs(text){
+  const lines=text.replace(/\f/g,'\n').split('\n');
+  const output=[];
+  const sensible=lines.map(x=>x.trim()).filter(Boolean);
+  let dateSeen=false;
+  for(let i=0;i<lines.length;i++){
+    const original=lines[i],str=original.trim();
+    if(!str){if(output.length&&output[output.length-1].kind!=='spacer')output.push({kind:'spacer',text:''});continue;}
+    let kind='normal';
+    if(i<4&&str.length<105&&str===str.toLocaleUpperCase('tr-TR')&&!/^[\d\W]+$/.test(str))kind='title';
+    else if(!dateSeen&&i<6&&/^(?:\d{1,2}[./-]){2}\d{4}$/.test(str)){kind='date';dateSeen=true;}
+    else if(/^(?:TVHB Merkez Konseyi Başkanı|.*(?:Konseyi Başkanı|Genel Başkanı))$/i.test(str))kind='signature-role';
+    else if(/^\s{8,}/.test(original)&&str.length<70)kind='signature';
+    else if(str.length<115 && str===str.toLocaleUpperCase('tr-TR') && /[A-ZÇĞİÖŞÜ]/.test(str))kind='heading';
+    output.push({text:str,kind});
+  }
+  return output;
+}
+function renderLegacyDocPageHeader(page,header,images){
+  const el=document.createElement('div');el.className='legacy-page-header';
+  if(header.length && images.length){const img=document.createElement('img');img.src=bytesToDataUrl(images[0].bytes,images[0].mime);img.alt='Belge logosu';el.appendChild(img);}
+  if(header.length){
+    const brand=document.createElement('div');brand.className='legacy-brand';
+    header.forEach((line,i)=>{const part=document.createElement('div');part.className=i===0?'legacy-brand-primary':'legacy-brand-secondary';part.textContent=line;brand.appendChild(part);});
+    el.appendChild(brand);
+  }
+  page.appendChild(el);
+}
+function renderLegacyDocPageFooter(page,footer){
+  if(!footer.length)return;
+  const el=document.createElement('div');el.className='legacy-page-footer';
+  footer.forEach(t=>{const line=document.createElement('div');line.textContent=t;el.appendChild(line);});
+  page.appendChild(el);
+}
+function makeLegacyPage(header,footer,images){
+  const page=document.createElement('section');page.className='legacy-page';
+  renderLegacyDocPageHeader(page,header,images);
+  const content=document.createElement('div');content.className='legacy-page-content';page.appendChild(content);
+  renderLegacyDocPageFooter(page,footer);
+  return {page,content};
+}
+function renderLegacyFormattedWord(text,images){
+  const {body,header,footer}=splitLegacyWordStories(text);
+  const paragraphs=legacyParagraphs(body);
+  if(!paragraphs.length)throw new Error('DOC belgesinde okunabilir metin bulunamadı.');
+  const wrapper=document.createElement('div');wrapper.className='legacy-pages';
+  const notice=document.createElement('p');notice.className='legacy-layout-note';
+  notice.textContent='Sayfa ve yazı düzeni, eski Word belgesinden elde edilen içerik kullanılarak yeniden oluşturuldu. Punto, konum ve satır kırılmaları bazı belgelerde özgün Word görünümünden farklı olabilir.';
+  viewerBody.replaceChildren(notice,wrapper);
+  let current=makeLegacyPage(header,footer,images);wrapper.appendChild(current.page);
+  const maxPages=300;let pageCount=1;
+  for(const item of paragraphs){
+    const el=document.createElement('p');el.className='legacy-paragraph legacy-'+(item.kind==='normal'?'body':item.kind);
+    el.textContent=item.text||'\u00a0';current.content.appendChild(el);
+    // A4 sayfasının iç alanı: 1123 - üst padding (133) - alt (91) = 899px.
+    if(current.content.scrollHeight>895&&current.content.children.length>1&&pageCount<maxPages){
+      el.remove();current=makeLegacyPage(header,footer,images);wrapper.appendChild(current.page);current.content.appendChild(el);pageCount++;
+    }
+  }
+  // Görselleri ayrı bir galeride çoğaltmak yerine Word üstbilgisinde göster.
+  // Daha fazla medya varsa sayfa sonunda ekler bölümüne yerleştir.
+  if(images.length>(header.length?1:0)){
+    const extras=document.createElement('section');extras.className='legacy-extra-media';
+    const title=document.createElement('h3');title.textContent='Belgeye gömülü diğer görseller';extras.appendChild(title);
+    images.slice(header.length?1:0).forEach((im,i)=>{const img=document.createElement('img');img.src=bytesToDataUrl(im.bytes,im.mime);img.alt='Ek görsel '+(i+1+(header.length?1:0));img.style.maxWidth='220px';img.style.maxHeight='200px';extras.appendChild(img);});
+    viewerBody.appendChild(extras);
+  }
+}
+async function renderLegacyDoc(file){
+  const streams=readOleStreams(await file.arrayBuffer());
+  const text=readLegacyWordText(streams);
+  const images=readLegacyDocImages(streams);
+  renderLegacyFormattedWord(text,images);
+}
+function readLegacyPptText(bytes){
+  let out=[];const dec=new TextDecoder('windows-1254');
+  function walk(start,end,depth){
+    if(depth>24)return;
+    const v=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+    for(let p=start;p+8<=end;){
+      const ver=bytes[p]&15,kind=v.getUint16(p+2,true),size=v.getUint32(p+4,true),from=p+8,to=from+size;
+      if(to>end||to<from)break;
+      if(ver===15)walk(from,to,depth+1);
+      else if(kind===4000||kind===4008){
+        const txt=kind===4000?new TextDecoder('utf-16le').decode(bytes.subarray(from,to-(size%2))):dec.decode(bytes.subarray(from,to));
+        if(txt.trim())out.push(txt.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,''));
+      }
+      p=to;
+    }
+  }
+  walk(0,bytes.length,0);
+  return out.filter(x=>{const t=x.trim();return t && t!=='*' && !/^Click to edit (Master|the outline)/i.test(t);}).join('\n').trim();
+}
+async function renderLegacyPpt(file){
+  const streams=readOleStreams(await file.arrayBuffer());
+  const main=streams['PowerPoint Document'];
+  if(!main)throw new Error('PowerPoint Document akışı bulunamadı.');
+  const text=readLegacyPptText(main);
+  renderLegacyText(text,'PPT metin önizlemesi: slayt yerleşimi, animasyonlar ve görseller korunmaz.');
 }
 
 async function renderPptx(file){
@@ -1059,11 +1404,10 @@ function renderLimitedNotice(file, e){
   viewerBody.innerHTML = `
     <div class="limited-note">
       <strong>${e.toUpperCase()} — Sınırlı Tarayıcı Desteği</strong>
-      Eski ikili Office formatları (.doc, .xls, .ppt — 97/2003 öncesi) tarayıcı içinde doğrudan ayrıştırılamıyor,
-      çünkü bunlar açık ZIP/XML tabanlı değil, kapalı ikili bir yapıya sahip. Önizleme yapabilmek için:
+      Bu dosyada okunabilir içerik bulunamadı veya eski ikili dosya desteklenmeyen bir özellik kullanıyor. Deneyebilecekleriniz:
       <br><br>
       • Dosyayı güncel formata (.docx / .xlsx / .pptx) dönüştürüp tekrar yükleyebilirsiniz,<br>
-      • Ya da sunucu taraflı bir dönüştürücü (örn. LibreOffice headless / <span class="mono">soffice --convert-to</span>) entegre edilmesi gerekir.
+      • Dosyanın korumalı, şifreli veya bozuk olmadığından emin olun. Dosya sunucuya gönderilmez.
     </div>`;
 }
 
