@@ -166,6 +166,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root{
     --paper:#f5f6f7;
@@ -338,6 +340,30 @@
   .history-item .dot{ width:7px;height:7px;border-radius:50%; background:var(--gold); flex:none; }
   .history-item span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
+  /* ===== Yeni belge oluşturma ===== */
+  .create-panel{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:7px;background:#f8faf9;}
+  .create-panel h3{font:600 13px 'Space Grotesk',sans-serif;margin:0 0 11px;}
+  .create-types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .create-btn{background:white;border:1px solid var(--line);border-radius:5px;padding:11px 7px;cursor:pointer;font:600 12px 'Space Grotesk',sans-serif;display:flex;justify-content:center;align-items:center;gap:7px;}
+  .create-btn:hover,.create-btn:focus{border-color:var(--emerald);color:var(--emerald);background:#e9f4ee;}
+  .create-hint{font-size:11px;color:var(--ink-soft);margin:11px 0 0;line-height:1.5;}
+  .new-doc-toolbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;flex-wrap:wrap;gap:7px;padding:11px 15px;background:#f0f4f1;border-bottom:1px solid var(--line);}
+  .new-doc-toolbar button{padding:7px 10px;background:#fff;border:1px solid var(--line);border-radius:5px;cursor:pointer;font-weight:600;}
+  .new-doc-toolbar button:hover{border-color:var(--emerald);}
+  .new-doc-toolbar select,.new-doc-toolbar input{border:1px solid var(--line);border-radius:5px;background:white;padding:7px;min-width:0;}
+  .new-doc-toolbar .docname{flex:1 1 170px;max-width:310px;}
+  .new-editor-area{min-height:700px;background:#e9edef;padding:24px 13px 45px;}
+  .new-paper{max-width:794px;margin:auto;background:white;min-height:1020px;padding:73px 66px;box-shadow:0 8px 28px #12251d20;outline:none;font:16px/1.5 Calibri,Arial,sans-serif;overflow-wrap:anywhere;}
+  .new-paper:empty:before{content:'Buraya metin yazın veya Word’den kopyaladığınız içeriği Ctrl+V ile yapıştırın…';color:#88948e;pointer-events:none;}
+  .new-paper table{border-collapse:collapse;width:100%;margin:14px 0;}
+  .new-paper td,.new-paper th{border:1px solid #bbb;padding:5px 8px;}
+  .new-paper img{max-width:100%;height:auto;}
+  .new-paper h1,.new-paper h2,.new-paper h3{font-family:inherit;}
+  .new-sheet-area{padding:16px;}
+  .new-sheet-area .sheet-table-scroll{max-height:650px;}
+  .new-sheet-area table td{min-width:95px;white-space:pre-wrap;}
+  .new-slide-paper{max-width:960px;min-height:480px;aspect-ratio:16/9;padding:50px 55px;}
+  .new-status{font-size:12px;color:var(--ink-soft);padding:10px 16px;}
   /* ===== Viewer ===== */
   .viewer-card{
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
@@ -413,6 +439,8 @@
   .legacy-brand{padding-top:4px;min-width:0;white-space:nowrap;}
   .legacy-brand-primary{font-size:34px;font-weight:700;color:#800000;line-height:1.13;}
   .legacy-brand-secondary{font-size:29px;line-height:1.1;}
+  .legacy-page-content[contenteditable="true"]{min-height:12px;cursor:text;}
+  .legacy-page-header .legacy-brand[contenteditable="true"],.legacy-page-footer[contenteditable="true"]{cursor:text;}
   .legacy-page-footer{position:absolute;bottom:24px;left:73px;right:73px;border-top:1px solid #222;padding-top:4px;font:11px/1.25 'Times New Roman',Times,serif;overflow-wrap:anywhere;}
   .legacy-paragraph{white-space:pre-wrap;overflow-wrap:break-word;margin:0 0 10px;line-height:1.16;text-align:justify;}
   .legacy-paragraph.legacy-heading{font-weight:bold;text-align:left;margin:10px 0 12px;}
@@ -560,6 +588,16 @@
     </div>
 
     <button type="button" class="btn-select" id="installBtn" hidden style="background:var(--emerald);color:#fff;border-color:var(--emerald);"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 18v3h14v-3"/></svg> Bilgisayara Uygulama Olarak Kur</button>
+    <div class="create-panel">
+      <h3>Yeni Belge Oluştur</h3>
+      <div class="create-types">
+        <button class="create-btn" type="button" data-new="docx">📝 Word</button>
+        <button class="create-btn" type="button" data-new="xlsx">📊 Excel</button>
+        <button class="create-btn" type="button" data-new="pptx">📽️ PowerPoint</button>
+        <button class="create-btn" type="button" data-new="pdf">📄 PDF</button>
+      </div>
+      <p class="create-hint">Yeni belge açın, metni veya tabloyu yapıştırın, düzenleyin ve kaydedin. İşlemler cihazınızda yapılır. Gelişmiş Word biçimleri ve görseller dışa aktarımda değişebilir.</p>
+    </div>
     <div class="supported-list">
       <h3>Format Desteği</h3>
       <div class="sup-row"><span class="sup-tag"><svg class="ui-icon format-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 2.75h8L20 8v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 5 20V4.75a2 2 0 0 1 2-2z" fill="#2464B0" fill-opacity=".09" stroke="#2464B0" stroke-width="1.55" stroke-linejoin="round"/><path d="M15 2.75V8h5" stroke="#2464B0" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 11h8M8 14h8M8 17h6" stroke="#2464B0" stroke-width="1.7" stroke-linecap="round"/></svg> DOCX</span><span class="sup-state full">tam önizleme + resim</span></div>
@@ -630,6 +668,8 @@ const editBtn = document.getElementById('editBtn');
 const saveBtn = document.getElementById('saveBtn');
 const installBtn = document.getElementById('installBtn');
 let currentFile = null;
+let newDocumentType = null;
+let newDocumentName = '';
 let currentWorkbook = null;
 let activeSheetName = null;
 let editable = false;
@@ -691,6 +731,7 @@ closeBtn.addEventListener('click', resetViewer);
 copyAllBtn.addEventListener('click', copyAllContent);
 editBtn.addEventListener('click', toggleEditing);
 saveBtn.addEventListener('click', saveEditedDocument);
+document.querySelectorAll('[data-new]').forEach(btn=>btn.addEventListener('click',()=>createNewDocument(btn.dataset.new)));
 window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); installedPrompt=e; installBtn.hidden=false; });
 window.addEventListener('appinstalled', ()=>{installBtn.hidden=true; installedPrompt=null;showToast('Uygulama kuruldu.');});
 installBtn.addEventListener('click', async()=>{
@@ -726,7 +767,7 @@ function applyZoom(delta){
 }
 
 function resetViewer(){
-  currentFile=null; currentWorkbook=null;activeSheetName=null;currentPdf=null;editable=false;
+  currentFile=null; newDocumentType=null;currentWorkbook=null;activeSheetName=null;currentPdf=null;editable=false;
   editBtn.classList.remove('active');editBtn.textContent='Düzenle';
   viewerBody.innerHTML = '';
   viewerBody.appendChild(emptyState);
@@ -756,7 +797,7 @@ function addHistory(file){
 
 async function handleFile(file){
   const e = ext(file.name);
-  currentFile=file;currentWorkbook=null;activeSheetName=null;currentPdf=null;editable=false;
+  newDocumentType=null;currentFile=file;currentWorkbook=null;activeSheetName=null;currentPdf=null;editable=false;
   editBtn.classList.remove('active');editBtn.textContent='Düzenle';
   addHistory(file);
 
@@ -882,6 +923,7 @@ function renderSheetTable(sheet,container,info){
 }
 function toggleEditing(){
   if(!currentFile) return;
+  if(newDocumentType){const area=viewerBody.querySelector('.new-paper');if(area){editable=!editable;area.contentEditable=String(editable);editBtn.classList.toggle('active',editable);editBtn.textContent=editable?'Düzenlemeyi Bitir':'Düzenle';showToast(editable?'Düzenleme açık.':'Düzenleme kapalı.');}else showToast('Excel hücreleri her zaman düzenlenebilir.');return;}
   const type=ext(currentFile.name);
   if(!['doc','docx','xlsx','xls','xlsm','xlsb','csv','ods','odt','odp','ppt','pptx'].includes(type)){
     showToast('Bu format için düzenleme desteklenmiyor.');return;
@@ -892,7 +934,7 @@ function toggleEditing(){
   if(currentWorkbook){
     viewerBody.querySelectorAll('.grid-table td[data-addr]').forEach(td=>td.contentEditable=String(editable));
   } else {
-    viewerBody.querySelectorAll('.doc-surface, .slide-body, .sheet-table-scroll td').forEach(el=>{
+    viewerBody.querySelectorAll('.doc-surface, .slide-body, .sheet-table-scroll td, .legacy-page-content, .legacy-page-header .legacy-brand, .legacy-page-footer').forEach(el=>{
       el.contentEditable=String(editable);
     });
   }
@@ -914,6 +956,7 @@ function workbookToText(){
 }
 async function copyAllContent(){
   if(!currentFile)return;
+  if(newDocumentType){const val=newDocumentType==='xlsx'?newWorkbookToText():viewerBody.querySelector('.new-paper')?.innerText||'';if(!val.trim()){showToast('Kopyalanabilecek metin bulunamadı.');return;}await copyNewText(val);return;}
   let value='';
   if(currentWorkbook){value=workbookToText();}
   else if(currentPdf){
@@ -925,7 +968,21 @@ async function copyAllContent(){
     }
     value=lines.join('\n\n');
   } else {
-    value=viewerBody.querySelector('.legacy-content, .doc-surface, .slide-grid, .sheet-wrap')?.innerText||'';
+    const legacyPages=viewerBody.querySelector('.legacy-pages');
+    if(legacyPages){
+      const pieces=[];
+      // Üstbilgi/altbilgi her sayfada tekrarlandığı için yalnızca bir kez kopyalanır.
+      const header=legacyPages.querySelector('.legacy-page-header .legacy-brand');
+      if(header?.innerText.trim())pieces.push(header.innerText.trim());
+      legacyPages.querySelectorAll('.legacy-page-content').forEach(part=>{
+        if(part.innerText.trim())pieces.push(part.innerText.trim());
+      });
+      const footer=legacyPages.querySelector('.legacy-page-footer');
+      if(footer?.innerText.trim())pieces.push(footer.innerText.trim());
+      value=pieces.join('\n\n');
+    }else{
+      value=viewerBody.querySelector('.legacy-content, .doc-surface, .slide-grid, .sheet-wrap')?.innerText||'';
+    }
   }
   if(!value.trim()){showToast('Kopyalanabilecek metin bulunamadı.');return;}
   try{await navigator.clipboard.writeText(value);showToast('Tüm içerik panoya kopyalandı.');}
@@ -939,10 +996,21 @@ function downloadBlob(blob,name){
 }
 async function saveEditedDocument(){
   if(!currentFile)return;
+  if(newDocumentType){await exportNewDocument();return;}
   const name=currentFile.name.replace(/\.[^.]+$/,'');
   if(currentWorkbook){
     const binary=XLSX.write(currentWorkbook,{bookType:'xlsx',type:'array'});
     downloadBlob(new Blob([binary],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),name+'-duzenlenmis.xlsx');
+  }else if(viewerBody.querySelector('.legacy-pages')){
+    // Eski .doc ikili biçiminde yazma desteklenmiyor; sayfa biçimini HTML olarak koru.
+    const pages=viewerBody.querySelector('.legacy-pages').cloneNode(true);
+    pages.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    const styles=[...document.styleSheets].filter(sheet=>{
+      try{return sheet.ownerNode?.tagName==='STYLE';}catch(_){return false;}
+    }).map(sheet=>sheet.ownerNode.textContent).join('\n');
+    const markup='<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>'+escapeHtml(name)+'</title><style>'+styles+'</style></head><body>'+pages.outerHTML+'</body></html>';
+    downloadBlob(new Blob([markup],{type:'text/html;charset=utf-8'}),name+'-duzenlenmis.html');
+    showToast('Düzenlenen DOC sayfaları HTML olarak kaydedildi.');return;
   }else if(viewerBody.querySelector('.doc-surface')){
     const content=(viewerBody.querySelector('.legacy-content')||viewerBody.querySelector('.doc-surface')).innerHTML;
     const markup='<!doctype html><html lang="tr"><head><meta charset="utf-8"></head><body>'+content+'</body></html>';
@@ -954,6 +1022,206 @@ async function saveEditedDocument(){
   showToast('Düzenlenen dosya indirildi.');
 }
 
+
+/* Yeni belge: Word/Excel/PowerPoint/PDF. Sadece tarayıcı tarafında çalışır. */
+function newXmlEscape(text){return String(text??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');}
+function newSafeName(){return (viewerBody.querySelector('#newFilename')?.value||newDocumentName||'Yeni Belge').trim().replace(/[\\/:*?"<>|]/g,'-').slice(0,100)||'Yeni Belge';}
+function newExtension(t){return t==='docx'?'Word':t==='xlsx'?'Excel':t==='pptx'?'PowerPoint':'PDF';}
+function createNewDocument(type){
+  newDocumentType=type;newDocumentName='Yeni '+newExtension(type);currentWorkbook=null;currentPdf=null;activeSheetName=null;
+  currentFile=new File([''],newDocumentName+'.'+type,{type:'application/octet-stream'});
+  editable=true;editBtn.classList.add('active');editBtn.textContent='Düzenlemeyi Bitir';
+  setHeader(currentFile,'Yeni '+newExtension(type)+' belgesi');
+  const panel=document.createElement('div');
+  const tools=document.createElement('div');tools.className='new-doc-toolbar';
+  const name=document.createElement('input');name.id='newFilename';name.className='docname';name.value=newDocumentName;name.title='Dosya adı';name.setAttribute('aria-label','Yeni belgenin dosya adı');
+  name.addEventListener('input',()=>{fnameLabel.textContent=newSafeName()+'.'+newDocumentType;});
+  tools.append(name);
+  const addTool=(label,fn,title)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.title=title||label;b.addEventListener('click',fn);tools.append(b);return b;};
+  addTool('📋 Yapıştır',pasteIntoNew,'Panodan yapıştır (tarayıcı izin isteyebilir)');
+  if(type!=='xlsx'){
+    addTool('K',()=>newFormat('bold'),'Kalın');addTool('İ',()=>newFormat('italic'),'İtalik');
+    addTool('A̲',()=>newFormat('underline'),'Altı çizili');
+    addTool('• Liste',()=>newFormat('insertUnorderedList'));
+    addTool('Tablo',()=>newInsertTable());
+  }else{
+    addTool('+ Sayfa',()=>{let idx=2;while(currentWorkbook.SheetNames.includes('Sayfa'+idx))idx++;const key='Sayfa'+idx;currentWorkbook.SheetNames.push(key);currentWorkbook.Sheets[key]=XLSX.utils.aoa_to_sheet([[]]);renderNewSpreadsheet();});
+  }
+  const save=addTool('💾 Kaydet',exportNewDocument,'Belgeyi indir');save.style.background='#1f5c45';save.style.color='white';
+  panel.append(tools);
+  if(type==='xlsx'){
+    currentWorkbook=XLSX.utils.book_new();XLSX.utils.book_append_sheet(currentWorkbook,XLSX.utils.aoa_to_sheet([[]]),'Sayfa1');
+    const area=document.createElement('div');area.className='new-sheet-area';area.id='newSheetEditor';panel.append(area);
+    const note=document.createElement('div');note.className='new-status';note.textContent='Excel’den hücre aralığını kopyalayıp ilk hücreye Ctrl+V yapıştırın. Hücreleri tıklayarak düzenleyebilirsiniz.';panel.append(note);
+    viewerBody.replaceChildren(panel);renderNewSpreadsheet();
+  }else{
+    const space=document.createElement('div');space.className='new-editor-area';
+    const paper=document.createElement('div');paper.className='new-paper'+(type==='pptx'?' new-slide-paper':'');paper.id='newPaper';paper.contentEditable='true';paper.spellcheck=true;paper.setAttribute('role','textbox');paper.setAttribute('aria-label','Belge içeriği');paper.setAttribute('aria-multiline','true');
+    paper.addEventListener('paste',newRichPaste);
+    space.append(paper);panel.append(space);viewerBody.replaceChildren(panel);
+    paper.focus();
+  }
+  showToast('Yeni '+newExtension(type)+' açıldı. İçerik yapıştırabilir veya yazabilirsiniz.');
+}
+function newFormat(command){const paper=viewerBody.querySelector('#newPaper');if(!paper)return;paper.focus();document.execCommand(command,false,null);}
+function newInsertTable(){const paper=viewerBody.querySelector('#newPaper');if(!paper)return;paper.focus();document.execCommand('insertHTML',false,'<table><tbody><tr><td> </td><td> </td></tr><tr><td> </td><td> </td></tr></tbody></table><p><br></p>');}
+function newSanitizeHtml(raw){
+  const d=new DOMParser().parseFromString(raw,'text/html');
+  const allowed=new Set(['P','DIV','BR','B','STRONG','I','EM','U','S','SPAN','H1','H2','H3','H4','UL','OL','LI','TABLE','THEAD','TBODY','TR','TD','TH','BLOCKQUOTE','PRE','IMG','SUP','SUB']);
+  const walker=d.createTreeWalker(d.body,NodeFilter.SHOW_ELEMENT);const elements=[];while(walker.nextNode())elements.push(walker.currentNode);
+  for(const el of elements.reverse()){
+    if(!el.parentNode)continue;
+    if(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','SVG','FORM','INPUT','BUTTON','LINK','META'].includes(el.tagName)){el.remove();continue;}
+    if(!allowed.has(el.tagName)){el.replaceWith(...Array.from(el.childNodes));continue;}
+    const attrs=[...el.attributes];for(const a of attrs)el.removeAttribute(a.name);
+    if(el.tagName==='IMG'){
+      const src=attrs.find(a=>a.name.toLowerCase()==='src')?.value||'';
+      if(/^data:image\/(png|jpe?g|gif|webp);base64,[\w+/=]+$/i.test(src)&&src.length<8000000)el.setAttribute('src',src);else el.remove();
+    }
+    const styles=attrs.find(a=>a.name.toLowerCase()==='style')?.value||'';
+    const temp=document.createElement('span');temp.style.cssText=styles;
+    const safe=['fontWeight','fontStyle','textDecoration','textAlign','fontSize','fontFamily','color','backgroundColor'];
+    for(const prop of safe){const v=temp.style[prop];if(v&&v.length<100&&!/url\s*\(|expression|var\s*\(/i.test(v))el.style[prop]=v;}
+    for(const key of ['colspan','rowspan']){const v=attrs.find(a=>a.name.toLowerCase()===key)?.value;if(v&&/^\d{1,2}$/.test(v))el.setAttribute(key,v);}
+  }
+  return d.body.innerHTML;
+}
+function newRichPaste(e){const html=e.clipboardData?.getData('text/html');if(!html)return;e.preventDefault();const clean=newSanitizeHtml(html);document.execCommand('insertHTML',false,clean||newXmlEscape(e.clipboardData?.getData('text/plain')||''));}
+async function pasteIntoNew(){
+  if(!newDocumentType)return;
+  if(!navigator.clipboard?.read&&!navigator.clipboard?.readText){showToast('Bu tarayıcıda Ctrl+V ile yapıştırın.');viewerBody.querySelector('#newPaper, .new-sheet-area td')?.focus();return;}
+  try{
+    let html='',plain='';
+    if(navigator.clipboard.read){const items=await navigator.clipboard.read();for(const item of items){if(item.types.includes('text/html'))html=await (await item.getType('text/html')).text();if(item.types.includes('text/plain'))plain=await (await item.getType('text/plain')).text();}}
+    else plain=await navigator.clipboard.readText();
+    if(newDocumentType==='xlsx'){
+      const matrix=newPasteMatrix(html,plain);newWriteMatrix(matrix,0,0);renderNewSpreadsheet();
+    }else{
+      const paper=viewerBody.querySelector('#newPaper');paper?.focus();
+      if(html)document.execCommand('insertHTML',false,newSanitizeHtml(html));else document.execCommand('insertText',false,plain);
+    }
+    showToast('Pano içeriği yapıştırıldı.');
+  }catch(e){console.warn(e);showToast('Pano izni verilmedi. Belge içine tıklayıp Ctrl+V yapıştırın.');viewerBody.querySelector('#newPaper, .new-sheet-area td')?.focus();}
+}
+function newPasteMatrix(html,plain){
+  if(html){const d=new DOMParser().parseFromString(html,'text/html');const tbl=d.querySelector('table');if(tbl){const rows=[...tbl.querySelectorAll('tr')].map(r=>[...r.children].filter(c=>c.matches('th,td')).map(c=>c.innerText||c.textContent||''));if(rows.length)return rows;}}
+  return String(plain||'').replace(/\r\n?/g,'\n').replace(/\n$/,'').split('\n').map(row=>row.split('\t'));
+}
+function newWriteMatrix(matrix,r0,c0){
+  const ws=currentWorkbook.Sheets[activeSheetName||currentWorkbook.SheetNames[0]];
+  let maxRow=r0,maxCol=c0;
+  matrix.forEach((row,r)=>row.forEach((v,c)=>{const addr=XLSX.utils.encode_cell({r:r0+r,c:c0+c});if(String(v)==='')delete ws[addr];else ws[addr]={t:'s',v:String(v)};maxRow=Math.max(maxRow,r0+r);maxCol=Math.max(maxCol,c0+c);}));
+  const old=ws['!ref']?XLSX.utils.decode_range(ws['!ref']):{s:{r:0,c:0},e:{r:0,c:0}};
+  ws['!ref']=XLSX.utils.encode_range({s:{r:Math.min(old.s.r,r0),c:Math.min(old.s.c,c0)},e:{r:Math.max(old.e.r,maxRow),c:Math.max(old.e.c,maxCol)}});
+}
+function renderNewSpreadsheet(){
+  const host=viewerBody.querySelector('#newSheetEditor');if(!host||!currentWorkbook)return;
+  host.replaceChildren();const tabs=document.createElement('div');tabs.className='sheet-tabs';
+  if(!activeSheetName||!currentWorkbook.SheetNames.includes(activeSheetName))activeSheetName=currentWorkbook.SheetNames[0];
+  for(const key of currentWorkbook.SheetNames){const tab=document.createElement('button');tab.type='button';tab.className='sheet-tab'+(key===activeSheetName?' active':'');tab.textContent=key;tab.addEventListener('click',()=>{activeSheetName=key;renderNewSpreadsheet();});tabs.append(tab);}host.append(tabs);
+  const scroll=document.createElement('div');scroll.className='sheet-table-scroll';const table=document.createElement('table');table.className='grid-table';
+  const ws=currentWorkbook.Sheets[activeSheetName];const range=ws['!ref']?XLSX.utils.decode_range(ws['!ref']):{e:{r:0,c:0}};
+  const rows=Math.min(500,Math.max(20,range.e.r+5)),cols=Math.min(60,Math.max(8,range.e.c+4));
+  const thead=document.createElement('thead'),head=document.createElement('tr');head.append(document.createElement('th'));
+  for(let c=0;c<cols;c++){const th=document.createElement('th');th.textContent=XLSX.utils.encode_col(c);head.append(th);}thead.append(head);table.append(thead);
+  const tbody=document.createElement('tbody');
+  for(let r=0;r<rows;r++){
+    const tr=document.createElement('tr'),rn=document.createElement('th');rn.textContent=String(r+1);tr.append(rn);
+    for(let c=0;c<cols;c++){
+      const td=document.createElement('td');td.contentEditable='true';td.dataset.r=r;td.dataset.c=c;td.textContent=getCellText(ws[XLSX.utils.encode_cell({r,c})]);
+      td.addEventListener('input',()=>{newWriteMatrix([[td.textContent||'']],r,c);});
+      td.addEventListener('paste',e=>{e.preventDefault();const mat=newPasteMatrix(e.clipboardData?.getData('text/html'),e.clipboardData?.getData('text/plain'));newWriteMatrix(mat,r,c);renderNewSpreadsheet();const focus=host.querySelector(`td[data-r="${r}"][data-c="${c}"]`);focus?.focus();showToast(`${mat.length} satır yapıştırıldı.`);});
+      td.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();host.querySelector(`td[data-r="${Math.min(rows-1,r+1)}"][data-c="${c}"]`)?.focus();}});
+      tr.append(td);
+    }
+    tbody.append(tr);
+  }
+  table.append(tbody);scroll.append(table);host.append(scroll);
+}
+function newWorkbookToText(){if(!currentWorkbook)return '';const out=[];for(const name of currentWorkbook.SheetNames){out.push('### '+name);const ws=currentWorkbook.Sheets[name];const r=ws['!ref']?XLSX.utils.decode_range(ws['!ref']):{e:{r:0,c:0}};for(let row=0;row<=r.e.r;row++){const vals=[];for(let c=0;c<=r.e.c;c++)vals.push(getCellText(ws[XLSX.utils.encode_cell({r:row,c})]));out.push(vals.join('\t'));}}return out.join('\n').trim();}
+async function copyNewText(value){try{await navigator.clipboard.writeText(value);showToast('Tüm içerik kopyalandı.');}catch(e){const ta=document.createElement('textarea');ta.value=value;document.body.append(ta);ta.select();const ok=document.execCommand('copy');ta.remove();showToast(ok?'İçerik kopyalandı.':'Kopyalama başarısız.');}}
+function newRunsFromElement(node,state={}){
+  if(node.nodeType===Node.TEXT_NODE){const t=node.nodeValue;if(!t)return '';let props='';if(state.bold)props+='<w:b/>';if(state.italic)props+='<w:i/>';if(state.underline)props+='<w:u w:val="single"/>';if(state.color)props+=`<w:color w:val="${state.color}"/>`;if(state.size)props+=`<w:sz w:val="${state.size}"/>`;return `<w:r>${props?`<w:rPr>${props}</w:rPr>`:''}<w:t xml:space="preserve">${newXmlEscape(t)}</w:t></w:r>`;}
+  if(node.nodeType!==Node.ELEMENT_NODE)return '';
+  if(node.tagName==='BR')return '<w:r><w:br/></w:r>';
+  if(node.tagName==='IMG')return '<w:r><w:t>[Görsel]</w:t></w:r>';
+  const s={...state};const tag=node.tagName;
+  if(['B','STRONG'].includes(tag)||/^H[1-6]$/.test(tag))s.bold=true;
+  if(['I','EM'].includes(tag))s.italic=true;
+  if(tag==='U')s.underline=true;
+  if(node.style){if(node.style.fontWeight==='bold'||Number(node.style.fontWeight)>=600)s.bold=true;if(node.style.fontStyle==='italic')s.italic=true;if(node.style.textDecoration.includes('underline'))s.underline=true;
+    const color=node.style.color;const m=color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)/);if(m)s.color=m.slice(1).map(v=>Number(v).toString(16).padStart(2,'0')).join('').toUpperCase();
+    const sz=parseFloat(node.style.fontSize);if(sz>0&&sz<200)s.size=Math.round(sz*1.5);
+  }
+  return [...node.childNodes].map(child=>newRunsFromElement(child,s)).join('');
+}
+function newParagraphXml(el,opts={}){
+  let props='';if(opts.bullet)props='<w:ind w:left="720" w:hanging="360"/>';
+  if(el?.style?.textAlign){const align={center:'center',right:'right',justify:'both'}[el.style.textAlign];if(align)props+=`<w:jc w:val="${align}"/>`;}
+  if(el&&/^H[1-3]$/.test(el.tagName))props+=`<w:pStyle w:val="Heading${el.tagName.slice(1)}"/>`;
+  const content=el?newRunsFromElement(el):'';
+  return `<w:p>${props?`<w:pPr>${props}</w:pPr>`:''}${opts.bullet?'<w:r><w:t>• </w:t></w:r>':''}${content||'<w:r><w:t></w:t></w:r>'}</w:p>`;
+}
+function newTableXml(table){
+  const rows=[...table.querySelectorAll('tr')];const xml=rows.map(tr=>'<w:tr>'+[...tr.children].filter(td=>td.matches('td,th')).map(td=>'<w:tc><w:tcPr><w:tcW w:w="2400" w:type="dxa"/></w:tcPr>'+newParagraphXml(td)+'</w:tc>').join('')+'</w:tr>').join('');
+  return `<w:tbl><w:tblPr><w:tblBorders><w:top w:val="single" w:sz="4"/><w:left w:val="single" w:sz="4"/><w:bottom w:val="single" w:sz="4"/><w:right w:val="single" w:sz="4"/><w:insideH w:val="single" w:sz="4"/><w:insideV w:val="single" w:sz="4"/></w:tblBorders></w:tblPr>${xml}</w:tbl>`;
+}
+function newDocBlockXml(root){let xml='';for(const child of root.childNodes){if(child.nodeType===Node.TEXT_NODE){if(child.textContent.trim())xml+='<w:p>'+newRunsFromElement(child)+'</w:p>';continue;}if(child.nodeType!==Node.ELEMENT_NODE)continue;
+    if(child.tagName==='TABLE'){xml+=newTableXml(child);continue;}
+    if(['UL','OL'].includes(child.tagName)){for(const li of child.children)xml+=newParagraphXml(li,{bullet:true});continue;}
+    if(child.tagName==='DIV'&&child.querySelector(':scope > p, :scope > div, :scope > table')){xml+=newDocBlockXml(child);continue;}
+    xml+=newParagraphXml(child);
+  }return xml||'<w:p/>';
+}
+async function newExportDocx(root,name){
+  if(!window.JSZip)throw Error('Word kaydı için JSZip yüklenemedi. İnternet bağlantısını kontrol edin.');
+  const zip=new JSZip();zip.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+  zip.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+  zip.file('word/document.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+newDocBlockXml(root)+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1200" w:bottom="1440" w:left="1200"/></w:sectPr></w:body></w:document>');
+  const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE'});downloadBlob(blob,name+'.docx');
+}
+async function newExportPptx(root,name){
+  if(typeof pptxgen==='undefined')throw Error('PowerPoint kaydetme kütüphanesi yüklenemedi. İnternet bağlantısını kontrol edin.');
+  const pptx=new pptxgen();pptx.layout='LAYOUT_WIDE';pptx.author='EBS Belge Masası';pptx.subject='Yeni PowerPoint sunumu';pptx.title=name;
+  const raw=(root.innerText||'').trim();const chunks=[];
+  // Metni slayt başına sınırlayarak yeni slaytlar oluştur.
+  for(const paragraph of raw.split(/\n+/)){if(!paragraph.trim())continue;let part=paragraph;while(part.length>850){chunks.push(part.slice(0,850));part=part.slice(850);}chunks.push(part);}
+  let block='';const slides=[];for(const t of chunks){if(block.length+t.length>850&&block){slides.push(block);block='';}block+=(block?'\n\n':'')+t;}if(block||!slides.length)slides.push(block);
+  for(const [i,txt] of slides.entries()){
+    const slide=pptx.addSlide();slide.background={color:'FFFFFF'};
+    slide.addShape(pptx.ShapeType.rect,{x:0,y:0,w:13.333,h:.13,line:{color:'1F5C45'},fill:{color:'1F5C45'}});
+    slide.addText(i===0?name:`${name} (${i+1})`,{x:.65,y:.35,w:12,h:.6,fontFace:'Aptos Display',fontSize:25,bold:true,color:'1F5C45',margin:0,breakLine:false});
+    slide.addText(txt||' ',{x:.7,y:1.25,w:11.9,h:5.65,fontFace:'Aptos',fontSize:txt.length>500?17:21,color:'222222',breakLine:false,margin:0.12,valign:'top',fit:'shrink'});
+  }
+  await pptx.writeFile({fileName:name+'.pptx'});
+}
+async function newExportPdf(root,name){
+  if(typeof html2pdf==='undefined'){
+    // Print dialog browser fallback, user can select "Save as PDF".
+    const w=window.open('','_blank');if(!w)throw Error('PDF için açılır pencereye izin verin veya bağlantınızı kontrol edin.');
+    w.document.write('<html><head><meta charset="utf-8"><title>'+newXmlEscape(name)+'</title></head><body>'+root.innerHTML+'</body></html>');w.document.close();w.focus();w.print();return;
+  }
+  const clone=root.cloneNode(true);clone.removeAttribute('contenteditable');clone.style.cssText='width:794px;min-height:100px;padding:55px 55px;margin:0;background:#fff;font:16px/1.5 Arial,sans-serif;box-shadow:none;';
+  clone.querySelectorAll('img').forEach(img=>img.style.maxWidth='100%');
+  const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-20000px;top:0;width:794px;background:white;';holder.append(clone);document.body.append(holder);
+  try{await html2pdf().set({margin:0,filename:name+'.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:false},jsPDF:{unit:'pt',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}}).from(clone).save();}
+  finally{holder.remove();}
+}
+async function exportNewDocument(){
+  if(!newDocumentType)return;const name=newSafeName();
+  try{
+    showToast('Belge hazırlanıyor…');
+    if(newDocumentType==='xlsx'){
+      const data=XLSX.write(currentWorkbook,{bookType:'xlsx',type:'array'});downloadBlob(new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),name+'.xlsx');
+    }else{
+      const paper=viewerBody.querySelector('#newPaper');if(!paper)throw Error('Belge alanı bulunamadı.');
+      if(newDocumentType==='docx')await newExportDocx(paper,name);
+      if(newDocumentType==='pptx')await newExportPptx(paper,name);
+      if(newDocumentType==='pdf')await newExportPdf(paper,name);
+    }
+    showToast(name+'.'+newDocumentType+' indirildi.');
+  }catch(e){console.error(e);showToast('Kaydetme başarısız: '+e.message);}
+}
 
 /* Eski Office 97-2003 dosyaları OLE Compound File (CFB) içerir.
    Kod dosyayı tamamen yerel bellekte açar; uzak servise veri göndermez. */
